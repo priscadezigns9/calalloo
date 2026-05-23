@@ -1,1 +1,116 @@
-<html><head><title>Calalloo | AI</title></head><body><h1>Calalloo Intelligence</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calalloo | Caribbean Culinary Intelligence</title>
+<meta name="description" content="Snap a photo of any Caribbean dish and instantly get the name, calories, ingredients and where to buy them near you. The Caribbean food app.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    :root { --primary: #E87722; --dark: #0F0A1C; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--dark); color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+    .auth-card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+    .logo { font-family: 'Fraunces', serif; color: var(--primary); font-size: 2.5rem; margin-bottom: 24px; text-align: center; }
+    .input-group { margin-bottom: 20px; position: relative; }
+    input { width: 100%; padding: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white; font-size: 1rem; outline: none; transition: 0.3s; }
+    input:focus { border-color: var(--primary); background: rgba(255,255,255,0.15); }
+    .btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+    .btn:hover { background: #C45A00; transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    
+    /* TOAST SYSTEM */
+    .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 10000; min-width: 300px; text-align: center; font-weight: 600; transition: all 0.3s ease; opacity: 0; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(10px); }
+    .toast-success { background-color: #2E7D32; color: white; }
+    .toast-error { background-color: #D32F2F; color: white; }
+    
+    /* SUCCESS OVERLAY */
+    #successOverlay { position: fixed; inset: 0; background-color: var(--primary); z-index: 10001; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; transition: 0.5s; }
+    #successOverlay.show { display: flex; }
+    .animate-bounce { animation: bounce 1s infinite; }
+    @keyframes bounce { 0%, 100% { transform: translateY(-25%); } 50% { transform: translateY(0); } }
+    
+    /* PASS TOGGLE */
+    .pass-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer; font-size: 1.2rem; color: #888; z-index: 10; }
+</style>
+<meta name="geo.region" content="TT" />
+<meta name="geo.placename" content="Port of Spain" />
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="logo">Callaloo</div>
+    <div class="input-group">
+        <input type="email" id="authEmail" placeholder="Email Address">
+    </div>
+    <div class="input-group">
+        <input type="password" id="authPass" placeholder="Password">
+        <button type="button" id="passToggle" class="pass-toggle">👁️</button>
+    </div>
+    <button onclick="handleSignIn()" id="signInBtn" class="btn">Sign In</button>
+</div>
+
+<div id="calallooToast" class="toast"></div>
+
+<div id="successOverlay">
+    <div class="animate-bounce" style="font-size:64px;">🔥</div>
+    <h2 style="font-size:32px; font-weight:bold; font-family: 'Fraunces', serif; margin-top:20px;">Authenticated!</h2>
+    <p style="font-size: 18px; opacity: 0.9;">Taking you to the table...</p>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const passInput = document.getElementById('authPass');
+        const toggle = document.getElementById('passToggle');
+        
+        toggle.onclick = () => {
+            const isPass = passInput.type === 'password';
+            passInput.type = isPass ? 'text' : 'password';
+            toggle.innerHTML = isPass ? '🙈' : '👁️';
+        };
+    });
+
+    function handleSignIn() {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        const btn = document.getElementById('signInBtn');
+        
+        if (!email || !pass) {
+            showToast('Please fill in all fields.', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Verifying...';
+
+        setTimeout(() => {
+            // Simulation: Accepts 'Calalloo2026' or 'password'
+            if (pass === 'Calalloo2026' || pass === 'password') {
+                showToast('✓ Welcome back!', 'success');
+                setTimeout(() => {
+                    document.getElementById('successOverlay').classList.add('show');
+                    setTimeout(() => {
+                        window.location.href = '/calalloo/recipes/';
+                    }, 1500);
+                }, 500);
+            } else {
+                showToast('✕ Invalid credentials. Please try again.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Sign In';
+            }
+        }, 1200);
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('calallooToast');
+        t.className = 'toast show toast-' + type;
+        t.textContent = msg;
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+</script>
+<div style="margin-top:20px;text-align:center;color:gray;font-size:10px">POWERED BY <a href="https://priscadezigns.org" style="color:gray">PRISCA DEZIGNS</a></div>
+</body>
+</html>
+
+
