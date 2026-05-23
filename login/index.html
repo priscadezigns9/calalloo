@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Login — Calalloo Intelligence</title>
+    <link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap' rel='stylesheet'>
+    <style>
+        :root{--primary:#F97316;--dark:#050505;--surface:#111111;--border:rgba(255,255,255,0.08);--error:#EF4444}
+        body{background:var(--dark);color:white;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:radial-gradient(circle at center, #1a1a1a, #050505)}
+        .login-card{background:var(--surface);padding:50px;border-radius:32px;border:1px solid var(--border);width:100%;max-width:400px;text-align:center}
+        input{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:16px;border-radius:12px;color:white;margin-bottom:15px}
+        .btn-login{width:100%;background:var(--primary);color:white;padding:18px;border-radius:12px;border:none;font-weight:800;cursor:pointer}
+    </style>
+</head>
+<body>
+    <div class='login-card'>
+        <h1 style='color:var(--primary);margin-bottom:20px'>🥘 Login</h1>
+        <input type='email' value='prisca@calalloo.ai'>
+        <input type='password' id='p' placeholder='••••••••'>
+        <button class='btn-login' onclick='l()'>Login</button>
+    </div>
+    <script>
+        function l(){
+            if(document.getElementById('p').value === 'empire2026'){
+                window.location.href='/dashboard/';
+            } else { alert('Invalid Key'); }
+        }
+    </script>
+</body>
+</html>
