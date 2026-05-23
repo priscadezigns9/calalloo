@@ -4,6 +4,9 @@
     <meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
     <title>Calalloo — Caribbean Culinary Intelligence & Data Hub</title>
     <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#F97316">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap' rel='stylesheet'>
     <style>
         :root{--primary:#F97316;--dark:#050505;--card:#111;--border:rgba(255,255,255,0.05)}
@@ -109,8 +112,15 @@
     </footer>
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('SW registered:', reg);
+                }).catch(err => {
+                    console.log('SW failed:', err);
+                });
+            });
         }
     </script>
 </body>
 </html>
+
