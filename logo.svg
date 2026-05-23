@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 72" width="260" height="72">
+  <defs>
+    <linearGradient id="clg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E87722"/>
+      <stop offset="100%" stop-color="#F5A623"/>
+    </linearGradient>
+  </defs>
+
+  <!-- LEAF ICON — matches website: rounded leaf body, vein, curled stem -->
+  <!-- Outer leaf body -->
+  <path d="M18,8 C10,8 4,16 4,26 C4,38 12,48 22,52 C24,53 26,52 26,50 C26,42 30,34 34,28 C36,24 36,18 32,13 C29,10 24,8 18,8 Z"
+        fill="url(#clg)" opacity="0.95"/>
+  <!-- Inner leaf highlight/second lobe -->
+  <path d="M22,12 C22,12 36,14 38,28 C40,38 34,50 28,54 C26,55 24,54 24,52 C24,44 20,36 16,30 C14,26 14,18 18,14 Z"
+        fill="url(#clg)" opacity="0.55"/>
+  <!-- Centre vein -->
+  <path d="M20,50 Q22,35 26,20" stroke="#1A0D00" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.25"/>
+  <!-- Curled stem -->
+  <path d="M22,52 Q20,60 16,62 Q12,64 14,58" stroke="url(#clg)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- WORDMARK -->
+  <text x="52" y="40"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-weight="900"
+        font-size="32"
+        fill="#1A0D00"
+        letter-spacing="-0.5">Calalloo</text>
+  <!-- Tagline -->
+  <text x="53" y="56"
+        font-family="Arial, Helvetica, sans-serif"
+        font-weight="700"
+        font-size="9"
+        fill="#E87722"
+        letter-spacing="3"
+        opacity="0.9">FOOD &amp; RECIPES</text>
+</svg>
