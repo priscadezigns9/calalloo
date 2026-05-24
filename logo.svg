@@ -1,13 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 60" width="280" height="60">
-  <g transform="translate(10, 10) scale(1.25)">
-    <defs>
-      <linearGradient id="leaf_grad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#2ECC71"/>
-        <stop offset="100%" stop-color="#1A9E50"/>
-      </linearGradient>
-    </defs>
-    <rect width="32" height="32" rx="8" fill="#0a1a0a"/>
-    <path d="M16 6 Q10 10 9 18 Q13 14 16 20 Q19 14 23 18 Q22 10 16 6Z" fill="url(#leaf_grad)"/>
-  </g>
-  <text x="65" y="42" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="900" fill="#F97316" letter-spacing="-1">Calalloo</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 72" width="260" height="72">
+  <defs>
+    <linearGradient id="clg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E87722"/>
+      <stop offset="100%" stop-color="#F5A623"/>
+    </linearGradient>
+  </defs>
+  <path d="M18,8 C10,8 4,16 4,26 C4,38 12,48 22,52 C24,53 26,52 26,50 C26,42 30,34 34,28 C36,24 36,18 32,13 C29,10 24,8 18,8 Z" fill="url(#clg)" opacity="0.95"/>
+  <path d="M22,12 C22,12 36,14 38,28 C40,38 34,50 28,54 C26,55 24,54 24,52 C24,44 20,36 16,30 C14,26 14,18 18,14 Z" fill="url(#clg)" opacity="0.55"/>
+  <path d="M20,50 Q22,35 26,20" stroke="#1A0D00" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.25"/>
+  <path d="M22,52 Q20,60 16,62 Q12,64 14,58" stroke="url(#clg)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="52" y="40" font-family="Georgia, serif" font-weight="900" font-size="32" fill="#F97316" letter-spacing="-0.5">Calalloo</text>
+  <text x="53" y="56" font-family="Arial, sans-serif" font-weight="700" font-size="9" fill="#E87722" letter-spacing="3" opacity="0.9">CULINARY INTELLIGENCE</text>
 </svg>
