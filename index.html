@@ -8,11 +8,12 @@
     <style>
         :root {
             --primary: #F97316;
+            --primary-glow: rgba(249, 115, 22, 0.4);
             --bg: #050505;
             --text: #ffffff;
             --muted: rgba(255,255,255,0.4);
-            --border: rgba(255,255,255,0.06);
-            --card: #111;
+            --border: rgba(255,255,255,0.08);
+            --card: rgba(255, 255, 255, 0.03);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,17 +24,30 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
-            background-image: radial-gradient(rgba(249, 115, 22, 0.15) 1px, transparent 1px);
-            background-size: 30px 30px;
+            /* Professional SaaS Dot Grid */
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.12) 1px, transparent 0);
+            background-size: 40px 40px;
         }
 
-        body::before {
-            content: '';
+        /* Creative Touch: Animated Gradient Orbs */
+        .orb {
             position: fixed;
-            top: 0; left: 0; right: 0; height: 100vh;
-            background: radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.1), transparent 70%);
-            pointer-events: none;
-            z-index: 0;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-glow), transparent 70%);
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 20s infinite alternate;
+        }
+        .orb-1 { top: -100px; right: -100px; }
+        .orb-2 { bottom: -200px; left: -200px; background: radial-gradient(circle, rgba(232, 119, 34, 0.2), transparent 70%); }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 100px); }
         }
 
         nav {
@@ -43,32 +57,30 @@
             align-items: center;
             position: sticky;
             top: 0;
-            background: rgba(5, 5, 5, 0.7);
-            backdrop-filter: blur(20px);
+            background: rgba(5, 5, 5, 0.6);
+            backdrop-filter: blur(15px);
             z-index: 1000;
             border-bottom: 1px solid var(--border);
         }
 
         .logo {
-            font-family: 'Georgia', serif;
-            font-weight: 900;
-            font-size: 1.8rem;
-            color: var(--primary);
-            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            text-decoration: none;
         }
 
-        .logo-img { height: 40px; width: auto; }
+        .logo-img { height: 42px; width: auto; filter: drop-shadow(0 0 8px var(--primary-glow)); }
 
         .nav-links { display: flex; gap: 32px; align-items: center; }
         .nav-links a { 
             color: var(--muted); 
             text-decoration: none; 
             font-weight: 600; 
-            font-size: 0.9rem; 
+            font-size: 0.85rem; 
             transition: 0.3s; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .nav-links a:hover { color: var(--primary); }
 
@@ -76,92 +88,126 @@
             background: var(--primary);
             color: white;
             padding: 12px 28px;
-            border-radius: 100px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 800;
             font-size: 0.85rem;
-            transition: 0.3s;
+            transition: 0.4s;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.25);
+            box-shadow: 0 15px 30px rgba(249, 115, 22, 0.3);
+            background: #ff7f27;
         }
 
         .hero {
-            padding: 140px 6% 100px;
+            padding: 160px 6% 120px;
             text-align: center;
             position: relative;
-            z-index: 1;
         }
 
         .badge {
-            background: rgba(249, 115, 22, 0.1);
+            background: rgba(249, 115, 22, 0.08);
             color: var(--primary);
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 100px;
             font-weight: 800;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
+            font-size: 0.65rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
             border: 1px solid rgba(249, 115, 22, 0.2);
-            margin-bottom: 24px;
+            margin-bottom: 32px;
             display: inline-block;
+            backdrop-filter: blur(5px);
         }
 
         h1 {
-            font-size: clamp(3.5rem, 10vw, 8rem);
+            font-size: clamp(3rem, 12vw, 9rem);
             font-weight: 800;
-            letter-spacing: -4px;
-            line-height: 0.9;
-            margin-bottom: 30px;
+            letter-spacing: -5px;
+            line-height: 0.85;
+            margin-bottom: 40px;
+            background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto 50px;
             color: var(--muted);
-            font-size: 1.15rem;
-            line-height: 1.6;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            padding: 0 6% 100px;
-            max-width: 1200px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            padding: 0 6% 120px;
+            max-width: 1300px;
             margin: 0 auto;
         }
 
         .card {
             background: var(--card);
-            padding: 40px;
+            padding: 48px;
             border-radius: 32px;
             border: 1px solid var(--border);
-            transition: 0.3s;
-            text-align: left;
+            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0;
+            transition: 0.4s;
         }
 
         .card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
+            border-color: rgba(249, 115, 22, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-8px);
         }
+
+        .card:hover::before { opacity: 1; }
 
         .card h3 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             margin-bottom: 16px;
-            color: var(--primary);
+            color: #fff;
+            font-weight: 700;
         }
 
-        .card p { color: var(--muted); line-height: 1.6; }
+        .card p { color: var(--muted); line-height: 1.6; font-size: 0.95rem; }
 
         footer {
-            padding: 60px 6%;
+            padding: 80px 6%;
             border-top: 1px solid var(--border);
             text-align: center;
             color: var(--muted);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Dot Creative Touch: Moving "Neural" Nodes */
+        .node {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+            pointer-events: none;
+            opacity: 0.3;
         }
 
         @media (max-width: 768px) {
@@ -171,38 +217,65 @@
     </style>
 </head>
 <body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
     <nav>
-        <a href="/" class="logo"><img src="/logo.svg" alt="Calalloo" class="logo-img"></a>
+        <a href="/" class="logo">
+            <img src="/logo.svg" alt="Calalloo" class="logo-img">
+        </a>
         <div class="nav-links">
             <a href="/magazine/">Journal</a>
-            <a href="/login/">Sign In</a>
+            <a href="/login/">Data Hub</a>
             <a href="/login/" class="btn">Get Started</a>
         </div>
     </nav>
 
     <div class="hero">
-        <div class="badge">Neural Heritage Network</div>
+        <div class="badge">Heritage Computing v1.0</div>
         <h1>HERITAGE<br>MEETS INTEL.</h1>
-        <p>The SaaS operating system for Caribbean culinary data. Mapping crop varieties, recipe DNA, and local supply chain logistics with neural intelligence.</p>
+        <p>Scaling Caribbean culinary data with neural intelligence. The operating system for recipe DNA and local supply chain logistics.</p>
         <div style="display:flex;gap:15px;justify-content:center">
-            <a href="/login/" class="btn" style="padding:18px 40px;font-size:1rem">Open Dashboard</a>
-            <a href="/magazine/" class="btn" style="background:transparent;border:2px solid var(--primary);padding:18px 40px;font-size:1rem">Intelligence Journal</a>
+            <a href="/login/" class="btn" style="padding:18px 45px;font-size:0.95rem">Enter Hub</a>
+            <a href="/magazine/" class="btn" style="background:transparent;border:1px solid var(--border);padding:18px 45px;font-size:0.95rem;color:var(--text)">Journal</a>
         </div>
     </div>
 
     <div class="grid">
         <div class="card">
             <h3>Neural Scanner</h3>
-            <p>High-precision computer vision mapping the visual fingerprint of Caribbean crop varieties across the archipelago.</p>
+            <p>High-precision vision mapping the visual fingerprint of Caribbean crop varieties. Identifying heritage at the source.</p>
         </div>
         <div class="card">
             <h3>Logistics Node</h3>
-            <p>Real-time retail mapping and supply chain visibility for hyper-local ingredients. Scaling heritage commerce.</p>
+            <p>Real-time retail mapping and supply chain visibility. Bridging the gap between the soil and the shelf.</p>
+        </div>
+        <div class="card">
+            <h3>Data Archiving</h3>
+            <p>Preserving recipe architecture through neural mapping. Ensuring the future of Caribbean flavor is searchable.</p>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 Calalloo. A Prisca Dezigns SaaS Release.</p>
+        <p>&copy; 2026 Calalloo · A <a href="https://priscadezigns.org" style="color:var(--primary);text-decoration:none">Prisca Dezigns</a> Enterprise</p>
     </footer>
+
+    <script>
+        // Creative Touch: Spawn subtle moving nodes
+        function spawnNode() {
+            const n = document.createElement('div');
+            n.className = 'node';
+            n.style.left = Math.random() * 100 + 'vw';
+            n.style.top = Math.random() * 100 + 'vh';
+            document.body.appendChild(n);
+            
+            const ani = n.animate([
+                { opacity: 0, transform: 'scale(0)' },
+                { opacity: 0.3, transform: 'scale(1)' },
+                { opacity: 0, transform: 'scale(0) translateY(-100px)' }
+            ], { duration: 5000 + Math.random() * 5000, iterations: Infinity });
+        }
+        for(let i=0; i<15; i++) spawnNode();
+    </script>
 </body>
 </html>
