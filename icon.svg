@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="z_g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FDE047"/><stop offset="100%" stop-color="#EAB308"/></linearGradient>
-    <linearGradient id="z_f" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#CA8A04"/><stop offset="100%" stop-color="#854D0E"/></linearGradient>
+    <linearGradient id="z1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#F97316"/></linearGradient>
+    <linearGradient id="z2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#F97316"/><stop offset="100%" stop-color="#C2410C"/></linearGradient>
   </defs>
   <rect width="64" height="64" rx="16" fill="#050505"/>
-  <g transform="translate(32, 32) rotate(45) scale(0.28) translate(-100, -100)">
-    <path d="M100,20 C140,20 180,60 180,110 C180,160 140,180 100,190 L100,20 Z" fill="url(#z_f)"/>
-    <path d="M100,20 C60,20 20,60 20,110 C20,160 60,180 100,190 C140,180 180,160 180,110 C180,60 140,20 100,20 Z" fill="url(#z_g)"/>
-    <circle cx="100" cy="65" r="9" fill="white" opacity="0.9"/><circle cx="100" cy="105" r="11" fill="white"/><circle cx="100" cy="145" r="9" fill="white" opacity="0.9"/>
+  <g transform="translate(32, 32) rotate(45) scale(0.24) translate(-110, -140)">
+    <path d="M110,20 C180,20 220,90 220,180 C220,260 170,320 110,340 C110,340 110,150 110,20 Z" fill="url(#z1)"/>
+    <path d="M110,20 C40,20 0,90 0,180 C0,260 60,300 110,320 C110,320 110,150 110,20 Z" fill="url(#z2)" opacity="0.85"/>
+    <circle cx="110" cy="100" r="14" fill="white" opacity="0.9"/><circle cx="110" cy="185" r="18" fill="white"/><circle cx="110" cy="270" r="14" fill="white" opacity="0.9"/>
   </g>
 </svg>
