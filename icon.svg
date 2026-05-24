@@ -1,35 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="zapia_gold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFD700"/>
+    <!-- Professional 3D Gradients -->
+    <linearGradient id="leaf_surface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB347"/>
       <stop offset="100%" stop-color="#F97316"/>
     </linearGradient>
-    <filter id="icon_glow">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
-      <feFlood flood-color="#F97316" flood-opacity="0.4"/>
-      <feComposite in2="blur" operator="in"/>
-      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    <linearGradient id="leaf_depth" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EA580C"/>
+      <stop offset="100%" stop-color="#9A3412"/>
+    </linearGradient>
+    <filter id="pro_glow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="blur"/>
+      <feFlood flood-color="#F97316" flood-opacity="0.3"/>
+      <feComposite in2="blur" operator="in" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
   
-  <rect width="400" height="400" rx="90" fill="#050505"/>
+  <rect width="64" height="64" rx="14" fill="#050505"/>
   
-  <g transform="translate(200, 200) rotate(45) translate(-120, -150)" filter="url(#icon_glow)">
-    <!-- THE ZAPIA-DNA CALALLOO LEAF -->
+  <!-- Falling 3D Leaf at 45 Degrees -->
+  <g transform="translate(32, 32) rotate(45) translate(-25, -28)" filter="url(#pro_glow)">
     
-    <!-- Part 1: The Inside Fold (Darker, High-end Shadow) -->
-    <path d="M120,30 C60,30 20,80 20,160 C20,240 80,280 120,300 L120,30 Z" fill="#8B3D00" opacity="0.9"/>
+    <!-- 3D Inside Fold (The "Deep" Part) -->
+    <path d="M44,28 C46,38 40,50 30,54 C26,55 24,54 24,52 C24,44 20,36 16,30 C14,26 14,18 18,14 C18,14 32,16 34,30" 
+          fill="url(#leaf_depth)"/>
     
-    <!-- Part 2: The Top Wing (Bright, Asymmetrical, Zapia curve) -->
-    <path d="M120,30 C190,30 230,100 230,200 C230,280 170,320 120,340 L120,30 Z" fill="url(#zapia_gold)"/>
+    <!-- Main Top Surface (The "Falling" Leaf) -->
+    <path d="M22,8 C14,8 8,16 8,26 C8,38 18,48 28,52 C30,53 32,52 32,50 C32,42 36,34 40,28 C42,24 42,18 38,13 C35,10 30,8 22,8 Z" 
+          fill="url(#leaf_surface)"/>
     
-    <!-- Part 3: The Signature Neural Dots (The "Small Dots" you loved) -->
-    <circle cx="120" cy="110" r="14" fill="white" opacity="0.85"/>
-    <circle cx="120" cy="200" r="17" fill="white"/>
-    <circle cx="120" cy="290" r="14" fill="white" opacity="0.85"/>
+    <!-- THE SMALL DOTS (Neural AI Nodes) -->
+    <!-- Strategic professional placement, like a circuit pattern -->
+    <circle cx="22" cy="18" r="1.8" fill="white" opacity="0.9"/>
+    <circle cx="28" cy="28" r="2.2" fill="white"/>
+    <circle cx="34" cy="38" r="1.8" fill="white" opacity="0.9"/>
     
-    <!-- Micro-dot connections (The AI feel) -->
-    <circle cx="70" cy="160" r="6" fill="white" opacity="0.4"/>
-    <circle cx="170" cy="180" r="6" fill="white" opacity="0.4"/>
+    <!-- Micro Dots (The Finesse) -->
+    <circle cx="16" cy="28" r="1" fill="white" opacity="0.4"/>
+    <circle cx="36" cy="22" r="1" fill="white" opacity="0.4"/>
+    <circle cx="30" cy="46" r="1" fill="white" opacity="0.4"/>
+    
+    <!-- Subtle Connection Lines -->
+    <path d="M22,18 L28,28 L34,38" stroke="white" stroke-width="0.5" fill="none" opacity="0.3" stroke-dasharray="1,1"/>
   </g>
 </svg>
