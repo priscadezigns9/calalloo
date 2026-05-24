@@ -1,13 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 72" width="260" height="72">
   <defs>
-    <linearGradient id="zg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FDE047"/><stop offset="100%" stop-color="#EAB308"/></linearGradient>
-    <linearGradient id="zf" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#CA8A04"/><stop offset="100%" stop-color="#854D0E"/></linearGradient>
+    <linearGradient id="zg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#F97316"/></linearGradient>
+    <linearGradient id="zg2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#F97316"/><stop offset="100%" stop-color="#C2410C"/></linearGradient>
   </defs>
-  <!-- Zapia-Style Leaf Icon -->
-  <g transform="translate(6, 12) scale(0.18) rotate(45, 100, 100)">
-    <path d="M100,20 C140,20 180,60 180,110 C180,160 140,180 100,190 L100,20 Z" fill="url(#zf)"/>
-    <path d="M100,20 C60,20 20,60 20,110 C20,160 60,180 100,190 C140,180 180,160 180,110 C180,60 140,20 100,20 Z" fill="url(#zg)"/>
-    <circle cx="100" cy="65" r="10" fill="white" opacity="0.9"/><circle cx="100" cy="105" r="12" fill="white"/><circle cx="100" cy="145" r="10" fill="white" opacity="0.9"/>
+  <!-- The Zapia-Swoosh Leaf Icon for the Header -->
+  <g transform="translate(6, 12) scale(0.16) rotate(45, 110, 160)">
+    <path d="M110,20 C180,20 220,90 220,180 C220,260 170,320 110,340 C110,340 110,150 110,20 Z" fill="url(#zg1)"/>
+    <path d="M110,20 C40,20 0,90 0,180 C0,260 60,300 110,320 C110,320 110,150 110,20 Z" fill="url(#zg2)" opacity="0.85"/>
+    <circle cx="110" cy="100" r="12" fill="white" opacity="0.9"/>
+    <circle cx="110" cy="185" r="15" fill="white"/>
+    <circle cx="110" cy="270" r="12" fill="white" opacity="0.9"/>
   </g>
   <!-- THE ORIGINAL GEORGIA WORDMARK (UNTOUCHED) -->
   <text x="52" y="45" font-family="Georgia, serif" font-weight="900" font-size="34" fill="#F97316" letter-spacing="-1">Calalloo</text>
