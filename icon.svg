@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
   <defs>
     <linearGradient id="clg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2ECC71"/>
-      <stop offset="100%" stop-color="#1A9E50"/>
+      <stop offset="0%" stop-color="#E87722"/>
+      <stop offset="100%" stop-color="#F5A623"/>
     </linearGradient>
   </defs>
   <rect width="32" height="32" rx="8" fill="#0a1a0a"/>
   <path d="M16 6 Q10 10 9 18 Q13 14 16 20 Q19 14 23 18 Q22 10 16 6Z" fill="url(#clg)"/>
-  <text x="16" y="30" font-family="Arial Black,sans-serif" font-size="5.5" font-weight="900" fill="#2ECC71" text-anchor="middle" letter-spacing="0.3">CALALLOO</text>
+  <text x="16" y="30" font-family="Arial Black,sans-serif" font-size="5.5" font-weight="900" fill="#F97316" text-anchor="middle" letter-spacing="0.3">CALALLOO</text>
 </svg>
