@@ -1,40 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="300" height="80">
   <defs>
-    <!-- Rich Orange Gradient for 3D Depth -->
-    <linearGradient id="leaf_top" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FB923C"/>
+    <!-- AI Cyber Orange Gradient -->
+    <linearGradient id="ai_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9F1C"/>
+      <stop offset="50%" stop-color="#F97316"/>
       <stop offset="100%" stop-color="#EA580C"/>
     </linearGradient>
-    <linearGradient id="leaf_inside" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#F97316"/>
-      <stop offset="100%" stop-color="#9A3412"/>
-    </linearGradient>
-    <filter id="shadow_3d" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="1.5"/>
-      <feOffset dx="1" dy="2" result="offsetblur"/>
-      <feComponentTransfer>
-        <feFuncA type="linear" slope="0.3"/>
-      </feComponentTransfer>
+    
+    <!-- Cyber Glow Filter -->
+    <filter id="ai_glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="blur"/>
+      <feFlood flood-color="#F97316" flood-opacity="0.6" result="flood"/>
+      <feComposite in="flood" in2="blur" operator="in" result="glow"/>
       <feMerge>
-        <feMergeNode/>
+        <feMergeNode in="glow"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
 
-  <!-- 3D Falling Leaf Icon at 45 Degree Angle -->
-  <g transform="translate(18, 12) rotate(45, 25, 25)" filter="url(#shadow_3d)">
-    <!-- The "Inside" / Folded part of the leaf for 3D effect -->
+  <!-- 3D Falling Leaf at 45 Degrees with Neural/AI veins -->
+  <g transform="translate(18, 12) rotate(45, 25, 25)" filter="url(#ai_glow)">
+    <!-- 3D Underside (Digital Shadow) -->
     <path d="M42,28 C44,38 38,50 28,54 C24,55 22,54 22,52 C22,44 18,36 14,30 C12,26 12,18 16,14 C16,14 30,16 32,30" 
-          fill="url(#leaf_inside)" opacity="0.9"/>
-    <!-- The main top surface of the leaf -->
+          fill="#431407" opacity="0.8"/>
+    
+    <!-- Main Leaf Body -->
     <path d="M22,8 C14,8 8,16 8,26 C8,38 16,48 26,52 C28,53 30,52 30,50 C30,42 34,34 38,28 C40,24 40,18 36,13 C33,10 28,8 22,8 Z" 
-          fill="url(#leaf_top)"/>
-    <!-- Vein to emphasize 3D contour -->
-    <path d="M22,8 Q24,25 26,52" stroke="white" stroke-width="0.8" fill="none" opacity="0.2"/>
+          fill="url(#ai_grad)"/>
+    
+    <!-- AI Neural Veins (Nodes and Connections) -->
+    <g opacity="0.6">
+      <circle cx="22" cy="15" r="1.2" fill="white"/>
+      <circle cx="26" cy="30" r="1.5" fill="white"/>
+      <circle cx="30" cy="45" r="1.2" fill="white"/>
+      <path d="M22,15 L26,30 L30,45" stroke="white" stroke-width="0.8" fill="none" stroke-dasharray="2,2"/>
+      <circle cx="15" cy="28" r="1" fill="white"/>
+      <path d="M15,28 L26,30" stroke="white" stroke-width="0.6" fill="none"/>
+      <circle cx="35" cy="22" r="1" fill="white"/>
+      <path d="M35,22 L26,30" stroke="white" stroke-width="0.6" fill="none"/>
+    </g>
   </g>
 
-  <!-- Professional Georgia Typography -->
+  <!-- Typography with Cyber/Modern feel -->
   <text x="85" y="48" font-family="Georgia, serif" font-weight="900" font-size="42" fill="#F97316" letter-spacing="-1.5">Calalloo</text>
-  <text x="86" y="65" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="rgba(249, 115, 22, 0.6)" letter-spacing="5">INTELLIGENCE HUB</text>
+  <text x="86" y="65" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="rgba(249, 115, 22, 0.7)" letter-spacing="6">CULINARY INTELLIGENCE</text>
 </svg>
