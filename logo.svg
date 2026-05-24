@@ -1,21 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="300" height="80">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 72" width="260" height="72">
   <defs>
-    <linearGradient id="zapia_gold_logo" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFD700"/>
-      <stop offset="100%" stop-color="#F97316"/>
+    <linearGradient id="ls" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB347"/><stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+    <linearGradient id="ld" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EA580C"/><stop offset="100%" stop-color="#9A3412"/>
     </linearGradient>
   </defs>
 
-  <!-- Zapia-DNA Icon for the Header -->
-  <g transform="translate(6, 12) scale(0.18) rotate(45, 120, 150)">
-    <path d="M120,30 C60,30 20,80 20,160 C20,240 80,280 120,300 L120,30 Z" fill="#8B3D00" opacity="0.9"/>
-    <path d="M120,30 C190,30 230,100 230,200 C230,280 170,320 120,340 L120,30 Z" fill="url(#zapia_gold_logo)"/>
-    <circle cx="120" cy="110" r="14" fill="white" opacity="0.85"/>
-    <circle cx="120" cy="200" r="17" fill="white"/>
-    <circle cx="120" cy="290" r="14" fill="white" opacity="0.85"/>
+  <!-- Professional 3D Falling Leaf Icon -->
+  <g transform="translate(4, 10) scale(0.8) rotate(45, 25, 25)">
+    <path d="M44,28 C46,38 40,50 30,54 C26,55 24,54 24,52 C24,44 20,36 16,30 C14,26 14,18 18,14 C18,14 32,16 34,30" fill="url(#ld)"/>
+    <path d="M22,8 C14,8 8,16 8,26 C8,38 18,48 28,52 C30,53 32,52 32,50 C32,42 36,34 40,28 C42,24 42,18 38,13 C35,10 30,8 22,8 Z" fill="url(#ls)"/>
+    <!-- The Dots -->
+    <circle cx="22" cy="18" r="2" fill="white" opacity="0.9"/>
+    <circle cx="28" cy="28" r="2.5" fill="white"/>
+    <circle cx="34" cy="38" r="2" fill="white" opacity="0.9"/>
   </g>
 
-  <!-- The Original Georgia Wordmark (Unchanged) -->
-  <text x="85" y="48" font-family="Georgia, serif" font-weight="900" font-size="42" fill="#F97316" letter-spacing="-1.5">Calalloo</text>
-  <text x="86" y="65" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="rgba(249, 115, 22, 0.6)" letter-spacing="5">CULINARY INTELLIGENCE</text>
+  <!-- ORIGINAL GEORGIA WORDMARK (DO NOT TOUCH) -->
+  <text x="52" y="45" font-family="Georgia, serif" font-weight="900" font-size="34" fill="#F97316" letter-spacing="-1">Calalloo</text>
 </svg>
