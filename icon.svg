@@ -1,35 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
   <defs>
-    <linearGradient id="z_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="zapia_gold" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFD700"/>
       <stop offset="100%" stop-color="#F97316"/>
     </linearGradient>
-    <filter id="z_glow">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
-      <feFlood flood-color="#F97316" flood-opacity="0.5"/>
+    <filter id="icon_glow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#F97316" flood-opacity="0.4"/>
       <feComposite in2="blur" operator="in"/>
-      <feMerge>
-        <feMergeNode/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
   
-  <rect width="64" height="64" rx="14" fill="#050505"/>
+  <rect width="400" height="400" rx="90" fill="#050505"/>
   
-  <!-- Zapia-Inspired Calalloo Icon -->
-  <g transform="translate(32, 32) rotate(45) translate(-25, -28)" filter="url(#z_glow)">
-    <!-- Main Sleek Wing (Taro Shape) -->
-    <path d="M22,5 C32,5 42,12 42,26 C42,40 32,50 22,54 C19,55 17,53 17,50 C17,44 15,36 12,30 C10,26 10,20 14,16 C16,13 19,12 22,5 Z" 
-          fill="url(#z_grad)"/>
+  <g transform="translate(200, 200) rotate(45) translate(-120, -150)" filter="url(#icon_glow)">
+    <!-- THE ZAPIA-DNA CALALLOO LEAF -->
     
-    <!-- 3D Overlap / Internal Fold -->
-    <path d="M19,10 C19,10 30,12 32,24 C34,34 29,44 24,48 C22,49 21,48 21,46 C21,40 18,34 15,28 C13,24 13,18 16,14 Z" 
-          fill="white" opacity="0.3"/>
+    <!-- Part 1: The Inside Fold (Darker, High-end Shadow) -->
+    <path d="M120,30 C60,30 20,80 20,160 C20,240 80,280 120,300 L120,30 Z" fill="#8B3D00" opacity="0.9"/>
     
-    <!-- The Signature Zapia Dots (Neural nodes) -->
-    <circle cx="22" cy="20" r="2.5" fill="white" opacity="0.8"/>
-    <circle cx="28" cy="30" r="3" fill="white" opacity="0.9"/>
-    <circle cx="34" cy="40" r="2.5" fill="white" opacity="0.8"/>
+    <!-- Part 2: The Top Wing (Bright, Asymmetrical, Zapia curve) -->
+    <path d="M120,30 C190,30 230,100 230,200 C230,280 170,320 120,340 L120,30 Z" fill="url(#zapia_gold)"/>
+    
+    <!-- Part 3: The Signature Neural Dots (The "Small Dots" you loved) -->
+    <circle cx="120" cy="110" r="14" fill="white" opacity="0.85"/>
+    <circle cx="120" cy="200" r="17" fill="white"/>
+    <circle cx="120" cy="290" r="14" fill="white" opacity="0.85"/>
+    
+    <!-- Micro-dot connections (The AI feel) -->
+    <circle cx="70" cy="160" r="6" fill="white" opacity="0.4"/>
+    <circle cx="170" cy="180" r="6" fill="white" opacity="0.4"/>
   </g>
 </svg>
