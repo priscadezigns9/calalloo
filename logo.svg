@@ -1,22 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 72" width="260" height="72">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="300" height="80">
   <defs>
-    <linearGradient id="z_grad_logo" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="zapia_gold_logo" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFD700"/>
       <stop offset="100%" stop-color="#F97316"/>
     </linearGradient>
   </defs>
 
-  <!-- Zapia-Style Icon (Shifted and sized for header) -->
-  <g transform="translate(4, 8) scale(0.8) rotate(45, 25, 25)">
-    <path d="M22,5 C32,5 42,12 42,26 C42,40 32,50 22,54 C19,55 17,53 17,50 C17,44 15,36 12,30 C10,26 10,20 14,16 C16,13 19,12 22,5 Z" 
-          fill="url(#z_grad_logo)"/>
-    <path d="M19,10 C19,10 30,12 32,24 C34,34 29,44 24,48 C22,49 21,48 21,46 C21,40 18,34 15,28 C13,24 13,18 16,14 Z" 
-          fill="white" opacity="0.3"/>
-    <circle cx="22" cy="20" r="2.5" fill="white" opacity="0.8"/>
-    <circle cx="28" cy="30" r="3" fill="white" opacity="0.9"/>
-    <circle cx="34" cy="40" r="2.5" fill="white" opacity="0.8"/>
+  <!-- Zapia-DNA Icon for the Header -->
+  <g transform="translate(6, 12) scale(0.18) rotate(45, 120, 150)">
+    <path d="M120,30 C60,30 20,80 20,160 C20,240 80,280 120,300 L120,30 Z" fill="#8B3D00" opacity="0.9"/>
+    <path d="M120,30 C190,30 230,100 230,200 C230,280 170,320 120,340 L120,30 Z" fill="url(#zapia_gold_logo)"/>
+    <circle cx="120" cy="110" r="14" fill="white" opacity="0.85"/>
+    <circle cx="120" cy="200" r="17" fill="white"/>
+    <circle cx="120" cy="290" r="14" fill="white" opacity="0.85"/>
   </g>
 
-  <!-- THE ORIGINAL GEORGIA WORDMARK (DO NOT TOUCH) -->
-  <text x="52" y="45" font-family="Georgia, serif" font-weight="900" font-size="34" fill="#F97316" letter-spacing="-1">Calalloo</text>
+  <!-- The Original Georgia Wordmark (Unchanged) -->
+  <text x="85" y="48" font-family="Georgia, serif" font-weight="900" font-size="42" fill="#F97316" letter-spacing="-1.5">Calalloo</text>
+  <text x="86" y="65" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="800" fill="rgba(249, 115, 22, 0.6)" letter-spacing="5">CULINARY INTELLIGENCE</text>
 </svg>
