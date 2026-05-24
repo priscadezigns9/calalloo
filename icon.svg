@@ -1,35 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <defs>
-    <linearGradient id="gold_grad_icon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FB923C"/>
-      <stop offset="50%" stop-color="#F97316"/>
-      <stop offset="100%" stop-color="#EA580C"/>
-    </linearGradient>
-    <filter id="drop_shadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
-      <feOffset dx="0" dy="1.5" result="offsetblur"/>
-      <feComponentTransfer>
-        <feFuncA type="linear" slope="0.15"/>
-      </feComponentTransfer>
-      <feMerge>
-        <feMergeNode/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-  
-  <!-- Background -->
-  <rect width="64" height="64" rx="14" fill="#050505"/>
-  
-  <!-- Premium Leaf Icon (Centered, Stylized) -->
-  <g transform="translate(12, 10) scale(1.2)" filter="url(#drop_shadow)">
-    <!-- Main leaf shape -->
-    <path d="M20,6 C13,6 7,13 7,25 C7,38 15,48 26,52 C28,53 30,52 30,50 C30,42 36,34 42,26 C44,22 44,16 40,10 C37,7 32,6 26,6 Z" 
-          fill="url(#gold_grad_icon)"/>
-    <!-- Leaf vein detail -->
-    <path d="M26,10 Q30,18 32,28 Q30,35 26,38" 
-          stroke="white" stroke-width="0.8" fill="none" opacity="0.2"/>
-    <!-- Stem -->
-    <path d="M26,52 Q24,56 20,58" stroke="url(#gold_grad_icon)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
+  <rect width="64" height="64" rx="16" fill="#050505"/>
+  <path d="M32,12 C20,12 12,24 12,36 C12,48 24,52 32,52 C40,52 52,40 52,24 C52,12 44,12 32,12 Z" fill="#F97316"/>
+  <path d="M32,52 Q30,60 26,62" stroke="#F97316" stroke-width="4" fill="none" stroke-linecap="round"/>
 </svg>
