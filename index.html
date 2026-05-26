@@ -1,1 +1,259 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Alpha Signal | Neo-Alpha Culinary Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --accent: #E5E5E5;
+            --text-dim: #888;
+            --text-bright: #FFFFFF;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-bright);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(5,5,5,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-brand {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        nav a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.15rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.4s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-bright);
+        }
+
+        .btn-portal {
+            background: white;
+            color: black;
+            padding: 0.6rem 1.5rem;
+            border-radius: 200px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-portal:hover {
+            opacity: 0.8;
+        }
+
+        main {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(3rem, 10vw, 5.5rem);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .tagline {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.5rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 5rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            width: 100%;
+            margin-top: 4rem;
+            padding-top: 4rem;
+            border-top: 1px solid #111;
+        }
+
+        .feature-card {
+            text-align: left;
+            padding: 2rem;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            transition: border-color 0.4s ease;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .feature-card .icon-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h2 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        .cta-section {
+            margin-top: 6rem;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.2rem;
+            color: #222;
+            text-transform: uppercase;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 1.5rem; flex-direction: column; gap: 1.5rem; }
+            nav { display: none; }
+            .features-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-brand">The Alpha Signal / 2026</div>
+        <nav>
+            <a href="blog/index.html">The Feed</a>
+            <a href="shop/index.html">The Lab</a>
+            <a href="newsletter/index.html">Journal</a>
+        </nav>
+        <a href="login/index.html" class="btn-portal">Enter Hub</a>
+    </header>
+
+    <main>
+        <img src="ai_concept_39_neo_alpha.webp?v=1.0.2" alt="The Alpha Signal" class="hero-image">
+        <h1>HERITAGE MEETS INTELLIGENCE</h1>
+        <p class="tagline">The Neo-Alpha Culinary SaaS</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="icon-label">Protocol 01 / Perception</span>
+                <h2>Neural Scanner</h2>
+                <p>Advanced computer vision architecture trained exclusively on Caribbean crop varieties and heritage genotypes. High-fidelity identification at the source.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon-label">Protocol 02 / Distribution</span>
+                <h2>Logistics Engine</h2>
+                <p>Proprietary geospatial mapping of regional retailers and local markets. Orchestrating the flow of culinary intelligence across the Global North.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon-label">Protocol 03 / Preservation</span>
+                <h2>Culinary Archive</h2>
+                <p>The first sovereign SaaS database dedicated to the preservation and scaling of heritage intelligence. Speculative research turned into actionable data.</p>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Ready for the Reveal.</h2>
+            <a href="login/index.html" class="btn-portal" style="padding: 1.2rem 3rem; font-size: 0.8rem;">Access the Dashboard</a>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 Neo-Alpha Identity / Built by Prisca Dezigns Laboratory
+    </footer>
+
+</body>
+</html>
