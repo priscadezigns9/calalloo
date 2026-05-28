@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Calalloo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0A0B;
+            --primary: #E87722;
+            --dark: #FFFFFF;
+            --mid: #A0A0A5;
+            --white: #141416;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            font-family: var(--font-sans);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .auth-card {
+            background: var(--white);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        }
+
+        .lab-tag {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            line-height: 1;
+            margin-bottom: 2rem;
+            letter-spacing: -0.04em;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--mid);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            background: #0F0F10;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            color: var(--dark);
+            font-family: var(--font-sans);
+            outline: none;
+            border-radius: 2px;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 2.2rem;
+            cursor: pointer;
+            color: var(--mid);
+            font-size: 1.2rem;
+            user-select: none;
+        }
+
+        .btn-auth {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-auth:hover {
+            transform: scale(1.02);
+        }
+
+        .auth-footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--mid);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <span class="lab-tag">System Initialization</span>
+        <h1>Join the Lab.</h1>
+        
+        <form id="signupForm">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="identity@node.net" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Access Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+                <span class="password-toggle" id="togglePassword">👁️</span>
+            </div>
+            
+            <button type="submit" class="btn-auth">Initialize Account</button>
+        </form>
+        
+        <div class="auth-footer">
+            Already registered? <a href="../login/">Sign In</a>
+        </div>
+    </div>
+
+    <script src="../js/backend.js"></script>
+    <script>
+        const signupForm = document.getElementById('signupForm');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = passwordInput.value;
+            
+            try {
+                await supabase.auth.signUp(email, password);
+                window.location.href = '../dashboard/';
+            } catch (error) {
+                alert("Signup failed: " + (error.message || "Unknown error"));
+            }
+        });
+    </script>
+</body>
+</html>
