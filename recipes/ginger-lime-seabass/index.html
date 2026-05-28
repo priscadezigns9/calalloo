@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ginger Lime Seabass | Calalloo Recipes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #FFF8F0;
+            --primary: #E87722;
+            --dark: #1A0D00;
+            --mid: #8B4A1E;
+            --white: #FFFFFF;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        
+        header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(26,13,0,0.05); background: var(--white); }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
+        
+        .recipe-container { max-width: 1000px; margin: 4rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; }
+        
+        .recipe-sidebar img { width: 100%; border-radius: 32px; aspect-ratio: 4/5; object-fit: cover; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+        .nutrition-box { margin-top: 2rem; background: var(--white); padding: 2rem; border-radius: 24px; border: 1px solid rgba(26,13,0,0.05); }
+        .nutrition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        .nutri-item span { display: block; font-size: 0.8rem; color: var(--mid); text-transform: uppercase; font-weight: 700; }
+        .nutri-item b { font-size: 1.2rem; color: var(--dark); }
+
+        .recipe-main h1 { font-family: var(--font-display); font-size: 3.5rem; line-height: 1.1; margin-bottom: 1rem; }
+        .recipe-desc { font-size: 1.2rem; color: var(--mid); margin-bottom: 2.5rem; }
+        
+        .sourcing-map { background: rgba(232, 119, 34, 0.05); padding: 1.5rem; border-radius: 16px; margin-bottom: 2.5rem; border-left: 4px solid var(--primary); }
+        .sourcing-map h4 { color: var(--primary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        
+        .ingredients h2, .instructions h2 { font-family: var(--font-display); margin-bottom: 1.5rem; border-bottom: 1px solid rgba(26,13,0,0.1); padding-bottom: 0.5rem; }
+        .ingredients ul { list-style: none; margin-bottom: 3rem; }
+        .ingredients li { padding: 0.8rem 0; border-bottom: 1px solid rgba(26,13,0,0.03); display: flex; justify-content: space-between; }
+        
+        .instructions ol { padding-left: 1.5rem; margin-bottom: 4rem; }
+        .instructions li { margin-bottom: 1.5rem; padding-left: 0.5rem; }
+        
+        @media (max-width: 850px) {
+            .recipe-container { grid-template-columns: 1fr; }
+            .recipe-main h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="nav-brand">Calalloo</a>
+        <nav>
+            <a href="/recipes/" style="text-decoration: none; color: var(--dark); font-weight: 600;">Back to Recipes</a>
+        </nav>
+    </header>
+
+    <main class="recipe-container">
+        <div class="recipe-sidebar">
+            <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&q=80&w=800" alt="Ginger Lime Seabass">
+            
+            <div class="nutrition-box">
+                <h4>Performance Metrics</h4>
+                <div class="nutrition-grid">
+                    <div class="nutri-item"><span>Calories</span><b>280</b></div>
+                    <div class="nutri-item"><span>Protein</span><b>32g</b></div>
+                    <div class="nutri-item"><span>Carbs</span><b>4g</b></div>
+                    <div class="nutri-item"><span>Fats</span><b>12g</b></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recipe-main">
+            <h1>Ginger Lime Seabass</h1>
+            <p class="recipe-desc">Light, zesty, and high in lean protein. This recipe uses the freshest local catch paired with punchy Caribbean ginger and lime for a quick, performance-focused dinner.</p>
+            
+            <div class="sourcing-map">
+                <h4>Verified Sourcing</h4>
+                <p>Fish sourced from the <b>San Fernando Fish Market</b> (The Morning Catch). Produce sourced via <b>Crafted Crates</b>.</p>
+            </div>
+
+            <section class="ingredients">
+                <h2>Ingredients</h2>
+                <ul>
+                    <li><span>2 Fresh Seabass Fillets (6oz each)</span><b>San Fernando Market</b></li>
+                    <li><span>2 tbsp Freshly Grated Ginger</span><b>Crafted Crates</b></li>
+                    <li><span>3 Fresh Caribbean Limes</span><b>Local Sourced</b></li>
+                    <li><span>1 tbsp Coconut Oil</span><b>Artisanal</b></li>
+                    <li><span>1 tsp Sea Salt & Cracked Black Pepper</span><b>Pantry</b></li>
+                    <li><span>Handful of Fresh Cilantro</span><b>NAMDEVCO</b></li>
+                </ul>
+            </section>
+
+            <section class="instructions">
+                <h2>Instructions</h2>
+                <ol>
+                    <li>Pat the seabass fillets dry with a paper towel. Season both sides with sea salt and black pepper.</li>
+                    <li>In a small bowl, mix the grated ginger with the juice of 2 limes and a drizzle of coconut oil.</li>
+                    <li>Heat a skillet over medium-high heat with the remaining coconut oil.</li>
+                    <li>Place fish in the pan, skin-side down. Sear for 3-4 minutes until skin is crispy.</li>
+                    <li>Flip the fish and pour the ginger-lime mixture over the fillets. Cook for another 2-3 minutes.</li>
+                    <li>Serve immediately garnished with fresh cilantro and extra lime wedges.</li>
+                </ol>
+            </section>
+        </div>
+    </main>
+
+</body>
+</html>
