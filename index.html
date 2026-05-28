@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calalloo | Fuel Your Performance</title>
+    <title>Calalloo | The Caribbean Food Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #000000;
-            --accent: #FFFFFF;
-            --text-dim: #888;
-            --text-bright: #FFFFFF;
-            --font-serif: 'Cormorant Garamond', serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            --bg: #FAFAFA;
+            --primary: #E87722;
+            --secondary: #FF9F58;
+            --dark: #1A0D00;
+            --mid: #666666;
+            --white: #FFFFFF;
+            --accent: rgba(232, 119, 34, 0.05);
+            --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
         }
 
         * {
@@ -27,276 +30,345 @@
 
         body {
             background-color: var(--bg);
-            color: var(--text-bright);
+            color: var(--dark);
             font-family: var(--font-sans);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
 
+        /* Pinterest-style Grid Container */
+        .discovery-grid {
+            columns: 3;
+            column-gap: 1.5rem;
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        @media (max-width: 1100px) { .discovery-grid { columns: 2; } }
+        @media (max-width: 700px) { .discovery-grid { columns: 1; } }
+
         header {
-            position: fixed;
+            position: sticky;
             top: 0;
             width: 100%;
-            padding: 2rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            background: rgba(0,0,0,0.8);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .nav-brand {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            letter-spacing: 0.2rem;
-            text-transform: uppercase;
-            color: var(--text-dim);
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.05em;
         }
 
         nav {
             display: flex;
             align-items: center;
+            gap: 2rem;
         }
 
         nav a {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            letter-spacing: 0.1rem;
-            text-transform: uppercase;
-            color: var(--text-dim);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
             text-decoration: none;
-            margin-left: 2rem;
-            transition: color 0.4s ease;
-        }
-
-        nav a:hover {
-            color: var(--text-bright);
-        }
-
-        .btn-portal {
-            background: white;
-            color: black;
-            padding: 0.6rem 1.5rem;
-            border-radius: 200px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.1rem;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: opacity 0.3s ease;
-            margin-left: 2rem;
-        }
-
-        .btn-portal:hover {
-            opacity: 0.8;
-        }
-
-        main {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 8rem 2rem 4rem;
-            text-align: center;
-        }
-
-        .hero-image {
-            width: 100%;
-            max-width: 200px;
-            margin-bottom: 3rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        h1 {
-            font-family: var(--font-serif);
-            font-size: clamp(3rem, 10vw, 5.5rem);
-            font-weight: 300;
-            letter-spacing: -0.02em;
-            line-height: 1;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .tagline {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            letter-spacing: 0.3rem;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 5rem;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1100px;
-            width: 100%;
-            margin-top: 4rem;
-            padding-top: 4rem;
-            border-top: 1px solid #111;
-        }
-
-        .feature-card {
-            text-align: left;
-            padding: 2rem;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            transition: border-color 0.4s ease;
-        }
-
-        .feature-card:hover {
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        .feature-card .label {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            color: #555;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .feature-card h2 {
-            font-family: var(--font-serif);
-            font-size: 1.8rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .feature-card p {
-            font-size: 0.9rem;
-            color: var(--text-dim);
-        }
-
-        .cta-section {
-            margin-top: 6rem;
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
-        .cta-section h2 {
-            font-family: var(--font-serif);
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 3rem;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .btn-main {
-            background: white;
-            color: black;
-            padding: 1.2rem 3rem;
-            border-radius: 200px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.1rem;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .btn-secondary {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.15rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 4px;
+            text-transform: capitalize;
             transition: color 0.3s ease;
         }
 
-        .btn-secondary:hover {
-            color: white;
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .btn-cta {
+            background: var(--primary);
+            color: #FFF;
+            padding: 0.7rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.05);
+            background: var(--dark);
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .lab-tag {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            background: var(--accent);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--mid);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Pinterest Item Style */
+        .pin-item {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .pin-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(232, 119, 34, 0.1);
+        }
+
+        .pin-image {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .pin-content {
+            padding: 1.5rem;
+        }
+
+        .pin-content h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pin-meta {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .lab-features {
+            background: var(--dark);
+            color: var(--white);
+            padding: 8rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .features-container h2 {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            line-height: 1;
+            margin-bottom: 2rem;
+        }
+
+        .features-list {
+            list-style: none;
+            font-family: var(--font-mono);
+        }
+
+        .features-list li {
+            padding: 1.2rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            color: #AAA;
+        }
+
+        .features-list li::after {
+            content: "LIVE";
+            font-size: 0.6rem;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.1rem 0.4rem;
+            border-radius: 2px;
         }
 
         footer {
             padding: 4rem 2rem;
             text-align: center;
+            background: var(--bg);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .footer-links {
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            margin: 0 1rem;
+            color: var(--mid);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .footer-links a:hover { color: var(--primary); }
+
+        .copyright {
             font-family: var(--font-mono);
-            font-size: 0.65rem;
-            letter-spacing: 0.2rem;
-            color: #222;
+            font-size: 0.7rem;
+            color: #AAA;
             text-transform: uppercase;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            header { padding: 1.5rem; flex-direction: column; gap: 1.5rem; }
-            nav { justify-content: center; width: 100%; }
-            .features-grid { grid-template-columns: 1fr; }
-            h1 { font-size: 3rem; }
-            .cta-group { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="nav-brand">Calalloo / 2026</div>
+        <a href="https://calalloo.com/" class="nav-brand">Calalloo</a>
         <nav>
-            <a href="signup/index.html">Sign Up</a>
-            <a href="login/index.html" class="btn-portal">Enter Hub</a>
+            <a href="recipes/">Recipes</a>
+            <a href="blog/">Journal</a>
+            <a href="login/">Sign In</a>
+            <a href="signup/" class="btn-cta">Sign Up</a>
         </nav>
     </header>
 
     <main>
-        <img src="ai_concept_39_neo_alpha.webp?v=1.0.3" alt="Calalloo" class="hero-image">
-        <h1>CALALLOO</h1>
-        <p class="tagline">Flavor for Foodies. Power for Performance.</p>
+        <section class="hero">
+            <span class="lab-tag">Caribbean Discovery Node</span>
+            <h1>The Pinterest for <span>Caribbean</span> Food.</h1>
+            <p>Explore high-fidelity nutrition, deconstructed heritage recipes, and real-world sourcing hubs.</p>
+        </section>
 
-        <div class="features-grid">
-            <div class="feature-card">
-                <span class="label">The Sourcing</span>
-                <h2>Chef-Grade Ingredients</h2>
-                <p>Connecting you directly to the source. Find the freshest Caribbean heritage produce and artisanal ingredients for your next masterpiece.</p>
-            </div>
-            <div class="feature-card">
-                <span class="label">The Fuel</span>
-                <h2>Performance Macros</h2>
-                <p>Designed for the fitness-obsessed. Smart nutritional tracking that treats your body like the high-performance machine it is.</p>
-            </div>
-            <div class="feature-card">
-                <span class="label">The Kitchen</span>
-                <h2>Smarter Meal Plans</h2>
-                <p>Where epicurean flavor meets athletic goals. Curated recipes that prove you never have to choose between a great meal and a great physique.</p>
-            </div>
+        <div class="discovery-grid">
+            <!-- Pin: Callaloo -->
+            <a href="recipes/trinidadian-callaloo/" class="pin-item">
+                <img src="https://globalkitchentravels.com/wp-content/uploads/2021/04/Trinidad-Callaloo-HERO-LR.jpg" alt="Trinidadian Callaloo" class="pin-image">
+                <div class="pin-content">
+                    <h3>Trinidadian Callaloo</h3>
+                    <div class="pin-meta"><span>Core Specimen</span><span>320 kcal</span></div>
+                </div>
+            </a>
+
+            <!-- Pin: Oil Down -->
+            <a href="recipes/grenadian-oil-down/" class="pin-item">
+                <img src="https://exploringtheprimordial.com/wp-content/uploads/2020/07/IMG_4570.jpg" alt="Grenadian Oil Down" class="pin-image">
+                <div class="pin-content">
+                    <h3>Grenadian Oil Down</h3>
+                    <div class="pin-meta"><span>National Dish</span><span>540 kcal</span></div>
+                </div>
+            </a>
+
+            <!-- Pin: Pelau -->
+            <a href="recipes/chicken-pelau/" class="pin-item">
+                <img src="https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg" alt="Chicken Pelau" class="pin-image">
+                <div class="pin-content">
+                    <h3>Chicken Pelau</h3>
+                    <div class="pin-meta"><span>Island Fuel</span><span>480 kcal</span></div>
+                </div>
+            </a>
+
+            <!-- Pin: Pholourie -->
+            <a href="recipes/pholourie/" class="pin-item">
+                <img src="https://globalkitchentravels.com/wp-content/uploads/2020/09/Trinidad-Pholourie-HERO-LR.jpg" alt="Pholourie" class="pin-image">
+                <div class="pin-content">
+                    <h3>Pholourie</h3>
+                    <div class="pin-meta"><span>Discovery</span><span>190 kcal</span></div>
+                </div>
+            </a>
+
+            <!-- Pin: Sahina -->
+            <a href="recipes/sahina/" class="pin-item">
+                <img src="https://i0.wp.com/tastetrinbago.com/wp-content/uploads/2020/01/Sahina.png?fit=1024%2C1024&ssl=1" alt="Sahina" class="pin-image">
+                <div class="pin-content">
+                    <h3>Sahina</h3>
+                    <div class="pin-meta"><span>Leafy Performance</span><span>210 kcal</span></div>
+                </div>
+            </a>
+
+            <!-- Pin: Sourcing Guide -->
+            <a href="blog/the-coconut-electrolyte.html" class="pin-item">
+                <img src="https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&q=80&w=600" alt="Coconut Electrolyte" class="pin-image">
+                <div class="pin-content">
+                    <span class="lab-tag" style="margin-bottom: 0.5rem; font-size: 0.6rem;">Journal</span>
+                    <h3>The Coconut Protocol</h3>
+                    <div class="pin-meta"><span>Sourcing</span><span>Artisanal</span></div>
+                </div>
+            </a>
         </div>
 
-        <div class="cta-section">
-            <h2>Fuel Your Obsession.</h2>
-            <div class="cta-group">
-                <a href="signup/index.html" class="btn-main">Join the Network</a>
-                <a href="login/index.html" class="btn-secondary">Member Login</a>
+        <section class="lab-features">
+            <div class="features-container">
+                <div>
+                    <span class="lab-tag" style="color: white; border-color: white;">System Entry</span>
+                    <h2>Caribbean by Nature. Deconstructed by AI.</h2>
+                    <p style="color: #AAA; font-size: 1.2rem;">Track your nutrition through a Caribbean lens. Scan your food, find local markets, and build your digital discovery log.</p>
+                </div>
+                <ul class="features-list">
+                    <li>AI Food Scanning (Molecular)</li>
+                    <li>Verified Market Nodes</li>
+                    <li>Macro-Optimized Recipes</li>
+                    <li>Heritage Sourcing Intelligence</li>
+                </ul>
             </div>
-        </div>
+        </section>
     </main>
 
     <footer>
-        &copy; 2026 Calalloo / Built for the Driven / Prisca Dezigns
+        <div class="footer-links">
+            <a href="recipes/">Recipes</a>
+            <a href="blog/">Journal</a>
+            <a href="markets/">Markets</a>
+            <a href="shop/">Shop</a>
+            <a href="newsletter/">Newsletter</a>
+            <a href="login/">Sign In</a>
+        </div>
+        <p class="copyright">&copy; 2026 Calalloo. A Prisca Dezigns Project. Caribbean Discovery Hub.</p>
     </footer>
 
 </body>
