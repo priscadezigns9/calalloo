@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicken Pelau | Calalloo Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0A0A0B; --primary: #E87722; --dark: #FFFFFF; --mid: #A0A0A5; --white: #141416; --font-display: 'Fraunces', serif; --font-sans: 'Inter', sans-serif; --font-mono: 'Space Mono', monospace; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(10,10,11,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
+        .recipe-container { max-width: 1100px; margin: 4rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; }
+        .recipe-sidebar img { width: 100%; border-radius: 4px; aspect-ratio: 4/5; object-fit: cover; border: 1px solid rgba(255,255,255,0.05); }
+        .nutrition-box { margin-top: 2rem; background: var(--white); padding: 2rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); font-family: var(--font-mono); }
+        .nutrition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+        .nutri-item span { display: block; font-size: 0.65rem; color: var(--mid); text-transform: uppercase; letter-spacing: 1px; }
+        .nutri-item b { font-size: 1.2rem; color: var(--primary); }
+        .recipe-main h1 { font-family: var(--font-display); font-size: 4rem; line-height: 0.9; margin-bottom: 1.5rem; letter-spacing: -0.04em; }
+        .recipe-desc { font-size: 1.2rem; color: var(--mid); margin-bottom: 3rem; }
+        .lab-tag { font-family: var(--font-mono); font-size: 0.7rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 1rem; display: block; }
+        .sourcing-map { background: rgba(232, 119, 34, 0.05); padding: 2rem; border-radius: 2px; margin-bottom: 3rem; border-left: 4px solid var(--primary); font-family: var(--font-mono); }
+        .sourcing-map h4 { color: var(--primary); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .ingredients h2, .instructions h2 { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
+        .ingredients ul { list-style: none; margin-bottom: 4rem; }
+        .ingredients li { padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.02); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.9rem; }
+        .ingredients li b { color: var(--primary); }
+        .instructions ol { padding-left: 1.5rem; margin-bottom: 6rem; }
+        .instructions li { margin-bottom: 1.5rem; padding-left: 0.5rem; color: var(--mid); }
+        @media (max-width: 900px) { .recipe-container { grid-template-columns: 1fr; } .recipe-main h1 { font-size: 3rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="nav-brand">Calalloo</a>
+        <nav><a href="/recipes/" style="text-decoration: none; color: var(--mid); font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;">Back to Lab</a></nav>
+    </header>
+    <main class="recipe-container">
+        <div class="recipe-sidebar">
+            <img src="https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg" alt="Chicken Pelau">
+            <div class="nutrition-box">
+                <span class="lab-tag">Macro Deconstruction</span>
+                <div class="nutrition-grid">
+                    <div class="nutri-item"><span>Calories</span><b>480</b></div>
+                    <div class="nutri-item"><span>Protein</span><b>32g</b></div>
+                    <div class="nutri-item"><span>Carbs</span><b>65g</b></div>
+                    <div class="nutri-item"><span>Fats</span><b>12g</b></div>
+                </div>
+            </div>
+        </div>
+        <div class="recipe-main">
+            <span class="lab-tag">Protocol: Island Fuel</span>
+            <h1>Chicken Pelau.</h1>
+            <p class="recipe-desc">The ultimate Carnival fuel. A one-pot sync of browned chicken, rice, and pigeon peas, slow-cooked in fresh coconut milk.</p>
+            <div class="sourcing-map">
+                <h4>Verified Sourcing Nodes</h4>
+                <p>Pigeon Peas: <b>NAMDEVCO Macoya</b>. Chicken: <b>Regional Poultry Hub</b>. Coconut Milk: <b>Artisanal Roadside Extraction</b>.</p>
+            </div>
+            <section class="ingredients">
+                <h2>Ingredients</h2>
+                <ul>
+                    <li><span>1 lb Chicken Pieces</span><b>Primary Protein</b></li>
+                    <li><span>2 cups Parboiled Rice</span><b>Glycemic Core</b></li>
+                    <li><span>1 cup Pigeon Peas</span><b>Fiber & Pulse</b></li>
+                    <li><span>2 cups Fresh Coconut Milk</span><b>Lipid Base</b></li>
+                    <li><span>3 tbsp Brown Sugar</span><b>Browning Catalyst</b></li>
+                    <li><span>Onion, Garlic, Pimento</span><b>Aromatic Profile</b></li>
+                    <li><span>Shadow Beni & Thyme</span><b>Enzymatic Herbs</b></li>
+                </ul>
+            </section>
+            <section class="instructions">
+                <h2>Laboratory Instructions</h2>
+                <ol>
+                    <li>Season chicken with aromatics and herbs; marinate for 1 hour.</li>
+                    <li>Heat sugar in a heavy-bottomed pot until it bubbles and turns a deep amber brown (the browning process).</li>
+                    <li>Immediately add chicken to the browning sugar and stir to coat evenly.</li>
+                    <li>Add rice and pigeon peas, stirring to incorporate all flavors.</li>
+                    <li>Pour in the coconut milk and water; bring to a boil.</li>
+                    <li>Reduce heat, cover tightly, and simmer until all liquid is absorbed and the rice is tender.</li>
+                </ol>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
