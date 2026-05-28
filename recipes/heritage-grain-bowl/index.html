@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heritage Grain Bowl | Calalloo Recipes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #FFF8F0;
+            --primary: #E87722;
+            --dark: #1A0D00;
+            --mid: #8B4A1E;
+            --white: #FFFFFF;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        
+        header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(26,13,0,0.05); background: var(--white); }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
+        
+        .recipe-container { max-width: 1000px; margin: 4rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; }
+        
+        .recipe-sidebar img { width: 100%; border-radius: 32px; aspect-ratio: 4/5; object-fit: cover; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+        .nutrition-box { margin-top: 2rem; background: var(--white); padding: 2rem; border-radius: 24px; border: 1px solid rgba(26,13,0,0.05); }
+        .nutrition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        .nutri-item span { display: block; font-size: 0.8rem; color: var(--mid); text-transform: uppercase; font-weight: 700; }
+        .nutri-item b { font-size: 1.2rem; color: var(--dark); }
+
+        .recipe-main h1 { font-family: var(--font-display); font-size: 3.5rem; line-height: 1.1; margin-bottom: 1rem; }
+        .recipe-desc { font-size: 1.2rem; color: var(--mid); margin-bottom: 2.5rem; }
+        
+        .sourcing-map { background: rgba(232, 119, 34, 0.05); padding: 1.5rem; border-radius: 16px; margin-bottom: 2.5rem; border-left: 4px solid var(--primary); }
+        .sourcing-map h4 { color: var(--primary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        
+        .ingredients h2, .instructions h2 { font-family: var(--font-display); margin-bottom: 1.5rem; border-bottom: 1px solid rgba(26,13,0,0.1); padding-bottom: 0.5rem; }
+        .ingredients ul { list-style: none; margin-bottom: 3rem; }
+        .ingredients li { padding: 0.8rem 0; border-bottom: 1px solid rgba(26,13,0,0.03); display: flex; justify-content: space-between; }
+        
+        .instructions ol { padding-left: 1.5rem; margin-bottom: 4rem; }
+        .instructions li { margin-bottom: 1.5rem; padding-left: 0.5rem; }
+        
+        @media (max-width: 850px) {
+            .recipe-container { grid-template-columns: 1fr; }
+            .recipe-main h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="nav-brand">Calalloo</a>
+        <nav>
+            <a href="/recipes/" style="text-decoration: none; color: var(--dark); font-weight: 600;">Back to Recipes</a>
+        </nav>
+    </header>
+
+    <main class="recipe-container">
+        <div class="recipe-sidebar">
+            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800" alt="Heritage Grain Bowl">
+            
+            <div class="nutrition-box">
+                <h4>Performance Metrics</h4>
+                <div class="nutrition-grid">
+                    <div class="nutri-item"><span>Calories</span><b>450</b></div>
+                    <div class="nutri-item"><span>Protein</span><b>18g</b></div>
+                    <div class="nutri-item"><span>Carbs</span><b>65g</b></div>
+                    <div class="nutri-item"><span>Fats</span><b>14g</b></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recipe-main">
+            <h1>Heritage Grain Bowl</h1>
+            <p class="recipe-desc">A nutrient-dense powerhouse featuring local heritage grains, roasted root vegetables, and a signature citrus-tahini dressing. Designed for sustained energy release.</p>
+            
+            <div class="sourcing-map">
+                <h4>Verified Sourcing</h4>
+                <p>Ingredients for this recipe are sourced from <b>NAMDEVCO Macoya Farmers Market</b> (Stalls 14-18) and <b>Highland Organic Farms</b>.</p>
+            </div>
+
+            <section class="ingredients">
+                <h2>Ingredients</h2>
+                <ul>
+                    <li><span>1 cup Local Red Quinoa (or Heritage Rice)</span><b>Source: NAMDEVCO</b></li>
+                    <li><span>2 cups Roasted Dasheen & Sweet Potato</span><b>Source: Highland Farms</b></li>
+                    <li><span>1 cup Shredded Local Kale</span><b>Market Fresh</b></li>
+                    <li><span>1/2 cup Pickled Red Onions</span><b>House Made</b></li>
+                    <li><span>1/4 cup Toasted Pumpkin Seeds</span><b>Artisanal</b></li>
+                    <li><span>Citrus-Tahini Dressing</span><b>Calalloo Signature</b></li>
+                </ul>
+            </section>
+
+            <section class="instructions">
+                <h2>Instructions</h2>
+                <ol>
+                    <li>Rinse grains thoroughly. Combine with 2 cups water, bring to a boil, then simmer for 15 minutes until fluffy.</li>
+                    <li>Toss cubed dasheen and sweet potato with coconut oil and sea salt. Roast at 400°F until golden brown (approx. 25 mins).</li>
+                    <li>Massage shredded kale with a touch of lime juice to soften the fibers.</li>
+                    <li>Assemble the bowl: Start with a base of heritage grains, top with roasted roots, kale, and pickled onions.</li>
+                    <li>Garnish with pumpkin seeds and drizzle generously with the citrus-tahini dressing.</li>
+                </ol>
+            </section>
+        </div>
+    </main>
+
+</body>
+</html>
