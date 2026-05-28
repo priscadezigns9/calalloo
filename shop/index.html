@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pantry | Calalloo Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #FAFAFA;
+            --primary: #E87722;
+            --dark: #1A0D00;
+            --mid: #666666;
+            --white: #FFFFFF;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        
+        header { position: sticky; top: 0; width: 100%; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.8rem; color: var(--primary); text-decoration: none; }
+        nav a { font-size: 0.9rem; font-weight: 600; color: var(--dark); text-decoration: none; margin-left: 2rem; }
+        
+        .hero { padding: 8rem 2rem 4rem; text-align: center; }
+        .hero h1 { font-family: var(--font-display); font-size: 4rem; line-height: 1; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; color: var(--mid); max-width: 600px; margin: 0 auto; }
+
+        .pantry-grid { max-width: 1200px; margin: 0 auto 6rem; padding: 0 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; }
+        
+        .product-card { background: var(--white); border-radius: 32px; border: 1px solid rgba(0,0,0,0.05); overflow: hidden; transition: transform 0.3s ease; text-decoration: none; color: inherit; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        
+        .product-image { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .product-content { padding: 2rem; }
+        .product-tag { display: inline-block; padding: 0.3rem 0.8rem; background: rgba(232, 119, 34, 0.1); color: var(--primary); border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; font-family: var(--font-mono); }
+        .product-content h3 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .product-price { font-weight: 700; color: var(--dark); font-size: 1.2rem; font-family: var(--font-mono); }
+        
+        .btn-buy { margin-top: 1.5rem; width: 100%; background: var(--dark); color: var(--white); border: none; padding: 1rem; border-radius: 100px; font-weight: 700; cursor: pointer; transition: background 0.3s ease; }
+        .btn-buy:hover { background: var(--primary); }
+
+        footer { padding: 4rem 2rem; text-align: center; color: var(--mid); font-size: 0.9rem; }
+
+        @media (max-width: 900px) { .pantry-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .pantry-grid { grid-template-columns: 1fr; } .hero h1 { font-size: 3rem; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="nav-brand">Calalloo</a>
+        <nav>
+            <a href="../recipes/">Recipes</a>
+            <a href="../blog/">Journal</a>
+            <a href="../signup/">Join Hub</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>The Pantry</h1>
+            <p>Curated performance provisions for the Caribbean foodie.</p>
+        </section>
+
+        <div class="pantry-grid">
+            <!-- Coconut Oil -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1590234795325-1772496d6347?auto=format&fit=crop&q=80&w=500" class="product-image" alt="Cold-Pressed Coconut Oil">
+                <div class="product-content">
+                    <span class="product-tag">Artisanal</span>
+                    <h3>Roadside Cold-Pressed Coconut Oil</h3>
+                    <p class="product-price">$12.00 TTD</p>
+                    <button class="btn-buy">Add to Bag</button>
+                </div>
+            </div>
+
+            <!-- Heritage Grain Mix -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=500" class="product-image" alt="Heritage Grain Mix">
+                <div class="product-content">
+                    <span class="product-tag">Performance</span>
+                    <h3>NAMDEVCO Heritage Grain Mix</h3>
+                    <p class="product-price">$18.50 TTD</p>
+                    <button class="btn-buy">Add to Bag</button>
+                </div>
+            </div>
+
+            <!-- Artisanal Sea Salt -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?auto=format&fit=crop&q=80&w=500" class="product-image" alt="Mayaro Sea Salt">
+                <div class="product-content">
+                    <span class="product-tag">Sourcing</span>
+                    <h3>Mayaro Smoked Sea Salt</h3>
+                    <p class="product-price">$9.00 TTD</p>
+                    <button class="btn-buy">Add to Bag</button>
+                </div>
+            </div>
+
+            <!-- Calalloo Performance Tee -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=500" class="product-image" alt="Calalloo Tee">
+                <div class="product-content">
+                    <span class="product-tag">Apparel</span>
+                    <h3>Alpha Provision Performance Tee</h3>
+                    <p class="product-price">$25.00 USD</p>
+                    <button class="btn-buy">Add to Bag</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 Calalloo. A Prisca Dezigns Project.
+    </footer>
+
+</body>
+</html>
