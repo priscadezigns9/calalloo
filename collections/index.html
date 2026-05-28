@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collections | Calalloo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #FFF8F0;
+            --primary: #E87722;
+            --dark: #1A0D00;
+            --mid: #8B4A1E;
+            --white: #FFFFFF;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        
+        header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(26,13,0,0.05); background: var(--white); position: sticky; top: 0; z-index: 100; }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
+        
+        .hero { padding: 4rem 2rem; text-align: center; }
+        .hero h1 { font-family: var(--font-display); font-size: 3.5rem; line-height: 1; margin-bottom: 1rem; }
+        .hero p { color: var(--mid); font-size: 1.2rem; }
+
+        .collections-grid { max-width: 1200px; margin: 2rem auto 6rem; padding: 0 2rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        
+        .collection-card { position: relative; border-radius: 40px; overflow: hidden; aspect-ratio: 16/9; cursor: pointer; text-decoration: none; }
+        .collection-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .collection-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.5rem; }
+        
+        .collection-card:hover .collection-image { transform: scale(1.05); }
+        
+        .collection-overlay h2 { color: var(--white); font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .collection-overlay p { color: rgba(255,255,255,0.8); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
+
+        footer { padding: 4rem 2rem; text-align: center; border-top: 1px solid rgba(26,13,0,0.05); color: var(--mid); font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .collections-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+            .collection-overlay h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="nav-brand">Calalloo</a>
+        <nav>
+            <a href="/recipes/" style="text-decoration: none; color: var(--dark); margin-right: 1.5rem;">Recipes</a>
+            <a href="/markets/" style="text-decoration: none; color: var(--dark);">Markets</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Collections</h1>
+            <p>Curated vibes for every phase of your performance.</p>
+        </section>
+
+        <div class="collections-grid">
+            <!-- Post-Workout -->
+            <a href="/recipes/?filter=post-workout" class="collection-card">
+                <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=800" class="collection-image" alt="Post-Workout Fuel">
+                <div class="collection-overlay">
+                    <p>Replenish & Recover</p>
+                    <h2>Post-Workout Fuel</h2>
+                </div>
+            </a>
+
+            <!-- Plant-Based -->
+            <a href="/recipes/?filter=plant-based" class="collection-card">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=800" class="collection-image" alt="Plant-Based Performance">
+                <div class="collection-overlay">
+                    <p>Clean Power</p>
+                    <h2>Plant-Based Performance</h2>
+                </div>
+            </a>
+
+            <!-- Heritage Starches -->
+            <a href="/recipes/?filter=heritage-starches" class="collection-card">
+                <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=800" class="collection-image" alt="Heritage Starches">
+                <div class="collection-overlay">
+                    <p>Root Energy</p>
+                    <h2>Heritage Starches</h2>
+                </div>
+            </a>
+
+            <!-- 15-Min Meals -->
+            <a href="/recipes/?filter=quick-prep" class="collection-card">
+                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&q=80&w=800" class="collection-image" alt="Quick 15-Min Prep">
+                <div class="collection-overlay">
+                    <p>Fast Discovery</p>
+                    <h2>15-Min Prep</h2>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 Calalloo. A Prisca Dezigns Project.
+    </footer>
+
+</body>
+</html>
