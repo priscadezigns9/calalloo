@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Journal | Calalloo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #FAFAFA;
+            --primary: #E87722;
+            --dark: #1A0D00;
+            --mid: #666666;
+            --white: #FFFFFF;
+            --accent: rgba(232, 119, 34, 0.05);
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        
+        header { position: sticky; top: 0; width: 100%; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.8rem; color: var(--primary); text-decoration: none; }
+        nav a { font-size: 0.9rem; font-weight: 600; color: var(--dark); text-decoration: none; margin-left: 2rem; }
+
+        .hero { padding: 8rem 2rem 4rem; text-align: center; }
+        .hero h1 { font-family: var(--font-display); font-size: 4rem; line-height: 1; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; color: var(--mid); max-width: 600px; margin: 0 auto; }
+
+        .blog-grid { max-width: 1000px; margin: 4rem auto; padding: 0 2rem; display: grid; gap: 4rem; }
+        
+        .blog-card { display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: center; text-decoration: none; color: inherit; background: var(--white); padding: 2rem; border-radius: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); transition: transform 0.3s ease; }
+        .blog-card:hover { transform: translateY(-10px); }
+        .blog-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 20px; }
+        
+        .blog-content .meta { color: var(--primary); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; font-family: var(--font-mono); }
+        .blog-content h2 { font-family: var(--font-display); font-size: 2.2rem; line-height: 1.2; margin-bottom: 1rem; }
+        .blog-content p { color: var(--mid); font-size: 1.1rem; }
+
+        footer { padding: 4rem 2rem; text-align: center; color: var(--mid); font-size: 0.9rem; }
+        @media (max-width: 768px) { .blog-card { grid-template-columns: 1fr; gap: 1.5rem; } .hero h1 { font-size: 3rem; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="nav-brand">Calalloo</a>
+        <nav>
+            <a href="../recipes/">Recipes</a>
+            <a href="../markets/">Markets</a>
+            <a href="../signup/">Join Hub</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>The Journal</h1>
+            <p>Stories from the kitchen, the farm, and the field.</p>
+        </section>
+
+        <div class="blog-grid">
+            <!-- Article 1 -->
+            <a href="the-coconut-electrolyte.html" class="blog-card">
+                <img src="https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&q=80&w=600" class="blog-img" alt="The Coconut Electrolyte">
+                <div class="blog-content">
+                    <span class="meta">Sourcing • May 26</span>
+                    <h2>The Coconut Electrolyte: Why Roadside Sourcing Wins.</h2>
+                    <p>Why the roadside stand is a better recovery hub than the pharmacy.</p>
+                </div>
+            </a>
+
+            <!-- Article 2 -->
+            <a href="the-rise-of-performance-provisions.html" class="blog-card">
+                <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=600" class="blog-img" alt="Performance Provisions">
+                <div class="blog-content">
+                    <span class="meta">Nutrition • May 24</span>
+                    <h2>The Rise of Performance Provisions.</h2>
+                    <p>Ditching processed supplements for heritage starches.</p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 Calalloo. A Prisca Dezigns Project.
+    </footer>
+
+</body>
+</html>
