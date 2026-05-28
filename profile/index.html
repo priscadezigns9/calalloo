@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Calalloo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0A0B;
+            --primary: #E87722;
+            --dark: #FFFFFF;
+            --mid: #A0A0A5;
+            --white: #141416;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding-bottom: 5rem;
+        }
+
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .profile-header {
+            padding: 6rem 0 4rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #000;
+            border: 4px solid var(--white);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .profile-header h1 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-header p {
+            font-family: var(--font-mono);
+            color: var(--mid);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item b {
+            display: block;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .stat-item span {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--mid);
+            text-transform: uppercase;
+        }
+
+        .grid-header {
+            padding: 3rem 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-header h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .grid-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #222;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--mid);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 4rem;
+        }
+
+        .btn-logout:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--white);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--mid);
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="nav-brand">Calalloo</a>
+    </header>
+
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profInitial">U</div>
+            <h1 id="profEmail">Lab Member</h1>
+            <p id="profId">NODE_ID: --</p>
+            
+            <div class="profile-stats">
+                <div class="stat-item"><b>12</b><span>Scans</span></div>
+                <div class="stat-item"><b>84</b><span>Followers</span></div>
+                <div class="stat-item"><b>215</b><span>Following</span></div>
+            </div>
+
+            <button class="btn-logout" id="logoutBtn">Terminate Session</button>
+        </div>
+
+        <div class="grid-header">
+            <h3>Discovery Log</h3>
+            <span style="font-family: var(--font-mono); color: var(--primary); font-size: 0.7rem;">PHOTO_STREAM_ACTIVE</span>
+        </div>
+
+        <div class="photo-grid" id="photoGrid">
+            <!-- Mock photos -->
+            <div class="grid-img"></div>
+            <div class="grid-img"></div>
+            <div class="grid-img"></div>
+            <div class="grid-img"></div>
+            <div class="grid-img"></div>
+            <div class="grid-img"></div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="../dashboard/" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            Feed
+        </a>
+        <a href="../scanner/" class="nav-item">
+            <span class="nav-icon">🔍</span>
+            Scan
+        </a>
+        <a href="../profile/" class="nav-item active">
+            <span class="nav-icon">👤</span>
+            Profile
+        </a>
+    </nav>
+
+    <script src="../js/backend.js"></script>
+    <script>
+        const user = supabase.auth.getUser();
+        if (!user) {
+            window.location.href = '../login/';
+        } else {
+            document.getElementById('profEmail').textContent = user.email.split('@')[0];
+            document.getElementById('profInitial').textContent = user.email[0].toUpperCase();
+            document.getElementById('profId').textContent = "NODE_ID: " + user.id.substring(0, 8);
+        }
+
+        document.getElementById('logoutBtn').onclick = () => {
+            supabase.auth.signOut();
+        };
+
+        // Load personal scan grid
+        async function loadProfileGrid() {
+            try {
+                const scans = await supabase.request(`/food_scans?user_id=eq.${user.id}&select=*`);
+                const grid = document.getElementById('photoGrid');
+                if (scans.length > 0) {
+                    grid.innerHTML = '';
+                    scans.forEach(item => {
+                        const img = document.createElement('img');
+                        img.className = 'grid-img';
+                        img.src = item.photo_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=300';
+                        grid.appendChild(img);
+                    });
+                }
+            } catch (err) {
+                console.log("No personal scans found");
+            }
+        }
+        loadProfileGrid();
+    </script>
+</body>
+</html>
