@@ -1,1 +1,247 @@
-<!DOCTYPE html><html><head><meta http-equiv='refresh' content='0; url=neural-lab.html'></head></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Feed | Calalloo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0A0B;
+            --primary: #E87722;
+            --dark: #FFFFFF;
+            --mid: #A0A0A5;
+            --white: #141416;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding-bottom: 5rem;
+        }
+
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .feed-item {
+            background: var(--white);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .feed-header {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #000;
+        }
+
+        .user-info b {
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .user-info span {
+            font-size: 0.7rem;
+            color: var(--mid);
+            font-family: var(--font-mono);
+        }
+
+        .feed-image {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .feed-content {
+            padding: 1.5rem;
+        }
+
+        .feed-content h3 {
+            font-family: var(--font-display);
+            margin-bottom: 0.5rem;
+        }
+
+        .feed-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-stat {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--primary);
+        }
+
+        .feed-actions {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem 1.5rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .action-btn {
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--white);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--mid);
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="nav-brand">Calalloo</a>
+    </header>
+
+    <div class="container" id="feedContainer">
+        <!-- Feed items injected here -->
+        <div style="text-align: center; padding: 4rem; color: var(--mid); font-family: var(--font-mono);">
+            [SYNCING_NETWORK_STREAM...]
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="../dashboard/" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            Feed
+        </a>
+        <a href="../scanner/" class="nav-item">
+            <span class="nav-icon">🔍</span>
+            Scan
+        </a>
+        <a href="../profile/" class="nav-item">
+            <span class="nav-icon">👤</span>
+            Profile
+        </a>
+    </nav>
+
+    <script src="../js/backend.js"></script>
+    <script>
+        async function loadFeed() {
+            const container = document.getElementById('feedContainer');
+            try {
+                const scans = await supabase.getFeed();
+                container.innerHTML = '';
+                
+                if (scans.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 4rem; color: var(--mid); font-family: var(--font-mono);">No activity in your discovery node yet. Start scanning.</div>';
+                    return;
+                }
+
+                scans.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'feed-item';
+                    el.innerHTML = `
+                        <div class="feed-header">
+                            <div class="user-avatar">${item.user_country ? item.user_country[0] : 'C'}</div>
+                            <div class="user-info">
+                                <b>Member Node</b>
+                                <span>${item.user_country || 'Trinidad'} • ${new Date(item.created_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        <img src="${item.photo_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600'}" class="feed-image">
+                        <div class="feed-content">
+                            <h3>${item.dish_name}</h3>
+                            <div class="feed-meta">
+                                <span class="meta-stat">CAL: ${item.calories}</span>
+                                <span class="meta-stat">PRO: ${item.protein_g}g</span>
+                                <span class="meta-stat">CRB: ${item.carbs_g}g</span>
+                            </div>
+                        </div>
+                        <div class="feed-actions">
+                            <span class="action-btn">🔥</span>
+                            <span class="action-btn">💬</span>
+                            <span class="action-btn">🔖</span>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+            } catch (err) {
+                container.innerHTML = '<div style="text-align: center; padding: 4rem; color: var(--primary);">Network Error. Retrying connection...</div>';
+            }
+        }
+
+        loadFeed();
+    </script>
+</body>
+</html>
