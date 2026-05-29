@@ -47,6 +47,10 @@
             margin-bottom: 60px;
             padding-left: 10px;
         }
+        .logo img {
+            height: 32px;
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+        }
         .nav-link {
             padding: 16px 20px;
             border-radius: 16px;
@@ -231,7 +235,10 @@
 </head>
 <body>
     <div class="sidebar">
-        <a href="/" class="logo">🌿 CALALLOO</a>
+        <a href="/" class="logo">
+            <img src="../assets/logo.png" alt="Logo">
+            CALALLOO
+        </a>
         <nav style="margin-top: 20px;">
             <a href="#" class="nav-link active"><span>👁️</span> Neural Scanner</a>
             <a href="#" class="nav-link"><span>📍</span> Logistics Hub</a>
@@ -255,7 +262,8 @@
 
         <div class="scanner-container">
             <div class="module">
-                <div class="viewfinder" id="viewfinder">
+                <div class="viewfinder" id="viewfinder" onclick="document.getElementById('file-input').click()">
+                    <input type="file" id="file-input" style="display: none;" accept="image/*">
                     <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=1200&q=80" class="viewfinder-img" id="v-img" alt="Caribbean Dish">
                     <div class="tl corner"></div><div class="tr corner"></div>
                     <div class="bl corner"></div><div class="br corner"></div>
@@ -323,6 +331,8 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 
+    <script src="../js/backend.js"></script>
+    <script src="../js/scanner.js"></script>
     <script>
         const statuses = [
             "Initializing Neural Scanner...",
@@ -332,7 +342,29 @@
             "SYNCING LOGISTICS HUB..."
         ];
 
-        function startScan() {
+        const fileInput = document.getElementById('file-input');
+        const vImg = document.getElementById('v-img');
+        let currentImageBase64 = null;
+
+        fileInput.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                vImg.src = event.target.result;
+                currentImageBase64 = event.target.result.split(',')[1];
+                document.getElementById('viewfinder').classList.add('active');
+            };
+            reader.readAsDataURL(file);
+        };
+
+        async function startScan() {
+            if (!currentImageBase64) {
+                alert("Please select a specimen image first.");
+                return;
+            }
+
             const btn = document.getElementById('scan-btn');
             const loader = document.getElementById('loader');
             const statusText = document.getElementById('load-status');
@@ -351,18 +383,30 @@
             idleMsg.style.display = 'none';
             results.style.display = 'none';
 
+            // Start AI analysis in parallel
+            let analysisPromise = window.analyzeImage(currentImageBase64);
+
             let i = 0;
-            const interval = setInterval(() => {
+            const statusInterval = setInterval(() => {
                 statusText.innerText = statuses[i];
                 i++;
                 if (i >= statuses.length) {
-                    clearInterval(interval);
-                    completeScan();
+                    clearInterval(statusInterval);
                 }
-            }, 800);
+            }, 600);
+
+            try {
+                const analysis = await analysisPromise;
+                clearInterval(statusInterval);
+                completeScan(analysis);
+            } catch (err) {
+                clearInterval(statusInterval);
+                alert("Neural Analysis Failed: " + err.message);
+                resetUI();
+            }
         }
 
-        function completeScan() {
+        function completeScan(analysis) {
             document.getElementById('loader').style.display = 'none';
             document.getElementById('scan-line').style.display = 'none';
             document.getElementById('scan-btn').disabled = false;
@@ -372,6 +416,16 @@
             badge.classList.add('active');
             badge.innerHTML = '<div class="dot"></div> Analysis Complete';
 
+            // Populate Results
+            document.querySelector('#res-1 .value').innerText = analysis.dishName;
+            document.querySelector('#res-2 .value').innerHTML = `${analysis.nutrition.calories} <span style="font-size: 1rem; color: var(--text-secondary);">KCAL / PORTION</span>`;
+            
+            const nutItems = document.querySelectorAll('.nut-val');
+            nutItems[0].innerText = analysis.nutrition.carbs;
+            nutItems[1].innerText = analysis.nutrition.protein;
+            nutItems[2].innerText = analysis.nutrition.fats;
+            nutItems[3].innerText = "A+"; // Default score for now
+
             document.getElementById('results').style.display = 'block';
             
             // Staggered appearance
@@ -379,6 +433,25 @@
             setTimeout(() => document.getElementById('res-2').classList.add('show'), 300);
             setTimeout(() => document.getElementById('res-3').classList.add('show'), 500);
             setTimeout(() => document.getElementById('res-4').classList.add('show'), 700);
+
+            // Auto-upload to backend (Silent sync)
+            supabase.uploadScan({
+                dish_name: analysis.dishName,
+                calories: analysis.nutrition.calories,
+                protein: analysis.nutrition.protein,
+                carbs: analysis.nutrition.carbs,
+                fats: analysis.nutrition.fats,
+                type: 'Neural Lab Scan'
+            }).catch(e => console.error("Sync failed", e));
+        }
+
+        function resetUI() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('scan-line').style.display = 'none';
+            document.getElementById('scan-btn').disabled = false;
+            document.getElementById('scan-btn').innerText = "Analyze Visual Nodes";
+            document.getElementById('viewfinder').classList.remove('active');
+            document.getElementById('idle-msg').style.display = 'block';
         }
     </script>
 </body>
