@@ -184,7 +184,10 @@
 <body>
 
     <header>
-        <a href="../index.html" class="nav-brand">Calalloo</a>
+        <a href="../index.html" class="nav-brand">
+            <img src="../assets/logo.png" alt="Logo" style="height: 32px; vertical-align: middle; margin-right: 8px;">
+            Calalloo
+        </a>
     </header>
 
     <div class="container">
@@ -253,7 +256,7 @@
             try {
                 const scans = await supabase.request(`/food_scans?user_id=eq.${user.id}&select=*`);
                 const grid = document.getElementById('photoGrid');
-                if (scans.length > 0) {
+                if (scans && scans.length > 0) {
                     grid.innerHTML = '';
                     scans.forEach(item => {
                         const img = document.createElement('img');
@@ -261,6 +264,13 @@
                         img.src = item.photo_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=300';
                         grid.appendChild(img);
                     });
+                } else {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/4; padding: 4rem 0; text-align: center; color: var(--mid);">
+                            <p>No specimens archived yet.</p>
+                            <a href="../scanner/" style="color: var(--primary); text-decoration: none; font-family: var(--font-mono); font-size: 0.8rem;">INITIATE FIRST SCAN</a>
+                        </div>
+                    `;
                 }
             } catch (err) {
                 console.log("No personal scans found");
