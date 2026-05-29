@@ -19,11 +19,17 @@ const supabase = {
     },
 
     auth: {
+        generateId() {
+            if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+                return crypto.randomUUID();
+            }
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        },
         async signUp(email, password) {
-            // Note: In a real app we'd use Supabase Auth. 
-            // For this functional prototype, we'll simulate it by creating a profile
-            // and storing a token in localStorage.
-            const user = { id: crypto.randomUUID(), email };
+            const user = { id: this.generateId(), email };
             localStorage.setItem('calalloo_user', JSON.stringify(user));
             await supabase.request('/profiles', {
                 method: 'POST',
@@ -32,8 +38,7 @@ const supabase = {
             return { user };
         },
         async signIn(email, password) {
-            // Simulate sign in
-            const user = { id: crypto.randomUUID(), email };
+            const user = { id: this.generateId(), email };
             localStorage.setItem('calalloo_user', JSON.stringify(user));
             return { user };
         },
