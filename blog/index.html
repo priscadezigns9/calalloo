@@ -3,91 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Journal | Calalloo</title>
+    <title>Blog | The Heritage Feed | Calalloo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #FAFAFA;
+            --bg: #FFF8F0;
             --primary: #E87722;
             --dark: #1A0D00;
-            --mid: #666666;
+            --mid: #6B5E4F;
             --white: #FFFFFF;
-            --accent: rgba(232, 119, 34, 0.05);
+            --border: rgba(26, 13, 0, 0.08);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
-            --font-mono: 'Space Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --dark: #FFFFFF;
+            --mid: #A1A1A6;
+            --white: #141416;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--dark); 
+            font-family: var(--font-sans); 
+            line-height: 1.6; 
+            -webkit-font-smoothing: antialiased; 
+            transition: background 0.3s, color 0.3s;
+        }
         
-        header { position: sticky; top: 0; width: 100%; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.8rem; color: var(--primary); text-decoration: none; }
-        nav a { font-size: 0.9rem; font-weight: 600; color: var(--dark); text-decoration: none; margin-left: 2rem; }
+        header { 
+            padding: 1.5rem 2.5rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+        }
 
-        .hero { padding: 8rem 2rem 4rem; text-align: center; }
-        .hero h1 { font-family: var(--font-display); font-size: 4rem; line-height: 1; margin-bottom: 1rem; }
-        .hero p { font-size: 1.2rem; color: var(--mid); max-width: 600px; margin: 0 auto; }
+        .nav-brand { 
+            font-family: var(--font-display); 
+            font-weight: 900; 
+            font-size: 1.8rem; 
+            color: var(--primary); 
+            text-decoration: none; 
+            letter-spacing: -0.05em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-        .blog-grid { max-width: 1000px; margin: 4rem auto; padding: 0 2rem; display: grid; gap: 4rem; }
+        .container { max-width: 1100px; margin: 6rem auto; padding: 0 2rem; }
         
-        .blog-card { display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: center; text-decoration: none; color: inherit; background: var(--white); padding: 2rem; border-radius: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); transition: transform 0.3s ease; }
+        h1 { 
+            font-family: var(--font-display); 
+            font-size: clamp(3.5rem, 10vw, 5rem); 
+            line-height: 0.9; 
+            margin-bottom: 4rem; 
+            letter-spacing: -0.05em; 
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 3rem; }
+        
+        .blog-card { 
+            background: var(--white); 
+            border-radius: 28px; 
+            overflow: hidden; 
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease;
+        }
         .blog-card:hover { transform: translateY(-10px); }
-        .blog-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 20px; }
-        
-        .blog-content .meta { color: var(--primary); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; font-family: var(--font-mono); }
-        .blog-content h2 { font-family: var(--font-display); font-size: 2.2rem; line-height: 1.2; margin-bottom: 1rem; }
-        .blog-content p { color: var(--mid); font-size: 1.1rem; }
+        .blog-img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+        .blog-info { padding: 2rem; }
+        .blog-info h3 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 1rem; font-weight: 900; }
+        .blog-info p { color: var(--mid); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .blog-date { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em; }
 
-        footer { padding: 4rem 2rem; text-align: center; color: var(--mid); font-size: 0.9rem; }
-        @media (max-width: 768px) { .blog-card { grid-template-columns: 1fr; gap: 1.5rem; } .hero h1 { font-size: 3rem; } }
+        footer { 
+            padding: 6rem 2rem; 
+            border-top: 1px solid var(--border); 
+            text-align: center; 
+            color: var(--mid); 
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="../index.html" class="nav-brand">Calalloo</a>
-        <nav>
-            <a href="../recipes/">Recipes</a>
-            <a href="../markets/">Markets</a>
-            <a href="../signup/">Join Hub</a>
-        </nav>
+        <a href="../index.html" class="nav-brand">
+            <img src="../assets/logo.png" alt="Logo" style="height: 48px;">
+            <span>Calalloo</span>
+        </a>
+        <button id="theme-toggle" onclick="ThemeManager.toggle()" style="background: none; border: 1px solid var(--border); cursor: pointer; padding: 8px; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <span id="theme-toggle-icon">🌙</span>
+        </button>
     </header>
 
-    <main>
-        <section class="hero">
-            <h1>The Journal</h1>
-            <p>Stories from the kitchen, the farm, and the field.</p>
-        </section>
-
+    <main class="container">
+        <h1>Heritage Feed.</h1>
+        
         <div class="blog-grid">
-            <!-- Article 1 -->
-            <a href="the-coconut-electrolyte.html" class="blog-card">
-                <img src="https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&q=80&w=600" class="blog-img" alt="The Coconut Electrolyte">
-                <div class="blog-content">
-                    <span class="meta">Sourcing • May 26</span>
-                    <h2>The Coconut Electrolyte: Why Roadside Sourcing Wins.</h2>
-                    <p>Why the roadside stand is a better recovery hub than the pharmacy.</p>
+            <a href="the-coconut-protocol.html" class="blog-card">
+                <img src="../assets/heritage/coconut.jpg" class="blog-img" alt="Coconut Protocol">
+                <div class="blog-info">
+                    <div class="blog-date">May 28, 2026 // Protocol: 01</div>
+                    <h3>The Coconut Protocol: Roadside Artisanal Extraction</h3>
+                    <p>Why fresh coconut milk is the biological cornerstone of Caribbean performance nutrition.</p>
                 </div>
             </a>
-
-            <!-- Article 2 -->
-            <a href="the-rise-of-performance-provisions.html" class="blog-card">
-                <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=600" class="blog-img" alt="Performance Provisions">
-                <div class="blog-content">
-                    <span class="meta">Nutrition • May 24</span>
-                    <h2>The Rise of Performance Provisions.</h2>
-                    <p>Ditching processed supplements for heritage starches.</p>
+            
+            <div class="blog-card" style="opacity: 0.6; pointer-events: none;">
+                <div style="background: #eee; width: 100%; aspect-ratio: 16/10;"></div>
+                <div class="blog-info">
+                    <div class="blog-date">Pending Synchronization</div>
+                    <h3>Deep Swizzle: The Oral History of Callaloo</h3>
+                    <p>Exploring the rhythmic roots of our most iconic heritage dish.</p>
                 </div>
-            </a>
+            </div>
         </div>
     </main>
 
+    <script src="../js/backend.js"></script>
+    <script>ThemeManager.init();</script>
     <footer>
-        &copy; 2026 Calalloo. A Prisca Dezigns Project.
+        &copy; 2026 Calalloo. Restoring Heritage.
     </footer>
 
 </body>
