@@ -204,6 +204,7 @@
     </nav>
 
     <script src="../js/backend.js"></script>
+    <script src="../js/scanner.js"></script>
     <script>
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
@@ -214,23 +215,54 @@
 
         fileInput.onchange = async (e) => {
             if (e.target.files.length === 0) return;
+            const file = e.target.files[0];
             dropZone.style.display = 'none';
             loading.style.display = 'block';
 
-            setTimeout(() => {
+            try {
+                const base64 = await toBase64(file);
+                const pureBase64 = base64.split(',')[1];
+                const analysis = await window.analyzeImage(pureBase64);
+                
                 loading.style.display = 'none';
                 results.style.display = 'block';
-                document.getElementById('resDishName').value = "Preserved Mango Specimen";
-                document.getElementById('resCalories').textContent = "120";
-                document.getElementById('resProtein').textContent = "1g";
-                document.getElementById('resCarbs').textContent = "30g";
-                document.getElementById('resFats').textContent = "0g";
-            }, 2000);
+                
+                document.getElementById('resDishName').value = analysis.dishName;
+                document.getElementById('resCalories').textContent = analysis.nutrition.calories;
+                document.getElementById('resProtein').textContent = analysis.nutrition.protein;
+                document.getElementById('resCarbs').textContent = analysis.nutrition.carbs;
+                document.getElementById('resFats').textContent = analysis.nutrition.fats;
+            } catch (error) {
+                alert("Scan Error: " + error.message);
+                loading.style.display = 'none';
+                dropZone.style.display = 'block';
+            }
         };
 
-        function postScan() {
-            alert("Specimen posted to your heritage feed!");
-            window.location.href = '../dashboard/';
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        async function postScan() {
+            const scanData = {
+                dish_name: document.getElementById('resDishName').value,
+                calories: parseInt(document.getElementById('resCalories').textContent),
+                protein: document.getElementById('resProtein').textContent,
+                carbs: document.getElementById('resCarbs').textContent,
+                fats: document.getElementById('resFats').textContent,
+                type: 'Heritage Specimen'
+            };
+            
+            try {
+                await supabase.uploadScan(scanData);
+                alert("Specimen posted to your heritage feed!");
+                window.location.href = '../dashboard/';
+            } catch (err) {
+                alert("Failed to post: " + err.message);
+            }
         }
     </script>
 </body>
