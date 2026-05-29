@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,31 +8,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0A0A0B;
+            --bg: #FFF8F0;
             --primary: #E87722;
-            --dark: #FFFFFF;
-            --mid: #A0A0A5;
-            --white: #141416;
+            --text: #1A0D00;
+            --white: #FFFFFF;
+            --border: rgba(26, 13, 0, 0.05);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
             --font-mono: 'Space Mono', monospace;
         }
 
+        [data-theme="dark"] {
+            --bg: #0A0A0A;
+            --text: #FFFFFF;
+            --white: #1A1A1A;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
         body {
             background-color: var(--bg);
-            color: var(--dark);
+            color: var(--text);
             font-family: var(--font-sans);
             margin: 0;
             padding-bottom: 5rem;
+            transition: background 0.3s, color 0.3s;
         }
 
         header {
-            padding: 1.5rem 2rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--white);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -44,6 +52,9 @@
             font-size: 1.5rem;
             color: var(--primary);
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .container {
@@ -54,14 +65,21 @@
 
         .feed-item {
             background: var(--white);
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
             overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         .feed-header {
             padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-meta {
             display: flex;
             align-items: center;
             gap: 1rem;
@@ -76,71 +94,41 @@
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            color: #000;
+            color: #FFF;
         }
 
-        .user-info b {
-            display: block;
-            font-size: 0.9rem;
-        }
-
-        .user-info span {
-            font-size: 0.7rem;
-            color: var(--mid);
-            font-family: var(--font-mono);
-        }
+        .user-info b { display: block; font-size: 0.9rem; }
+        .user-info span { font-size: 0.7rem; color: #888; font-family: var(--font-mono); }
 
         .feed-image {
             width: 100%;
             aspect-ratio: 1/1;
             object-fit: cover;
-            background: #222;
+            background: #EEE;
         }
 
-        .feed-content {
-            padding: 1.5rem;
-        }
-
-        .feed-content h3 {
-            font-family: var(--font-display);
-            margin-bottom: 0.5rem;
-        }
-
-        .feed-meta {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .meta-stat {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--primary);
-        }
+        .feed-content { padding: 1.5rem; }
+        .feed-content h3 { font-family: var(--font-display); margin: 0 0 0.5rem 0; }
+        
+        .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .tag { font-size: 0.7rem; font-weight: 800; color: var(--primary); text-transform: uppercase; }
 
         .feed-actions {
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border);
             padding: 1rem 1.5rem;
             display: flex;
             gap: 2rem;
         }
 
-        .action-btn {
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: transform 0.2s ease;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.2);
-        }
+        .action-btn { cursor: pointer; font-size: 1.2rem; transition: transform 0.2s; }
+        .action-btn:hover { transform: scale(1.2); }
 
         .bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
             background: var(--white);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
             padding: 1rem 0;
@@ -149,99 +137,77 @@
 
         .nav-item {
             text-decoration: none;
-            color: var(--mid);
+            color: #888;
             font-size: 0.7rem;
             font-family: var(--font-mono);
-            text-transform: uppercase;
             text-align: center;
         }
 
-        .nav-item.active {
-            color: var(--primary);
-        }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon { display: block; font-size: 1.5rem; margin-bottom: 0.2rem; }
 
-        .nav-icon {
-            display: block;
-            font-size: 1.5rem;
-            margin-bottom: 0.2rem;
-        }
+        .theme-toggle { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="../index.html" class="nav-brand">Calalloo</a>
+        <a href="../index.html" class="nav-brand">
+            <img src="../assets/logo.svg" alt="Logo" style="height: 32px;">
+            Calalloo
+        </a>
+        <button class="theme-toggle" onclick="ThemeManager.toggle()" id="theme-toggle-icon">🌙</button>
     </header>
 
     <div class="container" id="feedContainer">
-        <!-- Feed items injected here -->
-        <div style="text-align: center; padding: 4rem; color: var(--mid); font-family: var(--font-mono);">
-            [SYNCING_NETWORK_STREAM...]
+        <!-- Heritage Sweets & Treats as Initial Static Content -->
+        <div class="feed-item">
+            <div class="feed-header">
+                <div class="user-meta">
+                    <div class="user-avatar">H</div>
+                    <div class="user-info"><b>Heritage Node</b><span>Preserves • Today</span></div>
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1590080873976-9f2cd732d9ee?auto=format&fit=crop&q=80&w=600" class="feed-image">
+            <div class="feed-content">
+                <h3>Red Preserved Plum</h3>
+                <p style="font-size: 0.8rem; opacity: 0.8;">Traditional spicy-sweet-salty preserved plum specimen.</p>
+                <div class="tags"><span class="tag">#preserves</span><span class="tag">#heritage</span></div>
+            </div>
+            <div class="feed-actions">
+                <span class="action-btn">🧡</span><span class="action-btn">💬</span><span class="action-btn">🔖</span>
+            </div>
+        </div>
+
+        <div class="feed-item">
+            <div class="feed-header">
+                <div class="user-meta">
+                    <div class="user-avatar">S</div>
+                    <div class="user-info"><b>Sweets Node</b><span>Treats • Today</span></div>
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&q=80&w=600" class="feed-image">
+            <div class="feed-content">
+                <h3>Zesty Tamarind Balls</h3>
+                <p style="font-size: 0.8rem; opacity: 0.8;">Freshly rolled tamarind balls with a sugar coating.</p>
+                <div class="tags"><span class="tag">#sweets</span><span class="tag">#heritage</span></div>
+            </div>
+            <div class="feed-actions">
+                <span class="action-btn">🧡</span><span class="action-btn">💬</span><span class="action-btn">🔖</span>
+            </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="../dashboard/" class="nav-item active">
-            <span class="nav-icon">🏠</span>
-            Feed
-        </a>
-        <a href="../scanner/" class="nav-item">
-            <span class="nav-icon">🔍</span>
-            Scan
-        </a>
-        <a href="../profile/" class="nav-item">
-            <span class="nav-icon">👤</span>
-            Profile
-        </a>
+        <a href="../dashboard/" class="nav-item active"><span class="nav-icon">🏠</span>Feed</a>
+        <a href="../scanner/" class="nav-item"><span class="nav-icon">🔍</span>Scan</a>
+        <a href="../profile/" class="nav-item"><span class="nav-icon">👤</span>Profile</a>
     </nav>
 
     <script src="../js/backend.js"></script>
     <script>
-        async function loadFeed() {
-            const container = document.getElementById('feedContainer');
-            try {
-                const scans = await supabase.getFeed();
-                container.innerHTML = '';
-                
-                if (scans.length === 0) {
-                    container.innerHTML = '<div style="text-align: center; padding: 4rem; color: var(--mid); font-family: var(--font-mono);">No activity in your discovery node yet. Start scanning.</div>';
-                    return;
-                }
-
-                scans.forEach(item => {
-                    const el = document.createElement('div');
-                    el.className = 'feed-item';
-                    el.innerHTML = `
-                        <div class="feed-header">
-                            <div class="user-avatar">${item.user_country ? item.user_country[0] : 'C'}</div>
-                            <div class="user-info">
-                                <b>Member Node</b>
-                                <span>${item.user_country || 'Trinidad'} • ${new Date(item.created_at).toLocaleDateString()}</span>
-                            </div>
-                        </div>
-                        <img src="${item.photo_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600'}" class="feed-image">
-                        <div class="feed-content">
-                            <h3>${item.dish_name}</h3>
-                            <div class="feed-meta">
-                                <span class="meta-stat">CAL: ${item.calories}</span>
-                                <span class="meta-stat">PRO: ${item.protein_g}g</span>
-                                <span class="meta-stat">CRB: ${item.carbs_g}g</span>
-                            </div>
-                        </div>
-                        <div class="feed-actions">
-                            <span class="action-btn">🔥</span>
-                            <span class="action-btn">💬</span>
-                            <span class="action-btn">🔖</span>
-                        </div>
-                    `;
-                    container.appendChild(el);
-                });
-            } catch (err) {
-                container.innerHTML = '<div style="text-align: center; padding: 4rem; color: var(--primary);">Network Error. Retrying connection...</div>';
-            }
-        }
-
-        loadFeed();
+        ThemeManager.init();
+        // The heart branding: we use the 🧡 emoji as the default 'like' button in this version
     </script>
 </body>
 </html>
