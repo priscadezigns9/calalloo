@@ -3,86 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Coconut Protocol | Calalloo Journal</title>
+    <title>The Coconut Protocol | Calalloo Blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg: #FFF8F0;
             --primary: #E87722;
             --dark: #1A0D00;
-            --mid: #8B4A1E;
+            --mid: #6B5E4F;
             --white: #FFFFFF;
+            --border: rgba(26, 13, 0, 0.08);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-        
-        header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(26,13,0,0.05); background: var(--white); }
-        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
-        
-        article { max-width: 800px; margin: 6rem auto; padding: 0 2rem; }
-        .article-header { margin-bottom: 4rem; text-align: center; }
-        .article-title { font-family: var(--font-display); font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 1rem; letter-spacing: -0.02em; }
-        .article-meta { color: var(--mid); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; font-weight: 700; }
-        
-        .featured-img { width: 100%; border-radius: 40px; margin-bottom: 4rem; aspect-ratio: 16/9; object-fit: cover; box-shadow: 0 40px 80px rgba(0,0,0,0.1); }
-        
-        .content { font-size: 1.25rem; color: rgba(26,13,0,0.8); }
-        .content h2 { font-family: var(--font-display); font-size: 2.5rem; margin: 4rem 0 1.5rem; color: var(--dark); }
-        .content p { margin-bottom: 2rem; }
-        
-        .protocol-box { background: var(--dark); color: var(--white); padding: 3rem; border-radius: 32px; margin: 4rem 0; }
-        .protocol-box h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 2rem; color: var(--primary); }
-        .protocol-box ul { list-style: none; }
-        .protocol-box li { margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
-        .protocol-box li::before { content: "→"; color: var(--primary); font-weight: 900; }
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --dark: #FFFFFF;
+            --mid: #A1A1A6;
+            --white: #141416;
+            --border: rgba(255, 255, 255, 0.1);
+        }
 
-        footer { text-align: center; padding: 4rem; border-top: 1px solid rgba(26,13,0,0.05); color: var(--mid); font-size: 0.9rem; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--dark); 
+            font-family: var(--font-sans); 
+            line-height: 1.8; 
+            -webkit-font-smoothing: antialiased; 
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        header { 
+            padding: 1.5rem 2.5rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+        }
+
+        .nav-brand { 
+            font-family: var(--font-display); 
+            font-weight: 900; 
+            font-size: 1.8rem; 
+            color: var(--primary); 
+            text-decoration: none; 
+            letter-spacing: -0.05em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .container { max-width: 800px; margin: 6rem auto; padding: 0 2rem; }
+        
+        .post-header { margin-bottom: 4rem; text-align: center; }
+        .post-date { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1rem; display: block; }
+        h1 { 
+            font-family: var(--font-display); 
+            font-size: clamp(2.5rem, 8vw, 4rem); 
+            line-height: 1; 
+            margin-bottom: 2rem; 
+            letter-spacing: -0.05em; 
+            font-weight: 900;
+        }
+
+        .post-hero { width: 100%; border-radius: 40px; margin-bottom: 4rem; box-shadow: 0 40px 80px rgba(0,0,0,0.1); }
+        
+        .content { font-size: 1.15rem; color: var(--mid); }
+        .content p { margin-bottom: 2rem; }
+        .content b { color: var(--dark); }
+        .content h2 { font-family: var(--font-display); font-size: 2rem; margin: 4rem 0 1.5rem; color: var(--dark); font-weight: 900; }
+
+        footer { 
+            padding: 6rem 2rem; 
+            border-top: 1px solid var(--border); 
+            text-align: center; 
+            color: var(--mid); 
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="../index.html" class="nav-brand">Calalloo</a>
+        <a href="../index.html" class="nav-brand">
+            <img src="../assets/logo.png" alt="Logo" style="height: 48px;">
+            <span>Calalloo</span>
+        </a>
+        <button id="theme-toggle" onclick="ThemeManager.toggle()" style="background: none; border: 1px solid var(--border); cursor: pointer; padding: 8px; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <span id="theme-toggle-icon">🌙</span>
+        </button>
     </header>
 
-    <article>
-        <div class="article-header">
-            <div class="article-meta">Neural Phase / 2026.05.29</div>
-            <h1 class="article-title">The Coconut Protocol</h1>
+    <article class="container">
+        <div class="post-header">
+            <span class="post-date">May 28, 2026 // Protocol: 01</span>
+            <h1>The Coconut Protocol: Roadside Artisanal Extraction.</h1>
         </div>
 
-        <img src="../assets/heritage/coconut.jpg" class="featured-img" alt="Alpha Sourced Coconut">
+        <img src="../assets/heritage/coconut.jpg" class="post-hero" alt="Coconut Extraction">
 
         <div class="content">
-            <p>Hydration in the high-performance era requires moving beyond synthetic powders. The **Coconut Protocol** is our refined framework for leveraging the bio-active potential of the green coconut stand as a primary recovery hub.</p>
-
-            <h2>Neural Phase Hydration</h2>
-            <p>Traditional "sports drinks" rely on processed sugars and isolated salts. The protocol mandates the use of **live enzymes** and **cellular-matched electrolytes** found only in fresh, unpasteurized coconut water sourced within 4 hours of harvest.</p>
-
-            <div class="protocol-box">
-                <h3>The Alpha Protocol</h3>
-                <ul>
-                    <li><strong>Visual Identification:</strong> Target green, unblemished shells. A slight weight-to-volume variance indicates optimal enzyme density.</li>
-                    <li><strong>Thermal Management:</strong> Consume chilled but never frozen. High-speed freezing crystallizes the trace minerals, reducing bioavailability.</li>
-                    <li><strong>The 20-Minute Window:</strong> Post-crack, the water begins to oxidize. For maximum performance provison, the protocol requires consumption within 20 minutes of the first breach.</li>
-                </ul>
-            </div>
-
-            <h2>Roadside Sourcing</h2>
-            <p>We've mapped the primary artisans across the North Coast and Central plains. These vendors are not just sellers; they are the frontline providers of our electrolyte infrastructure. Look for the "Alpha Stand" designation—high turnover, sharp cutlass work, and local sourcing.</p>
+            <p>In the Caribbean, the coconut is more than just an ingredient; it is a <b>biological conduit</b>. For generations, the true power of our recipes—the velvety finish of a Callaloo or the rich depth of an Oil Down—has depended on the quality of the coconut milk. But not all milk is created equal.</p>
             
-            <p>The Coconut Protocol isn't just about drinking water. It's about respecting the bio-rhythms of the island to fuel the neural demands of the 21st century.</p>
+            <h2>The Artisanal Node</h2>
+            <p>We track our sourcing back to what we call "Artisanal Nodes." These are the roadside vendors along the Northern Coast of Trinidad and the estates in Grenada who still perform <b>artisanal extraction</b>. Unlike industrial, canned alternatives, fresh-pressed coconut milk retains its active fats and micronutrient density.</p>
+            
+            <p>The "Protocol" is simple but strict: the coconut must be harvested at peak maturity, grated within hours, and pressed with a precise amount of warm water to extract the first-press cream. This is the <b>Alpha Fat</b> that defines our heritage provisions.</p>
+
+            <h2>Why Authenticity Matters</h2>
+            <p>When you use industrial substitutes, you lose the subtle sweetness and the unique mouthfeel that fresh coconut oil provides. By documenting these sourcing nodes and extraction methods, Calalloo ensures that the <b>chemical integrity</b> of our heritage food remains intact for the next generation.</p>
         </div>
     </article>
 
+    <script src="../js/backend.js"></script>
+    <script>ThemeManager.init();</script>
     <footer>
-        &copy; 2026 Calalloo. A Prisca Dezigns Project.
+        &copy; 2026 Calalloo. Neural Phase.
     </footer>
 
 </body>
