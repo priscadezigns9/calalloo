@@ -94,7 +94,13 @@
             color: var(--primary); 
             text-decoration: none; 
             letter-spacing: -0.05em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
+        .nav-brand span { display: flex; align-items: center; gap: 8px; }
+        .nav-brand span::after { content: ""; width: 8px; height: 8px; background: #000000; border-radius: 50%; display: inline-block; }
+        [data-theme="dark"] .nav-brand span::after { background: #FFFFFF; }
 
         .nav-links { display: flex; gap: 2rem; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
