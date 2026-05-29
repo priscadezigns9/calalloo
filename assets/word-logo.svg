@@ -1,0 +1,5 @@
+<svg width="220" height="60" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Use a high-quality serif-like fallback for the SVG -->
+  <text x="5" y="45" font-family="serif" font-weight="900" font-size="42" fill="#E87722" style="font-family: 'Fraunces', serif;">Calalloo</text>
+  <circle cx="195" cy="38" r="6" fill="black" />
+</svg>
