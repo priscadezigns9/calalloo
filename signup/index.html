@@ -10,16 +10,24 @@
     
     <style>
         :root {
-            --bg: #050508;
+            --bg: #FFF8F0;
             --primary: #E87722;
-            --dark: #FFFFFF;
-            --mid: #8E8E93;
-            --white: #0F0F12;
-            --border: rgba(255, 255, 255, 0.1);
+            --dark: #1A0D00;
+            --mid: #6B5E4F;
+            --white: #FFFFFF;
+            --border: rgba(26, 13, 0, 0.08);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
             --font-mono: 'Space Mono', monospace;
             --glow: rgba(232, 119, 34, 0.4);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --dark: #FFFFFF;
+            --mid: #A1A1A6;
+            --white: #141416;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,19 +42,65 @@
             justify-content: center;
             height: 100vh;
             -webkit-font-smoothing: antialiased; 
+            transition: background 0.3s, color 0.3s;
         }
 
         .auth-card {
-            background: rgba(15, 15, 18, 0.9);
+            background: var(--white);
             backdrop-filter: blur(25px) saturate(180%);
             padding: 4rem;
             width: 100%;
             max-width: 480px;
             border-radius: 40px;
             border: 1px solid var(--border);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15);
             position: relative;
         }
+
+        [data-theme="dark"] .auth-card {
+            background: rgba(15, 15, 18, 0.9);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+        }
+
+        .theme-switch {
+            position: absolute;
+            top: 2rem;
+            left: 3rem;
+            width: 58px;
+            height: 30px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            z-index: 10;
+        }
+
+        .theme-switch .circle {
+            width: 22px;
+            height: 22px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            left: 3px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        [data-theme="dark"] .theme-switch .circle {
+            transform: translateX(28px);
+        }
+
+        .theme-switch svg { width: 12px; height: 12px; color: white; fill: white; }
+        .theme-switch .sun { display: block; }
+        .theme-switch .moon { display: none; }
+        [data-theme="dark"] .theme-switch .sun { display: none; }
+        [data-theme="dark"] .theme-switch .moon { display: block; }
 
         .auth-card::before {
             content: "NODE_INITIALIZATION";
@@ -115,10 +169,16 @@
 </head>
 <body>
     <div class="auth-card">
+        <div class="theme-switch" onclick="ThemeManager.toggle()" title="Toggle Theme">
+            <div class="circle">
+                <svg class="sun" viewBox="0 0 24 24"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 13h2a1 1 0 100-2H2a1 1 0 100 2zm18 0h2a1 1 0 100-2h-2a1 1 0 100 2zM11 2v2a1 1 0 102 0V2a1 1 0 10-2 0zm0 18v2a1 1 0 102 0v-2a1 1 0 10-2 0zM5.99 4.58a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41L5.99 4.58zm12.02 12.02a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41l-1.41-1.41zm-1.41-12.02a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41l-1.41 1.41zM4.58 16.59l-1.41 1.41a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41z"/></svg>
+                <svg class="moon" viewBox="0 0 24 24"><path d="M21.64 13a1 1 0 00-1.05-.14 8.05 8.05 0 01-3.37.73 8.15 8.15 0 01-8.14-8.14 8.59 8.59 0 01.25-2 1 1 0 00-1.21-1.08 10.14 10.14 0 1012.72 10.78 1 1 0 00-.2-1.15z"/></svg>
+            </div>
+        </div>
         <div class="logo-box">
             <a href="../index.html"><img src="../assets/logo.png" alt="Calalloo"></a>
         </div>
-        <h1>New <span>Uplink</span>.</h1>
+        <h1>Join <span>Callaloo</span>.</h1>
         <form id="signupForm">
             <div class="form-group">
                 <label>Node Designation (Full Name)</label>
@@ -141,6 +201,7 @@
 
     <script src="../js/backend.js?v=6"></script>
     <script>
+        ThemeManager.init();
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const fullName = document.getElementById('fullName').value;
