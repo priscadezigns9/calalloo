@@ -1,255 +1,201 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Feed | Calalloo</title>
+    <title>The Lab | Dashboard | Calalloo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg: #FFF8F0;
+            --bg: #050508;
             --primary: #E87722;
-            --text: #1A0D00;
-            --white: #FFFFFF;
-            --border: rgba(26, 13, 0, 0.05);
+            --dark: #FFFFFF;
+            --mid: #8E8E93;
+            --white: #0F0F12;
+            --border: rgba(255, 255, 255, 0.1);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
             --font-mono: 'Space Mono', monospace;
+            --accent: rgba(232, 119, 34, 0.15);
+            --glow: rgba(232, 119, 34, 0.4);
         }
 
-        [data-theme="dark"] {
-            --bg: #0A0A0A;
-            --text: #FFFFFF;
-            --white: #1A1A1A;
-            --border: rgba(255, 255, 255, 0.1);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg); 
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--dark); 
+            font-family: var(--font-sans); 
+            line-height: 1.6; 
+            -webkit-font-smoothing: antialiased; 
+            padding-bottom: 6rem;
         }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: var(--font-sans);
-            margin: 0;
-            padding-bottom: 5rem;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        header {
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--white);
+        header { 
+            padding: 1.2rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(25px) saturate(180%);
             border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
+            position: sticky; 
+            top: 0; 
             z-index: 1000;
         }
 
-        .nav-brand {
-            font-family: var(--font-display);
-            font-weight: 900;
-            font-size: 1.5rem;
-            color: var(--primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .nav-brand::before { content: ""; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 15px var(--primary); }
 
-        .container {
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
+        .container { max-width: 1200px; margin: 4rem auto; padding: 0 2rem; }
 
-        .feed-item {
-            background: var(--white);
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border);
+        .lab-status { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 5rem; }
+        .status-card { 
+            background: var(--white); 
+            padding: 2.5rem; 
+            border-radius: 24px; 
+            border: 1px solid var(--border); 
+            position: relative; 
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease;
         }
+        .status-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .status-card h4 { font-family: var(--font-mono); font-size: 0.6rem; color: var(--mid); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1.5rem; }
+        .status-card .value { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; color: var(--primary); }
+        .status-card .label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--mid); margin-top: 0.5rem; text-transform: uppercase; }
 
-        .feed-header {
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .feed-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem; }
+        .feed-header h2 { font-family: var(--font-display); font-size: 3rem; font-weight: 900; letter-spacing: -0.05em; }
+        .feed-header .pulse-status { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.6rem; color: #00FF9D; }
+        .pulse-status::before { content: ""; width: 6px; height: 6px; background: #00FF9D; border-radius: 50%; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+
+        .neural-feed { display: grid; gap: 2rem; }
+        .feed-item { 
+            background: var(--white); 
+            padding: 3rem; 
+            border-radius: 32px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            gap: 3rem; 
+            align-items: center; 
+            transition: all 0.3s ease;
         }
+        .feed-item:hover { border-color: var(--primary); transform: scale(1.01); }
+        .feed-img { width: 120px; height: 120px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border); }
+        .feed-content h3 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .feed-content p { color: var(--mid); font-size: 1rem; }
+        .feed-meta { font-family: var(--font-mono); font-size: 0.6rem; color: var(--primary); margin-top: 1.5rem; text-transform: uppercase; }
 
-        .user-meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        /* Modern Bottom Nav */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 2rem; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: rgba(15, 15, 18, 0.9); 
+            backdrop-filter: blur(20px); 
+            padding: 0.8rem 1rem; 
+            border-radius: 20px; 
+            display: flex; 
+            gap: 1.5rem; 
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 2000;
         }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            color: #FFF;
-        }
-
-        .user-info b { display: block; font-size: 0.9rem; }
-        .user-info span { font-size: 0.7rem; color: #888; font-family: var(--font-mono); }
-
-        .feed-image {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            background: #EEE;
-        }
-
-        .feed-content { padding: 1.5rem; }
-        .feed-content h3 { font-family: var(--font-display); margin: 0 0 0.5rem 0; }
-        
-        .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-        .tag { font-size: 0.7rem; font-weight: 800; color: var(--primary); text-transform: uppercase; }
-
-        .feed-actions {
-            border-top: 1px solid var(--border);
-            padding: 1rem 1.5rem;
-            display: flex;
-            gap: 2rem;
-        }
-
-        .action-btn { cursor: pointer; font-size: 1.2rem; transition: transform 0.2s; }
-        .action-btn:hover { transform: scale(1.2); }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: var(--white);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-around;
-            padding: 1rem 0;
-            z-index: 1000;
-        }
-
-        .nav-item {
+        .nav-item { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: var(--mid); 
             text-decoration: none;
-            color: #888;
-            font-size: 0.7rem;
-            font-family: var(--font-mono);
-            text-align: center;
+            transition: all 0.3s;
         }
+        .nav-item:hover, .nav-item.active { background: var(--primary); color: var(--white); transform: translateY(-5px); }
+        .nav-item svg { width: 20px; height: 20px; }
 
-        .nav-item.active { color: var(--primary); }
-        .nav-icon { display: block; font-size: 1.5rem; margin-bottom: 0.2rem; }
-
-        .theme-toggle { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
+        @media (max-width: 700px) {
+            .feed-item { flex-direction: column; text-align: center; gap: 1.5rem; padding: 2rem; }
+            .feed-header h2 { font-size: 2rem; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="../index.html" class="nav-brand">
-            <img src="../assets/logo.png" alt="Logo" style="height: 32px;">
-            Calalloo
-        </a>
-        <button class="theme-toggle" onclick="ThemeManager.toggle()" id="theme-toggle-icon">🌙</button>
+        <a href="../index.html" class="nav-brand">Calalloo</a>
+        <div style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--mid);">UPLINK_STABLE // LAB_VERSION: 1.0.4</div>
     </header>
 
-    <div class="container" id="feedContainer">
-        <!-- Heritage Sweets & Treats as Initial Static Content -->
-        <div class="feed-item">
-            <div class="feed-header">
-                <div class="user-meta">
-                    <div class="user-avatar">H</div>
-                    <div class="user-info"><b>Heritage Node</b><span>Preserves • Today</span></div>
-                </div>
+    <main class="container">
+        <div class="lab-status">
+            <div class="status-card">
+                <h4>Discovery Level</h4>
+                <div class="value">ALPHA</div>
+                <div class="label">Access Status</div>
             </div>
-            <img src="https://images.unsplash.com/photo-1590080873976-9f2cd732d9ee?auto=format&fit=crop&q=80&w=600" class="feed-image">
-            <div class="feed-content">
-                <h3>Red Preserved Plum</h3>
-                <p style="font-size: 0.8rem; opacity: 0.8;">Traditional spicy-sweet-salty preserved plum specimen.</p>
-                <div class="tags"><span class="tag">#preserves</span><span class="tag">#heritage</span></div>
+            <div class="status-card">
+                <h4>Neural Nodes</h4>
+                <div class="value">05</div>
+                <div class="label">Sourced Specimens</div>
             </div>
-            <div class="feed-actions">
-                <span class="action-btn">🧡</span><span class="action-btn">💬</span><span class="action-btn">🔖</span>
+            <div class="status-card">
+                <h4>Performance</h4>
+                <div class="value">98%</div>
+                <div class="label">Bioavailability</div>
             </div>
         </div>
 
-        <div class="feed-item">
-            <div class="feed-header">
-                <div class="user-meta">
-                    <div class="user-avatar">S</div>
-                    <div class="user-info"><b>Sweets Node</b><span>Treats • Today</span></div>
+        <div class="feed-header">
+            <h2>Neural Feed</h2>
+            <div class="pulse-status">SYSTEM_LIVE</div>
+        </div>
+
+        <div class="neural-feed">
+            <div class="feed-item">
+                <img src="../assets/heritage/coconut.jpg" class="feed-img" alt="Coconut Protocol">
+                <div class="feed-content">
+                    <h3>The Coconut Protocol initialized.</h3>
+                    <p>Roadside artisanal extraction nodes identified across the Northern Coast. High-fidelity hydration protocols active.</p>
+                    <div class="feed-meta">Category: Bio-Hydration // Time: 4h Ago</div>
                 </div>
             </div>
-            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&q=80&w=600" class="feed-image">
-            <div class="feed-content">
-                <h3>Zesty Tamarind Balls</h3>
-                <p style="font-size: 0.8rem; opacity: 0.8;">Freshly rolled tamarind balls with a sugar coating.</p>
-                <div class="tags"><span class="tag">#sweets</span><span class="tag">#heritage</span></div>
-            </div>
-            <div class="feed-actions">
-                <span class="action-btn">🧡</span><span class="action-btn">💬</span><span class="action-btn">🔖</span>
+
+            <div class="feed-item">
+                <img src="../assets/heritage/callaloo.jpg" class="feed-img" alt="Callaloo Specimen">
+                <div class="feed-content">
+                    <h3>New Heritage Specimen Logged: Callaloo.</h3>
+                    <p>Alpha-grade dasheen bush verified at Macoya Node. Bio-protein profile optimized for 320 kcal deployment.</p>
+                    <div class="feed-meta">Category: Neural Provisions // Time: 1d Ago</div>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <nav class="bottom-nav">
-        <a href="../dashboard/" class="nav-item active"><span class="nav-icon">🏠</span>Feed</a>
-        <a href="../scanner/" class="nav-item"><span class="nav-icon">🔍</span>Scan</a>
-        <a href="../profile/" class="nav-item"><span class="nav-icon">👤</span>Profile</a>
+        <a href="index.html" class="nav-item active" title="Feed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        </a>
+        <a href="../recipes/" class="nav-item" title="Lab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        </a>
+        <a href="../profile/" class="nav-item" title="Neural Profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
     </nav>
 
-    <script src="../js/backend.js"></script>
+    <script src="../js/backend.js?v=6"></script>
     <script>
-        ThemeManager.init();
-
-        async function loadFeed() {
-            const feedContainer = document.getElementById('feedContainer');
-            try {
-                const posts = await supabase.getFeed();
-                if (posts && posts.length > 0) {
-                    // Prepend real posts but keep some static ones for "Lab" feel if desired
-                    posts.forEach(post => {
-                        const item = document.createElement('div');
-                        item.className = 'feed-item';
-                        item.innerHTML = `
-                            <div class="feed-header">
-                                <div class="user-meta">
-                                    <div class="user-avatar">${post.profiles?.id?.substring(0,1).toUpperCase() || 'U'}</div>
-                                    <div class="user-info"><b>${post.profiles?.id?.substring(0,8) || 'User'}</b><span>Heritage Scan • ${new Date(post.created_at).toLocaleDateString()}</span></div>
-                                </div>
-                            </div>
-                            <div class="feed-content">
-                                <h3>${post.dish_name}</h3>
-                                <p style="font-size: 0.8rem; opacity: 0.8;">
-                                    Nutrition: ${post.calories}kcal | P: ${post.protein} | C: ${post.carbs} | F: ${post.fats}
-                                </p>
-                                <div class="tags"><span class="tag">#scanned</span><span class="tag">#heritage</span></div>
-                            </div>
-                            <div class="feed-actions">
-                                <span class="action-btn" onclick="toggleLike(this)">🧡</span><span class="action-btn">💬</span><span class="action-btn">🔖</span>
-                            </div>
-                        `;
-                        feedContainer.prepend(item);
-                    });
-                }
-            } catch (err) {
-                console.error("Feed failed to load", err);
-            }
-        }
-
-        function toggleLike(btn) {
-            btn.style.transform = 'scale(1.5)';
-            setTimeout(() => btn.style.transform = 'scale(1.2)', 200);
-            btn.innerHTML = btn.innerHTML === '🧡' ? '❤️' : '🧡';
-        }
-
-        loadFeed();
+        // Dashboard specific neural logic
+        console.log("Calalloo Neural Hub: Uplink Stable.");
     </script>
 </body>
 </html>
