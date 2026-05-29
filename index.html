@@ -10,6 +10,22 @@
     
     <style>
         :root {
+            --bg: #FAFAFA;
+            --primary: #E87722;
+            --secondary: #FF9F58;
+            --dark: #1A0D00;
+            --mid: #666666;
+            --white: #FFFFFF;
+            --accent: rgba(232, 119, 34, 0.05);
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.05);
+            --pin-shadow: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
             --bg: #0A0A0B;
             --primary: #E87722;
             --secondary: #FF9F58;
@@ -17,15 +33,16 @@
             --mid: #A0A0A5;
             --white: #141416;
             --accent: rgba(232, 119, 34, 0.1);
-            --font-display: 'Fraunces', serif;
-            --font-sans: 'Inter', sans-serif;
-            --font-mono: 'Space Mono', monospace;
+            --header-bg: rgba(10, 10, 11, 0.8);
+            --border: rgba(255, 255, 255, 0.05);
+            --pin-shadow: rgba(0, 0, 0, 0.5);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         body {
@@ -58,9 +75,9 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: rgba(10, 10, 11, 0.8);
+            background: var(--header-bg);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border);
         }
 
         .nav-brand {
@@ -104,9 +121,35 @@
 
         .btn-cta:hover {
             transform: scale(1.05);
-            background: #FFFFFF;
-            color: #000;
+            background: var(--dark);
+            color: var(--white);
         }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--dark);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .theme-toggle svg { width: 18px; height: 18px; }
+        .dark-icon { display: block; }
+        .light-icon { display: none; }
+        [data-theme="dark"] .dark-icon { display: none; }
+        [data-theme="dark"] .light-icon { display: block; }
 
         .hero {
             padding: 6rem 2rem 2rem;
@@ -156,11 +199,11 @@
             background: var(--white);
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px var(--pin-shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-decoration: none;
             color: inherit;
-            border: 1px solid rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
         }
 
         .pin-item:hover {
@@ -276,6 +319,10 @@
             <a href="blog/">Journal</a>
             <a href="login/">Sign In</a>
             <a href="signup/" class="btn-cta">Sign Up</a>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                <svg class="dark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg class="light-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
         </nav>
     </header>
 
@@ -372,5 +419,24 @@
         <p class="copyright">&copy; 2026 Calalloo. A Prisca Dezigns Project. Caribbean Discovery Hub.</p>
     </footer>
 
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme');
+
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
 </body>
 </html>
