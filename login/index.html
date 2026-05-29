@@ -10,16 +10,24 @@
     
     <style>
         :root {
-            --bg: #050508;
+            --bg: #FFF8F0;
             --primary: #E87722;
-            --dark: #FFFFFF;
-            --mid: #8E8E93;
-            --white: #0F0F12;
-            --border: rgba(255, 255, 255, 0.1);
+            --dark: #1A0D00;
+            --mid: #6B5E4F;
+            --white: #FFFFFF;
+            --border: rgba(26, 13, 0, 0.08);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
             --font-mono: 'Space Mono', monospace;
             --glow: rgba(232, 119, 34, 0.4);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --dark: #FFFFFF;
+            --mid: #A1A1A6;
+            --white: #141416;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,18 +42,24 @@
             justify-content: center;
             height: 100vh;
             -webkit-font-smoothing: antialiased; 
+            transition: background 0.3s, color 0.3s;
         }
 
         .auth-card {
-            background: rgba(15, 15, 18, 0.9);
+            background: var(--white);
             backdrop-filter: blur(25px) saturate(180%);
             padding: 4rem;
             width: 100%;
             max-width: 480px;
             border-radius: 40px;
             border: 1px solid var(--border);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15);
             position: relative;
+        }
+
+        [data-theme="dark"] .auth-card {
+            background: rgba(15, 15, 18, 0.9);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
         }
 
         .auth-card::before {
@@ -136,6 +150,7 @@
 
     <script src="../js/backend.js?v=6"></script>
     <script>
+        ThemeManager.init();
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
