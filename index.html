@@ -8,6 +8,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
+    <!-- PWA Uplink -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#E87722">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    
+    <!-- Heritage SEO: JSON-LD WebSite Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Calalloo",
+      "url": "https://priscadezigns9.github.io/calalloo/",
+      "description": "The Caribbean Food Lab. Restoring authentic culinary heritage.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://priscadezigns9.github.io/calalloo/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
     <style>
         :root {
             --bg: #FFF8F0;
@@ -201,6 +222,15 @@
     <script src="js/backend.js"></script>
     <script>
         ThemeManager.init();
+        
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Heritage Uplink Stable (PWA Active)'))
+                    .catch(err => console.log('Uplink Failed', err));
+            });
+        }
     </script>
 
     <section class="hero">
