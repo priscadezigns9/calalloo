@@ -80,7 +80,7 @@
 <body>
     <div class="auth-card">
         <div class="logo-box">
-            <img src="../assets/logo.svg" alt="Logo">
+            <img src="../assets/logo.png" alt="Logo">
         </div>
         <h1>Welcome Back.</h1>
         <form id="loginForm">
@@ -103,11 +103,20 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = "Connecting to Node...";
+            btn.disabled = true;
+            
             const email = document.getElementById('email').value;
             try {
                 await supabase.auth.signIn(email);
                 window.location.href = '../dashboard/';
-            } catch (err) { alert(err.message || "Login failed."); }
+            } catch (err) { 
+                alert(err.message || "Login failed."); 
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         });
     </script>
 </body>
