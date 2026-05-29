@@ -20,6 +20,14 @@
             --font-sans: 'Inter', sans-serif;
         }
 
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --dark: #FFFFFF;
+            --mid: #A1A1A6;
+            --white: #141416;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background-color: var(--bg); 
@@ -27,6 +35,7 @@
             font-family: var(--font-sans); 
             line-height: 1.6; 
             -webkit-font-smoothing: antialiased; 
+            transition: background 0.3s, color 0.3s;
         }
         
         header { 
@@ -87,6 +96,9 @@
             <img src="../assets/logo.png" alt="Logo" style="height: 48px;">
             <span>Calalloo</span>
         </a>
+        <button id="theme-toggle" onclick="ThemeManager.toggle()" style="background: none; border: 1px solid var(--border); cursor: pointer; padding: 8px; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <span id="theme-toggle-icon">🌙</span>
+        </button>
     </header>
 
     <main class="container">
@@ -96,11 +108,11 @@
         <div class="pillar-grid">
             <div class="pillar">
                 <h3>The Heritage</h3>
-                <p>We don't just share recipes; we restore protocols. From the specific "swizzle" of a Callaloo to the caramelization of sugar in a Pelau, we document the exact traditional methods passed down through generations.</p>
+                <p>We are the guardians of the Caribbean culinary soul. Heritage is our commitment to the oral traditions and deep techniques—like the precise rhythmic swizzle of a Callaloo or the slow caramelization of Pelau sugar—that cannot be automated or diluted.</p>
             </div>
             <div class="pillar">
                 <h3>The Sourcing</h3>
-                <p>Provenance is everything. We map our ingredients back to their primary nodes—the farmers at Macoya, the Northern Wholesale markets, and the roadside vendors who extract coconut milk by hand. Authenticity starts in the soil.</p>
+                <p>We bridge the gap between the soil and the table. Sourcing is our logistical map of provenance, tracking every bundle of dasheen bush to the Macoya node and every drop of coconut milk to roadside artisanal extractors along the North Coast.</p>
             </div>
             <div class="pillar">
                 <h3>The Lab</h3>
@@ -109,6 +121,8 @@
         </div>
     </main>
 
+    <script src="../js/backend.js"></script>
+    <script>ThemeManager.init();</script>
     <footer>
         &copy; 2026 Calalloo. Neural Phase.
     </footer>
