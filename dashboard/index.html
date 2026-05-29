@@ -153,7 +153,7 @@
 
     <header>
         <a href="../index.html" class="nav-brand">
-            <img src="../assets/logo.svg" alt="Logo" style="height: 32px;">
+            <img src="../assets/logo.png" alt="Logo" style="height: 32px;">
             Calalloo
         </a>
         <button class="theme-toggle" onclick="ThemeManager.toggle()" id="theme-toggle-icon">🌙</button>
@@ -207,7 +207,49 @@
     <script src="../js/backend.js"></script>
     <script>
         ThemeManager.init();
-        // The heart branding: we use the 🧡 emoji as the default 'like' button in this version
+
+        async function loadFeed() {
+            const feedContainer = document.getElementById('feedContainer');
+            try {
+                const posts = await supabase.getFeed();
+                if (posts && posts.length > 0) {
+                    // Prepend real posts but keep some static ones for "Lab" feel if desired
+                    posts.forEach(post => {
+                        const item = document.createElement('div');
+                        item.className = 'feed-item';
+                        item.innerHTML = `
+                            <div class="feed-header">
+                                <div class="user-meta">
+                                    <div class="user-avatar">${post.profiles?.id?.substring(0,1).toUpperCase() || 'U'}</div>
+                                    <div class="user-info"><b>${post.profiles?.id?.substring(0,8) || 'User'}</b><span>Heritage Scan • ${new Date(post.created_at).toLocaleDateString()}</span></div>
+                                </div>
+                            </div>
+                            <div class="feed-content">
+                                <h3>${post.dish_name}</h3>
+                                <p style="font-size: 0.8rem; opacity: 0.8;">
+                                    Nutrition: ${post.calories}kcal | P: ${post.protein} | C: ${post.carbs} | F: ${post.fats}
+                                </p>
+                                <div class="tags"><span class="tag">#scanned</span><span class="tag">#heritage</span></div>
+                            </div>
+                            <div class="feed-actions">
+                                <span class="action-btn" onclick="toggleLike(this)">🧡</span><span class="action-btn">💬</span><span class="action-btn">🔖</span>
+                            </div>
+                        `;
+                        feedContainer.prepend(item);
+                    });
+                }
+            } catch (err) {
+                console.error("Feed failed to load", err);
+            }
+        }
+
+        function toggleLike(btn) {
+            btn.style.transform = 'scale(1.5)';
+            setTimeout(() => btn.style.transform = 'scale(1.2)', 200);
+            btn.innerHTML = btn.innerHTML === '🧡' ? '❤️' : '🧡';
+        }
+
+        loadFeed();
     </script>
 </body>
 </html>
