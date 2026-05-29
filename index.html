@@ -20,6 +20,14 @@
             --font-sans: 'Inter', sans-serif;
         }
 
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --dark: #FFFFFF;
+            --mid: #A1A1A6;
+            --white: #141416;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background-color: var(--bg); 
@@ -134,12 +142,19 @@
         </a>
         <nav class="nav-links">
             <a href="about/">About</a>
-            <a href="about/#heritage">Heritage</a>
-            <a href="about/#sourcing">Sourcing</a>
+            <a href="blog/">Blog</a>
             <a href="login/">Sign In</a>
             <a href="signup/" class="btn-platform">Join the Lab</a>
+            <button id="theme-toggle" onclick="ThemeManager.toggle()" style="background: none; border: 1px solid var(--border); cursor: pointer; padding: 8px; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" title="Toggle Theme">
+                <span id="theme-toggle-icon">🌙</span>
+            </button>
         </nav>
     </header>
+
+    <script src="js/backend.js"></script>
+    <script>
+        ThemeManager.init();
+    </script>
 
     <section class="hero">
         <h1>Deep Caribbean Heritage.</h1>
