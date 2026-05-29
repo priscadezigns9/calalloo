@@ -65,3 +65,23 @@ const supabase = {
         });
     }
 };
+
+const ThemeManager = {
+    init() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        this.updateIcon(currentTheme);
+    },
+    toggle() {
+        const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        this.updateIcon(newTheme);
+    },
+    updateIcon(theme) {
+        const icon = document.getElementById('theme-toggle-icon');
+        if (icon) {
+            icon.innerText = theme === 'dark' ? '☀️' : '🌙';
+        }
+    }
+};
