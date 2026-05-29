@@ -82,9 +82,6 @@ const ThemeManager = {
         this.updateIcon(newTheme);
     },
     updateIcon(theme) {
-        const icon = document.getElementById('theme-toggle-icon');
-        if (icon) {
-            icon.innerText = theme === 'dark' ? '☀️' : '🌙';
-        }
+        // Class-based theme management for modern toggles
     }
 };
