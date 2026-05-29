@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,31 +8,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0A0A0B;
+            --bg: #FFF8F0;
             --primary: #E87722;
-            --dark: #FFFFFF;
-            --mid: #A0A0A5;
-            --white: #141416;
+            --text: #1A0D00;
+            --white: #FFFFFF;
+            --border: rgba(26, 13, 0, 0.05);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
             --font-mono: 'Space Mono', monospace;
         }
 
+        [data-theme="dark"] {
+            --bg: #0A0A0A;
+            --text: #FFFFFF;
+            --white: #1A1A1A;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
         body {
             background-color: var(--bg);
-            color: var(--dark);
+            color: var(--text);
             font-family: var(--font-sans);
             margin: 0;
             padding-bottom: 5rem;
         }
 
         header {
-            padding: 1.5rem 2rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--white);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border);
         }
 
         .nav-brand {
@@ -41,151 +48,96 @@
             font-size: 1.5rem;
             color: var(--primary);
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .container {
             max-width: 800px;
-            margin: 4rem auto;
+            margin: 2rem auto;
             padding: 0 2rem;
         }
 
         .scanner-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
         }
 
         .scanner-header h1 {
             font-family: var(--font-display);
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
         }
 
         .upload-box {
-            border: 2px dashed rgba(255, 255, 255, 0.1);
-            padding: 4rem;
+            border: 2px dashed var(--primary);
+            padding: 3rem;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
+            background: var(--white);
             transition: all 0.3s ease;
         }
 
-        .upload-box:hover {
-            border-color: var(--primary);
-            background: rgba(232, 119, 34, 0.02);
-        }
+        .upload-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
 
-        .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            display: block;
-        }
-
-        .upload-box p {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: var(--mid);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-        .results-container {
-            margin-top: 4rem;
-            display: none;
-        }
+        #fileInput { display: none; }
 
         .loading {
             text-align: center;
             font-family: var(--font-mono);
             color: var(--primary);
             display: none;
+            padding: 2rem;
         }
+
+        .results-container { display: none; margin-top: 2rem; }
 
         .result-card {
             background: var(--white);
-            padding: 3rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
 
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-        }
-
-        .result-header h2 {
+        .editable-title {
             font-family: var(--font-display);
-            font-size: 2.5rem;
-            margin: 0;
+            font-size: 2rem;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            width: 100%;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid transparent;
         }
+        .editable-title:focus { outline: none; border-bottom: 2px solid var(--primary); }
 
         .nutrition-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 2rem;
-            border-radius: 4px;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--bg);
+            padding: 1.5rem;
+            border-radius: 8px;
         }
 
-        .nutri-item span {
-            display: block;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--mid);
-            text-transform: uppercase;
-        }
+        .nutri-item span { display: block; font-family: var(--font-mono); font-size: 0.6rem; color: #888; text-transform: uppercase; }
+        .nutri-item b { font-size: 1.2rem; color: var(--primary); }
 
-        .nutri-item b {
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-
-        .ingredient-list {
-            margin-bottom: 3rem;
-        }
-
-        .ingredient-list h4 {
-            font-family: var(--font-mono);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            color: var(--mid);
-            margin-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 0.5rem;
-        }
-
-        .ingredient-tag {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.5rem 1rem;
-            border-radius: 200px;
-            font-size: 0.9rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .sourcing-cta {
-            background: rgba(232, 119, 34, 0.1);
-            padding: 2rem;
-            border-radius: 4px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .sourcing-cta h4 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .sourcing-cta p {
-            font-size: 0.9rem;
-            color: var(--mid);
+        .btn-post {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-weight: 800;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 1rem;
         }
 
         .bottom-nav {
@@ -193,62 +145,46 @@
             bottom: 0;
             width: 100%;
             background: var(--white);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
             padding: 1rem 0;
             z-index: 1000;
         }
 
-        .nav-item {
-            text-decoration: none;
-            color: var(--mid);
-            font-size: 0.7rem;
-            font-family: var(--font-mono);
-            text-transform: uppercase;
-            text-align: center;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-icon {
-            display: block;
-            font-size: 1.5rem;
-            margin-bottom: 0.2rem;
-        }
+        .nav-item { text-decoration: none; color: #888; font-size: 0.7rem; font-family: var(--font-mono); text-align: center; }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon { display: block; font-size: 1.5rem; margin-bottom: 0.2rem; }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="../index.html" class="nav-brand">Calalloo</a>
+        <a href="../index.html" class="nav-brand">
+            <img src="../assets/logo.svg" alt="Logo" style="height: 32px;">
+            Calalloo
+        </a>
     </header>
 
     <div class="container">
         <div class="scanner-header">
-            <h1>AI Food Scanner.</h1>
-            <p>Upload a photo of your meal. Our laboratory engine will deconstruct the macros and identify local sourcing nodes.</p>
+            <h1>Specimen Lab.</h1>
+            <p>Upload a photo of your heritage specimen for deconstruction.</p>
         </div>
 
         <div class="upload-box" id="dropZone">
             <span class="upload-icon">📸</span>
-            <p>Drag image here or click to upload</p>
+            <p>Tap to upload a photo</p>
             <input type="file" id="fileInput" accept="image/*">
         </div>
 
-        <div class="loading" id="loading">
-            [ANALYZING_MOLECULAR_STRUCTURE...]
-        </div>
+        <div class="loading" id="loading">[ANALYZING_STRUCTURE...]</div>
 
         <div class="results-container" id="results">
             <div class="result-card">
-                <div class="result-header">
-                    <h2 id="resDishName">--</h2>
-                    <span id="resConfidence" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--primary);">98.4% CONFIDENCE</span>
-                </div>
-
+                <p style="font-size: 0.7rem; font-family: var(--font-mono); color: var(--primary); margin-bottom: 5px;">VERIFY IDENTIFICATION:</p>
+                <input type="text" id="resDishName" class="editable-title" value="Analyzing...">
+                
                 <div class="nutrition-grid">
                     <div class="nutri-item"><span>Calories</span><b id="resCalories">0</b></div>
                     <div class="nutri-item"><span>Protein</span><b id="resProtein">0g</b></div>
@@ -256,34 +192,15 @@
                     <div class="nutri-item"><span>Fats</span><b id="resFats">0g</b></div>
                 </div>
 
-                <div class="ingredient-list">
-                    <h4>Detected Ingredients</h4>
-                    <div id="resIngredients">
-                        <!-- Tags injected here -->
-                    </div>
-                </div>
-
-                <div class="sourcing-cta">
-                    <h4>Sourcing Insight</h4>
-                    <p id="resSourcing">Analyzing closest local procurement nodes...</p>
-                </div>
+                <button class="btn-post" onclick="postScan()">Post to My Feed 🧡</button>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="../dashboard/" class="nav-item">
-            <span class="nav-icon">🏠</span>
-            Feed
-        </a>
-        <a href="../scanner/" class="nav-item active">
-            <span class="nav-icon">🔍</span>
-            Scan
-        </a>
-        <a href="../profile/" class="nav-item">
-            <span class="nav-icon">👤</span>
-            Profile
-        </a>
+        <a href="../dashboard/" class="nav-item"><span class="nav-icon">🏠</span>Feed</a>
+        <a href="../scanner/" class="nav-item active"><span class="nav-icon">🔍</span>Scan</a>
+        <a href="../profile/" class="nav-item"><span class="nav-icon">👤</span>Profile</a>
     </nav>
 
     <script src="../js/backend.js"></script>
@@ -297,58 +214,24 @@
 
         fileInput.onchange = async (e) => {
             if (e.target.files.length === 0) return;
-            
             dropZone.style.display = 'none';
             loading.style.display = 'block';
-            results.style.display = 'none';
 
-            // Simulate AI Analysis
-            setTimeout(async () => {
-                const mockResult = {
-                    dish_name: "Curry Channa & Aloo Bowl",
-                    calories: 380,
-                    protein_g: 14,
-                    carbs_g: 58,
-                    fat_g: 10,
-                    ingredients: ["Chickpeas", "Potatoes", "Curry Powder", "Garlic", "Onion", "Pimento"],
-                    sourcing: "Closest sourcing node: NAMDEVCO Macoya Farmers Market (6.2km). Detected Artisanal Supplier: Crafted Crates."
-                };
-
-                document.getElementById('resDishName').textContent = mockResult.dish_name;
-                document.getElementById('resCalories').textContent = mockResult.calories;
-                document.getElementById('resProtein').textContent = mockResult.protein_g + "g";
-                document.getElementById('resCarbs').textContent = mockResult.carbs_g + "g";
-                document.getElementById('resFats').textContent = mockResult.fat_g + "g";
-                document.getElementById('resSourcing').textContent = mockResult.sourcing;
-
-                const ingDiv = document.getElementById('resIngredients');
-                ingDiv.innerHTML = '';
-                mockResult.ingredients.forEach(ing => {
-                    const span = document.createElement('span');
-                    span.className = 'ingredient-tag';
-                    span.textContent = ing;
-                    ingDiv.appendChild(span);
-                });
-
+            setTimeout(() => {
                 loading.style.display = 'none';
                 results.style.display = 'block';
-
-                // Save to Supabase
-                try {
-                    await supabase.uploadScan({
-                        dish_name: mockResult.dish_name,
-                        calories: mockResult.calories,
-                        protein_g: mockResult.protein_g,
-                        carbs_g: mockResult.carbs_g,
-                        fat_g: mockResult.fat_g,
-                        ingredients: mockResult.ingredients,
-                        user_country: "Trinidad"
-                    });
-                } catch (err) {
-                    console.error("Save failed", err);
-                }
-            }, 2500);
+                document.getElementById('resDishName').value = "Preserved Mango Specimen";
+                document.getElementById('resCalories').textContent = "120";
+                document.getElementById('resProtein').textContent = "1g";
+                document.getElementById('resCarbs').textContent = "30g";
+                document.getElementById('resFats').textContent = "0g";
+            }, 2000);
         };
+
+        function postScan() {
+            alert("Specimen posted to your heritage feed!");
+            window.location.href = '../dashboard/';
+        }
     </script>
 </body>
 </html>
