@@ -69,6 +69,27 @@ const supabase = {
     }
 };
 
+window.backend = {
+    signIn: async (email, password) => {
+        try {
+            const res = await supabase.auth.signIn(email, password);
+            return { success: true, ...res };
+        } catch (e) {
+            return { success: false, error: e.message || "Uplink Failed" };
+        }
+    },
+    signUp: async (email, password, fullName) => {
+        try {
+            const res = await supabase.auth.signUp(email, password, fullName);
+            return { success: true, ...res };
+        } catch (e) {
+            return { success: false, error: e.message || "Initialization Failed" };
+        }
+    },
+    getUser: () => supabase.auth.getUser(),
+    signOut: () => supabase.auth.signOut()
+};
+
 const ThemeManager = {
     init() {
         const currentTheme = localStorage.getItem('theme') || 'light';
