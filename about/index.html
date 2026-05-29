@@ -1,2 +1,117 @@
-<h1>Our Mission</h1>
-<p>Calalloo is an archive of Caribbean culinary heritage powered by AI. We bridge traditional flavors and modern logistics.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Calalloo Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #FFF8F0;
+            --primary: #E87722;
+            --dark: #1A0D00;
+            --mid: #6B5E4F;
+            --white: #FFFFFF;
+            --border: rgba(26, 13, 0, 0.08);
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--dark); 
+            font-family: var(--font-sans); 
+            line-height: 1.6; 
+            -webkit-font-smoothing: antialiased; 
+        }
+        
+        header { 
+            padding: 1.5rem 2.5rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+        }
+
+        .nav-brand { 
+            font-family: var(--font-display); 
+            font-weight: 900; 
+            font-size: 1.8rem; 
+            color: var(--primary); 
+            text-decoration: none; 
+            letter-spacing: -0.05em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .container { max-width: 800px; margin: 8rem auto; padding: 0 2rem; }
+        
+        h1 { 
+            font-family: var(--font-display); 
+            font-size: clamp(3.5rem, 10vw, 5rem); 
+            line-height: 0.9; 
+            margin-bottom: 3rem; 
+            letter-spacing: -0.05em; 
+            font-weight: 900;
+        }
+
+        .mission-text { font-size: 1.4rem; color: var(--mid); margin-bottom: 5rem; line-height: 1.4; }
+        .mission-text b { color: var(--dark); }
+
+        .pillar-grid { display: grid; gap: 4rem; margin-bottom: 8rem; }
+        .pillar h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 1rem; font-weight: 900; color: var(--primary); }
+        .pillar p { font-size: 1.1rem; color: var(--mid); }
+
+        footer { 
+            padding: 6rem 2rem; 
+            border-top: 1px solid var(--border); 
+            text-align: center; 
+            color: var(--mid); 
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="nav-brand">
+            <img src="../assets/logo.png" alt="Logo" style="height: 48px;">
+            <span>Calalloo</span>
+        </a>
+    </header>
+
+    <main class="container">
+        <h1>Authenticity as a Protocol.</h1>
+        <p class="mission-text">Calalloo is a <b>Heritage Restoration Lab</b>. We bridge the gap between deep Caribbean culinary traditions and technical precision, ensuring that the soul of our food is never lost to time or generic dilution.</p>
+
+        <div class="pillar-grid">
+            <div class="pillar">
+                <h3>The Heritage</h3>
+                <p>We don't just share recipes; we restore protocols. From the specific "swizzle" of a Callaloo to the caramelization of sugar in a Pelau, we document the exact traditional methods passed down through generations.</p>
+            </div>
+            <div class="pillar">
+                <h3>The Sourcing</h3>
+                <p>Provenance is everything. We map our ingredients back to their primary nodes—the farmers at Macoya, the Northern Wholesale markets, and the roadside vendors who extract coconut milk by hand. Authenticity starts in the soil.</p>
+            </div>
+            <div class="pillar">
+                <h3>The Lab</h3>
+                <p>By treating heritage food as a high-performance provision, we optimize the bioavailability of traditional ingredients while honoring the culture that created them.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 Calalloo. Neural Phase.
+    </footer>
+
+</body>
+</html>
