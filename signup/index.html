@@ -79,7 +79,7 @@
 <body>
     <div class="auth-card">
         <div class="logo-box">
-            <img src="../assets//assets/logo.png" alt="Logo">
+            <img src="../assets/logo.png" alt="Logo">
         </div>
         <h1>Join the Lab.</h1>
         <form id="signupForm">
@@ -101,12 +101,21 @@
     <script>
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = "Initializing Node...";
+            btn.disabled = true;
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             try {
                 await supabase.auth.signUp(email, password);
                 window.location.href = '../dashboard/';
-            } catch (err) { alert(err.message || "Signup failed."); }
+            } catch (err) { 
+                alert(err.message || "Signup failed."); 
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         });
     </script>
 </body>
