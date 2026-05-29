@@ -1,35 +1,19 @@
-const CACHE_NAME = 'calalloo-pwa-v2';
+const CACHE_NAME = 'calalloo-heritage-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/logo.svg',
-  '/icon.svg',
-  '/manifest.json',
-  '/login/',
-  '/dashboard/',
-  '/about/',
-  '/magazine/'
+  'index.html',
+  'assets/logo.png',
+  'assets/heritage/callaloo.jpg',
+  'assets/heritage/pelau.jpg',
+  'assets/heritage/oil-down.jpg',
+  'assets/heritage/pholourie.jpg',
+  'assets/heritage/sahina.png',
+  'js/backend.js'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS);
-    })
-  );
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
     })
   );
 });
