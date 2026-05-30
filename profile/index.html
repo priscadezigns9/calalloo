@@ -281,7 +281,8 @@
         }
 
         function openSettings() {
-            alert("Settings Hub:\n- Change Appearance (Use Toggle)\n- Contact Support: support@calalloo.heritage\n- Region Status: Active");
+            const subject = encodeURIComponent("Support Request: Calalloo Node");
+            window.location.href = `mailto:agency@priscadesigns.org?subject=${subject}`;
         }
 
         function openSaved() {
@@ -289,6 +290,15 @@
         }
 
         loadProfile();
+        // Live Stat Polling (Simulated for Demo)
+        setInterval(() => {
+            const user = supabase.auth.getUser();
+            if(user) {
+                document.getElementById('statScans').innerText = user.scans || 0;
+                document.getElementById('statFollowers').innerText = user.followers || 0;
+                document.getElementById('statFollowing').innerText = user.following || 0;
+            }
+        }, 5000);
     </script>
 </body>
 </html>
