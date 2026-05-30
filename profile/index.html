@@ -5,278 +5,192 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile | Calalloo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg: #0A0A0B;
+            --bg: #FFF8F0;
             --primary: #E87722;
-            --dark: #FFFFFF;
-            --mid: #A0A0A5;
-            --white: #141416;
+            --dark: #1A0D00;
+            --mid: #6B5E4F;
+            --white: #FFFFFF;
+            --border: rgba(232, 119, 34, 0.1);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
-            --font-mono: 'Space Mono', monospace;
         }
 
-        body {
-            background-color: var(--bg);
-            color: var(--dark);
-            font-family: var(--font-sans);
-            margin: 0;
-            padding-bottom: 5rem;
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --dark: #FFFFFF;
+            --mid: #A1A1A6;
+            --white: #141416;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
-        header {
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--dark); 
+            font-family: var(--font-sans); 
+            line-height: 1.6; 
+            padding-bottom: 100px;
+        }
+
+        header { 
+            padding: 1rem 1.5rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
             background: var(--white);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-brand {
-            font-family: var(--font-display);
-            font-weight: 900;
-            font-size: 1.5rem;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .profile-header {
-            padding: 6rem 0 4rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            background: var(--primary);
-            border-radius: 50%;
-            margin: 0 auto 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 900;
-            color: #000;
-            border: 4px solid var(--white);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .profile-header h1 {
-            font-family: var(--font-display);
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-header p {
-            font-family: var(--font-mono);
-            color: var(--mid);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: center;
-            gap: 4rem;
-            margin-top: 3rem;
-        }
-
-        .stat-item b {
-            display: block;
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-
-        .stat-item span {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--mid);
-            text-transform: uppercase;
-        }
-
-        .grid-header {
-            padding: 3rem 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .grid-header h3 {
-            font-family: var(--font-display);
-            font-size: 1.5rem;
-        }
-
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-        }
-
-        .grid-img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border-radius: 4px;
-            background: #222;
-        }
-
-        .btn-logout {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--mid);
-            padding: 0.5rem 1.5rem;
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            margin-top: 4rem;
-        }
-
-        .btn-logout:hover {
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: var(--white);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-around;
-            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky; 
+            top: 0; 
             z-index: 1000;
         }
 
-        .nav-item {
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.4rem; color: var(--primary); text-decoration: none; }
+        .logo-small { height: 32px; width: 32px; border-radius: 50%; border: 1px solid var(--border); }
+
+        .container { max-width: 600px; margin: 3rem auto; padding: 0 1.5rem; text-align: center; }
+
+        .profile-header { margin-bottom: 3rem; position: relative; display: inline-block; }
+        .avatar-container { 
+            width: 120px; 
+            height: 120px; 
+            border-radius: 50%; 
+            background: #eee; 
+            border: 3px solid var(--primary);
+            overflow: hidden;
+            margin: 0 auto 1.5rem;
+            cursor: pointer;
+            position: relative;
+        }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-container .upload-hint { 
+            position: absolute; 
+            bottom: 0; 
+            width: 100%; 
+            background: rgba(0,0,0,0.5); 
+            color: white; 
+            font-size: 0.6rem; 
+            padding: 4px 0; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+
+        h2 { font-family: var(--font-display); font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; }
+        .user-email { color: var(--mid); font-size: 0.9rem; margin-bottom: 2rem; }
+
+        .stats-grid { 
+            display: flex; 
+            justify-content: center; 
+            gap: 3rem; 
+            margin-bottom: 3rem; 
+            padding: 1.5rem; 
+            background: var(--white); 
+            border-radius: 24px; 
+            border: 1px solid var(--border);
+        }
+        .stat-item b { display: block; font-size: 1.2rem; color: var(--primary); }
+        .stat-item span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mid); }
+
+        .action-list { text-align: left; background: var(--white); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; }
+        .action-item { 
+            padding: 1.2rem 1.5rem; 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
             text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        .action-item:last-child { border-bottom: none; color: #ff4444; }
+        .action-item svg { width: 20px; height: 20px; color: var(--mid); }
+
+        /* Modern Bottom Nav */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 1.5rem; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(20px); 
+            padding: 0.8rem 2rem; 
+            border-radius: 100px; 
+            display: flex; 
+            gap: 3rem; 
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(232, 119, 34, 0.15);
+            z-index: 2000;
+        }
+
+        .nav-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            text-decoration: none; 
             color: var(--mid);
-            font-size: 0.7rem;
-            font-family: var(--font-mono);
-            text-transform: uppercase;
-            text-align: center;
         }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-icon {
-            display: block;
-            font-size: 1.5rem;
-            margin-bottom: 0.2rem;
-        }
+        .nav-item.active { color: var(--primary); }
+        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
+        .nav-item span { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="../index.html" class="nav-brand">
-            <img src="../assets/logo.png" alt="Logo" style="height: 32px; vertical-align: middle; margin-right: 8px;">
-            Calalloo
-        </a>
+        <a href="../index.html" class="nav-brand">Calalloo</a>
+        <img src="../assets/logo.png" class="logo-small" alt="Lab Logo">
     </header>
 
-    <div class="container">
+    <main class="container">
         <div class="profile-header">
-            <div class="profile-avatar" id="profInitial">U</div>
-            <h1 id="profEmail">Lab Member</h1>
-            <p id="profId">NODE_ID: --</p>
-            
-            <div class="profile-stats">
-                <div class="stat-item"><b>12</b><span>Scans</span></div>
-                <div class="stat-item"><b>84</b><span>Followers</span></div>
-                <div class="stat-item"><b>215</b><span>Following</span></div>
+            <div class="avatar-container">
+                <img src="" alt="" id="userAvatar">
+                <div class="upload-hint">Add Photo</div>
             </div>
-
-            <button class="btn-logout" id="logoutBtn">Terminate Session</button>
+            <h2 id="userName">Specimen Alpha</h2>
+            <p class="user-email" id="userEmail">uplink@calalloo.lab</p>
         </div>
 
-        <div class="grid-header">
-            <h3>Discovery Log</h3>
-            <span style="font-family: var(--font-mono); color: var(--primary); font-size: 0.7rem;">PHOTO_STREAM_ACTIVE</span>
+        <div class="stats-grid">
+            <div class="stat-item"><b>0</b><span>Scans</span></div>
+            <div class="stat-item"><b>0</b><span>Followers</span></div>
+            <div class="stat-item"><b>0</b><span>Following</span></div>
         </div>
 
-        <div class="photo-grid" id="photoGrid">
-            <!-- Mock photos -->
-            <div class="grid-img"></div>
-            <div class="grid-img"></div>
-            <div class="grid-img"></div>
-            <div class="grid-img"></div>
-            <div class="grid-img"></div>
-            <div class="grid-img"></div>
+        <div class="action-list">
+            <a href="#" class="action-item"><span>Settings</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></a>
+            <a href="#" class="action-item"><span>Saved Heritage</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></a>
+            <a href="javascript:supabase.auth.signOut()" class="action-item"><span>Sign Out</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></a>
         </div>
-    </div>
+    </main>
 
     <nav class="bottom-nav">
         <a href="../dashboard/" class="nav-item">
-            <span class="nav-icon">🏠</span>
-            Feed
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Feed</span>
         </a>
-        <a href="../scanner/" class="nav-item">
-            <span class="nav-icon">🔍</span>
-            Scan
+        <a href="../scan/" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <span>Scan</span>
         </a>
-        <a href="../profile/" class="nav-item active">
-            <span class="nav-icon">👤</span>
-            Profile
+        <a href="index.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Profile</span>
         </a>
     </nav>
 
     <script src="../js/backend.js"></script>
     <script>
+        ThemeManager.init();
         const user = supabase.auth.getUser();
-        if (!user) {
-            window.location.href = '../login/';
-        } else {
-            document.getElementById('profEmail').textContent = user.email.split('@')[0];
-            document.getElementById('profInitial').textContent = user.email[0].toUpperCase();
-            document.getElementById('profId').textContent = "NODE_ID: " + user.id.substring(0, 8);
+        if(user) {
+            document.getElementById('userEmail').innerText = user.email;
+            document.getElementById('userName').innerText = user.full_name || "New Member";
         }
-
-        document.getElementById('logoutBtn').onclick = () => {
-            supabase.auth.signOut();
-        };
-
-        // Load personal scan grid
-        async function loadProfileGrid() {
-            try {
-                const scans = await supabase.request(`/food_scans?user_id=eq.${user.id}&select=*`);
-                const grid = document.getElementById('photoGrid');
-                if (scans && scans.length > 0) {
-                    grid.innerHTML = '';
-                    scans.forEach(item => {
-                        const img = document.createElement('img');
-                        img.className = 'grid-img';
-                        img.src = item.photo_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=300';
-                        grid.appendChild(img);
-                    });
-                } else {
-                    grid.innerHTML = `
-                        <div style="grid-column: 1/4; padding: 4rem 0; text-align: center; color: var(--mid);">
-                            <p>No specimens archived yet.</p>
-                            <a href="../scanner/" style="color: var(--primary); text-decoration: none; font-family: var(--font-mono); font-size: 0.8rem;">INITIATE FIRST SCAN</a>
-                        </div>
-                    `;
-                }
-            } catch (err) {
-                console.log("No personal scans found");
-            }
-        }
-        loadProfileGrid();
     </script>
 </body>
 </html>
