@@ -114,41 +114,80 @@
 
         .logo-small { height: 36px; width: 36px; border-radius: 50%; border: 1px solid var(--border); object-fit: cover; }
 
-        .container { max-width: 1200px; margin: 2.5rem auto; padding: 0 1rem; }
+        .container { max-width: 600px; margin: 2.5rem auto; padding: 0 1rem; }
 
         /* Discovery Filter */
-        .discovery-filter { display: flex; gap: 1rem; margin-bottom: 2rem; overflow-x: auto; padding-bottom: 0.5rem; }
-        .filter-chip { 
-            padding: 0.6rem 1.2rem; background: var(--white); border: 1px solid var(--border); 
-            border-radius: 100px; font-size: 0.8rem; font-weight: 700; color: var(--mid); 
-            white-space: nowrap; cursor: pointer; transition: all 0.2s;
+        .discovery-filter { 
+            display: flex; 
+            gap: 1rem; 
+            margin-bottom: 2rem; 
+            overflow-x: auto; 
+            padding-bottom: 0.8rem;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .discovery-filter::-webkit-scrollbar { display: none; }
 
-        /* Pinterest-Style Grid */
-        .feed-grid { 
-            column-count: 2; 
-            column-gap: 1.5rem; 
+        .filter-chip { 
+            padding: 0.6rem 1.4rem; background: var(--white); border: 1px solid var(--border); 
+            border-radius: 100px; font-size: 0.8rem; font-weight: 800; color: var(--mid); 
+            white-space: nowrap; cursor: pointer; transition: all 0.2s;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
-        @media (min-width: 768px) { .feed-grid { column-count: 3; } }
-        @media (min-width: 1024px) { .feed-grid { column-count: 4; } }
+        .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(232,119,34,0.2); }
+
+        /* Single-Column Feed (Facebook/Social Style) */
+        .feed-grid { 
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
 
         .feed-card { 
             background: var(--white);
-            border-radius: 24px;
-            margin-bottom: 1.5rem;
-            break-inside: avoid;
+            border-radius: 28px;
             border: 1px solid var(--border);
             overflow: hidden;
             transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
-        .feed-card:hover { transform: scale(1.02); border-color: var(--primary); }
 
-        .card-img { width: 100%; display: block; border-radius: 24px 24px 0 0; }
-        .card-content { padding: 1rem; }
-        .card-title { font-family: var(--font-display); font-weight: 900; font-size: 1.1rem; margin-bottom: 0.5rem; }
-        .card-user { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--mid); }
-        .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: #eee; }
+        .card-header {
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-img { width: 100%; display: block; aspect-ratio: 4/5; object-fit: cover; }
+        
+        .card-content { padding: 1.2rem; }
+        .card-title { font-family: var(--font-display); font-weight: 900; font-size: 1.3rem; margin-bottom: 0.8rem; line-height: 1.2; }
+        
+        .card-footer {
+            padding: 0 1.2rem 1.2rem;
+            display: flex;
+            gap: 1.5rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+
+        .interaction-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--mid);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .interaction-btn:hover { color: var(--primary); }
+        .interaction-btn svg { width: 20px; height: 20px; }
+        .interaction-btn.active { color: var(--primary); }
+
+        .card-user { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 700; color: var(--dark); }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); }
 
         /* Modern Bottom Nav */
         .bottom-nav { 
@@ -207,10 +246,11 @@
     <main class="container">
         <div class="discovery-filter">
             <div class="filter-chip active" onclick="filterFeed('all')">All Recipes</div>
-            <div class="filter-chip" onclick="filterFeed('For You')">For You</div>
-            <div class="filter-chip" onclick="filterFeed('Trending')">Trending</div>
+            <div class="filter-chip" onclick="filterFeed('Sweets')">Sweets</div>
+            <div class="filter-chip" onclick="filterFeed('Pastries')">Pastries</div>
             <div class="filter-chip" onclick="filterFeed('Provisions')">Provisions</div>
             <div class="filter-chip" onclick="filterFeed('Street Food')">Street Food</div>
+            <div class="filter-chip" onclick="filterFeed('Trending')">Trending</div>
         </div>
         <div class="feed-grid" id="feedGrid">
             <!-- Dynamic Heritage Nodes Injected via script -->
@@ -240,32 +280,27 @@
         const feedGrid = document.getElementById('feedGrid');
         
         const heritageNodes = [
-            {"title": "Trinidadian Callaloo Protocol", "category": "Provisions", "img": "../assets/heritage/callaloo.jpg", "user": "Heritage Lab"},
-            {"title": "Oil Down Tradition", "category": "Street Food", "img": "../assets/heritage/oil-down.jpg", "user": "Grenada Node"},
-            {"title": "Pelau Matrix", "category": "Trending", "img": "../assets/heritage/pelau.jpg", "user": "Trinidad Node"},
-            {"title": "Ackee and Saltfish Node", "category": "For You", "img": "../assets/heritage/ackee.jpg", "user": "Jamaica Node"},
-            {"title": "Cou-Cou and Flying Fish", "category": "Provisions", "img": "../assets/heritage/coucou.jpg", "user": "Barbados Node"},
-            {"title": "Buss-up-Shut Roti", "category": "Street Food", "img": "../assets/heritage/roti.jpg", "user": "Guyana Node"},
-            {"title": "Jerk Chicken Uplink", "category": "Trending", "img": "../assets/heritage/jerk.jpg", "user": "Jamaica Node"},
-            {"title": "Conch Salad Core", "category": "For You", "img": "../assets/heritage/conch.jpg", "user": "Bahamas Node"},
-            {"title": "Guyanese Metemgee", "category": "Provisions", "img": "../assets/heritage/metemgee.jpg", "user": "Guyana Node"},
-            {"title": "Montserratian Goat Water", "category": "Provisions", "img": "../assets/heritage/goatwater.jpg", "user": "Montserrat Node"},
-            {"title": "Crab and Dumpling Node", "category": "Street Food", "img": "../assets/heritage/crab.jpg", "user": "Tobago Node"},
-            {"title": "Antiguan Pepperpot", "category": "Trending", "img": "../assets/heritage/pepperpot.jpg", "user": "Antigua Node"},
-            {"title": "Keshi Yena Synthesis", "category": "For You", "img": "../assets/heritage/keshi.jpg", "user": "Aruba Node"},
-            {"title": "Haitian Pork Griot", "category": "Street Food", "img": "../assets/heritage/griot.jpg", "user": "Haiti Node"},
-            {"title": "Fungi and Fish Protocol", "category": "Provisions", "img": "../assets/heritage/fungi.jpg", "user": "BVI Node"}
+            {"title": "Trinidadian Callaloo Protocol", "category": "Provisions", "img": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000&auto=format&fit=crop", "user": "Heritage Lab"},
+            {"title": "Oil Down Tradition", "category": "Street Food", "img": "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=1000&auto=format&fit=crop", "user": "Grenada Node"},
+            {"title": "Pelau Matrix", "category": "Trending", "img": "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?q=80&w=1000&auto=format&fit=crop", "user": "Trinidad Node"},
+            {"title": "Ackee and Saltfish Node", "category": "For You", "img": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop", "user": "Jamaica Node"},
+            {"title": "Cou-Cou and Flying Fish", "category": "Provisions", "img": "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=1000&auto=format&fit=crop", "user": "Barbados Node"},
+            {"title": "Buss-up-Shut Roti", "category": "Street Food", "img": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1000&auto=format&fit=crop", "user": "Guyana Node"},
+            {"title": "Coconut Sugar Cake", "category": "Sweets", "img": "https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=1000&auto=format&fit=crop", "user": "Heritage Lab"},
+            {"title": "Currants Roll Protocol", "category": "Pastries", "img": "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000&auto=format&fit=crop", "user": "Pastry Node"},
+            {"title": "Black Cake Essence", "category": "Sweets", "img": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1000&auto=format&fit=crop", "user": "Heritage Lab"},
+            {"title": "Tamarind Balls Core", "category": "Sweets", "img": "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?q=80&w=1000&auto=format&fit=crop", "user": "Street Food Node"}
         ];
 
         const fullCatalog = [];
-        for(let i=0; i<105; i++) {
+        for(let i=0; i<205; i++) {
             const base = heritageNodes[i % heritageNodes.length];
-            fullCatalog.push({...base, title: `${base.title} #${i+1}`});
+            fullCatalog.push({...base, title: `${base.title} Vol.${Math.floor(i/heritageNodes.length) + 1}`});
         }
 
         function renderFeed(filter = 'all', term = '') {
             feedGrid.innerHTML = '';
-            fullCatalog.forEach(node => {
+            fullCatalog.forEach((node, index) => {
                 const matchesFilter = filter === 'all' || node.category === filter;
                 const matchesSearch = node.title.toLowerCase().includes(term.toLowerCase());
                 
@@ -273,10 +308,30 @@
                     const card = document.createElement('div');
                     card.className = 'feed-card';
                     card.innerHTML = `
+                        <div class="card-header">
+                            <div class="card-user">
+                                <div class="user-avatar"></div>
+                                <span>${node.user}</span>
+                            </div>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mid)" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                        </div>
                         <img src="${node.img}" class="card-img" alt="${node.title}">
                         <div class="card-content">
                             <div class="card-title">${node.title}</div>
-                            <div class="card-user"><div class="user-avatar"></div><span>${node.user}</span></div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="interaction-btn" onclick="this.classList.toggle('active')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                <span>React</span>
+                            </div>
+                            <div class="interaction-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                <span>Note</span>
+                            </div>
+                            <div class="interaction-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                <span>Share</span>
+                            </div>
                         </div>
                     `;
                     feedGrid.appendChild(card);
