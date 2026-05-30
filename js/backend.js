@@ -19,31 +19,38 @@ const supabase = {
     },
 
     auth: {
-        
-        generateId() {
-            try {
-                if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-                    return crypto.randomUUID();
-                }
-            } catch (e) {}
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        },
-        async signUp(email, password) {
-            const user = { id: this.generateId(), email };
+        async signUp(email, password, fullName) {
+            const user = { 
+                id: this.generateId(), 
+                email, 
+                full_name: fullName,
+                avatar_url: '',
+                bio: 'Caribbean Heritage Enthusiast',
+                scans: 0,
+                followers: 0,
+                following: 0,
+                location: null
+            };
             localStorage.setItem('calalloo_user', JSON.stringify(user));
-            await supabase.request('/profiles', {
-                method: 'POST',
-                body: JSON.stringify({ id: user.id, bio: "New Calalloo Member" })
-            });
+            // In a real app, this would go to Supabase. 
+            // For now, we persist in localStorage so it stays across sessions.
             return { user };
         },
         async signIn(email, password) {
-            const user = { id: this.generateId(), email };
+            // Check if user exists in storage, otherwise mock for demo
+            const stored = localStorage.getItem('calalloo_user');
+            if (stored) return { user: JSON.parse(stored) };
+            
+            const user = { id: this.generateId(), email, full_name: "Specimen Alpha" };
             localStorage.setItem('calalloo_user', JSON.stringify(user));
             return { user };
+        },
+        updateUser(data) {
+            const user = this.getUser();
+            if (!user) return;
+            const updated = { ...user, ...data };
+            localStorage.setItem('calalloo_user', JSON.stringify(updated));
+            return updated;
         },
         getUser() {
             const user = localStorage.getItem('calalloo_user');
@@ -51,7 +58,7 @@ const supabase = {
         },
         signOut() {
             localStorage.removeItem('calalloo_user');
-            window.location.href = '/login';
+            window.location.href = '../login/';
         }
     },
 
