@@ -53,16 +53,6 @@
             z-index: 1000;
         }
 
-        .nav-brand { 
-            font-family: var(--font-display); 
-            font-weight: 900; 
-            font-size: 1.4rem; 
-            color: var(--primary); 
-            text-decoration: none; 
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
         .nav-brand span::after { content: ""; width: 6px; height: 6px; background: #000; border-radius: 50%; display: inline-block; margin-top: 10px; }
         [data-theme="dark"] .nav-brand span::after { background: #fff; }
 
@@ -79,16 +69,22 @@
             display: flex;
             align-items: center;
             padding: 2px;
+            transition: all 0.3s;
         }
         .theme-switch .circle {
             width: 20px; height: 20px; background: var(--primary); border-radius: 50%;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        [data-theme="dark"] .theme-switch .circle { transform: translateX(22px); }
-        .theme-switch svg { width: 10px; height: 10px; fill: white; color: white; }
+        [data-theme="dark"] .theme-switch .circle { transform: translateX(22px); background: #fff; }
+        .theme-switch svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 3; display: none; }
+        
+        /* Modern icon logic */
+        [data-theme="light"] .theme-switch .sun { display: block; color: white; }
+        [data-theme="dark"] .theme-switch .moon { display: block; color: var(--primary); }
 
-        .logo-small { height: 36px; width: 36px; border-radius: 50%; border: 1px solid var(--border); object-fit: cover; }
+        .logo-small { height: 32px; width: 32px; border-radius: 50%; border: 1px solid var(--border); }
 
         .container { max-width: 600px; margin: 3rem auto; padding: 0 1.5rem; text-align: center; }
 
@@ -154,6 +150,51 @@
         .action-item:last-child { border-bottom: none; color: #ff4444; }
         .action-item svg { width: 20px; height: 20px; color: var(--mid); }
 
+        /* Modern Modal Edit Profile */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: var(--white);
+            margin: 15% auto;
+            padding: 2.5rem;
+            border-radius: 32px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+        }
+        .modal h3 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.5rem; text-align: left; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--mid); }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--dark);
+            font-family: var(--font-sans);
+        }
+        .modal-actions { display: flex; gap: 1rem; margin-top: 2rem; }
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 100px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--bg); color: var(--mid); }
+
         /* Modern Bottom Nav */
         .bottom-nav { 
             position: fixed; 
@@ -217,12 +258,30 @@
         </div>
 
         <div class="action-list">
-            <button onclick="editProfile()" class="action-item"><span>Edit Profile</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button onclick="openEditModal()" class="action-item"><span>Edit Profile</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
             <button onclick="openSettings()" class="action-item"><span>Settings</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
             <button onclick="openSaved()" class="action-item"><span>Saved Heritage</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
             <button onclick="supabase.auth.signOut()" class="action-item"><span>Sign Out</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
         </div>
     </main>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3>Update Identity</h3>
+            <div class="form-group">
+                <label>Node Designation</label>
+                <input type="text" id="editName">
+            </div>
+            <div class="form-group">
+                <label>Heritage Bio</label>
+                <textarea id="editBio" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProfile()">Apply Changes</button>
+            </div>
+        </div>
+    </div>
 
     <nav class="bottom-nav">
         <a href="../dashboard/" class="nav-item">
@@ -271,13 +330,22 @@
             }
         });
 
-        function editProfile() {
-            const name = prompt("Enter Node Designation (Name):", document.getElementById('userName').innerText);
-            const bio = prompt("Enter Bio:", document.getElementById('userBio').innerText);
-            if(name || bio) {
-                supabase.auth.updateUser({ full_name: name, bio: bio });
-                loadProfile();
-            }
+        function openEditModal() {
+            document.getElementById('editName').value = document.getElementById('userName').innerText;
+            document.getElementById('editBio').value = document.getElementById('userBio').innerText;
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('editName').value;
+            const bio = document.getElementById('editBio').value;
+            supabase.auth.updateUser({ full_name: name, bio: bio });
+            loadProfile();
+            closeEditModal();
         }
 
         function openSettings() {
@@ -294,9 +362,12 @@
         setInterval(() => {
             const user = supabase.auth.getUser();
             if(user) {
-                document.getElementById('statScans').innerText = user.scans || 0;
-                document.getElementById('statFollowers').innerText = user.followers || 0;
-                document.getElementById('statFollowing').innerText = user.following || 0;
+                const statScans = document.getElementById('statScans');
+                const statFollowers = document.getElementById('statFollowers');
+                const statFollowing = document.getElementById('statFollowing');
+                if(statScans) statScans.innerText = user.scans || 0;
+                if(statFollowers) statFollowers.innerText = user.followers || 0;
+                if(statFollowing) statFollowing.innerText = user.following || 0;
             }
         }, 5000);
     </script>
