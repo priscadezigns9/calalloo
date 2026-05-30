@@ -19,6 +19,35 @@ const supabase = {
     },
 
     auth: {
+        loadProfile() {
+            const user = this.getUser();
+            if (!user) return;
+            
+            // UI elements update
+            const nameEl = document.getElementById('userName');
+            const bioEl = document.getElementById('userBio');
+            const avatarEl = document.getElementById('userAvatar');
+            const headerAvatarEl = document.getElementById('headerAvatar');
+            
+            if (nameEl) nameEl.innerText = user.full_name || "Specimen Alpha";
+            if (bioEl) bioEl.innerText = user.bio || "Caribbean Heritage Enthusiast";
+            
+            const stats = {
+                'statScans': user.scans || 0,
+                'statFollowers': user.followers || 0,
+                'statFollowing': user.following || 0
+            };
+            
+            for (const [id, val] of Object.entries(stats)) {
+                const el = document.getElementById(id);
+                if (el) el.innerText = val;
+            }
+
+            if (user.avatar_url) {
+                if (avatarEl) avatarEl.src = user.avatar_url;
+                if (headerAvatarEl) headerAvatarEl.src = user.avatar_url;
+            }
+        },
         async signUp(email, password, fullName) {
             const user = { 
                 id: this.generateId(), 
