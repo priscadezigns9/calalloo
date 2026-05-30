@@ -60,7 +60,16 @@
             align-items: center;
             gap: 4px;
         }
-        .nav-brand span::after { content: ""; width: 6px; height: 6px; background: #000; border-radius: 50%; display: inline-block; margin-top: 10px; }
+        .nav-brand span::after { 
+            content: ""; 
+            width: 6px; 
+            height: 6px; 
+            background: #000; 
+            border-radius: 50%; 
+            display: inline-block; 
+            margin-top: 10px; 
+            transition: background 0.3s;
+        }
         [data-theme="dark"] .nav-brand span::after { background: #fff; }
 
         .header-actions { display: flex; align-items: center; gap: 1.2rem; }
@@ -204,35 +213,7 @@
             <div class="filter-chip" onclick="filterFeed('Street Food')">Street Food</div>
         </div>
         <div class="feed-grid" id="feedGrid">
-            <!-- Mock items -->
-            <div class="feed-card" data-category="Provisions" data-title="Authentic Callaloo Protocol">
-                <img src="../assets/heritage/callaloo.jpg" class="card-img" alt="Callaloo">
-                <div class="card-content">
-                    <div class="card-title">Authentic Callaloo Protocol</div>
-                    <div class="card-user"><div class="user-avatar"></div><span>Heritage Lab</span></div>
-                </div>
-            </div>
-            <div class="feed-card" data-category="For You" data-title="Fresh Extraction Nodes">
-                <img src="../assets/heritage/coconut.jpg" class="card-img" alt="Coconut">
-                <div class="card-content">
-                    <div class="card-title">Fresh Extraction Nodes</div>
-                    <div class="card-user"><div class="user-avatar"></div><span>Sourcing Dept.</span></div>
-                </div>
-            </div>
-            <div class="feed-card" data-category="Trending" data-title="The Perfect Pelau">
-                <img src="../assets/heritage/pelau.jpg" class="card-img" alt="Pelau">
-                <div class="card-content">
-                    <div class="card-title">The Perfect Pelau</div>
-                    <div class="card-user"><div class="user-avatar"></div><span>Admin</span></div>
-                </div>
-            </div>
-            <div class="feed-card" data-category="Street Food" data-title="Oil Down Traditions">
-                <img src="../assets/heritage/oil-down.jpg" class="card-img" alt="Oil Down">
-                <div class="card-content">
-                    <div class="card-title">Oil Down Traditions</div>
-                    <div class="card-user"><div class="user-avatar"></div><span>Heritage Lab</span></div>
-                </div>
-            </div>
+            <!-- Dynamic Heritage Nodes Injected via script -->
         </div>
     </main>
 
@@ -256,33 +237,68 @@
         ThemeManager.init();
         
         const searchInput = document.getElementById('searchInput');
-        const cards = document.querySelectorAll('.feed-card');
-        const chips = document.querySelectorAll('.filter-chip');
+        const feedGrid = document.getElementById('feedGrid');
+        
+        const heritageNodes = [
+            {"title": "Trinidadian Callaloo Protocol", "category": "Provisions", "img": "../assets/heritage/callaloo.jpg", "user": "Heritage Lab"},
+            {"title": "Oil Down Tradition", "category": "Street Food", "img": "../assets/heritage/oil-down.jpg", "user": "Grenada Node"},
+            {"title": "Pelau Matrix", "category": "Trending", "img": "../assets/heritage/pelau.jpg", "user": "Trinidad Node"},
+            {"title": "Ackee and Saltfish Node", "category": "For You", "img": "../assets/heritage/ackee.jpg", "user": "Jamaica Node"},
+            {"title": "Cou-Cou and Flying Fish", "category": "Provisions", "img": "../assets/heritage/coucou.jpg", "user": "Barbados Node"},
+            {"title": "Buss-up-Shut Roti", "category": "Street Food", "img": "../assets/heritage/roti.jpg", "user": "Guyana Node"},
+            {"title": "Jerk Chicken Uplink", "category": "Trending", "img": "../assets/heritage/jerk.jpg", "user": "Jamaica Node"},
+            {"title": "Conch Salad Core", "category": "For You", "img": "../assets/heritage/conch.jpg", "user": "Bahamas Node"},
+            {"title": "Guyanese Metemgee", "category": "Provisions", "img": "../assets/heritage/metemgee.jpg", "user": "Guyana Node"},
+            {"title": "Montserratian Goat Water", "category": "Provisions", "img": "../assets/heritage/goatwater.jpg", "user": "Montserrat Node"},
+            {"title": "Crab and Dumpling Node", "category": "Street Food", "img": "../assets/heritage/crab.jpg", "user": "Tobago Node"},
+            {"title": "Antiguan Pepperpot", "category": "Trending", "img": "../assets/heritage/pepperpot.jpg", "user": "Antigua Node"},
+            {"title": "Keshi Yena Synthesis", "category": "For You", "img": "../assets/heritage/keshi.jpg", "user": "Aruba Node"},
+            {"title": "Haitian Pork Griot", "category": "Street Food", "img": "../assets/heritage/griot.jpg", "user": "Haiti Node"},
+            {"title": "Fungi and Fish Protocol", "category": "Provisions", "img": "../assets/heritage/fungi.jpg", "user": "BVI Node"}
+        ];
 
-        function filterFeed(category) {
-            chips.forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            cards.forEach(card => {
-                if (category === 'all' || card.dataset.category === category) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
+        const fullCatalog = [];
+        for(let i=0; i<105; i++) {
+            const base = heritageNodes[i % heritageNodes.length];
+            fullCatalog.push({...base, title: `${base.title} #${i+1}`});
+        }
+
+        function renderFeed(filter = 'all', term = '') {
+            feedGrid.innerHTML = '';
+            fullCatalog.forEach(node => {
+                const matchesFilter = filter === 'all' || node.category === filter;
+                const matchesSearch = node.title.toLowerCase().includes(term.toLowerCase());
+                
+                if(matchesFilter && matchesSearch) {
+                    const card = document.createElement('div');
+                    card.className = 'feed-card';
+                    card.innerHTML = `
+                        <img src="${node.img}" class="card-img" alt="${node.title}">
+                        <div class="card-content">
+                            <div class="card-title">${node.title}</div>
+                            <div class="card-user"><div class="user-avatar"></div><span>${node.user}</span></div>
+                        </div>
+                    `;
+                    feedGrid.appendChild(card);
                 }
             });
         }
 
+        function filterFeed(category) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            renderFeed(category, searchInput.value);
+        }
+
         searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            cards.forEach(card => {
-                const title = card.dataset.title.toLowerCase();
-                if (title.includes(term)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            const activeChip = document.querySelector('.filter-chip.active');
+            const categoryText = activeChip ? activeChip.innerText : 'all';
+            const category = categoryText === 'All Recipes' ? 'all' : categoryText;
+            renderFeed(category, e.target.value);
         });
+
+        renderFeed();
+        if(typeof supabase !== 'undefined') supabase.auth.loadProfile();
     </script>
 </body>
 </html>
