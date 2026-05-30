@@ -18,6 +18,8 @@
             --border: rgba(232, 119, 34, 0.1);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
+            --sun-display: block;
+            --moon-display: none;
         }
 
         [data-theme="dark"] {
@@ -26,6 +28,8 @@
             --mid: #A1A1A6;
             --white: #141416;
             --border: rgba(255, 255, 255, 0.1);
+            --sun-display: none;
+            --moon-display: block;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,8 +53,42 @@
             z-index: 1000;
         }
 
-        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.4rem; color: var(--primary); text-decoration: none; }
-        .logo-small { height: 32px; width: 32px; border-radius: 50%; border: 1px solid var(--border); }
+        .nav-brand { 
+            font-family: var(--font-display); 
+            font-weight: 900; 
+            font-size: 1.4rem; 
+            color: var(--primary); 
+            text-decoration: none; 
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-brand span::after { content: ""; width: 6px; height: 6px; background: #000; border-radius: 50%; display: inline-block; margin-top: 10px; }
+        [data-theme="dark"] .nav-brand span::after { background: #fff; }
+
+        .header-actions { display: flex; align-items: center; gap: 1.2rem; }
+        
+        .theme-switch {
+            width: 50px;
+            height: 26px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+        }
+        .theme-switch .circle {
+            width: 20px; height: 20px; background: var(--primary); border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        [data-theme="dark"] .theme-switch .circle { transform: translateX(22px); }
+        .theme-switch svg { width: 10px; height: 10px; fill: white; color: white; }
+
+        .logo-small { height: 36px; width: 36px; border-radius: 50%; border: 1px solid var(--border); object-fit: cover; }
 
         .container { max-width: 600px; margin: 3rem auto; padding: 0 1.5rem; text-align: center; }
 
@@ -80,7 +118,8 @@
         }
 
         h2 { font-family: var(--font-display); font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; }
-        .user-email { color: var(--mid); font-size: 0.9rem; margin-bottom: 2rem; }
+        .user-bio { color: var(--mid); font-size: 0.95rem; margin-bottom: 0.2rem; }
+        .user-location { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2rem; }
 
         .stats-grid { 
             display: flex; 
@@ -105,6 +144,12 @@
             text-decoration: none;
             color: var(--dark);
             font-weight: 600;
+            background: none;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
         }
         .action-item:last-child { border-bottom: none; color: #ff4444; }
         .action-item svg { width: 20px; height: 20px; color: var(--mid); }
@@ -141,30 +186,41 @@
 <body>
 
     <header>
-        <a href="../index.html" class="nav-brand">Calalloo</a>
-        <img src="../assets/logo.png" class="logo-small" alt="Lab Logo">
+        <a href="../index.html" class="nav-brand"><span>Calalloo</span></a>
+        <div class="header-actions">
+            <div class="theme-switch" onclick="ThemeManager.toggle()" title="Toggle Theme">
+                <div class="circle">
+                    <svg class="sun" viewBox="0 0 24 24" style="display: var(--sun-display)"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 13h2a1 1 0 100-2H2a1 1 0 100 2zm18 0h2a1 1 0 100-2h-2a1 1 0 100 2zM11 2v2a1 1 0 102 0V2a1 1 0 10-2 0zm0 18v2a1 1 0 102 0v-2a1 1 0-2 0zM5.99 4.58a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41L5.99 4.58zm12.02 12.02a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41l-1.41-1.41zm-1.41-12.02a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41l-1.41 1.41zM4.58 16.59l-1.41 1.41a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41z"/></svg>
+                    <svg class="moon" viewBox="0 0 24 24" style="display: var(--moon-display)"><path d="M21.64 13a1 1 0 00-1.05-.14 8.05 8.05 0 01-3.37.73 8.15 8.15 0 01-8.14-8.14 8.59 8.59 0 01.25-2 1 1 0 00-1.21-1.08 10.14 10.14 0 1012.72 10.78 1 1 0 00-.2-1.15z"/></svg>
+                </div>
+            </div>
+            <a href="index.html"><img src="../assets/logo.png" id="headerAvatar" class="logo-small" alt="Lab Logo"></a>
+        </div>
     </header>
 
     <main class="container">
         <div class="profile-header">
-            <div class="avatar-container">
+            <div class="avatar-container" onclick="document.getElementById('avatarInput').click()">
                 <img src="" alt="" id="userAvatar">
-                <div class="upload-hint">Add Photo</div>
+                <div class="upload-hint">Change Photo</div>
+                <input type="file" id="avatarInput" style="display: none" accept="image/*">
             </div>
             <h2 id="userName">Specimen Alpha</h2>
-            <p class="user-email" id="userEmail">uplink@calalloo.lab</p>
+            <p class="user-bio" id="userBio">Caribbean Heritage Enthusiast</p>
+            <p class="user-location" id="userLocation">Region Uplink: Active</p>
         </div>
 
         <div class="stats-grid">
-            <div class="stat-item"><b>0</b><span>Scans</span></div>
-            <div class="stat-item"><b>0</b><span>Followers</span></div>
-            <div class="stat-item"><b>0</b><span>Following</span></div>
+            <div class="stat-item"><b id="statScans">0</b><span>Scans</span></div>
+            <div class="stat-item"><b id="statFollowers">0</b><span>Followers</span></div>
+            <div class="stat-item"><b id="statFollowing">0</b><span>Following</span></div>
         </div>
 
         <div class="action-list">
-            <a href="#" class="action-item"><span>Settings</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></a>
-            <a href="#" class="action-item"><span>Saved Heritage</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></a>
-            <a href="javascript:supabase.auth.signOut()" class="action-item"><span>Sign Out</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></a>
+            <button onclick="editProfile()" class="action-item"><span>Edit Profile</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button onclick="openSettings()" class="action-item"><span>Settings</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button onclick="openSaved()" class="action-item"><span>Saved Heritage</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button onclick="supabase.auth.signOut()" class="action-item"><span>Sign Out</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
         </div>
     </main>
 
@@ -186,11 +242,53 @@
     <script src="../js/backend.js"></script>
     <script>
         ThemeManager.init();
-        const user = supabase.auth.getUser();
-        if(user) {
-            document.getElementById('userEmail').innerText = user.email;
-            document.getElementById('userName').innerText = user.full_name || "New Member";
+        
+        function loadProfile() {
+            const user = supabase.auth.getUser();
+            if(user) {
+                document.getElementById('userName').innerText = user.full_name || "Specimen Alpha";
+                document.getElementById('userBio').innerText = user.bio || "Caribbean Heritage Enthusiast";
+                if(user.avatar_url) {
+                    document.getElementById('userAvatar').src = user.avatar_url;
+                    document.getElementById('headerAvatar').src = user.avatar_url;
+                }
+                document.getElementById('statScans').innerText = user.scans || 0;
+                document.getElementById('statFollowers').innerText = user.followers || 0;
+                document.getElementById('statFollowing').innerText = user.following || 0;
+            }
         }
+
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const url = event.target.result;
+                    supabase.auth.updateUser({ avatar_url: url });
+                    loadProfile();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function editProfile() {
+            const name = prompt("Enter Node Designation (Name):", document.getElementById('userName').innerText);
+            const bio = prompt("Enter Bio:", document.getElementById('userBio').innerText);
+            if(name || bio) {
+                supabase.auth.updateUser({ full_name: name, bio: bio });
+                loadProfile();
+            }
+        }
+
+        function openSettings() {
+            alert("Settings Hub:\n- Change Appearance (Use Toggle)\n- Contact Support: support@calalloo.heritage\n- Region Status: Active");
+        }
+
+        function openSaved() {
+            alert("Saved Heritage: No specimens logged yet.");
+        }
+
+        loadProfile();
     </script>
 </body>
 </html>
