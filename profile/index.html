@@ -53,7 +53,16 @@
             z-index: 1000;
         }
 
-        .nav-brand span::after { content: ""; width: 6px; height: 6px; background: #000; border-radius: 50%; display: inline-block; margin-top: 10px; }
+        .nav-brand span::after { 
+            content: ""; 
+            width: 6px; 
+            height: 6px; 
+            background: #000; 
+            border-radius: 50%; 
+            display: inline-block; 
+            margin-top: 10px; 
+            transition: background 0.3s;
+        }
         [data-theme="dark"] .nav-brand span::after { background: #fff; }
 
         .header-actions { display: flex; align-items: center; gap: 1.2rem; }
@@ -84,7 +93,7 @@
         [data-theme="light"] .theme-switch .sun { display: block; color: white; }
         [data-theme="dark"] .theme-switch .moon { display: block; color: var(--primary); }
 
-        .logo-small { height: 32px; width: 32px; border-radius: 50%; border: 1px solid var(--border); }
+        .logo-small { height: 36px; width: 36px; border-radius: 50%; border: 1px solid var(--border); object-fit: cover; }
 
         .container { max-width: 600px; margin: 3rem auto; padding: 0 1.5rem; text-align: center; }
 
@@ -228,11 +237,12 @@
 
     <header>
         <a href="../index.html" class="nav-brand"><span>Calalloo</span></a>
+        
         <div class="header-actions">
             <div class="theme-switch" onclick="ThemeManager.toggle()" title="Toggle Theme">
                 <div class="circle">
-                    <svg class="sun" viewBox="0 0 24 24" style="display: var(--sun-display)"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 13h2a1 1 0 100-2H2a1 1 0 100 2zm18 0h2a1 1 0 100-2h-2a1 1 0 100 2zM11 2v2a1 1 0 102 0V2a1 1 0 10-2 0zm0 18v2a1 1 0 102 0v-2a1 1 0-2 0zM5.99 4.58a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41L5.99 4.58zm12.02 12.02a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41l-1.41-1.41zm-1.41-12.02a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41l-1.41 1.41zM4.58 16.59l-1.41 1.41a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41z"/></svg>
-                    <svg class="moon" viewBox="0 0 24 24" style="display: var(--moon-display)"><path d="M21.64 13a1 1 0 00-1.05-.14 8.05 8.05 0 01-3.37.73 8.15 8.15 0 01-8.14-8.14 8.59 8.59 0 01.25-2 1 1 0 00-1.21-1.08 10.14 10.14 0 1012.72 10.78 1 1 0 00-.2-1.15z"/></svg>
+                    <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </div>
             </div>
             <a href="index.html"><img src="../assets/logo.png" id="headerAvatar" class="logo-small" alt="Lab Logo"></a>
