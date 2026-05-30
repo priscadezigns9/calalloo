@@ -88,14 +88,20 @@
             display: flex;
             align-items: center;
             padding: 2px;
+            transition: all 0.3s;
         }
         .theme-switch .circle {
             width: 20px; height: 20px; background: var(--primary); border-radius: 50%;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        [data-theme="dark"] .theme-switch .circle { transform: translateX(22px); }
-        .theme-switch svg { width: 10px; height: 10px; fill: white; color: white; }
+        [data-theme="dark"] .theme-switch .circle { transform: translateX(22px); background: #fff; }
+        .theme-switch svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 3; display: none; }
+        
+        /* Modern icon logic */
+        [data-theme="light"] .theme-switch .sun { display: block; color: white; }
+        [data-theme="dark"] .theme-switch .moon { display: block; color: var(--primary); }
 
         .logo-small { height: 36px; width: 36px; border-radius: 50%; border: 1px solid var(--border); object-fit: cover; }
 
@@ -175,14 +181,14 @@
         
         <div class="search-bar">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--mid)"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" placeholder="Discover Heritage...">
+            <input type="text" id="searchInput" placeholder="Discover Heritage...">
         </div>
 
         <div class="header-actions">
             <div class="theme-switch" onclick="ThemeManager.toggle()" title="Toggle Theme">
                 <div class="circle">
-                    <svg class="sun" viewBox="0 0 24 24" style="display: var(--sun-display)"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 13h2a1 1 0 100-2H2a1 1 0 100 2zm18 0h2a1 1 0 100-2h-2a1 1 0 100 2zM11 2v2a1 1 0 102 0V2a1 1 0 10-2 0zm0 18v2a1 1 0 102 0v-2a1 1 0 10-2 0zM5.99 4.58a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41L5.99 4.58zm12.02 12.02a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41l-1.41-1.41zm-1.41-12.02a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41l-1.41 1.41zM4.58 16.59l-1.41 1.41a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41z"/></svg>
-                    <svg class="moon" viewBox="0 0 24 24" style="display: var(--moon-display)"><path d="M21.64 13a1 1 0 00-1.05-.14 8.05 8.05 0 01-3.37.73 8.15 8.15 0 01-8.14-8.14 8.59 8.59 0 01.25-2 1 1 0 00-1.21-1.08 10.14 10.14 0 1012.72 10.78 1 1 0 00-.2-1.15z"/></svg>
+                    <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </div>
             </div>
             <a href="../profile/"><img src="../assets/logo.png" id="headerAvatar" class="logo-small" alt="Lab Logo"></a>
@@ -191,36 +197,36 @@
 
     <main class="container">
         <div class="discovery-filter">
-            <div class="filter-chip active">All Recipes</div>
-            <div class="filter-chip">For You</div>
-            <div class="filter-chip">Trending</div>
-            <div class="filter-chip">Provisions</div>
-            <div class="filter-chip">Street Food</div>
+            <div class="filter-chip active" onclick="filterFeed('all')">All Recipes</div>
+            <div class="filter-chip" onclick="filterFeed('For You')">For You</div>
+            <div class="filter-chip" onclick="filterFeed('Trending')">Trending</div>
+            <div class="filter-chip" onclick="filterFeed('Provisions')">Provisions</div>
+            <div class="filter-chip" onclick="filterFeed('Street Food')">Street Food</div>
         </div>
-        <div class="feed-grid">
-            <!-- Mock items for visual demo -->
-            <div class="feed-card">
+        <div class="feed-grid" id="feedGrid">
+            <!-- Mock items -->
+            <div class="feed-card" data-category="Provisions" data-title="Authentic Callaloo Protocol">
                 <img src="../assets/heritage/callaloo.jpg" class="card-img" alt="Callaloo">
                 <div class="card-content">
                     <div class="card-title">Authentic Callaloo Protocol</div>
                     <div class="card-user"><div class="user-avatar"></div><span>Heritage Lab</span></div>
                 </div>
             </div>
-            <div class="feed-card">
+            <div class="feed-card" data-category="For You" data-title="Fresh Extraction Nodes">
                 <img src="../assets/heritage/coconut.jpg" class="card-img" alt="Coconut">
                 <div class="card-content">
                     <div class="card-title">Fresh Extraction Nodes</div>
                     <div class="card-user"><div class="user-avatar"></div><span>Sourcing Dept.</span></div>
                 </div>
             </div>
-            <div class="feed-card">
+            <div class="feed-card" data-category="Trending" data-title="The Perfect Pelau">
                 <img src="../assets/heritage/pelau.jpg" class="card-img" alt="Pelau">
                 <div class="card-content">
                     <div class="card-title">The Perfect Pelau</div>
                     <div class="card-user"><div class="user-avatar"></div><span>Admin</span></div>
                 </div>
             </div>
-            <div class="feed-card">
+            <div class="feed-card" data-category="Street Food" data-title="Oil Down Traditions">
                 <img src="../assets/heritage/oil-down.jpg" class="card-img" alt="Oil Down">
                 <div class="card-content">
                     <div class="card-title">Oil Down Traditions</div>
@@ -246,6 +252,37 @@
     </nav>
 
     <script src="../js/backend.js"></script>
-    <script>ThemeManager.init();</script>
+    <script>
+        ThemeManager.init();
+        
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.feed-card');
+        const chips = document.querySelectorAll('.filter-chip');
+
+        function filterFeed(category) {
+            chips.forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            cards.forEach(card => {
+                const title = card.dataset.title.toLowerCase();
+                if (title.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
