@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calalloo | Professional Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #E87722; --green: #2D5A27; --white: #FFFFFF; --bg: #FAFAFA; --dark: #1A0D00; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
         
-        /* Fixed Header Navigation */
         header { background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
         .logo { font-family: 'Fraunces', serif; color: var(--primary); font-size: 1.5rem; font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 10px; }
         .logo img { height: 28px; }
@@ -19,26 +18,21 @@
         .pill { padding: 10px 25px; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: 13px; color: #666; transition: 0.3s; }
         .pill.active { background: var(--white); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        .container { flex: 1; overflow-y: auto; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .view { display: none; }
+        .container { flex: 1; overflow-y: auto; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; position: relative; }
+        .view { display: none; height: 100%; }
         .view.active { display: block; }
 
+        .card { background: var(--white); border-radius: 30px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
         /* Profile Area */
-        .profile-card { background: var(--white); border-radius: 30px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
         .photo-upload { width: 120px; height: 120px; border-radius: 50%; background: #F5F5F5; border: 3px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 30px; position: relative; overflow: hidden; }
         .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-upload::after { content: '📸'; font-size: 24px; position: absolute; }
-        .photo-upload.has-img::after { display: none; }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-weight: 800; font-size: 11px; text-transform: uppercase; margin-bottom: 8px; color: #888; }
-        .input-node { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #F0F0F0; outline: none; font-size: 15px; font-weight: 600; }
-        .input-node:focus { border-color: var(--primary); }
-
-        .btn-row { display: flex; gap: 15px; margin-top: 30px; }
-        .btn { padding: 15px 35px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s; border: none; font-size: 14px; }
-        .btn-save { background: var(--primary); color: white; }
-        .btn-out { background: #F0F0F0; color: #666; }
+        
+        /* Functional Scanner */
+        #scanner-ui { position: relative; width: 100%; max-width: 640px; margin: 0 auto; background: #000; border-radius: 20px; overflow: hidden; aspect-ratio: 4/3; }
+        #video { width: 100%; height: 100%; object-fit: cover; }
+        .scan-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px solid var(--primary); opacity: 0.5; pointer-events: none; }
+        .scan-btn { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; }
 
         /* Toggles */
         .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #F9F9F9; border-radius: 15px; margin-bottom: 10px; }
@@ -49,14 +43,8 @@
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* Discovery Feed */
-        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .heritage-card { background: var(--white); border-radius: 25px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
-        .heritage-card img { width: 100%; height: 220px; object-fit: cover; }
-        .heritage-card .info { padding: 20px; }
-
-        /* Map UI Stub */
-        #map-view { height: 100%; border-radius: 30px; background: #E5E3DF; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #999; }
+        .btn { padding: 15px 35px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s; border: none; font-size: 14px; }
+        .btn-save { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
@@ -65,7 +53,7 @@
     <a href="/index.html" class="logo">Calalloo <img src="/icon.svg" alt="logo"></a>
     <div class="nav-pills">
         <div class="pill active" onclick="switchView('feed', this)">Feed</div>
-        <div class="pill" onclick="switchView('scanner', this)">Scanner</div>
+        <div class="pill" onclick="switchView('scanner', this); startScanner();">Scanner</div>
         <div class="pill" onclick="switchView('map', this)">Map</div>
         <div class="pill" onclick="switchView('profile', this)">Profile</div>
         <div class="pill" onclick="switchView('settings', this)">Settings</div>
@@ -73,76 +61,43 @@
 </header>
 
 <div class="container">
-    <!-- Feed -->
     <div id="feed" class="view active">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Culinary Heritage Feed</h2>
-        <div class="feed-grid">
-            <div class="heritage-card">
-                <img src="https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg" alt="Callaloo">
-                <div class="info"><h3>Trinidadian Callaloo</h3><p>Heritage Protocol • High Fidelity</p></div>
-            </div>
-            <div class="heritage-card">
-                <img src="https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg" alt="Pelau">
-                <div class="info"><h3>Sunday Pelau</h3><p>Caribbean Tradition</p></div>
-            </div>
-        </div>
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Discovery Feed</h2>
+        <div id="feed-items">Loading active heritage nodes...</div>
     </div>
 
-    <!-- Scanner -->
     <div id="scanner" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">AI Heritage Scanner</h2>
-        <div class="profile-card" style="text-align:center; padding: 100px 20px;">
-            <span style="font-size: 50px;">📷</span><br><br>
-            <p style="font-weight: 700; color: #888;">Initialize Scanner to identify heritage ingredients.</p>
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Heritage Scanner</h2>
+        <div id="scanner-ui">
+            <video id="video" autoplay playsinline></video>
+            <div class="scan-overlay"></div>
+            <button class="scan-btn" onclick="captureFrame()">IDENTIFY HERITAGE</button>
         </div>
     </div>
 
-    <!-- Map -->
-    <div id="map" class="view" style="height: 500px;">
-        <div id="map-view">Heritage Mapping Active (Simulation)</div>
+    <div id="map" class="view">
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Heritage Map</h2>
+        <div id="map-render" style="height: 400px; background: #eee; border-radius: 20px; display: flex; align-items: center; justify-content: center;">Map Initialization Active</div>
     </div>
 
-    <!-- Profile -->
     <div id="profile" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">My Profile</h2>
-        <div class="profile-card">
-            <div class="photo-upload" id="photo_trigger" onclick="document.getElementById('photo_input').click()">
-                <img id="photo_preview" src="" style="display:none;">
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Profile Node</h2>
+        <div class="card">
+            <div class="photo-upload" onclick="document.getElementById('photo_input').click()">
+                <img id="photo_preview" src="">
             </div>
             <input type="file" id="photo_input" style="display:none;" onchange="previewPhoto(this)">
-            
-            <div class="input-group">
-                <label>Display Name</label>
-                <input type="text" id="p_name" class="input-node" placeholder="Prisca Dezigns">
-            </div>
-            <div class="input-group">
-                <label>Heritage Bio</label>
-                <textarea id="p_bio" class="input-node" style="height:120px; resize:none;" placeholder="Sharing the analytics of taste..."></textarea>
-            </div>
-            
-            <div class="btn-row">
-                <button class="btn btn-save" onclick="saveProfile()">SAVE PROFILE</button>
-                <button class="btn btn-out" onclick="signOut()">SIGN OUT</button>
-            </div>
+            <input type="text" id="p_name" style="width:100%; padding:15px; margin-bottom:20px; border-radius:10px; border:1px solid #ddd;" placeholder="Full Name">
+            <textarea id="p_bio" style="width:100%; height:100px; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:20px;" placeholder="Heritage bio..."></textarea>
+            <button class="btn btn-save" onclick="saveProfile()">SAVE PROFILE</button>
         </div>
     </div>
 
-    <!-- Settings -->
     <div id="settings" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Vault & Settings</h2>
-        <div class="profile-card">
-            <div class="setting-row">
-                <div><b>📍 Precise Location</b><p style="font-size:12px; color:#888;">Allow map tracking for heritage nodes</p></div>
-                <label class="switch"><input type="checkbox" id="set_loc" checked><span class="slider"></span></label>
-            </div>
-            <div class="setting-row">
-                <div><b>📸 Camera Access</b><p style="font-size:12px; color:#888;">Enable scanner for ingredient identification</p></div>
-                <label class="switch"><input type="checkbox" id="set_cam" checked><span class="slider"></span></label>
-            </div>
-            <div class="setting-row">
-                <div><b>📂 Media Storage</b><p style="font-size:12px; color:#888;">Save scanned protocols to cloud</p></div>
-                <label class="switch"><input type="checkbox" id="set_store" checked><span class="slider"></span></label>
-            </div>
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Vault</h2>
+        <div class="card">
+            <div class="setting-row"><span>📍 Location Sync</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+            <div class="setting-row"><span>📸 Scanner Access</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
         </div>
     </div>
 </div>
@@ -155,47 +110,39 @@
         document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
+        if(id !== 'scanner') stopScanner();
     }
 
-    function previewPhoto(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const prev = document.getElementById('photo_preview');
-                prev.src = e.target.result;
-                prev.style.display = 'block';
-                document.getElementById('photo_trigger').classList.add('has-img');
-            }
-            reader.readAsDataURL(input.files[0]);
+    async function startScanner() {
+        const video = document.getElementById('video');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            video.srcObject = stream;
+        } catch (err) { alert("Camera access denied."); }
+    }
+
+    function stopScanner() {
+        const video = document.getElementById('video');
+        if (video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+            video.srcObject = null;
         }
     }
 
     async function saveProfile() {
         const name = document.getElementById('p_name').value;
         const bio = document.getElementById('p_bio').value;
-        const uid = localStorage.getItem('calalloo_uid') || 'temp-node';
+        const { error } = await sb.from('profiles').upsert({ id: localStorage.getItem('calalloo_uid') || '0000', full_name: name, bio: bio });
+        if(!error) alert("Heritage Secured.");
+    }
 
-        const { error } = await sb.from('profiles').upsert({ id: uid, full_name: name, bio: bio });
-        
-        if(!error) {
-            localStorage.setItem('calalloo_name', name);
-            localStorage.setItem('calalloo_bio', bio);
-            alert("Profile Secured.");
-        } else {
-            console.error(error);
-            alert("Save failed. Checking cloud link...");
+    function previewPhoto(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => document.getElementById('photo_preview').src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
         }
     }
-
-    function signOut() {
-        localStorage.clear();
-        window.location.href = '/index.html';
-    }
-
-    window.onload = () => {
-        document.getElementById('p_name').value = localStorage.getItem('calalloo_name') || '';
-        document.getElementById('p_bio').value = localStorage.getItem('calalloo_bio') || '';
-    };
 </script>
 </body>
 </html>
