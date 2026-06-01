@@ -3,278 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration | Calalloo</title>
+    <title>Sign Up | Calalloo</title>
+    <link rel="icon" type="image/png" href="/assets/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg: #FFF8F0;
-            --primary: #E87722;
-            --dark: #1A0D00;
-            --mid: #6B5E4F;
+            --bg: #FFF5EE;
+            --primary: #E87722; 
+            --text: #4A4A4A;
+            --dark-text: #1A0D00;
             --white: #FFFFFF;
-            --border: rgba(26, 13, 0, 0.08);
+            --border: rgba(232, 119, 34, 0.1);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
-            --font-mono: 'Space Mono', monospace;
-            --glow: rgba(232, 119, 34, 0.4);
-        }
-
-        [data-theme="dark"] {
-            --bg: #0A0A0B;
-            --dark: #FFFFFF;
-            --mid: #A1A1A6;
-            --white: #141416;
-            --border: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background-color: var(--bg); 
-            background-image: radial-gradient(var(--border) 1px, transparent 1px);
-            background-size: 40px 40px;
-            color: var(--dark); 
+            color: var(--text); 
             font-family: var(--font-sans); 
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            -webkit-font-smoothing: antialiased; 
-            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        .auth-card {
+        .signup-card {
             background: var(--white);
-            backdrop-filter: blur(25px) saturate(180%);
-            padding: 4rem;
+            padding: 48px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
             width: 100%;
-            max-width: 480px;
-            border-radius: 40px;
-            border: 1px solid var(--border);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15);
-            position: relative;
-        }
-
-        [data-theme="dark"] .auth-card {
-            background: rgba(15, 15, 18, 0.9);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
-        }
-
-        .auth-card::before {
-            content: "NODE_INITIALIZATION";
-            position: absolute;
-            top: 2rem;
-            right: 3rem;
-            font-family: var(--font-mono);
-            font-size: 0.55rem;
-            color: #00FF9D;
-            letter-spacing: 0.2em;
-        }
-
-        .logo-box { text-align: center; margin-bottom: 3rem; }
-        .logo-box img { height: 42px; }
-
-        h1 {
-            font-family: var(--font-display);
-            font-size: 3rem;
-            line-height: 0.9;
-            margin-bottom: 2rem;
+            max-width: 440px;
             text-align: center;
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1px;
-        }
-        h1 span { color: var(--primary); font-size: 4rem; line-height: 0; margin-top: 1.2rem; margin-left: -2px; }
-
-        .form-group { margin-bottom: 1.5rem; position: relative; }
-        label { display: block; font-size: 0.65rem; font-weight: 800; color: var(--mid); text-transform: uppercase; margin-bottom: 0.8rem; font-family: var(--font-mono); letter-spacing: 0.1em; }
-        input {
-            width: 100%;
-            border: 1px solid var(--border);
-            background: rgba(255,255,255,0.03);
-            padding: 1.1rem;
-            padding-right: 3.5rem;
-            border-radius: 12px;
-            box-sizing: border-box;
-            font-family: var(--font-mono);
-            color: var(--dark);
-            font-size: 0.9rem;
-            transition: all 0.3s;
         }
 
-        .theme-switch-wrapper {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            z-index: 1000;
-        }
+        .logo { height: 50px; margin-bottom: 32px; }
 
-        .theme-switch {
-            width: 58px;
-            height: 30px;
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            padding: 3px;
-        }
+        h1 { font-family: var(--font-display); font-size: 32px; color: var(--dark-text); margin-bottom: 12px; }
+        p { margin-bottom: 32px; opacity: 0.7; font-weight: 500; }
 
-        .theme-switch .circle {
-            width: 22px;
-            height: 22px;
-            background: var(--primary);
-            border-radius: 50%;
-            position: absolute;
-            left: 3px;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-        }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; font-weight: 800; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; color: var(--primary); }
+        input { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #F0F0F0; outline: none; font-size: 16px; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
 
-        [data-theme="dark"] .theme-switch .circle {
-            transform: translateX(28px);
-        }
-
-        .theme-switch svg { width: 12px; height: 12px; color: white; fill: white; }
-        .theme-switch .sun { display: block; }
-        .theme-switch .moon { display: none; }
-        [data-theme="dark"] .theme-switch .sun { display: none; }
-        [data-theme="dark"] .theme-switch .moon { display: block; }
-        input:focus { outline: none; border-color: var(--primary); background: rgba(232, 119, 34, 0.05); }
-
-        .pass-toggle {
-            position: absolute;
-            right: 1.2rem;
-            bottom: 1rem;
-            color: var(--mid);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.3s;
-        }
-        .pass-toggle:hover { color: var(--primary); }
-        .pass-toggle svg { width: 18px; height: 18px; }
-
-        .btn-auth {
-            width: 100%;
+        .btn-signup {
             background: var(--primary);
             color: white;
-            border: none;
-            padding: 1.2rem;
-            font-weight: 800;
+            padding: 16px;
             border-radius: 12px;
+            font-weight: 800;
+            width: 100%;
+            border: none;
             cursor: pointer;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            font-family: var(--font-mono);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 10px 20px var(--glow);
-            margin-top: 1rem;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: 0.3s;
         }
-        .btn-auth:hover { transform: translateY(-3px); box-shadow: 0 15px 30px var(--glow); }
+        .btn-signup:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .auth-footer { margin-top: 3rem; text-align: center; font-size: 0.7rem; color: var(--mid); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; }
-        .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 800; }
-        .auth-footer a:hover { border-bottom: 1px solid var(--primary); }
+        .footer-text { margin-top: 24px; font-size: 14px; }
+        .footer-text a { color: var(--primary); text-decoration: none; font-weight: 700; }
     </style>
 </head>
 <body>
-    <div class="theme-switch-wrapper">
-        <div class="theme-switch" onclick="ThemeManager.toggle()" title="Toggle Theme">
-            <div class="circle">
-                <svg class="sun" viewBox="0 0 24 24"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 13h2a1 1 0 100-2H2a1 1 0 100 2zm18 0h2a1 1 0 100-2h-2a1 1 0 100 2zM11 2v2a1 1 0 102 0V2a1 1 0 10-2 0zm0 18v2a1 1 0 102 0v-2a1 1 0 10-2 0zM5.99 4.58a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41L5.99 4.58zm12.02 12.02a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41l-1.41-1.41zm-1.41-12.02a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41l-1.41 1.41zM4.58 16.59l-1.41 1.41a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41z"/></svg>
-                <svg class="moon" viewBox="0 0 24 24"><path d="M21.64 13a1 1 0 00-1.05-.14 8.05 8.05 0 01-3.37.73 8.15 8.15 0 01-8.14-8.14 8.59 8.59 0 01.25-2 1 1 0 00-1.21-1.08 10.14 10.14 0 1012.72 10.78 1 1 0 00-.2-1.15z"/></svg>
-            </div>
-        </div>
-    </div>
-    <div class="auth-card">
-        <div class="logo-box">
-            <a href="../index.html"><img src="../assets/logo.png" alt="Calalloo"></a>
-        </div>
-        <h1>Calalloo<span>.</span></h1>
+    <div class="signup-card">
+        <a href="/"><img src="/assets/logo.png" alt="Calalloo Logo" class="logo"></a>
+        <h1>Join the Lab</h1>
+        <p>Start preserving your food heritage today.</p>
+        
         <form id="signupForm">
             <div class="form-group">
-                <label>Node Designation (Full Name)</label>
-                <input type="text" id="fullName" placeholder="SPECIMEN_ALPHA" required>
+                <label>Full Name</label>
+                <input type="text" id="fullname" required placeholder="John Doe">
             </div>
             <div class="form-group">
-                <label>Neural ID (Email)</label>
-                <input type="email" id="email" placeholder="ident_0x@heritage.lab" required>
+                <label>Email Address</label>
+                <input type="email" id="email" required placeholder="name@email.com">
             </div>
             <div class="form-group">
-                <label>Security Vector (Password)</label>
-                <input type="password" id="password" required>
-                <div class="pass-toggle" onclick="togglePassword()">
-                    <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-                    <svg class="eye-on" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </div>
+                <label>Password</label>
+                <input type="password" id="password" required placeholder="••••••••">
             </div>
-            <button type="submit" class="btn-auth">Initialize Node</button>
+            <button type="submit" class="btn-signup" id="signupBtn">Create Account</button>
         </form>
-        <div class="auth-footer">
-            Uplink already active? <a href="../login/">Sign In</a>
+
+        <div class="footer-text">
+            Already have an account? <a href="/login/">Sign In</a>
         </div>
     </div>
 
-    <script src="../js/backend.js?v=6"></script>
     <script>
-        ThemeManager.init();
-
-        function togglePassword() {
-            const passInput = document.getElementById('password');
-            const eyeOn = document.querySelector('.eye-on');
-            const eyeOff = document.querySelector('.eye-off');
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eyeOn.style.display = 'block';
-                eyeOff.style.display = 'none';
-            } else {
-                passInput.type = 'password';
-                eyeOn.style.display = 'none';
-                eyeOff.style.display = 'block';
-            }
-        }
+        const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
+        const SUPABASE_KEY = '{credential:supabase-anon-key}';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const fullName = document.getElementById('fullName').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const btn = e.target.querySelector('button');
+            const fullname = document.getElementById('fullname').value;
+            const btn = document.getElementById('signupBtn');
             
-            btn.textContent = "Synthesizing Neural ID...";
+            btn.innerText = "Creating Account...";
             btn.disabled = true;
 
-            try {
-                const result = await window.backend.signUp(email, password, fullName);
-                if (result.success) {
-                    btn.textContent = "Node Initialized. Redirecting...";
-                    setTimeout(() => window.location.href = '../dashboard/', 1000);
-                } else {
-                    alert('System Error: ' + result.error);
-                    btn.textContent = "Initialize Node";
-                    btn.disabled = false;
+            const { data, error } = await sb.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        full_name: fullname
+                    }
                 }
-            } catch (err) {
-                console.error(err);
-                btn.textContent = "Critical System Failure.";
+            });
+
+            if (error) {
+                alert(error.message);
+                btn.innerText = "Create Account";
                 btn.disabled = false;
+            } else {
+                alert("Account created! Please check your email for confirmation.");
+                window.location.href = '/login/';
             }
         });
     </script>
 </body>
 </html>
-
