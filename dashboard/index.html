@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #E87722; --green: #2D5A27; --white: #FFFFFF; --bg: #FAFAFA; --dark: #1A0D00; }
+        :root { --primary: #2D5A27; --accent: #E87722; --white: #FFFFFF; --bg: #FAFAFA; --dark: #1A0D00; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
         
@@ -181,7 +181,7 @@
         
         // Map Sync Logic
         const mMsg = document.getElementById('map-status');
-        if(v.loc) mMsg.innerHTML = '<div class="status-msg"><i data-lucide="check-circle" style="color:var(--green)"></i><p>Location Synced to Cloud</p></div>';
+        if(v.loc) mMsg.innerHTML = '<div class="status-msg"><i data-lucide="check-circle" style="color:var(--primary)"></i><p>Location Synced to Cloud</p></div>';
         else mMsg.innerHTML = '<div class="status-msg"><i data-lucide="map-pin-off" style="color:var(--primary)"></i><p>Map Sync Locked<br>Enable Location in Vault & Save.</p></div>';
 
         // Scanner Sync Logic
