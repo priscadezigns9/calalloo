@@ -3,99 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calalloo Hub | Professional Node</title>
+    <title>Calalloo | Professional Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #E87722; --green: #2D5A27; --white: #FFFFFF; --bg: #FAFAFA; --dark: #1A0D00; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
         
-        .sidebar { width: 300px; background: var(--white); border-right: 1px solid rgba(0,0,0,0.05); padding: 30px; display: flex; flex-direction: column; }
-        .logo { font-family: 'Fraunces', serif; color: var(--primary); font-size: 1.8rem; font-weight: 900; text-decoration: none; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
-        .logo img { height: 30px; }
-        .side-link { padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; color: #666; margin-bottom: 5px; transition: 0.3s; }
-        .side-link:hover, .side-link.active { background: rgba(232, 119, 34, 0.08); color: var(--primary); }
+        /* Fixed Header Navigation */
+        header { background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+        .logo { font-family: 'Fraunces', serif; color: var(--primary); font-size: 1.5rem; font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo img { height: 28px; }
+        .nav-pills { display: flex; gap: 10px; background: #F0F0F0; padding: 5px; border-radius: 50px; }
+        .pill { padding: 10px 25px; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: 13px; color: #666; transition: 0.3s; }
+        .pill.active { background: var(--white); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        .main { flex: 1; overflow-y: auto; padding: 50px; }
-        .tab { display: none; }
-        .tab.active { display: block; }
+        .container { flex: 1; overflow-y: auto; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .view { display: none; }
+        .view.active { display: block; }
 
-        .card { background: var(--white); border-radius: 30px; padding: 40px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 10px 40px rgba(0,0,0,0.02); margin-bottom: 30px; }
-        .input-node { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #F0F0F0; margin-bottom: 20px; outline: none; font-family: inherit; font-size: 15px; }
-        .btn-sync { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        .pin { background: var(--white); border-radius: 28px; overflow: hidden; box-shadow: 0 4px 25px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
-        .pin img { width: 100%; height: 260px; object-fit: cover; }
-        .pin-content { padding: 1.5rem; }
+        /* Profile Area */
+        .profile-card { background: var(--white); border-radius: 30px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+        .photo-upload { width: 120px; height: 120px; border-radius: 50%; background: #F5F5F5; border: 3px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 30px; position: relative; overflow: hidden; }
+        .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-upload::after { content: '📸'; font-size: 24px; position: absolute; }
+        .photo-upload.has-img::after { display: none; }
 
-        .perm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .perm-card { background: #F9F9F9; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; }
-        
-        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: 800; font-size: 11px; text-transform: uppercase; margin-bottom: 8px; color: #888; }
+        .input-node { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #F0F0F0; outline: none; font-size: 15px; font-weight: 600; }
+        .input-node:focus { border-color: var(--primary); }
+
+        .btn-row { display: flex; gap: 15px; margin-top: 30px; }
+        .btn { padding: 15px 35px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s; border: none; font-size: 14px; }
+        .btn-save { background: var(--primary); color: white; }
+        .btn-out { background: #F0F0F0; color: #666; }
+
+        /* Toggles */
+        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #F9F9F9; border-radius: 15px; margin-bottom: 10px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        input:checked + .slider { background-color: var(--primary); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #DDD; transition: .3s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--green); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
-        .heritage-upload { border: 2px dashed #DDD; border-radius: 25px; padding: 50px; text-align: center; cursor: pointer; }
+        /* Discovery Feed */
+        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .heritage-card { background: var(--white); border-radius: 25px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
+        .heritage-card img { width: 100%; height: 220px; object-fit: cover; }
+        .heritage-card .info { padding: 20px; }
+
+        /* Map UI Stub */
+        #map-view { height: 100%; border-radius: 30px; background: #E5E3DF; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #999; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
+<header>
     <a href="/index.html" class="logo">Calalloo <img src="/icon.svg" alt="logo"></a>
-    <div class="side-link active" onclick="showTab('feed', this)">Discovery Feed</div>
-    <div class="side-link" onclick="showTab('profile', this)">My Kitchen</div>
-    <div class="side-link" onclick="showTab('heritage', this)">Saved Heritage</div>
-    <div class="side-link" onclick="showTab('settings', this)">Settings & Vault</div>
-    <div class="side-link" style="margin-top:auto;">Support Hub</div>
-</div>
+    <div class="nav-pills">
+        <div class="pill active" onclick="switchView('feed', this)">Feed</div>
+        <div class="pill" onclick="switchView('scanner', this)">Scanner</div>
+        <div class="pill" onclick="switchView('map', this)">Map</div>
+        <div class="pill" onclick="switchView('profile', this)">Profile</div>
+        <div class="pill" onclick="switchView('settings', this)">Settings</div>
+    </div>
+</header>
 
-<div class="main">
-    <!-- Feed Tab -->
-    <div id="feed" class="tab active">
-        <h1 style="font-family: Fraunces; margin-bottom: 30px;">Culinary Discovery Feed</h1>
-        <div class="grid">
-            <div class="pin">
+<div class="container">
+    <!-- Feed -->
+    <div id="feed" class="view active">
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Culinary Heritage Feed</h2>
+        <div class="feed-grid">
+            <div class="heritage-card">
                 <img src="https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg" alt="Callaloo">
-                <div class="pin-content"><h3>Trinidadian Callaloo Protocol</h3><p>Heritage • Vol. 1</p></div>
+                <div class="info"><h3>Trinidadian Callaloo</h3><p>Heritage Protocol • High Fidelity</p></div>
             </div>
-            <div class="pin">
+            <div class="heritage-card">
                 <img src="https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg" alt="Pelau">
-                <div class="pin-content"><h3>Heritage Chicken Pelau</h3><p>Classic One-Pot</p></div>
+                <div class="info"><h3>Sunday Pelau</h3><p>Caribbean Tradition</p></div>
             </div>
         </div>
     </div>
 
-    <!-- Profile Tab -->
-    <div id="profile" class="tab">
-        <h1 style="font-family: Fraunces; margin-bottom: 30px;">My Kitchen Profile</h1>
-        <div class="card">
-            <label style="font-weight: 800; font-size: 12px; text-transform: uppercase;">Node Identity</label>
-            <input type="text" id="prof_name" class="input-node" placeholder="Full Name">
-            <textarea id="prof_bio" class="input-node" style="height:100px; resize:none;" placeholder="Professional Bio..."></textarea>
-            <button class="btn-sync" onclick="syncProfile()">SYNC PROFILE TO SUPABASE</button>
+    <!-- Scanner -->
+    <div id="scanner" class="view">
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">AI Heritage Scanner</h2>
+        <div class="profile-card" style="text-align:center; padding: 100px 20px;">
+            <span style="font-size: 50px;">📷</span><br><br>
+            <p style="font-weight: 700; color: #888;">Initialize Scanner to identify heritage ingredients.</p>
         </div>
     </div>
 
-    <!-- Heritage Tab -->
-    <div id="heritage" class="tab">
-        <h1 style="font-family: Fraunces; margin-bottom: 30px;">Saved Heritage Photos</h1>
-        <div class="heritage-upload" onclick="alert('Photo Selector Triggered.')">
-            <span style="font-size:40px;">📸</span><br><b>Upload Food Photos</b>
+    <!-- Map -->
+    <div id="map" class="view" style="height: 500px;">
+        <div id="map-view">Heritage Mapping Active (Simulation)</div>
+    </div>
+
+    <!-- Profile -->
+    <div id="profile" class="view">
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">My Profile</h2>
+        <div class="profile-card">
+            <div class="photo-upload" id="photo_trigger" onclick="document.getElementById('photo_input').click()">
+                <img id="photo_preview" src="" style="display:none;">
+            </div>
+            <input type="file" id="photo_input" style="display:none;" onchange="previewPhoto(this)">
+            
+            <div class="input-group">
+                <label>Display Name</label>
+                <input type="text" id="p_name" class="input-node" placeholder="Prisca Dezigns">
+            </div>
+            <div class="input-group">
+                <label>Heritage Bio</label>
+                <textarea id="p_bio" class="input-node" style="height:120px; resize:none;" placeholder="Sharing the analytics of taste..."></textarea>
+            </div>
+            
+            <div class="btn-row">
+                <button class="btn btn-save" onclick="saveProfile()">SAVE PROFILE</button>
+                <button class="btn btn-out" onclick="signOut()">SIGN OUT</button>
+            </div>
         </div>
     </div>
 
-    <!-- Settings Tab -->
-    <div id="settings" class="tab">
-        <h1 style="font-family: Fraunces; margin-bottom: 30px;">Permission Vault</h1>
-        <div class="card">
-            <div class="perm-grid">
-                <div class="perm-card"><span>📍 Location</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-                <div class="perm-card"><span>📸 Camera & Scanner</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-                <div class="perm-card"><span>📂 Storage/Files</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-                <div class="perm-card"><span>🛡️ Global Security</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+    <!-- Settings -->
+    <div id="settings" class="view">
+        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Vault & Settings</h2>
+        <div class="profile-card">
+            <div class="setting-row">
+                <div><b>📍 Precise Location</b><p style="font-size:12px; color:#888;">Allow map tracking for heritage nodes</p></div>
+                <label class="switch"><input type="checkbox" id="set_loc" checked><span class="slider"></span></label>
+            </div>
+            <div class="setting-row">
+                <div><b>📸 Camera Access</b><p style="font-size:12px; color:#888;">Enable scanner for ingredient identification</p></div>
+                <label class="switch"><input type="checkbox" id="set_cam" checked><span class="slider"></span></label>
+            </div>
+            <div class="setting-row">
+                <div><b>📂 Media Storage</b><p style="font-size:12px; color:#888;">Save scanned protocols to cloud</p></div>
+                <label class="switch"><input type="checkbox" id="set_store" checked><span class="slider"></span></label>
             </div>
         </div>
     </div>
@@ -103,20 +149,52 @@
 
 <script>
     const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-anon-key}}');
-    function showTab(id, el) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+
+    function switchView(id, el) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
     }
-    async function syncProfile() {
-        const profile = { id: localStorage.getItem('calalloo_uid') || '0000-0000', full_name: document.getElementById('prof_name').value, bio: document.getElementById('prof_bio').value };
-        const { error } = await sb.from('profiles').upsert(profile);
-        if(!error) alert("Profile Saved to Cloud.");
+
+    function previewPhoto(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const prev = document.getElementById('photo_preview');
+                prev.src = e.target.result;
+                prev.style.display = 'block';
+                document.getElementById('photo_trigger').classList.add('has-img');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
     }
+
+    async function saveProfile() {
+        const name = document.getElementById('p_name').value;
+        const bio = document.getElementById('p_bio').value;
+        const uid = localStorage.getItem('calalloo_uid') || 'temp-node';
+
+        const { error } = await sb.from('profiles').upsert({ id: uid, full_name: name, bio: bio });
+        
+        if(!error) {
+            localStorage.setItem('calalloo_name', name);
+            localStorage.setItem('calalloo_bio', bio);
+            alert("Profile Secured.");
+        } else {
+            console.error(error);
+            alert("Save failed. Checking cloud link...");
+        }
+    }
+
+    function signOut() {
+        localStorage.clear();
+        window.location.href = '/index.html';
+    }
+
     window.onload = () => {
-        document.getElementById('prof_name').value = localStorage.getItem('calalloo_name') || '';
-        document.getElementById('prof_bio').value = localStorage.getItem('calalloo_bio') || '';
+        document.getElementById('p_name').value = localStorage.getItem('calalloo_name') || '';
+        document.getElementById('p_bio').value = localStorage.getItem('calalloo_bio') || '';
     };
 </script>
 </body>
