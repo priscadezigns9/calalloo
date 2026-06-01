@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
+    <!-- Infrastructure -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
             --bg: #FFFFFF;
@@ -179,8 +182,10 @@
         <nav class="nav-links">
             <a href="/magazine/">Magazine</a>
             <a href="/shop/">Store</a>
-            <a href="/login/">Sign In</a>
-            <a href="/signup/" class="btn-cta">Get Started</a>
+            <div id="auth-links">
+                <a href="/login/" id="login-link">Sign In</a>
+            </div>
+            <a href="/signup/" id="signup-link" class="btn-cta">Get Started</a>
         </nav>
     </header>
 
@@ -189,8 +194,8 @@
             <h1>Caribbean <br>Food & Heritage.</h1>
             <p>Celebrating ancestral flavors and preserving the authentic culinary history of the islands.</p>
             <div class="hero-actions">
-                <a href="/signup/" class="btn-cta">Join Now</a>
-                <a href="/dashboard/" class="btn-outline">My Kitchen</a>
+                <a href="/signup/" id="hero-cta" class="btn-cta">Join Now</a>
+                <a href="/dashboard/" id="hero-secondary" class="btn-outline">My Kitchen</a>
             </div>
         </div>
     </section>
@@ -225,5 +230,24 @@
         </div>
         <p class="copyright">© 2026 PRISCA DEZIGNS EMPIRE.</p>
     </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
+        const SUPABASE_KEY = '{credential:supabase-anon-key}';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function checkSession() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                document.getElementById('login-link').innerText = 'Dashboard';
+                document.getElementById('login-link').href = '/dashboard/';
+                document.getElementById('signup-link').style.display = 'none';
+                document.getElementById('hero-cta').innerText = 'Back to Kitchen';
+                document.getElementById('hero-cta').href = '/dashboard/';
+                document.getElementById('hero-secondary').style.display = 'none';
+            }
+        }
+        checkSession();
+    </script>
 </body>
 </html>
