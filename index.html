@@ -6,293 +6,93 @@
     <title>Calalloo | The Caribbean Food Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    
-    <!-- PWA Uplink -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#E87722">
-    <link rel="apple-touch-icon" href="assets/logo.png">
-    
-    <!-- Heritage SEO: JSON-LD WebSite Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Calalloo",
-      "url": "https://priscadezigns9.github.io/calalloo/",
-      "description": "The Caribbean Food Lab. Restoring authentic culinary heritage.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://priscadezigns9.github.io/calalloo/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg: #FFF8F0;
+            --bg: #FAFAFA;
             --primary: #E87722;
+            --calalloo-green: #2D5A27;
             --dark: #1A0D00;
-            --mid: #6B5E4F;
             --white: #FFFFFF;
-            --border: rgba(26, 13, 0, 0.08);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
         }
-
-        [data-theme="dark"] {
-            --bg: #0A0A0B;
-            --dark: #FFFFFF;
-            --mid: #A1A1A6;
-            --white: #141416;
-            --border: rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-switch {
-            width: 58px;
-            height: 30px;
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            padding: 3px;
-        }
-
-        .theme-switch .circle {
-            width: 22px;
-            height: 22px;
-            background: var(--primary);
-            border-radius: 50%;
-            position: absolute;
-            left: 3px;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-        }
-
-        [data-theme="dark"] .theme-switch .circle {
-            transform: translateX(28px);
-        }
-
-        .theme-switch svg { width: 12px; height: 12px; color: white; fill: white; }
-        .theme-switch .sun { display: block; }
-        .theme-switch .moon { display: none; }
-        [data-theme="dark"] .theme-switch .sun { display: none; }
-        [data-theme="dark"] .theme-switch .moon { display: block; }
-
+        body.dark-mode { --bg: #0B0E14; --dark: #F8FAFC; --white: #1A1F26; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background-color: var(--bg); 
-            color: var(--dark); 
-            font-family: var(--font-sans); 
-            line-height: 1.6; 
-            -webkit-font-smoothing: antialiased; 
-        }
-        
-        header { 
-            padding: 1.5rem 2.5rem; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            position: sticky; 
-            top: 0; 
-            z-index: 1000;
-        }
-
-        .nav-brand { 
-            font-family: var(--font-display); 
-            font-weight: 900; 
-            font-size: 1.8rem; 
-            color: var(--primary); 
-            text-decoration: none; 
-            letter-spacing: -0.05em;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .nav-brand span { display: flex; align-items: center; gap: 1px; }
-        .nav-brand span::after { content: ""; width: 8px; height: 8px; background: #000000; border-radius: 50%; display: inline-block; margin-top: 14px; }
-        [data-theme="dark"] .nav-brand span::after { background: #FFFFFF; }
-
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--primary); }
-
-        .btn-platform { 
-            background: var(--primary); 
-            color: white !important; 
-            padding: 0.8rem 1.5rem; 
-            border-radius: 100px; 
-            box-shadow: 0 10px 20px rgba(232, 119, 34, 0.2);
-        }
-
-        .hero { 
-            padding: 8rem 2rem; 
-            text-align: center; 
-            max-width: 1000px; 
-            margin: 0 auto; 
-        }
-        .hero h1 { 
-            font-family: var(--font-display); 
-            font-size: clamp(3.5rem, 10vw, 6rem); 
-            line-height: 0.9; 
-            margin-bottom: 2rem; 
-            letter-spacing: -0.05em; 
-            font-weight: 900;
-        }
-        .hero p { 
-            font-size: 1.25rem; 
-            color: var(--mid); 
-            max-width: 600px; 
-            margin: 0 auto 3rem; 
-        }
-
-        .grid-container { 
-            max-width: 1300px; 
-            margin: 0 auto 10rem; 
-            padding: 0 2rem; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
-            gap: 2.5rem; 
-        }
-
-        .dish-card { 
-            background: var(--white); 
-            border-radius: 32px; 
-            overflow: hidden; 
-            border: 1px solid var(--border);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            text-decoration: none;
-            color: inherit;
-        }
-        .dish-card:hover { transform: translateY(-10px); box-shadow: 0 40px 80px rgba(26, 13, 0, 0.1); }
-        
-        .dish-img-wrapper { width: 100%; aspect-ratio: 1; overflow: hidden; }
-        .dish-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-        .dish-card:hover .dish-img-wrapper img { transform: scale(1.05); }
-
-        .dish-info { padding: 2rem; }
-        .dish-info h3 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 0.5rem; font-weight: 900; }
-        .dish-info p { color: var(--mid); font-size: 0.95rem; }
-
-        footer { 
-            padding: 6rem 2rem; 
-            border-top: 1px solid var(--border); 
-            text-align: center; 
-            color: var(--mid); 
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 700px) {
-            .hero { padding: 4rem 1.5rem; }
-            .nav-links { display: none; }
-        }
+        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); }
+        header { padding: 1rem 5%; background: var(--white); border-bottom: 2px solid var(--calalloo-green); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.8rem; color: var(--calalloo-green); text-decoration: none; }
+        .layout { display: flex; height: calc(100vh - 72px); }
+        .sidebar { width: 350px; background: var(--white); border-right: 1px solid rgba(0,0,0,0.05); padding: 30px 20px; overflow-y: auto; }
+        .main { flex: 1; padding: 40px 5%; overflow-y: auto; position: relative; }
+        .universal-search-hub { position: relative; width: 100%; margin-bottom: 30px; }
+        .search-input { width: 100%; padding: 1.5rem 3.5rem; border-radius: 100px; border: 3px solid var(--calalloo-green); font-size: 1.2rem; outline: none; box-shadow: 0 20px 60px rgba(45, 90, 39, 0.12); background: var(--white); color: var(--dark); font-weight: 700; }
+        .discovery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .node-card { background: var(--white); border-radius: 24px; padding: 25px; border: 1px solid rgba(0,0,0,0.05); transition: 0.4s; cursor: pointer; }
+        .taste-profile-box { background: linear-gradient(135deg, var(--calalloo-green), #1a3617); border-radius: 20px; padding: 25px; color: white; margin-bottom: 30px; }
+        .map-container { width: 100%; height: 500px; border-radius: 30px; margin-top: 30px; }
     </style>
 </head>
 <body>
-
-    <header>
-        <a href="index.html" class="nav-brand" style="display: flex; align-items: center; gap: 15px;">
-            <img src="assets/logo.png" alt="Logo" style="height: 48px;">
-            <span>Calalloo</span>
-        </a>
-        <nav class="nav-links">
-            <a href="about/">About</a>
-            <a href="blog/">Blog</a>
-            <a href="login/">Sign In</a>
-            <a href="signup/" class="btn-platform">Join the Lab</a>
-            <div class="theme-switch" onclick="ThemeManager.toggle()" title="Toggle Theme">
-                <div class="circle">
-                    <svg class="sun" viewBox="0 0 24 24"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 13h2a1 1 0 100-2H2a1 1 0 100 2zm18 0h2a1 1 0 100-2h-2a1 1 0 100 2zM11 2v2a1 1 0 102 0V2a1 1 0 10-2 0zm0 18v2a1 1 0 102 0v-2a1 1 0 10-2 0zM5.99 4.58a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41L5.99 4.58zm12.02 12.02a1 1 0 10-1.41 1.41l1.41 1.41a1 1 0 101.41-1.41l-1.41-1.41zm-1.41-12.02a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41l-1.41 1.41zM4.58 16.59l-1.41 1.41a1 1 0 101.41 1.41l1.41-1.41a1 1 0 10-1.41-1.41z"/></svg>
-                    <svg class="moon" viewBox="0 0 24 24"><path d="M21.64 13a1 1 0 00-1.05-.14 8.05 8.05 0 01-3.37.73 8.15 8.15 0 01-8.14-8.14 8.59 8.59 0 01.25-2 1 1 0 00-1.21-1.08 10.14 10.14 0 1012.72 10.78 1 1 0 00-.2-1.15z"/></svg>
-                </div>
+<header>
+    <a href="/index.html" class="nav-brand">Calalloo</a>
+    <nav style="display: flex; gap: 20px; align-items: center;">
+        <a href="javascript:void(0)" onclick="showMainTab('feed')" style="text-decoration:none; font-weight:800; color:var(--dark); font-size:14px;">Feed</a>
+        <a href="javascript:void(0)" onclick="showMainTab('map-tab')" style="text-decoration:none; font-weight:800; color:var(--dark); font-size:14px;">Markets</a>
+        <a href="/profile/index.html" style="text-decoration:none; font-weight:800; color:var(--dark); font-size:14px;">My Kitchen</a>
+    </nav>
+</header>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="taste-profile-box">
+            <h2>Taste Profile</h2>
+            <p>AI Syncing your preferences...</p>
+        </div>
+        <h2>Smart Recommendations</h2>
+        <div id="ai-suggestions"></div>
+    </aside>
+    <main class="main">
+        <div id="feed" class="tab-content">
+            <div class="universal-search-hub">
+                <input type="text" class="search-input" id="omni-search" placeholder="Search the Empire...">
             </div>
-        </nav>
-    </header>
-
-    <script src="js/backend.js"></script>
-    <script>
-        ThemeManager.init();
-        
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Heritage Uplink Stable (PWA Active)'))
-                    .catch(err => console.log('Uplink Failed', err));
-            });
-        }
-    </script>
-
-    <section class="hero">
-        <h1>Deep Caribbean Heritage.</h1>
-        <p>Restoring the authentic soul of Caribbean cuisine through precision sourcing and traditional protocols.</p>
-    </section>
-
-    <main class="grid-container">
-        <a href="recipes/trinidadian-callaloo/" class="dish-card">
-            <div class="dish-img-wrapper">
-                <img src="assets/heritage/callaloo.jpg" alt="Trinidadian Callaloo">
-            </div>
-            <div class="dish-info">
-                <h3>Trinidadian Callaloo</h3>
-                <p>Authentic dasheen bush and coconut milk infusion.</p>
-            </div>
-        </a>
-
-        <a href="recipes/chicken-pelau/" class="dish-card">
-            <div class="dish-img-wrapper">
-                <img src="assets/heritage/pelau.jpg" alt="Chicken Pelau">
-            </div>
-            <div class="dish-info">
-                <h3>Chicken Pelau</h3>
-                <p>Caramelized one-pot tradition.</p>
-            </div>
-        </a>
-
-        <a href="recipes/grenadian-oil-down/" class="dish-card">
-            <div class="dish-img-wrapper">
-                <img src="assets/heritage/oil-down.jpg" alt="Grenadian Oil Down">
-            </div>
-            <div class="dish-info">
-                <h3>Grenadian Oil Down</h3>
-                <p>Breadfruit and coconut energy reserve.</p>
-            </div>
-        </a>
-
-        <a href="recipes/pholourie/" class="dish-card">
-            <div class="dish-img-wrapper">
-                <img src="assets/heritage/pholourie.jpg" alt="Pholourie">
-            </div>
-            <div class="dish-info">
-                <h3>Pholourie</h3>
-                <p>Spiced split pea spheres.</p>
-            </div>
-        </a>
-
-        <a href="recipes/sahina/" class="dish-card">
-            <div class="dish-img-wrapper">
-                <img src="assets/heritage/sahina.png" alt="Sahina">
-            </div>
-            <div class="dish-info">
-                <h3>Sahina</h3>
-                <p>Layered dasheen leaf complexity.</p>
-            </div>
-        </a>
+            <div class="discovery-grid" id="discovery-grid"></div>
+        </div>
+        <div id="map-tab" class="tab-content" style="display:none;">
+            <div id="map-node" class="map-container"></div>
+        </div>
     </main>
-
-    <footer>
-        &copy; 2026 Calalloo. Restoring Heritage.
-    </footer>
-
+</div>
+<script>
+    const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-anon-key}}');
+    const nodes = [
+        { title: "Trinidadian Callaloo Protocol", meta: "Sunday Heritage", lat: 10.65, lng: -61.5 },
+        { title: "Heritage Chicken Pelau", meta: "One Pot Classic", lat: 10.6, lng: -61.4 }
+    ];
+    function renderNodes() {
+        document.getElementById('discovery-grid').innerHTML = nodes.map(n => `
+            <div class="node-card">
+                <h3>${n.title}</h3>
+                <p>${n.meta}</p>
+            </div>
+        `).join('');
+    }
+    function showMainTab(id) {
+        document.getElementById('feed').style.display = id === 'feed' ? 'block' : 'none';
+        document.getElementById('map-tab').style.display = id === 'map-tab' ? 'block' : 'none';
+        if(id === 'map-tab') setTimeout(initMap, 200);
+    }
+    let map;
+    function initMap() {
+        if(map) return;
+        map = L.map('map-node').setView([10.66, -61.51], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    }
+    window.onload = () => { showMainTab('feed'); renderNodes(); };
+</script>
 </body>
 </html>
