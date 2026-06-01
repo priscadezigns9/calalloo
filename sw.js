@@ -1,16 +1,12 @@
-const CACHE_NAME = 'calalloo-heritage-v1';
+const CACHE_NAME = 'calalloo-v2-ai-master';
 const ASSETS = [
-  'index.html',
-  'assets/logo.png',
-  'assets/heritage/callaloo.jpg',
-  'assets/heritage/pelau.jpg',
-  'assets/heritage/oil-down.jpg',
-  'assets/heritage/pholourie.jpg',
-  'assets/heritage/sahina.png',
-  'js/backend.js'
+  '/',
+  '/index.html'
 ];
 
+// 1. Force the new Service Worker to activate immediately
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS);
@@ -18,10 +14,26 @@ self.addEventListener('install', (event) => {
   );
 });
 
+// 2. Clean up old caches (v1 heritage cache)
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+// 3. Network-First Strategy: Always try the network first so users see updates instantly
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
     })
   );
 });
