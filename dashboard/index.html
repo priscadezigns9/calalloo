@@ -3,264 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calalloo | Unified Hub v10.0</title>
+    <title>My Kitchen | Calalloo</title>
+    <link rel="icon" type="image/png" href="/assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #2D5A27; --accent: #E87722; --white: #FFFFFF; --bg: #FAFAFA; --dark: #1A0D00; }
+        :root {
+            --primary: #E87722; 
+            --white: #FFFFFF; 
+            --bg: #FFF5EE; 
+            --dark: #1A0D00;
+            --border: rgba(232, 119, 34, 0.1);
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
         
-        header { background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
-        .logo { font-family: 'Fraunces', serif; color: var(--primary); font-size: 1.5rem; font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 10px; }
-        .logo img { height: 35px; width: 35px; object-fit: contain; }
+        header { background: var(--white); border-bottom: 1px solid var(--border); padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo img { height: 40px; }
         
-        .nav-pills { display: flex; gap: 8px; background: #F0F0F0; padding: 5px; border-radius: 50px; }
+        .nav-pills { display: flex; gap: 8px; background: #FDE8D7; padding: 5px; border-radius: 50px; }
         .pill { padding: 10px 20px; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: 12px; color: #666; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
         .pill.active { background: var(--white); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        .container { flex: 1; overflow-y: auto; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%; position: relative; }
+        .container { flex: 1; overflow-y: auto; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .view { display: none; min-height: 100%; }
         .view.active { display: block; }
 
-        .card { background: var(--white); border-radius: 25px; padding: 30px; box-shadow: 0 8px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card { background: var(--white); border-radius: 25px; padding: 30px; box-shadow: 0 8px 30px rgba(0,0,0,0.03); border: 1px solid var(--border); margin-bottom: 20px; }
         
-        /* Profile Area */
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-weight: 800; font-size: 11px; text-transform: uppercase; margin-bottom: 8px; color: #888; }
-        .input-node { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #F0F0F0; outline: none; font-size: 15px; font-weight: 600; }
-        .photo-upload { width: 110px; height: 110px; border-radius: 50%; background: #F5F5F5; border: 3px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 30px; overflow: hidden; }
-        .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Feed Grid */
-        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .dish-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #EEE; cursor: pointer; transition: 0.3s; }
-        .dish-card img { width: 100%; height: 200px; object-fit: cover; }
-        .dish-info { padding: 15px; }
-
-        /* Functional Elements */
-        #video-feed { width: 100%; height: 400px; background: #000; border-radius: 25px; object-fit: cover; display: none; }
-        .status-msg { text-align: center; padding: 80px 20px; font-weight: 700; color: #888; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
+        h2 { font-family: 'Fraunces', serif; margin-bottom: 24px; color: var(--primary); }
 
         .btn { padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; border: none; font-size: 14px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-primary { background: var(--primary); color: white; width: 100%; }
-        .btn-outline { background: var(--white); border: 2px solid var(--primary); color: var(--primary); width: 100%; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-logout { color: #888; font-weight: 700; background: transparent; border: none; cursor: pointer; }
 
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; padding: 20px; overflow-y: auto; }
-        .modal-content { background: white; max-width: 600px; margin: 40px auto; border-radius: 30px; padding: 40px; position: relative; }
-        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; color: #666; }
-
-        /* Toggles */
-        .switch { position: relative; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #DDD; transition: .3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        .empty-state { text-align: center; padding: 80px 20px; color: #888; font-weight: 700; }
     </style>
 </head>
 <body>
-
-<header>
-    <a href="/index.html" class="logo">
-        <img src="/icon.svg" id="header_logo" alt="logo"> Calalloo
-    </a>
-    <div class="nav-pills">
-        <div class="pill active" onclick="switchView('feed', this)"><i data-lucide="layout-grid"></i> Feed</div>
-        <div class="pill" onclick="switchView('scanner', this)"><i data-lucide="scan"></i> Scanner</div>
-        <div class="pill" onclick="switchView('map', this)"><i data-lucide="map"></i> Map</div>
-        <div class="pill" onclick="switchView('profile', this)"><i data-lucide="user"></i> Profile</div>
-        <div class="pill" onclick="switchView('settings', this)"><i data-lucide="shield-check"></i> Vault</div>
-    </div>
-</header>
-
-<div class="container">
-    <!-- Feed View -->
-    <div id="feed" class="view active">
-        <input type="text" class="search-bar" placeholder="Search Universal Discovery..." style="width:100%; padding:15px; border-radius:15px; border:1px solid #EEE; margin-bottom:20px;">
-        <div class="feed-grid">
-            <div class="dish-card" onclick="openRecipe('Crab & Callaloo', 'Official Tobago Protocol', ['Crab', 'Dasheen Leaves', 'Okra', 'Coconut Milk'], 'https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg')">
-                <img src="https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg">
-                <div class="dish-info"><b>Crab & Callaloo</b><p>Heritage Protocol</p></div>
-            </div>
-            <div class="dish-card" onclick="openRecipe('Chicken Pelau', 'Classic Sunday Protocol', ['Chicken', 'Rice', 'Pigeon Peas', 'Burnt Sugar'], 'https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg')">
-                <img src="https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg">
-                <div class="dish-info"><b>Chicken Pelau</b><p>Sunday Classic</p></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scanner View -->
-    <div id="scanner" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 20px;">AI Scanner</h2>
-        <div class="card" style="padding:0; overflow:hidden;">
-            <video id="video-feed" autoplay playsinline></video>
-            <div id="scanner-status" class="status-msg">
-                <i data-lucide="camera-off" style="width:48px;height:48px;"></i>
-                <p>Scanner Locked<br>Enable Camera & Storage in Vault and Save.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Map View -->
-    <div id="map" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Heritage Map</h2>
-        <div class="card" id="map-status" style="height:400px; display:flex; align-items:center; justify-content:center;">
-            <div class="status-msg">
-                <i data-lucide="map-pin-off" style="width:48px;height:48px;color:var(--primary);"></i>
-                <p>Map Sync Locked<br>Enable Precise Location in Vault and Save.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile View -->
-    <div id="profile" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 20px;">My Node</h2>
-        <div class="card">
-            <div class="photo-upload" onclick="document.getElementById('photo_input').click()">
-                <img id="photo_preview" src="https://ui-avatars.com/api/?name=User&background=E87722&color=fff">
-            </div>
-            <input type="file" id="photo_input" style="display:none;" onchange="previewPhoto(this)">
-            
-            <div class="input-group"><label>Display Name</label><input type="text" id="p_name" class="input-node"></div>
-            <div class="input-group"><label>Bio</label><textarea id="p_bio" class="input-node" style="height:80px;"></textarea></div>
-            <div class="input-group"><label>Phone Number</label><input type="tel" id="p_phone" class="input-node"></div>
-            
-            <button class="btn btn-primary" onclick="saveProfile()"><i data-lucide="save"></i> SAVE PROFILE</button>
-        </div>
-    </div>
-
-    <!-- Vault View (FIXED) -->
-    <div id="settings" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Vault & Permissions</h2>
-        <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
-                <span>📍 Precise Location Sync</span><label class="switch"><input type="checkbox" id="v_loc"><span class="slider"></span></label>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
-                <span>📸 Camera Access Node</span><label class="switch"><input type="checkbox" id="v_cam"><span class="slider"></span></label>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0;">
-                <span>📂 Media Storage Cloud</span><label class="switch"><input type="checkbox" id="v_store"><span class="slider"></span></label>
-            </div>
-            
-            <!-- THE MISSING SAVE BUTTON -->
-            <button class="btn btn-primary" style="margin-top:30px;" onclick="saveVault()"><i data-lucide="cloud-lock"></i> SAVE VAULT SETTINGS</button>
-            <button class="btn btn-outline" onclick="window.location.href='mailto:support@calalloo.com'"><i data-lucide="headphones"></i> CONTACT SUPPORT</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div id="recipeModal" class="modal">
-    <div class="modal-content">
-        <i data-lucide="x" class="close-modal" onclick="closeModal()"></i>
-        <img id="modal_img" style="width:100%; border-radius:20px; margin-bottom:20px;">
-        <h2 id="modal_title" style="font-family: Fraunces;"></h2>
-        <p id="modal_desc" style="color:#666; margin-bottom:20px;"></p>
-        <ul id="modal_ingredients" style="padding-left:20px;"></ul>
-    </div>
-</div>
-
-<script>
-    const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-anon-key}}');
-    lucide.createIcons();
-
-    function switchView(id, el) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        el.classList.add('active');
-        applySync();
-    }
-
-    async function applySync() {
-        const v = JSON.parse(localStorage.getItem('cal_vault_final') || '{"loc":false,"cam":false,"store":false}');
+    <header>
+        <a href="/" class="logo"><img src="/assets/logo.png" alt="Calalloo Logo"></a>
         
-        // Map Sync Logic
-        const mMsg = document.getElementById('map-status');
-        if(v.loc) mMsg.innerHTML = '<div class="status-msg"><i data-lucide="check-circle" style="color:var(--primary)"></i><p>Location Synced to Cloud</p></div>';
-        else mMsg.innerHTML = '<div class="status-msg"><i data-lucide="map-pin-off" style="color:var(--primary)"></i><p>Map Sync Locked<br>Enable Location in Vault & Save.</p></div>';
+        <div class="nav-pills">
+            <div class="pill active" onclick="switchView('feed', this)"><i data-lucide="layout-grid"></i> Feed</div>
+            <div class="pill" onclick="switchView('profile', this)"><i data-lucide="user"></i> Profile</div>
+            <div class="pill" onclick="switchView('settings', this)"><i data-lucide="settings"></i> Settings</div>
+        </div>
 
-        // Scanner Sync Logic
-        const video = document.getElementById('video-feed');
-        const sMsg = document.getElementById('scanner-status');
-        if(v.cam && v.store) {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-                video.srcObject = stream; video.style.display = 'block'; sMsg.style.display = 'none';
-            } catch(e) { console.error(e); }
-        } else {
-            if(video.srcObject) video.srcObject.getTracks().forEach(t=>t.stop());
-            video.style.display = 'none'; sMsg.style.display = 'flex';
-        }
+        <button class="btn-logout" onclick="signOut()">Sign Out</button>
+    </header>
+
+    <div class="container">
+        <div id="feed" class="view active">
+            <h2>Heritage Feed</h2>
+            <div class="card">
+                <div class="empty-state">No recipes found in your history. Start exploring!</div>
+            </div>
+        </div>
+
+        <div id="profile" class="view">
+            <h2>My Profile</h2>
+            <div class="card">
+                <p id="userEmail">Loading...</p>
+            </div>
+        </div>
+
+        <div id="settings" class="view">
+            <h2>Settings</h2>
+            <div class="card">
+                <p>Personalize your experience.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
+        const SUPABASE_KEY = '{credential:supabase-anon-key}';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         lucide.createIcons();
-    }
 
-    async function saveVault() {
-        const config = {
-            id: 'prisca-node',
-            loc: document.getElementById('v_loc').checked,
-            cam: document.getElementById('v_cam').checked,
-            store: document.getElementById('v_store').checked
-        };
-        localStorage.setItem('cal_vault_final', JSON.stringify(config));
-        try {
-            await sb.from('user_settings').upsert(config);
-            alert("VAULT SECURED TO CLOUD");
-        } catch(e) { alert("VAULT SECURED LOCALLY"); }
-        applySync();
-    }
-
-    function openRecipe(t, d, i, m) {
-        document.getElementById('modal_title').innerText = t;
-        document.getElementById('modal_desc').innerText = d;
-        document.getElementById('modal_img').src = m;
-        document.getElementById('modal_ingredients').innerHTML = i.map(x => `<li>${x}</li>`).join('');
-        document.getElementById('recipeModal').style.display = 'block';
-        lucide.createIcons();
-    }
-    function closeModal() { document.getElementById('recipeModal').style.display = 'none'; }
-
-    async function saveProfile() {
-        const data = {
-            id: 'prisca-node',
-            full_name: document.getElementById('p_name').value,
-            bio: document.getElementById('p_bio').value,
-            phone: document.getElementById('p_phone').value
-        };
-        localStorage.setItem('cal_prof_v10', JSON.stringify(data));
-        await sb.from('profiles').upsert(data);
-        alert("PROFILE SAVED");
-    }
-
-    function previewPhoto(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => document.getElementById('photo_preview').src = e.target.result;
-            reader.readAsDataURL(input.files[0]);
+        function switchView(id, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
         }
-    }
 
-    window.onload = () => {
-        const v = JSON.parse(localStorage.getItem('cal_vault_final') || '{}');
-        if(v.id) {
-            document.getElementById('v_loc').checked = v.loc;
-            document.getElementById('v_cam').checked = v.cam;
-            document.getElementById('v_store').checked = v.store;
+        async function loadUser() {
+            const { data: { user } } = await sb.auth.getUser();
+            if (!user) {
+                window.location.href = '/login/';
+                return;
+            }
+            document.getElementById('userEmail').innerText = "Logged in as: " + user.email;
         }
-        const p = JSON.parse(localStorage.getItem('cal_prof_v10') || '{}');
-        if(p.full_name) {
-            document.getElementById('p_name').value = p.full_name;
-            document.getElementById('p_bio').value = p.bio;
-            document.getElementById('p_phone').value = p.phone;
+
+        async function signOut() {
+            await sb.auth.signOut();
+            localStorage.removeItem('calalloo_uid');
+            window.location.href = '/';
         }
-        applySync();
-        // Logo Cache Fix
-        document.getElementById('header_logo').src = "/icon.svg?v=" + Date.now();
-    };
-</script>
+
+        loadUser();
+    </script>
 </body>
 </html>
