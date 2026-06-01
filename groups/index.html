@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heritage Groups | Calalloo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FFF8F0;
+            --primary: #E87722;
+            --dark: #1A0D00;
+            --mid: #6B5E4F;
+            --white: #FFFFFF;
+            --border: rgba(232, 119, 34, 0.1);
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --dark: #FFFFFF;
+            --mid: #A1A1A6;
+            --white: #141416;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--dark); 
+            font-family: var(--font-sans); 
+            line-height: 1.6;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+        }
+
+        .container {
+            padding: 40px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(232, 119, 34, 0.2);
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .group-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: 0.3s;
+        }
+
+        .group-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .group-cat {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .group-name {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+
+        .group-meta {
+            font-size: 0.85rem;
+            color: var(--mid);
+            margin-bottom: 20px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg);
+            padding: 40px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border);
+        }
+
+        .input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            margin-bottom: 20px;
+            font-family: var(--font-sans);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="nav-brand">
+            <img src="/assets/logos/Kalaloo_World_Logo.svg" alt="Calalloo">
+        </a>
+    </header>
+
+    <div class="container">
+        <div class="header-row">
+            <div>
+                <h1 class="page-title">Heritage Groups</h1>
+                <p style="color: var(--mid)">Connect with others preserving specific traditions.</p>
+            </div>
+            <button class="btn" onclick="openModal()">+ Create Group</button>
+        </div>
+
+        <div id="groups-list" class="groups-grid">
+            <!-- Groups will be loaded here -->
+            <div class="status-msg">Connecting to Heritage Network...</div>
+        </div>
+    </div>
+
+    <div id="create-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="font-family: var(--font-display); margin-bottom: 20px;">Establish a New Group</h2>
+            <input type="text" id="group-name" class="input" placeholder="Group Name (e.g. Sunday Pelau Society)">
+            <input type="text" id="group-desc" class="input" placeholder="Brief Description">
+            <select id="group-cat" class="input">
+                <option value="Traditions">Traditions</option>
+                <option value="Techniques">Techniques</option>
+                <option value="Sourcing">Sourcing</option>
+                <option value="History">History</option>
+            </select>
+            <div style="display:flex; gap:10px">
+                <button class="btn" style="flex:1" onclick="createGroup()">Create Node</button>
+                <button class="btn" style="flex:1; background: var(--mid)" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SB_URL = "https://sktpjacowqaedddtrhuz.supabase.co";
+        const SB_KEY = "{{credential:supabase-anon-key}}";
+        const sb = supabase.createClient(SB_URL, SB_KEY);
+
+        function openModal() { document.getElementById('create-modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('create-modal').style.display = 'none'; }
+
+        async function createGroup() {
+            const name = document.getElementById('group-name').value;
+            const desc = document.getElementById('group-desc').value;
+            const cat = document.getElementById('group-cat').value;
+            
+            if(!name) return alert('Group Name Required');
+
+            const { data, error } = await sb.from('groups').insert([
+                { name, description: desc, category: cat }
+            ]).select();
+
+            if (error) {
+                console.error(error);
+                alert('Verification Failed: ' + error.message);
+            } else {
+                closeModal();
+                loadGroups();
+            }
+        }
+
+        async function loadGroups() {
+            const container = document.getElementById('groups-list');
+            const { data, error } = await sb.from('groups').select('*').order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = '<div class="error">Failed to synchronize with network.</div>';
+                return;
+            }
+
+            if (!data.length) {
+                container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--mid)">No groups established yet. Be the first.</div>';
+                return;
+            }
+
+            container.innerHTML = data.map(g => `
+                <div class="group-card">
+                    <div class="group-cat">${g.category || 'General'}</div>
+                    <h3 class="group-name">${g.name}</h3>
+                    <p class="group-meta">${g.description || 'No description provided.'}</p>
+                    <button class="btn" style="width:100%; font-size: 0.8rem" onclick="joinGroup('${g.id}')">Join Group</button>
+                </div>
+            `).join('');
+        }
+
+        async function joinGroup(id) {
+            alert('Joining Heritage Node: ' + id);
+            // This would link to group_members table in a full deployment
+        }
+
+        loadGroups();
+    </script>
+</body>
+</html>
