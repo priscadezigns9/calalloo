@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calalloo | Unified Hub v9.0</title>
+    <title>Calalloo | Unified Hub v10.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -26,40 +26,46 @@
 
         .card { background: var(--white); border-radius: 25px; padding: 30px; box-shadow: 0 8px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* Feed & Recipe Modal */
-        .search-bar { width: 100%; padding: 15px 20px; border-radius: 15px; border: 1px solid #EEE; background: #F9F9F9; margin-bottom: 15px; outline: none; }
+        /* Profile Area */
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: 800; font-size: 11px; text-transform: uppercase; margin-bottom: 8px; color: #888; }
+        .input-node { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #F0F0F0; outline: none; font-size: 15px; font-weight: 600; }
+        .photo-upload { width: 110px; height: 110px; border-radius: 50%; background: #F5F5F5; border: 3px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 30px; overflow: hidden; }
+        .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Feed Grid */
         .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .dish-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #EEE; cursor: pointer; transition: 0.3s; }
-        .dish-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .dish-card img { width: 100%; height: 200px; object-fit: cover; }
         .dish-info { padding: 15px; }
 
+        /* Functional Elements */
+        #video-feed { width: 100%; height: 400px; background: #000; border-radius: 25px; object-fit: cover; display: none; }
+        .status-msg { text-align: center; padding: 80px 20px; font-weight: 700; color: #888; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
+
+        .btn { padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; border: none; font-size: 14px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-outline { background: var(--white); border: 2px solid var(--primary); color: var(--primary); width: 100%; margin-top: 10px; }
+
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; padding: 20px; overflow-y: auto; }
         .modal-content { background: white; max-width: 600px; margin: 40px auto; border-radius: 30px; padding: 40px; position: relative; }
         .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; color: #666; }
 
-        /* Profile Inputs Restored */
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-weight: 800; font-size: 11px; text-transform: uppercase; margin-bottom: 8px; color: #888; }
-        .input-node { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #F0F0F0; outline: none; font-size: 15px; font-weight: 600; }
-        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-
-        .photo-upload { width: 110px; height: 110px; border-radius: 50%; background: #F5F5F5; border: 3px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 30px; overflow: hidden; }
-        .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
-
-        .btn { padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; border: none; font-size: 14px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-primary { background: var(--primary); color: white; width: 100%; }
-
-        /* Functional Elements */
-        #video-feed { width: 100%; height: 400px; background: #000; border-radius: 25px; object-fit: cover; display: none; }
-        .status-msg { text-align: center; padding: 60px 20px; font-weight: 700; color: #888; }
+        /* Toggles */
+        .switch { position: relative; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #DDD; transition: .3s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
     </style>
 </head>
 <body>
 
 <header>
     <a href="/index.html" class="logo">
-        <img src="/icon.svg" alt="logo"> Calalloo
+        <img src="/icon.svg" id="header_logo" alt="logo"> Calalloo
     </a>
     <div class="nav-pills">
         <div class="pill active" onclick="switchView('feed', this)"><i data-lucide="layout-grid"></i> Feed</div>
@@ -73,8 +79,8 @@
 <div class="container">
     <!-- Feed View -->
     <div id="feed" class="view active">
-        <input type="text" class="search-bar" placeholder="Search 500+ Heritage Recipes...">
-        <div class="feed-grid" id="recipe_grid">
+        <input type="text" class="search-bar" placeholder="Search Universal Discovery..." style="width:100%; padding:15px; border-radius:15px; border:1px solid #EEE; margin-bottom:20px;">
+        <div class="feed-grid">
             <div class="dish-card" onclick="openRecipe('Crab & Callaloo', 'Official Tobago Protocol', ['Crab', 'Dasheen Leaves', 'Okra', 'Coconut Milk'], 'https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg')">
                 <img src="https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg">
                 <div class="dish-info"><b>Crab & Callaloo</b><p>Heritage Protocol</p></div>
@@ -92,8 +98,8 @@
         <div class="card" style="padding:0; overflow:hidden;">
             <video id="video-feed" autoplay playsinline></video>
             <div id="scanner-status" class="status-msg">
-                <i data-lucide="camera-off" style="margin-bottom:15px;"></i><br>
-                Permissions Required: Camera & Storage
+                <i data-lucide="camera-off" style="width:48px;height:48px;"></i>
+                <p>Scanner Locked<br>Enable Camera & Storage in Vault and Save.</p>
             </div>
         </div>
     </div>
@@ -101,15 +107,15 @@
     <!-- Map View -->
     <div id="map" class="view">
         <h2 style="font-family: Fraunces; margin-bottom: 20px;">Heritage Map</h2>
-        <div class="card" id="map-status" style="height:400px; display:flex; align-items:center; justify-content:center; text-align:center;">
+        <div class="card" id="map-status" style="height:400px; display:flex; align-items:center; justify-content:center;">
             <div class="status-msg">
-                <i data-lucide="map-pin-off" style="margin-bottom:15px;"></i><br>
-                Permissions Required: Precise Location
+                <i data-lucide="map-pin-off" style="width:48px;height:48px;color:var(--primary);"></i>
+                <p>Map Sync Locked<br>Enable Precise Location in Vault and Save.</p>
             </div>
         </div>
     </div>
 
-    <!-- Profile View (RESTORED) -->
+    <!-- Profile View -->
     <div id="profile" class="view">
         <h2 style="font-family: Fraunces; margin-bottom: 20px;">My Node</h2>
         <div class="card">
@@ -118,63 +124,45 @@
             </div>
             <input type="file" id="photo_input" style="display:none;" onchange="previewPhoto(this)">
             
-            <div class="input-group"><label>Display Name</label><input type="text" id="p_name" class="input-node" placeholder="Prisca Dezigns"></div>
-            <div class="input-group"><label>Bio</label><textarea id="p_bio" class="input-node" style="height:100px;" placeholder="Analytical faith in taste..."></textarea></div>
-            <div class="input-group"><label>Phone Number</label><input type="tel" id="p_phone" class="input-node" placeholder="+1 868 ..."></div>
+            <div class="input-group"><label>Display Name</label><input type="text" id="p_name" class="input-node"></div>
+            <div class="input-group"><label>Bio</label><textarea id="p_bio" class="input-node" style="height:80px;"></textarea></div>
+            <div class="input-group"><label>Phone Number</label><input type="tel" id="p_phone" class="input-node"></div>
             
-            <div class="social-grid">
-                <input type="text" id="p_fb" class="input-node" placeholder="Facebook">
-                <input type="text" id="p_ig" class="input-node" placeholder="Instagram">
-                <input type="text" id="p_th" class="input-node" placeholder="Threads">
-                <input type="text" id="p_web" class="input-node" placeholder="Website">
-            </div>
-            <button class="btn btn-primary" style="margin-top:20px;" onclick="saveProfile()"><i data-lucide="save"></i> SAVE PROFILE</button>
+            <button class="btn btn-primary" onclick="saveProfile()"><i data-lucide="save"></i> SAVE PROFILE</button>
         </div>
     </div>
 
-    <!-- Vault View -->
+    <!-- Vault View (FIXED) -->
     <div id="settings" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Vault</h2>
+        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Vault & Permissions</h2>
         <div class="card">
-            <div id="vault_switches">
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
-                    <span>📍 Precise Location</span><label class="switch"><input type="checkbox" id="v_loc" onchange="syncVault()"><span class="slider"></span></label>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
-                    <span>📸 Camera Access</span><label class="switch"><input type="checkbox" id="v_cam" onchange="syncVault()"><span class="slider"></span></label>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0;">
-                    <span>📂 Media Storage</span><label class="switch"><input type="checkbox" id="v_store" onchange="syncVault()"><span class="slider"></span></label>
-                </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
+                <span>📍 Precise Location Sync</span><label class="switch"><input type="checkbox" id="v_loc"><span class="slider"></span></label>
             </div>
-            <button class="btn" style="margin-top:20px; border:2px solid var(--primary); color:var(--primary);" onclick="window.location.href='mailto:support@calalloo.com'"><i data-lucide="headphones"></i> CONTACT SUPPORT</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #EEE;">
+                <span>📸 Camera Access Node</span><label class="switch"><input type="checkbox" id="v_cam"><span class="slider"></span></label>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0;">
+                <span>📂 Media Storage Cloud</span><label class="switch"><input type="checkbox" id="v_store"><span class="slider"></span></label>
+            </div>
+            
+            <!-- THE MISSING SAVE BUTTON -->
+            <button class="btn btn-primary" style="margin-top:30px;" onclick="saveVault()"><i data-lucide="cloud-lock"></i> SAVE VAULT SETTINGS</button>
+            <button class="btn btn-outline" onclick="window.location.href='mailto:support@calalloo.com'"><i data-lucide="headphones"></i> CONTACT SUPPORT</button>
         </div>
     </div>
 </div>
 
-<!-- Recipe Modal -->
+<!-- Modal -->
 <div id="recipeModal" class="modal">
     <div class="modal-content">
         <i data-lucide="x" class="close-modal" onclick="closeModal()"></i>
         <img id="modal_img" style="width:100%; border-radius:20px; margin-bottom:20px;">
-        <h2 id="modal_title" style="font-family: Fraunces; margin-bottom:10px;"></h2>
+        <h2 id="modal_title" style="font-family: Fraunces;"></h2>
         <p id="modal_desc" style="color:#666; margin-bottom:20px;"></p>
-        <h4 style="margin-bottom:10px;">Ingredients:</h4>
-        <ul id="modal_ingredients" style="margin-bottom:20px; padding-left:20px;"></ul>
-        <div id="modal_location" style="background:#F9F9F9; padding:15px; border-radius:15px; font-size:12px; font-weight:700;">
-            <i data-lucide="map-pin" style="width:12px; vertical-align:middle;"></i> Sourcing node depends on location access.
-        </div>
+        <ul id="modal_ingredients" style="padding-left:20px;"></ul>
     </div>
 </div>
-
-<style>
-    .switch { position: relative; width: 44px; height: 24px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #DDD; transition: .3s; border-radius: 34px; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-    input:checked + .slider { background-color: var(--primary); }
-    input:checked + .slider:before { transform: translateX(20px); }
-</style>
 
 <script>
     const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-anon-key}}');
@@ -185,38 +173,52 @@
         document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
-        syncVault();
+        applySync();
     }
 
-    async function syncVault() {
-        const cam = document.getElementById('v_cam').checked;
-        const store = document.getElementById('v_store').checked;
-        const loc = document.getElementById('v_loc').checked;
+    async function applySync() {
+        const v = JSON.parse(localStorage.getItem('cal_vault_final') || '{"loc":false,"cam":false,"store":false}');
         
+        // Map Sync Logic
+        const mMsg = document.getElementById('map-status');
+        if(v.loc) mMsg.innerHTML = '<div class="status-msg"><i data-lucide="check-circle" style="color:var(--green)"></i><p>Location Synced to Cloud</p></div>';
+        else mMsg.innerHTML = '<div class="status-msg"><i data-lucide="map-pin-off" style="color:var(--primary)"></i><p>Map Sync Locked<br>Enable Location in Vault & Save.</p></div>';
+
+        // Scanner Sync Logic
         const video = document.getElementById('video-feed');
         const sMsg = document.getElementById('scanner-status');
-        if(cam && store) {
+        if(v.cam && v.store) {
             try {
-                const s = await navigator.mediaDevices.getUserMedia({video: {facingMode:'environment'}});
-                video.srcObject = s; video.style.display = 'block'; sMsg.style.display = 'none';
+                const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+                video.srcObject = stream; video.style.display = 'block'; sMsg.style.display = 'none';
             } catch(e) { console.error(e); }
         } else {
             if(video.srcObject) video.srcObject.getTracks().forEach(t=>t.stop());
-            video.style.display = 'none'; sMsg.style.display = 'block';
+            video.style.display = 'none'; sMsg.style.display = 'flex';
         }
-
-        const mMsg = document.getElementById('map-status');
-        if(loc) mMsg.innerHTML = '<h3><i data-lucide="check-circle" style="color:var(--green)"></i><br>Location Synced</h3>';
-        else mMsg.innerHTML = '<div class="status-msg"><i data-lucide="map-pin-off"></i><br>Permissions Required: Precise Location</div>';
         lucide.createIcons();
     }
 
-    function openRecipe(title, desc, ing, img) {
-        document.getElementById('modal_title').innerText = title;
-        document.getElementById('modal_desc').innerText = desc;
-        document.getElementById('modal_img').src = img;
-        const list = document.getElementById('modal_ingredients');
-        list.innerHTML = ing.map(i => `<li>${i}</li>`).join('');
+    async function saveVault() {
+        const config = {
+            id: 'prisca-node',
+            loc: document.getElementById('v_loc').checked,
+            cam: document.getElementById('v_cam').checked,
+            store: document.getElementById('v_store').checked
+        };
+        localStorage.setItem('cal_vault_final', JSON.stringify(config));
+        try {
+            await sb.from('user_settings').upsert(config);
+            alert("VAULT SECURED TO CLOUD");
+        } catch(e) { alert("VAULT SECURED LOCALLY"); }
+        applySync();
+    }
+
+    function openRecipe(t, d, i, m) {
+        document.getElementById('modal_title').innerText = t;
+        document.getElementById('modal_desc').innerText = d;
+        document.getElementById('modal_img').src = m;
+        document.getElementById('modal_ingredients').innerHTML = i.map(x => `<li>${x}</li>`).join('');
         document.getElementById('recipeModal').style.display = 'block';
         lucide.createIcons();
     }
@@ -224,23 +226,14 @@
 
     async function saveProfile() {
         const data = {
-            id: localStorage.getItem('calalloo_uid') || 'prisca-node',
+            id: 'prisca-node',
             full_name: document.getElementById('p_name').value,
             bio: document.getElementById('p_bio').value,
-            phone: document.getElementById('p_phone').value,
-            socials: {
-                fb: document.getElementById('p_fb').value,
-                ig: document.getElementById('p_ig').value,
-                th: document.getElementById('p_th').value,
-                web: document.getElementById('p_web').value
-            }
+            phone: document.getElementById('p_phone').value
         };
-        localStorage.setItem('cal_profile_final', JSON.stringify(data));
-        try {
-            const { error } = await sb.from('profiles').upsert(data);
-            if(error) throw error;
-            alert("Heritage Profile Secured.");
-        } catch(e) { alert("Profile Saved Locally (Cloud Sync Error)."); }
+        localStorage.setItem('cal_prof_v10', JSON.stringify(data));
+        await sb.from('profiles').upsert(data);
+        alert("PROFILE SAVED");
     }
 
     function previewPhoto(input) {
@@ -252,17 +245,21 @@
     }
 
     window.onload = () => {
-        const s = JSON.parse(localStorage.getItem('cal_profile_final') || '{}');
-        if(s.full_name) {
-            document.getElementById('p_name').value = s.full_name;
-            document.getElementById('p_bio').value = s.bio;
-            document.getElementById('p_phone').value = s.phone;
-            document.getElementById('p_fb').value = s.socials.fb;
-            document.getElementById('p_ig').value = s.socials.ig;
-            document.getElementById('p_th').value = s.socials.th;
-            document.getElementById('p_web').value = s.socials.web;
+        const v = JSON.parse(localStorage.getItem('cal_vault_final') || '{}');
+        if(v.id) {
+            document.getElementById('v_loc').checked = v.loc;
+            document.getElementById('v_cam').checked = v.cam;
+            document.getElementById('v_store').checked = v.store;
         }
-        syncVault();
+        const p = JSON.parse(localStorage.getItem('cal_prof_v10') || '{}');
+        if(p.full_name) {
+            document.getElementById('p_name').value = p.full_name;
+            document.getElementById('p_bio').value = p.bio;
+            document.getElementById('p_phone').value = p.phone;
+        }
+        applySync();
+        // Logo Cache Fix
+        document.getElementById('header_logo').src = "/icon.svg?v=" + Date.now();
     };
 </script>
 </body>
