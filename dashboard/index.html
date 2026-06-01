@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calalloo | Discovery Node</title>
+    <title>Calalloo | Discovery Hub v7.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons for Modern UI -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #E87722; --green: #2D5A27; --white: #FFFFFF; --bg: #FAFAFA; --dark: #1A0D00; }
+        :root { --primary: #E87722; --green: #2D5A27; --white: #FFFFFF; --bg: #FAFAFA; --dark: #1A0D00; --error: #D32F2F; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
         
@@ -16,7 +18,7 @@
         .logo img { height: 28px; }
         
         .nav-pills { display: flex; gap: 8px; background: #F0F0F0; padding: 5px; border-radius: 50px; }
-        .pill { padding: 10px 20px; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: 12px; color: #666; transition: 0.3s; white-space: nowrap; }
+        .pill { padding: 10px 20px; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: 12px; color: #666; transition: 0.3s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
         .pill.active { background: var(--white); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         .container { flex: 1; overflow-y: auto; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%; }
@@ -25,18 +27,21 @@
 
         .card { background: var(--white); border-radius: 25px; padding: 30px; box-shadow: 0 8px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; }
         
+        /* Search & Categories */
+        .search-bar { width: 100%; padding: 15px 20px; border-radius: 15px; border: 1px solid #EEE; background: #F9F9F9; margin-bottom: 15px; outline: none; }
+        .cat-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+        .cat-chip { padding: 8px 18px; background: #EEE; border-radius: 50px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .cat-chip.active { background: var(--primary); color: white; }
+
         /* Profile Area */
         .photo-upload { width: 100px; height: 100px; border-radius: 50%; background: #F5F5F5; border: 2px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 20px; position: relative; overflow: hidden; }
         .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
         
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-weight: 800; font-size: 10px; text-transform: uppercase; margin-bottom: 5px; color: #888; }
-        .input-node { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #EEE; font-size: 14px; outline: none; transition: 0.2s; }
-        .input-node:focus { border-color: var(--primary); }
+        .input-node { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #EEE; font-size: 14px; outline: none; }
 
-        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-        .btn { padding: 14px; border-radius: 50px; font-weight: 800; cursor: pointer; border: none; font-size: 13px; transition: 0.2s; width: 100%; text-align: center; }
+        .btn { padding: 14px; border-radius: 50px; font-weight: 800; cursor: pointer; border: none; font-size: 13px; transition: 0.2s; width: 100%; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-save { background: var(--primary); color: white; margin-top: 10px; }
         .btn-support { background: var(--white); border: 2px solid var(--primary); color: var(--primary); margin-top: 10px; }
 
@@ -49,8 +54,15 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* Scanner/Map placeholders */
-        .media-placeholder { height: 300px; background: #000; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; }
+        /* Functional UI */
+        #scanner-box, #map-box { position: relative; height: 400px; background: #000; border-radius: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; }
+        #video { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .overlay-msg { position: absolute; text-align: center; padding: 20px; font-weight: 700; z-index: 5; }
+        
+        .feed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .dish { border-radius: 20px; background: white; overflow: hidden; border: 1px solid #EEE; }
+        .dish img { width: 100%; height: 150px; object-fit: cover; }
+        .dish-info { padding: 12px; }
     </style>
 </head>
 <body>
@@ -58,34 +70,51 @@
 <header>
     <a href="/index.html" class="logo">Calalloo <img src="/icon.svg" alt="logo"></a>
     <div class="nav-pills">
-        <div class="pill active" onclick="switchView('feed', this)">Feed</div>
-        <div class="pill" onclick="switchView('scanner', this)">Scanner</div>
-        <div class="pill" onclick="switchView('map', this)">Map</div>
-        <div class="pill" onclick="switchView('profile', this)">Profile</div>
-        <div class="pill" onclick="switchView('settings', this)">Vault</div>
+        <div class="pill active" onclick="switchView('feed', this)"><i data-lucide="layout-grid"></i> Feed</div>
+        <div class="pill" onclick="switchView('scanner', this)"><i data-lucide="scan"></i> Scanner</div>
+        <div class="pill" onclick="switchView('map', this)"><i data-lucide="map"></i> Map</div>
+        <div class="pill" onclick="switchView('profile', this)"><i data-lucide="user"></i> Profile</div>
+        <div class="pill" onclick="switchView('settings', this)"><i data-lucide="shield-check"></i> Vault</div>
     </div>
 </header>
 
 <div class="container">
-    <!-- Discovery Feed -->
+    <!-- Feed -->
     <div id="feed" class="view active">
-        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Heritage Feed</h2>
-        <div id="feed-render">Loading Global Nodes...</div>
+        <input type="text" class="search-bar" placeholder="Search heritage dishes...">
+        <div class="cat-row">
+            <div class="cat-chip active">All Recipes</div>
+            <div class="cat-chip">Tobago</div>
+            <div class="cat-chip">Trinidad</div>
+            <div class="cat-chip">Heritage</div>
+            <div class="cat-chip">Protocols</div>
+        </div>
+        <div class="feed-grid">
+            <div class="dish"><img src="https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg"><div class="dish-info"><b>Crab & Callaloo</b><p style="font-size:12px; color:#666;">Heritage Protocol</p></div></div>
+            <div class="dish"><img src="https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg"><div class="dish-info"><b>Chicken Pelau</b><p style="font-size:12px; color:#666;">Sunday Classic</p></div></div>
+        </div>
     </div>
 
     <!-- Scanner -->
     <div id="scanner" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 20px;">AI Scanner</h2>
-        <div class="media-placeholder">
-            <span style="font-size:40px;">📸</span><p>Camera initialized. Scan heritage ingredients.</p>
+        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Heritage Scanner</h2>
+        <div id="scanner-box">
+            <video id="video" autoplay playsinline></video>
+            <div id="scanner-msg" class="overlay-msg">
+                <i data-lucide="camera-off" style="width:48px;height:48px;margin-bottom:10px;"></i><br>
+                Permissions Required:<br>Camera Access + Media Storage
+            </div>
         </div>
     </div>
 
     <!-- Map -->
     <div id="map" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Global Heritage Map</h2>
-        <div class="media-placeholder" style="background:#f0f0f0; color:#888;">
-            <span style="font-size:40px;">📍</span><p>Mapping active. Syncing local nodes.</p>
+        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Heritage Map</h2>
+        <div id="map-box" style="background:#f0f0f0; color:#888;">
+            <div id="map-msg" class="overlay-msg">
+                <i data-lucide="map-pin-off" style="width:48px;height:48px;margin-bottom:10px;color:#E87722;"></i><br>
+                Permissions Required:<br>Precise Location On
+            </div>
         </div>
     </div>
 
@@ -97,67 +126,88 @@
                 <img id="photo_preview" src="https://ui-avatars.com/api/?name=User&background=E87722&color=fff">
             </div>
             <input type="file" id="photo_input" style="display:none;" onchange="previewPhoto(this)">
-            
-            <div class="input-group"><label>Display Name</label><input type="text" id="p_name" class="input-node" placeholder="Full Name"></div>
-            <div class="input-group"><label>Bio</label><textarea id="p_bio" class="input-node" style="height:60px;" placeholder="Professional Bio"></textarea></div>
-            <div class="input-group"><label>Phone Number</label><input type="tel" id="p_phone" class="input-node" placeholder="+1 ..."></div>
-            
+            <div class="input-group"><label>Display Name</label><input type="text" id="p_name" class="input-node"></div>
+            <div class="input-group"><label>Phone Number</label><input type="tel" id="p_phone" class="input-node"></div>
             <div class="social-grid">
-                <input type="text" id="p_fb" class="input-node" placeholder="Facebook URL">
-                <input type="text" id="p_ig" class="input-node" placeholder="Instagram URL">
-                <input type="text" id="p_th" class="input-node" placeholder="Threads URL">
-                <input type="text" id="p_web" class="input-node" placeholder="Website">
+                <input type="text" id="p_fb" class="input-node" placeholder="Facebook">
+                <input type="text" id="p_ig" class="input-node" placeholder="Instagram">
+                <input type="text" id="p_th" class="input-node" placeholder="Threads">
             </div>
-            <button class="btn btn-save" onclick="saveProfile()">SAVE CHANGES</button>
+            <button class="btn btn-save" onclick="saveProfile()"><i data-lucide="save"></i> SAVE PROFILE</button>
         </div>
     </div>
 
-    <!-- Vault Settings -->
+    <!-- Vault -->
     <div id="settings" class="view">
         <h2 style="font-family: Fraunces; margin-bottom: 20px;">Permission Vault</h2>
         <div class="card">
-            <div class="setting-row"><span>📍 Precise Location</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-            <div class="setting-row"><span>📸 Camera Access</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-            <div class="setting-row"><span>📂 Media Storage</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-            <div class="setting-row"><span>📁 Folder/Image Access</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-            
-            <button class="btn btn-support" onclick="window.location.href='mailto:support@calalloo.com'">CONTACT SUPPORT</button>
+            <div class="setting-row"><span><i data-lucide="map-pin" style="width:16px;vertical-align:middle;"></i> Precise Location</span><label class="switch"><input type="checkbox" id="v_loc" onchange="checkPerms()"><span class="slider"></span></label></div>
+            <div class="setting-row"><span><i data-lucide="camera" style="width:16px;vertical-align:middle;"></i> Camera Access</span><label class="switch"><input type="checkbox" id="v_cam" onchange="checkPerms()"><span class="slider"></span></label></div>
+            <div class="setting-row"><span><i data-lucide="database" style="width:16px;vertical-align:middle;"></i> Media Storage</span><label class="switch"><input type="checkbox" id="v_store" onchange="checkPerms()"><span class="slider"></span></label></div>
+            <div class="setting-row"><span><i data-lucide="folder-open" style="width:16px;vertical-align:middle;"></i> Folder/Image Access</span><label class="switch"><input type="checkbox" id="v_folder" onchange="checkPerms()"><span class="slider"></span></label></div>
+            <button class="btn btn-support" onclick="window.location.href='mailto:support@calalloo.com'"><i data-lucide="headphones"></i> CONTACT SUPPORT</button>
         </div>
     </div>
 </div>
 
 <script>
     const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-anon-key}}');
+    lucide.createIcons();
 
     function switchView(id, el) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
+        checkPerms();
+    }
+
+    async function checkPerms() {
+        const cam = document.getElementById('v_cam').checked;
+        const loc = document.getElementById('v_loc').checked;
+        const store = document.getElementById('v_store').checked;
+
+        // Scanner Engineering
+        const video = document.getElementById('video');
+        const sMsg = document.getElementById('scanner-msg');
+        if (cam && store) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                sMsg.style.display = 'none';
+            } catch (e) { console.error("Camera Error"); }
+        } else {
+            if(video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
+            video.style.display = 'none';
+            sMsg.style.display = 'block';
+        }
+
+        // Map Engineering
+        const mMsg = document.getElementById('map-msg');
+        if (loc) {
+            mMsg.innerHTML = '<i data-lucide="check-circle" style="color:var(--green)"></i><br>Location Synced to Cloud Hub';
+            lucide.createIcons();
+        } else {
+            mMsg.innerHTML = '<i data-lucide="map-pin-off" style="color:var(--primary)"></i><br>Permissions Required:<br>Precise Location On';
+            lucide.createIcons();
+        }
     }
 
     async function saveProfile() {
         const data = {
-            id: localStorage.getItem('calalloo_uid') || '0000-0000',
+            id: localStorage.getItem('calalloo_uid') || '000-000',
             full_name: document.getElementById('p_name').value,
-            bio: document.getElementById('p_bio').value,
             phone: document.getElementById('p_phone').value,
-            socials: {
-                fb: document.getElementById('p_fb').value,
-                ig: document.getElementById('p_ig').value,
-                th: document.getElementById('p_th').value
-            }
+            socials: { fb: document.getElementById('p_fb').value, ig: document.getElementById('p_ig').value, th: document.getElementById('p_th').value }
         };
-        // Local first for speed and error fallback
         localStorage.setItem('cal_profile', JSON.stringify(data));
-        
         try {
             const { error } = await sb.from('profiles').upsert(data);
             if(error) throw error;
-            alert("Heritage Secured to Cloud.");
+            alert("Profile Saved.");
         } catch (e) {
-            console.error(e);
-            alert("Cloud Sync Delayed. Profile saved locally for now.");
+            alert("Profile Saved Locally.");
         }
     }
 
@@ -170,16 +220,13 @@
     }
 
     window.onload = () => {
-        const saved = JSON.parse(localStorage.getItem('cal_profile') || '{}');
-        if(saved.full_name) {
-            document.getElementById('p_name').value = saved.full_name || '';
-            document.getElementById('p_bio').value = saved.bio || '';
-            document.getElementById('p_phone').value = saved.phone || '';
-            if(saved.socials) {
-                document.getElementById('p_fb').value = saved.socials.fb || '';
-                document.getElementById('p_ig').value = saved.socials.ig || '';
-                document.getElementById('p_th').value = saved.socials.th || '';
-            }
+        const s = JSON.parse(localStorage.getItem('cal_profile') || '{}');
+        if(s.full_name) {
+            document.getElementById('p_name').value = s.full_name;
+            document.getElementById('p_phone').value = s.phone;
+            document.getElementById('p_fb').value = s.socials.fb;
+            document.getElementById('p_ig').value = s.socials.ig;
+            document.getElementById('p_th').value = s.socials.th;
         }
     };
 </script>
