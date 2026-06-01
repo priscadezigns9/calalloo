@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Discovery | Calalloo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #FAFAFA;
+            --primary: #E87722;
+            --secondary: #FF9F58;
+            --dark: #1A0D00;
+            --mid: #666666;
+            --white: #FFFFFF;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.05em;
+        }
+
+        .search-hero {
+            padding: 6rem 5% 4rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .search-hero h1 {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            border-radius: 100px;
+            border: 2px solid var(--primary);
+            background: white;
+            font-size: 1.1rem;
+            font-family: var(--font-sans);
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(232, 119, 34, 0.1);
+            outline: none;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem 5% 6rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .user-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 32px;
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .user-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(232, 119, 34, 0.1);
+            border-color: var(--primary);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            font-family: var(--font-display);
+            margin: 0 auto 1.5rem;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .user-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-card p {
+            font-size: 0.85rem;
+            color: var(--mid);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-follow {
+            margin-top: 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-follow:hover {
+            background: var(--dark);
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="https://calalloo.com/" class="nav-brand"><img src="https://raw.githubusercontent.com/priscadezigns9/calalloo/main/assets/logos/Kalaloo_World_Logo.svg" alt="Calalloo" style="height: 40px;"></a>
+        <nav style="display: flex; gap: 2rem; align-items: center;">
+            <a href="../recipes/" style="text-decoration: none; font-weight: 700; color: var(--dark); font-size: 0.85rem;">Recipes</a>
+            <a href="../blog/" style="text-decoration: none; font-weight: 700; color: var(--dark); font-size: 0.85rem;">Journal</a>
+            <a href="../login/" style="text-decoration: none; font-weight: 700; color: var(--dark); font-size: 0.85rem;">Sign In</a>
+        </nav>
+    </header>
+
+    <div class="search-hero">
+        <h1>Find Your <span>Neighbourhood</span> Foodies.</h1>
+        <p style="color: var(--mid); margin-bottom: 2.5rem;">Search for friends, discover local chefs, and connect with the Calalloo community.</p>
+        
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search by name, handle or heritage..." oninput="searchUsers(this.value)">
+        </div>
+    </div>
+
+    <div class="results-grid" id="results">
+        <!-- Mock Users -->
+        <div class="user-card">
+            <div class="avatar">PN</div>
+            <h3>Priscilla Narine</h3>
+            <p>Heritage Chef • Maraval</p>
+            <button class="btn-follow">Follow Hub</button>
+        </div>
+
+        <div class="user-card">
+            <div class="avatar">MS</div>
+            <h3>Marcus Singh</h3>
+            <p>Flavor Scout • POS</p>
+            <button class="btn-follow">Follow Hub</button>
+        </div>
+
+        <div class="user-card">
+            <div class="avatar">AL</div>
+            <h3>Astra Lore</h3>
+            <p>Protocol Specialist</p>
+            <button class="btn-follow">Follow Hub</button>
+        </div>
+        
+        <div class="user-card">
+            <div class="avatar">PD</div>
+            <h3>Prisca Dezigns</h3>
+            <p>Admin • Founding Hub</p>
+            <button class="btn-follow">Follow Hub</button>
+        </div>
+    </div>
+
+    <script>
+        function searchUsers(query) {
+            const results = document.getElementById('results');
+            // Mock dynamic search for high-fidelity feel
+            if(query.length > 2) {
+                console.log("Searching for:", query);
+            }
+        }
+    </script>
+
+    <footer>
+        <p style="font-family: var(--font-mono); font-size: 0.7rem; color: #AAA; text-transform: uppercase;">&copy; 2026 Calalloo Community Discovery Node</p>
+    </footer>
+
+</body>
+</html>
