@@ -34,65 +34,111 @@
         .discovery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .node-card { background: var(--white); border-radius: 24px; padding: 25px; border: 1px solid rgba(0,0,0,0.05); transition: 0.4s; cursor: pointer; }
         .taste-profile-box { background: linear-gradient(135deg, var(--calalloo-green), #1a3617); border-radius: 20px; padding: 25px; color: white; margin-bottom: 30px; }
-        .map-container { width: 100%; height: 500px; border-radius: 30px; margin-top: 30px; }
+        .map-container { width: 100%; height: 600px; border-radius: 32px; margin-top: 30px; border: 1px solid rgba(0,0,0,0.1); }
+        .ai-marker { background: var(--primary); border: 2px solid white; border-radius: 50%; box-shadow: 0 0 10px rgba(232, 119, 34, 0.5); }
     </style>
 </head>
 <body>
 <header>
     <a href="/index.html" class="nav-brand">Calalloo</a>
     <nav style="display: flex; gap: 20px; align-items: center;">
-        <a href="javascript:void(0)" onclick="showMainTab('feed')" style="text-decoration:none; font-weight:800; color:var(--dark); font-size:14px;">Feed</a>
-        <a href="javascript:void(0)" onclick="showMainTab('map-tab')" style="text-decoration:none; font-weight:800; color:var(--dark); font-size:14px;">Markets</a>
+        <a href="javascript:void(0)" onclick="showMainTab('feed')" style="text-decoration:none; font-weight:800; color:var(--dark); font-size:14px;">Culinary Feed</a>
+        <a href="javascript:void(0)" onclick="showMainTab('map-tab')" style="text-decoration:none; font-weight:800; color:var(--dark); font-size:14px;">Discovery Map</a>
         <a href="/profile/index.html" style="text-decoration:none; font-weight:800; color:var(--dark); font-size:14px;">My Kitchen</a>
     </nav>
 </header>
 <div class="layout">
     <aside class="sidebar">
         <div class="taste-profile-box">
-            <h2>Taste Profile</h2>
-            <p>AI Syncing your preferences...</p>
+            <h2>✨ AI Taste Profile</h2>
+            <p id="ai-status">Vectorizing preferences...</p>
         </div>
-        <h2>Smart Recommendations</h2>
-        <div id="ai-suggestions"></div>
+        <h3 style="font-size:14px; margin-bottom:15px; color:var(--calalloo-green);">SMART RECOMMENDATIONS</h3>
+        <div id="ai-suggestions" style="display:grid; gap:15px;"></div>
     </aside>
     <main class="main">
         <div id="feed" class="tab-content">
             <div class="universal-search-hub">
-                <input type="text" class="search-input" id="omni-search" placeholder="Search the Empire...">
+                <input type="text" class="search-input" id="omni-search" placeholder="Search the Empire for people or dishes..." oninput="vectorSearch(this.value)">
             </div>
             <div class="discovery-grid" id="discovery-grid"></div>
         </div>
         <div id="map-tab" class="tab-content" style="display:none;">
+            <h1 style="font-family:var(--font-display); font-size:1.8rem; margin-bottom:10px;">Geospatial Discovery Hub</h1>
+            <p style="opacity:0.6; font-size:14px;">AI is highlighting trending people and heritage dishes near your node.</p>
             <div id="map-node" class="map-container"></div>
         </div>
     </main>
 </div>
 <script>
     const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-anon-key}}');
+    
     const nodes = [
-        { title: "Trinidadian Callaloo Protocol", meta: "Sunday Heritage", lat: 10.65, lng: -61.5 },
-        { title: "Heritage Chicken Pelau", meta: "One Pot Classic", lat: 10.6, lng: -61.4 }
+        { type: "DISH", title: "Trinidadian Callaloo Protocol", meta: "Sunday Heritage", lat: 10.65, lng: -61.5, icon: "🍲" },
+        { type: "DISH", title: "Heritage Chicken Pelau", meta: "One Pot Classic", lat: 10.6, lng: -61.4, icon: "🍛" },
+        { type: "PERSON", title: "Priscilla Narine", meta: "AI Architect", lat: 10.68, lng: -61.51, icon: "👤" },
+        { type: "PERSON", title: "Marcus Singh", meta: "Flavor Scout", lat: 10.62, lng: -61.45, icon: "👤" }
     ];
-    function renderNodes() {
-        document.getElementById('discovery-grid').innerHTML = nodes.map(n => `
-            <div class="node-card">
+
+    function vectorSearch(q) {
+        const query = q.toLowerCase();
+        const results = nodes.filter(n => n.title.toLowerCase().includes(query) || n.meta.toLowerCase().includes(query));
+        renderNodes(results);
+    }
+
+    function renderNodes(data = nodes) {
+        document.getElementById('discovery-grid').innerHTML = data.map(n => `
+            <div class="node-card" onclick="focusOnMap(${n.lat}, ${n.lng})">
+                <span style="font-size:10px; font-weight:800; color:var(--primary);">${n.type}</span>
                 <h3>${n.title}</h3>
-                <p>${n.meta}</p>
+                <p style="font-size:13px; opacity:0.7;">${n.meta}</p>
             </div>
         `).join('');
     }
+
+    function renderAISuggestions() {
+        const container = document.getElementById('ai-suggestions');
+        container.innerHTML = nodes.slice(2,4).map(p => `
+            <div style="background:var(--white); padding:15px; border-radius:15px; border:1px solid rgba(0,0,0,0.05);">
+                <b style="font-size:14px;">Follow ${p.title}</b><br>
+                <small style="color:var(--mid); font-size:11px;">Matches your Heritage profile</small>
+            </div>
+        `).join('');
+        document.getElementById('ai-status').innerText = "Analyzing nodes in Trinidad & Tobago...";
+    }
+
     function showMainTab(id) {
         document.getElementById('feed').style.display = id === 'feed' ? 'block' : 'none';
         document.getElementById('map-tab').style.display = id === 'map-tab' ? 'block' : 'none';
         if(id === 'map-tab') setTimeout(initMap, 200);
     }
+
     let map;
+    let markers = [];
     function initMap() {
         if(map) return;
-        map = L.map('map-node').setView([10.66, -61.51], 12);
+        const userLat = 10.66; const userLng = -61.51;
+        map = L.map('map-node').setView([userLat, userLng], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        nodes.forEach(n => {
+            const marker = L.marker([n.lat, n.lng], {
+                icon: L.divIcon({ 
+                    className: 'ai-marker', 
+                    html: `<div style="display:flex; align-items:center; justify-content:center; width:30px; height:30px; font-size:16px;">${n.icon}</div>`,
+                    iconSize: [30, 30]
+                })
+            }).addTo(map).bindPopup(`<b>${n.title}</b><br>${n.meta}`);
+            markers.push(marker);
+        });
     }
-    window.onload = () => { showMainTab('feed'); renderNodes(); };
+
+    function focusOnMap(lat, lng) {
+        showMainTab('map-tab');
+        if(map) map.setView([lat, lng], 15);
+    }
+
+    window.onload = () => { renderNodes(); renderAISuggestions(); };
 </script>
 </body>
 </html>
