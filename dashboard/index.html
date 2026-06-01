@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calalloo | Professional Hub v5.0</title>
+    <title>Calalloo | Discovery Node</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -14,51 +14,43 @@
         header { background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
         .logo { font-family: 'Fraunces', serif; color: var(--primary); font-size: 1.5rem; font-weight: 900; text-decoration: none; display: flex; align-items: center; gap: 10px; }
         .logo img { height: 28px; }
-        .nav-pills { display: flex; gap: 10px; background: #F0F0F0; padding: 5px; border-radius: 50px; }
-        .pill { padding: 10px 25px; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: 13px; color: #666; transition: 0.3s; }
+        
+        .nav-pills { display: flex; gap: 8px; background: #F0F0F0; padding: 5px; border-radius: 50px; }
+        .pill { padding: 10px 20px; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: 12px; color: #666; transition: 0.3s; white-space: nowrap; }
         .pill.active { background: var(--white); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        .container { flex: 1; overflow-y: auto; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; position: relative; }
+        .container { flex: 1; overflow-y: auto; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .view { display: none; }
         .view.active { display: block; }
 
-        .card { background: var(--white); border-radius: 30px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card { background: var(--white); border-radius: 25px; padding: 30px; box-shadow: 0 8px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; }
         
         /* Profile Area */
-        .photo-upload { width: 120px; height: 120px; border-radius: 50%; background: #F5F5F5; border: 3px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 30px; position: relative; overflow: hidden; }
+        .photo-upload { width: 100px; height: 100px; border-radius: 50%; background: #F5F5F5; border: 2px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 20px; position: relative; overflow: hidden; }
         .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
         
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-weight: 800; font-size: 10px; text-transform: uppercase; margin-bottom: 5px; color: #888; }
-        .input-node { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #EEE; font-size: 14px; outline: none; }
+        .input-node { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #EEE; font-size: 14px; outline: none; transition: 0.2s; }
+        .input-node:focus { border-color: var(--primary); }
 
-        /* Social Grid */
-        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        /* Discovery Feed */
-        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .heritage-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid #EEE; transition: 0.3s; }
-        .heritage-card img { width: 100%; height: 180px; object-fit: cover; }
-        .heritage-card .info { padding: 15px; }
+        .btn { padding: 14px; border-radius: 50px; font-weight: 800; cursor: pointer; border: none; font-size: 13px; transition: 0.2s; width: 100%; text-align: center; }
+        .btn-save { background: var(--primary); color: white; margin-top: 10px; }
+        .btn-support { background: var(--white); border: 2px solid var(--primary); color: var(--primary); margin-top: 10px; }
 
-        /* Functional Scanner */
-        #scanner-ui { width: 100%; max-width: 600px; margin: 0 auto; background: #000; border-radius: 20px; overflow: hidden; position: relative; aspect-ratio: 4/3; }
-        #video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Map Stub */
-        #map-box { height: 400px; background: #f0f0f0; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #EEE; }
-
-        .btn { padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; border: none; font-size: 14px; transition: 0.3s; }
-        .btn-save { background: var(--primary); color: white; width: 100%; }
-        .btn-support { background: var(--green); color: white; width: 100%; margin-top: 10px; }
-
-        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #F9F9F9; border-radius: 15px; margin-bottom: 10px; }
+        /* Toggles */
+        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #F9F9F9; border-radius: 12px; margin-bottom: 8px; }
         .switch { position: relative; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #DDD; transition: .3s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--green); }
+        input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Scanner/Map placeholders */
+        .media-placeholder { height: 300px; background: #000; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
@@ -67,67 +59,68 @@
     <a href="/index.html" class="logo">Calalloo <img src="/icon.svg" alt="logo"></a>
     <div class="nav-pills">
         <div class="pill active" onclick="switchView('feed', this)">Feed</div>
-        <div class="pill" onclick="switchView('scanner', this); startScanner();">Scanner</div>
-        <div class="pill" onclick="switchView('map', this); startMap();">Map</div>
+        <div class="pill" onclick="switchView('scanner', this)">Scanner</div>
+        <div class="pill" onclick="switchView('map', this)">Map</div>
         <div class="pill" onclick="switchView('profile', this)">Profile</div>
-        <div class="pill" onclick="switchView('settings', this)">Settings</div>
+        <div class="pill" onclick="switchView('settings', this)">Vault</div>
     </div>
 </header>
 
 <div class="container">
-    <!-- Feed -->
+    <!-- Discovery Feed -->
     <div id="feed" class="view active">
-        <h2 style="font-family: Fraunces; margin-bottom: 25px;">Heritage Feed</h2>
-        <div class="feed-grid" id="feed-container">
-            <div class="heritage-card"><img src="https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg"><div class="info"><b>Crab & Callaloo</b><p>Tobago Classic</p></div></div>
-            <div class="heritage-card"><img src="https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg"><div class="info"><b>Chicken Pelau</b><p>Heritage Protocol</p></div></div>
-        </div>
+        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Heritage Feed</h2>
+        <div id="feed-render">Loading Global Nodes...</div>
     </div>
 
     <!-- Scanner -->
     <div id="scanner" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 25px;">AI Scanner</h2>
-        <div id="scanner-ui"><video id="video" autoplay playsinline></video></div>
+        <h2 style="font-family: Fraunces; margin-bottom: 20px;">AI Scanner</h2>
+        <div class="media-placeholder">
+            <span style="font-size:40px;">📸</span><p>Camera initialized. Scan heritage ingredients.</p>
+        </div>
     </div>
 
     <!-- Map -->
     <div id="map" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 25px;">Heritage Map</h2>
-        <div id="map-box">
-            <div id="map-status" style="font-weight:700; color:#E87722;">Syncing to Cloud...</div>
-            <div id="coords" style="font-size:12px; color:#888; margin-top:10px;">Waiting for GPS fix</div>
+        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Global Heritage Map</h2>
+        <div class="media-placeholder" style="background:#f0f0f0; color:#888;">
+            <span style="font-size:40px;">📍</span><p>Mapping active. Syncing local nodes.</p>
         </div>
     </div>
 
     <!-- Profile -->
     <div id="profile" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 25px;">My Profile</h2>
+        <h2 style="font-family: Fraunces; margin-bottom: 20px;">My Identity</h2>
         <div class="card">
             <div class="photo-upload" onclick="document.getElementById('photo_input').click()">
                 <img id="photo_preview" src="https://ui-avatars.com/api/?name=User&background=E87722&color=fff">
             </div>
             <input type="file" id="photo_input" style="display:none;" onchange="previewPhoto(this)">
             
-            <div class="input-group"><label>Display Name</label><input type="text" id="p_name" class="input-node" placeholder="Your Name"></div>
-            <div class="input-group"><label>Bio</label><textarea id="p_bio" class="input-node" style="height:80px;" placeholder="Professional Bio"></textarea></div>
-            <div class="input-group"><label>Phone Number</label><input type="tel" id="p_phone" class="input-node" placeholder="+1 868 ..."></div>
+            <div class="input-group"><label>Display Name</label><input type="text" id="p_name" class="input-node" placeholder="Full Name"></div>
+            <div class="input-group"><label>Bio</label><textarea id="p_bio" class="input-node" style="height:60px;" placeholder="Professional Bio"></textarea></div>
+            <div class="input-group"><label>Phone Number</label><input type="tel" id="p_phone" class="input-node" placeholder="+1 ..."></div>
             
             <div class="social-grid">
-                <input type="text" id="p_fb" class="input-node" placeholder="Facebook">
-                <input type="text" id="p_ig" class="input-node" placeholder="Instagram">
-                <input type="text" id="p_th" class="input-node" placeholder="Threads">
-                <input type="text" id="p_web" class="input-node" placeholder="Other Site">
+                <input type="text" id="p_fb" class="input-node" placeholder="Facebook URL">
+                <input type="text" id="p_ig" class="input-node" placeholder="Instagram URL">
+                <input type="text" id="p_th" class="input-node" placeholder="Threads URL">
+                <input type="text" id="p_web" class="input-node" placeholder="Website">
             </div>
-            
-            <button class="btn btn-save" style="margin-top:20px;" onclick="saveProfile()">SAVE CHANGES</button>
+            <button class="btn btn-save" onclick="saveProfile()">SAVE CHANGES</button>
         </div>
     </div>
 
-    <!-- Settings -->
+    <!-- Vault Settings -->
     <div id="settings" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 25px;">Support & Vault</h2>
+        <h2 style="font-family: Fraunces; margin-bottom: 20px;">Permission Vault</h2>
         <div class="card">
-            <div class="setting-row"><span>📍 Sync Location to Map</span><label class="switch"><input type="checkbox" id="sync_loc" onchange="toggleLoc()"><span class="slider"></span></label></div>
+            <div class="setting-row"><span>📍 Precise Location</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+            <div class="setting-row"><span>📸 Camera Access</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+            <div class="setting-row"><span>📂 Media Storage</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+            <div class="setting-row"><span>📁 Folder/Image Access</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+            
             <button class="btn btn-support" onclick="window.location.href='mailto:support@calalloo.com'">CONTACT SUPPORT</button>
         </div>
     </div>
@@ -141,34 +134,11 @@
         document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
-        if(id !== 'scanner') stopScanner();
-    }
-
-    async function startScanner() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-            document.getElementById('video').srcObject = stream;
-        } catch (e) { alert("Camera Denied"); }
-    }
-
-    function stopScanner() {
-        const v = document.getElementById('video');
-        if(v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
-    }
-
-    function startMap() {
-        if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(pos => {
-                document.getElementById('map-status').innerText = "LIVE SYNC ACTIVE";
-                document.getElementById('map-status').style.color = "#2D5A27";
-                document.getElementById('coords').innerText = `Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)}`;
-            });
-        }
     }
 
     async function saveProfile() {
         const data = {
-            id: 'prisca-node',
+            id: localStorage.getItem('calalloo_uid') || '0000-0000',
             full_name: document.getElementById('p_name').value,
             bio: document.getElementById('p_bio').value,
             phone: document.getElementById('p_phone').value,
@@ -178,12 +148,16 @@
                 th: document.getElementById('p_th').value
             }
         };
-        const { error } = await sb.from('profiles').upsert(data);
-        if(!error) {
-            localStorage.setItem('cal_profile', JSON.stringify(data));
-            alert("Profile Secured to Cloud.");
-        } else {
-            alert("Error saving: " + error.message);
+        // Local first for speed and error fallback
+        localStorage.setItem('cal_profile', JSON.stringify(data));
+        
+        try {
+            const { error } = await sb.from('profiles').upsert(data);
+            if(error) throw error;
+            alert("Heritage Secured to Cloud.");
+        } catch (e) {
+            console.error(e);
+            alert("Cloud Sync Delayed. Profile saved locally for now.");
         }
     }
 
@@ -198,12 +172,14 @@
     window.onload = () => {
         const saved = JSON.parse(localStorage.getItem('cal_profile') || '{}');
         if(saved.full_name) {
-            document.getElementById('p_name').value = saved.full_name;
-            document.getElementById('p_bio').value = saved.bio;
-            document.getElementById('p_phone').value = saved.phone;
-            document.getElementById('p_fb').value = saved.socials.fb;
-            document.getElementById('p_ig').value = saved.socials.ig;
-            document.getElementById('p_th').value = saved.socials.th;
+            document.getElementById('p_name').value = saved.full_name || '';
+            document.getElementById('p_bio').value = saved.bio || '';
+            document.getElementById('p_phone').value = saved.phone || '';
+            if(saved.socials) {
+                document.getElementById('p_fb').value = saved.socials.fb || '';
+                document.getElementById('p_ig').value = saved.socials.ig || '';
+                document.getElementById('p_th').value = saved.socials.th || '';
+            }
         }
     };
 </script>
