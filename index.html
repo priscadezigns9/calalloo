@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calalloo | The Caribbean Food Lab</title>
-    <link rel="icon" type="image/x-icon" href="https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB">
+    <link rel="icon" type="image/png" href="/assets/logo.png">
     
     <!-- High-Fidelity Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,8 +14,8 @@
     <style>
         :root {
             --bg: #FAFAFA;
-            --primary: #E87722;
-            --calalloo-green: #2D5A27;
+            --primary: #2D5A27; /* Caribbean Green - Correct Brand Primary */
+            --accent: #E87722;  /* Accent Orange - Used Sparingly */
             --dark: #1A0D00;
             --white: #FFFFFF;
             --border: rgba(0,0,0,0.08);
@@ -76,7 +76,7 @@
             height: 72px;
         }
 
-        .nav-brand img { height: 36px; display: block; }
+        .nav-brand img { height: 40px; display: block; filter: none; }
 
         .nav-links { display: flex; gap: 32px; align-items: center; }
         .nav-links a { 
@@ -96,7 +96,7 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 10px 20px rgba(232, 119, 34, 0.2);
+            box-shadow: 0 10px 20px rgba(45, 90, 39, 0.2);
         }
 
         /* Hero Section */
@@ -118,12 +118,12 @@
             line-height: 0.9;
             margin-bottom: 24px;
             font-weight: 900;
-            color: var(--calalloo-green);
+            color: var(--primary);
         }
 
         .hero p {
             font-size: clamp(1.1rem, 2vw, 1.4rem);
-            color: var(--mid);
+            color: var(--dark);
             margin-bottom: 40px;
             max-width: 700px;
             margin-left: auto;
@@ -137,7 +137,7 @@
         /* Sections */
         .section { padding: 120px 5%; position: relative; }
         .section-header { text-align: center; margin-bottom: 80px; max-width: 800px; margin-left: auto; margin-right: auto; }
-        .section-header h2 { font-family: var(--font-display); font-size: 48px; margin-bottom: 16px; color: var(--calalloo-green); }
+        .section-header h2 { font-family: var(--font-display); font-size: 48px; margin-bottom: 16px; color: var(--primary); }
 
         .feature-grid {
             display: grid;
@@ -154,7 +154,7 @@
         }
         .feature-card:hover { transform: translateY(-10px); }
         .feature-card .icon { font-size: 40px; margin-bottom: 24px; display: block; }
-        .feature-card h3 { font-family: var(--font-display); font-size: 24px; margin-bottom: 16px; }
+        .feature-card h3 { font-family: var(--font-display); font-size: 24px; margin-bottom: 16px; color: var(--primary); }
         .feature-card p { font-size: 15px; opacity: 0.7; font-weight: 500; }
 
         /* Magazine Teaser */
@@ -189,7 +189,7 @@
 
     <header id="header">
         <a href="/" class="nav-brand">
-            <img src="https://drive.google.com/uc?export=view&id=174bHbG8JeFEtXm9bpZnJ89SfmAh4cQOm" alt="Calalloo Logo">
+            <img src="/assets/logo_horizontal.png" alt="Calalloo Logo" onerror="this.src='/assets/logo.png'">
         </a>
         <nav class="nav-links">
             <a href="/magazine/">Magazine</a>
@@ -238,16 +238,16 @@
         <div style="max-width: 600px;">
             <h2>The Logistics <br>of Flavor.</h2>
             <p>Read our latest dispatches on deep-soil integrity, coconut electrolytes, and the future of coastal gastronomy.</p>
-            <a href="/magazine/" style="display:inline-block; margin-top: 32px; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; border-bottom: 2px solid var(--primary); padding-bottom: 4px;">Explore Dispatches</a>
+            <a href="/magazine/" style="display:inline-block; margin-top: 32px; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 4px;">Explore Dispatches</a>
         </div>
         <div class="magazine-grid">
             <div class="mag-card" onclick="location.href='/magazine/the-coconut-protocol.html'">
-                <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: var(--primary);">NUTRITION PROTOCOL</div>
+                <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: var(--accent);">NUTRITION PROTOCOL</div>
                 <h4 style="font-family: var(--font-display); font-size: 20px; margin-bottom: 12px;">The Coconut Electrolyte Sync</h4>
                 <p style="font-size: 13px; opacity: 0.6;">Mapping the hydration profiles of the Golden Malay and West Coast Tall varieties.</p>
             </div>
             <div class="mag-card" onclick="location.href='/magazine/preserving-pelau/'">
-                <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: var(--primary);">HERITAGE ARCHIVE</div>
+                <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: var(--accent);">HERITAGE ARCHIVE</div>
                 <h4 style="font-family: var(--font-display); font-size: 20px; margin-bottom: 12px;">The Science of the Pelau Maillard</h4>
                 <p style="font-size: 13px; opacity: 0.6;">A deep dive into the thermodynamics of sugar browning in ancestral Trinidadian cooking.</p>
             </div>
@@ -257,7 +257,7 @@
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <img src="https://drive.google.com/uc?export=view&id=174bHbG8JeFEtXm9bpZnJ89SfmAh4cQOm" style="height: 24px; margin-bottom: 24px; opacity: 0.5;">
+                <img src="/assets/logo.png" style="height: 24px; margin-bottom: 24px; opacity: 0.5;">
                 <p style="font-size: 12px; opacity: 0.4;">© 2026 PRISCA DEZIGNS EMPIRE.<br>ALL FLAVOR PROTOCOLS RESERVED.</p>
             </div>
             <div class="footer-col">
