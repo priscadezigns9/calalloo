@@ -37,7 +37,21 @@
             overflow-x: hidden;
         }
 
-        
+        #empire-mandate {
+            background: var(--primary);
+            color: #fff;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 1px;
+            z-index: 10001;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
 
         header {
             position: fixed;
@@ -154,7 +168,12 @@
     </style>
 </head>
 <body>
-    
+    <div id="empire-mandate">
+        EMPIRE MANDATE: 10% OF EVERY PURCHASE SUPPORTS 
+        <a href="https://priscadezigns.org/thewaymadeknown/" style="color:#fff; text-decoration:underline; margin-left: 5px;">
+            THE WAY MADE KNOWN
+        </a> MISSION.
+    </div>
 
     <header>
         <a href="/" class="nav-brand">
@@ -214,7 +233,7 @@
 
     <script>
         const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
-        const SUPABASE_KEY = '{credential:supabase-callaloo-dpanyard}';
+        const SUPABASE_KEY = 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function checkSession() {
