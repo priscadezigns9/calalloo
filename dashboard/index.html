@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calalloo | Professional Hub</title>
+    <title>Calalloo | Professional Hub v5.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -19,7 +19,7 @@
         .pill.active { background: var(--white); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         .container { flex: 1; overflow-y: auto; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; position: relative; }
-        .view { display: none; height: 100%; }
+        .view { display: none; }
         .view.active { display: block; }
 
         .card { background: var(--white); border-radius: 30px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; }
@@ -28,23 +28,37 @@
         .photo-upload { width: 120px; height: 120px; border-radius: 50%; background: #F5F5F5; border: 3px dashed #DDD; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 30px; position: relative; overflow: hidden; }
         .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Functional Scanner */
-        #scanner-ui { position: relative; width: 100%; max-width: 640px; margin: 0 auto; background: #000; border-radius: 20px; overflow: hidden; aspect-ratio: 4/3; }
-        #video { width: 100%; height: 100%; object-fit: cover; }
-        .scan-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px solid var(--primary); opacity: 0.5; pointer-events: none; }
-        .scan-btn { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: 800; font-size: 10px; text-transform: uppercase; margin-bottom: 5px; color: #888; }
+        .input-node { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #EEE; font-size: 14px; outline: none; }
 
-        /* Toggles */
-        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #F9F9F9; border-radius: 15px; margin-bottom: 10px; }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        /* Social Grid */
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+
+        /* Discovery Feed */
+        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .heritage-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid #EEE; transition: 0.3s; }
+        .heritage-card img { width: 100%; height: 180px; object-fit: cover; }
+        .heritage-card .info { padding: 15px; }
+
+        /* Functional Scanner */
+        #scanner-ui { width: 100%; max-width: 600px; margin: 0 auto; background: #000; border-radius: 20px; overflow: hidden; position: relative; aspect-ratio: 4/3; }
+        #video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Map Stub */
+        #map-box { height: 400px; background: #f0f0f0; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #EEE; }
+
+        .btn { padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; border: none; font-size: 14px; transition: 0.3s; }
+        .btn-save { background: var(--primary); color: white; width: 100%; }
+        .btn-support { background: var(--green); color: white; width: 100%; margin-top: 10px; }
+
+        .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #F9F9F9; border-radius: 15px; margin-bottom: 10px; }
+        .switch { position: relative; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #DDD; transition: .3s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--green); }
         input:checked + .slider:before { transform: translateX(20px); }
-
-        .btn { padding: 15px 35px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s; border: none; font-size: 14px; }
-        .btn-save { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
@@ -54,50 +68,67 @@
     <div class="nav-pills">
         <div class="pill active" onclick="switchView('feed', this)">Feed</div>
         <div class="pill" onclick="switchView('scanner', this); startScanner();">Scanner</div>
-        <div class="pill" onclick="switchView('map', this)">Map</div>
+        <div class="pill" onclick="switchView('map', this); startMap();">Map</div>
         <div class="pill" onclick="switchView('profile', this)">Profile</div>
         <div class="pill" onclick="switchView('settings', this)">Settings</div>
     </div>
 </header>
 
 <div class="container">
+    <!-- Feed -->
     <div id="feed" class="view active">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Discovery Feed</h2>
-        <div id="feed-items">Loading active heritage nodes...</div>
-    </div>
-
-    <div id="scanner" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Heritage Scanner</h2>
-        <div id="scanner-ui">
-            <video id="video" autoplay playsinline></video>
-            <div class="scan-overlay"></div>
-            <button class="scan-btn" onclick="captureFrame()">IDENTIFY HERITAGE</button>
+        <h2 style="font-family: Fraunces; margin-bottom: 25px;">Heritage Feed</h2>
+        <div class="feed-grid" id="feed-container">
+            <div class="heritage-card"><img src="https://thisbagogirl.com/wp-content/uploads/2021/04/Tobago-Crab-and-Callaloo-Recipe-scaled.jpg"><div class="info"><b>Crab & Callaloo</b><p>Tobago Classic</p></div></div>
+            <div class="heritage-card"><img src="https://cookingwithria.com/wp-content/uploads/2013/02/IMG_1024-scaled.jpg"><div class="info"><b>Chicken Pelau</b><p>Heritage Protocol</p></div></div>
         </div>
     </div>
 
-    <div id="map" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Heritage Map</h2>
-        <div id="map-render" style="height: 400px; background: #eee; border-radius: 20px; display: flex; align-items: center; justify-content: center;">Map Initialization Active</div>
+    <!-- Scanner -->
+    <div id="scanner" class="view">
+        <h2 style="font-family: Fraunces; margin-bottom: 25px;">AI Scanner</h2>
+        <div id="scanner-ui"><video id="video" autoplay playsinline></video></div>
     </div>
 
+    <!-- Map -->
+    <div id="map" class="view">
+        <h2 style="font-family: Fraunces; margin-bottom: 25px;">Heritage Map</h2>
+        <div id="map-box">
+            <div id="map-status" style="font-weight:700; color:#E87722;">Syncing to Cloud...</div>
+            <div id="coords" style="font-size:12px; color:#888; margin-top:10px;">Waiting for GPS fix</div>
+        </div>
+    </div>
+
+    <!-- Profile -->
     <div id="profile" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Profile Node</h2>
+        <h2 style="font-family: Fraunces; margin-bottom: 25px;">My Profile</h2>
         <div class="card">
             <div class="photo-upload" onclick="document.getElementById('photo_input').click()">
-                <img id="photo_preview" src="">
+                <img id="photo_preview" src="https://ui-avatars.com/api/?name=User&background=E87722&color=fff">
             </div>
             <input type="file" id="photo_input" style="display:none;" onchange="previewPhoto(this)">
-            <input type="text" id="p_name" style="width:100%; padding:15px; margin-bottom:20px; border-radius:10px; border:1px solid #ddd;" placeholder="Full Name">
-            <textarea id="p_bio" style="width:100%; height:100px; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:20px;" placeholder="Heritage bio..."></textarea>
-            <button class="btn btn-save" onclick="saveProfile()">SAVE PROFILE</button>
+            
+            <div class="input-group"><label>Display Name</label><input type="text" id="p_name" class="input-node" placeholder="Your Name"></div>
+            <div class="input-group"><label>Bio</label><textarea id="p_bio" class="input-node" style="height:80px;" placeholder="Professional Bio"></textarea></div>
+            <div class="input-group"><label>Phone Number</label><input type="tel" id="p_phone" class="input-node" placeholder="+1 868 ..."></div>
+            
+            <div class="social-grid">
+                <input type="text" id="p_fb" class="input-node" placeholder="Facebook">
+                <input type="text" id="p_ig" class="input-node" placeholder="Instagram">
+                <input type="text" id="p_th" class="input-node" placeholder="Threads">
+                <input type="text" id="p_web" class="input-node" placeholder="Other Site">
+            </div>
+            
+            <button class="btn btn-save" style="margin-top:20px;" onclick="saveProfile()">SAVE CHANGES</button>
         </div>
     </div>
 
+    <!-- Settings -->
     <div id="settings" class="view">
-        <h2 style="font-family: Fraunces; margin-bottom: 30px;">Vault</h2>
+        <h2 style="font-family: Fraunces; margin-bottom: 25px;">Support & Vault</h2>
         <div class="card">
-            <div class="setting-row"><span>📍 Location Sync</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-            <div class="setting-row"><span>📸 Scanner Access</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+            <div class="setting-row"><span>📍 Sync Location to Map</span><label class="switch"><input type="checkbox" id="sync_loc" onchange="toggleLoc()"><span class="slider"></span></label></div>
+            <button class="btn btn-support" onclick="window.location.href='mailto:support@calalloo.com'">CONTACT SUPPORT</button>
         </div>
     </div>
 </div>
@@ -114,26 +145,46 @@
     }
 
     async function startScanner() {
-        const video = document.getElementById('video');
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-            video.srcObject = stream;
-        } catch (err) { alert("Camera access denied."); }
+            document.getElementById('video').srcObject = stream;
+        } catch (e) { alert("Camera Denied"); }
     }
 
     function stopScanner() {
-        const video = document.getElementById('video');
-        if (video.srcObject) {
-            video.srcObject.getTracks().forEach(track => track.stop());
-            video.srcObject = null;
+        const v = document.getElementById('video');
+        if(v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
+    }
+
+    function startMap() {
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                document.getElementById('map-status').innerText = "LIVE SYNC ACTIVE";
+                document.getElementById('map-status').style.color = "#2D5A27";
+                document.getElementById('coords').innerText = `Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)}`;
+            });
         }
     }
 
     async function saveProfile() {
-        const name = document.getElementById('p_name').value;
-        const bio = document.getElementById('p_bio').value;
-        const { error } = await sb.from('profiles').upsert({ id: localStorage.getItem('calalloo_uid') || '0000', full_name: name, bio: bio });
-        if(!error) alert("Heritage Secured.");
+        const data = {
+            id: 'prisca-node',
+            full_name: document.getElementById('p_name').value,
+            bio: document.getElementById('p_bio').value,
+            phone: document.getElementById('p_phone').value,
+            socials: {
+                fb: document.getElementById('p_fb').value,
+                ig: document.getElementById('p_ig').value,
+                th: document.getElementById('p_th').value
+            }
+        };
+        const { error } = await sb.from('profiles').upsert(data);
+        if(!error) {
+            localStorage.setItem('cal_profile', JSON.stringify(data));
+            alert("Profile Secured to Cloud.");
+        } else {
+            alert("Error saving: " + error.message);
+        }
     }
 
     function previewPhoto(input) {
@@ -143,6 +194,18 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    window.onload = () => {
+        const saved = JSON.parse(localStorage.getItem('cal_profile') || '{}');
+        if(saved.full_name) {
+            document.getElementById('p_name').value = saved.full_name;
+            document.getElementById('p_bio').value = saved.bio;
+            document.getElementById('p_phone').value = saved.phone;
+            document.getElementById('p_fb').value = saved.socials.fb;
+            document.getElementById('p_ig').value = saved.socials.ig;
+            document.getElementById('p_th').value = saved.socials.th;
+        }
+    };
 </script>
 </body>
 </html>
