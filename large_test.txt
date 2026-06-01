@@ -1,0 +1,1 @@
+Error executing command: 'utf-8' codec can't decode byte 0xdb in position 0: invalid continuation byte
