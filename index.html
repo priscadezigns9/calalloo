@@ -132,6 +132,24 @@
 </div>
 
 <script>
+    // Force Service Worker Update
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then((registration) => {
+        registration.onupdatefound = () => {
+          const installingWorker = registration.installing;
+          if (installingWorker == null) return;
+          installingWorker.onstatechange = () => {
+            if (installingWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                console.log('New content available; please refresh.');
+                window.location.reload();
+              }
+            }
+          };
+        };
+      });
+    }
+
     const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-anon-key}}');
 
     const nodes = [
@@ -149,6 +167,7 @@
 
     function renderFeed(data = nodes) {
         const grid = document.getElementById('recipe-grid');
+        if(!grid) return;
         grid.innerHTML = data.filter(n => n.type === "DISH").map(n => `
             <div class="pin">
                 <img src="${n.img}" alt="${n.title}">
@@ -161,6 +180,7 @@
         `).join('');
 
         const follows = document.getElementById('smart-follows');
+        if(!follows) return;
         follows.innerHTML = data.filter(n => n.type === "PERSON").map(p => `
             <div style="background:var(--white); padding:20px; border-radius:20px; border:1px solid rgba(0,0,0,0.05); display:flex; align-items:center; gap:12px;">
                 <div style="width:40px; height:40px; background:var(--calalloo-green); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800;">${p.title[0]}</div>
