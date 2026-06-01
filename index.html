@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calalloo | The Caribbean Food Lab</title>
-    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="icon" type="image/x-icon" href="https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB">
     
     <!-- High-Fidelity Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,15 +13,13 @@
     
     <style>
         :root {
-            --bg: #FAFAFA;
-            --primary: #2D5A27; /* Caribbean Green - Correct Brand Primary */
-            --accent: #E87722;  /* Accent Orange - Used Sparingly */
-            --dark: #1A0D00;
+            --bg: #FFFFFF;
+            --primary: #E87722; /* High-Fidelity Orange */
+            --dark: #000000;
             --white: #FFFFFF;
-            --border: rgba(0,0,0,0.08);
+            --border: rgba(0,0,0,0.1);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
-            --font-mono: 'Space Mono', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -67,24 +65,20 @@
             padding: 0 5%;
             z-index: 1000;
             transition: all 0.4s ease;
-        }
-
-        header.scrolled {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--white);
             border-bottom: 1px solid var(--border);
-            height: 72px;
         }
 
-        .nav-brand img { height: 40px; display: block; filter: none; }
+        .nav-brand img { height: 40px; display: block; }
 
         .nav-links { display: flex; gap: 32px; align-items: center; }
         .nav-links a { 
             text-decoration: none; 
-            font-weight: 700; 
+            font-weight: 800; 
             color: var(--dark); 
             font-size: 14px;
-            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .nav-links a:hover { color: var(--primary); }
 
@@ -92,11 +86,8 @@
             background: var(--primary);
             color: white !important;
             padding: 12px 28px;
-            border-radius: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 10px 20px rgba(45, 90, 39, 0.2);
+            border-radius: 4px;
+            font-weight: 900;
         }
 
         /* Hero Section */
@@ -107,7 +98,8 @@
             justify-content: center;
             text-align: center;
             padding: 0 5%;
-            background: radial-gradient(circle at center, rgba(45, 90, 39, 0.05) 0%, transparent 70%);
+            background: #000;
+            color: #fff;
             position: relative;
         }
 
@@ -118,26 +110,24 @@
             line-height: 0.9;
             margin-bottom: 24px;
             font-weight: 900;
-            color: var(--primary);
+            text-transform: uppercase;
         }
 
         .hero p {
             font-size: clamp(1.1rem, 2vw, 1.4rem);
-            color: var(--dark);
             margin-bottom: 40px;
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-            font-weight: 500;
-            opacity: 0.8;
+            opacity: 0.7;
         }
 
         .hero-actions { display: flex; gap: 16px; justify-content: center; }
 
         /* Sections */
-        .section { padding: 120px 5%; position: relative; }
-        .section-header { text-align: center; margin-bottom: 80px; max-width: 800px; margin-left: auto; margin-right: auto; }
-        .section-header h2 { font-family: var(--font-display); font-size: 48px; margin-bottom: 16px; color: var(--primary); }
+        .section { padding: 120px 5%; background: var(--white); }
+        .section-header { text-align: center; margin-bottom: 80px; }
+        .section-header h2 { font-family: var(--font-display); font-size: 48px; font-weight: 900; text-transform: uppercase; }
 
         .feature-grid {
             display: grid;
@@ -146,36 +136,22 @@
         }
 
         .feature-card {
-            background: var(--white);
             padding: 48px;
-            border-radius: 32px;
             border: 1px solid var(--border);
-            transition: transform 0.3s ease;
+            text-align: left;
         }
-        .feature-card:hover { transform: translateY(-10px); }
-        .feature-card .icon { font-size: 40px; margin-bottom: 24px; display: block; }
-        .feature-card h3 { font-family: var(--font-display); font-size: 24px; margin-bottom: 16px; color: var(--primary); }
-        .feature-card p { font-size: 15px; opacity: 0.7; font-weight: 500; }
+        .feature-card h3 { font-family: var(--font-display); font-size: 24px; margin-bottom: 16px; text-transform: uppercase; }
+        .feature-card p { font-size: 15px; opacity: 0.6; }
 
-        /* Magazine Teaser */
-        .magazine-bg { background: #1A3617; color: white; border-radius: 48px; margin: 0 5%; padding: 100px 8%; position: relative; overflow: hidden; }
-        .magazine-bg h2 { font-family: var(--font-display); font-size: 48px; margin-bottom: 24px; }
-        .magazine-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; margin-top: 60px; }
-        .mag-card { background: rgba(255,255,255,0.05); border-radius: 24px; padding: 24px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; }
-        .mag-card:hover { background: rgba(255,255,255,0.1); }
-        .mag-card img { width: 100%; border-radius: 16px; margin-bottom: 16px; }
-
-        footer { padding: 80px 5%; background: var(--white); border-top: 1px solid var(--border); margin-top: 120px; }
+        footer { padding: 80px 5%; background: #000; color: #fff; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
-        .footer-col h4 { font-weight: 800; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 24px; }
-        .footer-col a { display: block; text-decoration: none; color: var(--dark); font-size: 14px; margin-bottom: 12px; opacity: 0.6; transition: 0.2s; }
+        .footer-col h4 { font-weight: 900; text-transform: uppercase; font-size: 12px; margin-bottom: 24px; color: var(--primary); }
+        .footer-col a { display: block; text-decoration: none; color: #fff; font-size: 14px; margin-bottom: 12px; opacity: 0.5; }
         .footer-col a:hover { opacity: 1; color: var(--primary); }
 
         @media (max-width: 768px) {
-            header { padding: 0 20px; }
             .nav-links { display: none; }
             .hero h1 { font-size: 3.5rem; }
-            .section { padding: 80px 20px; }
         }
     </style>
 </head>
@@ -187,103 +163,67 @@
         </a> MISSION.
     </div>
 
-    <header id="header">
+    <header>
         <a href="/" class="nav-brand">
-            <img src="/assets/logo_horizontal.png" alt="Calalloo Logo" onerror="this.src='/assets/logo.png'">
+            <img src="https://drive.google.com/uc?export=view&id=174bHbG8JeFEtXm9bpZnJ89SfmAh4cQOm" alt="Calalloo Logo">
         </a>
         <nav class="nav-links">
             <a href="/magazine/">Magazine</a>
-            <a href="/shop/">The Store</a>
+            <a href="/shop/">Store</a>
             <a href="/login/">Sign In</a>
-            <a href="/signup/" class="btn-cta">Enter the Lab</a>
+            <a href="/signup/" class="btn-cta">Join Lab</a>
         </nav>
     </header>
 
     <section class="hero">
         <div class="hero-content">
-            <h1>The Caribbean <br>Food Lab.</h1>
-            <p>Where ancestral heritage meets neural culinary diagnostics. Preserving the flavor of the islands through high-fidelity technology.</p>
+            <h1>Caribbean <br>Food Lab.</h1>
+            <p>High-fidelity culinary diagnostics and ancestral heritage preservation.</p>
             <div class="hero-actions">
-                <a href="/signup/" class="btn-cta">Start Your Journey</a>
-                <a href="/dashboard/" style="padding: 12px 28px; border-radius: 12px; font-weight: 800; text-decoration: none; color: var(--dark); border: 2px solid var(--border);">Open the Vault</a>
+                <a href="/signup/" class="btn-cta">Initialize</a>
+                <a href="/dashboard/" style="padding: 12px 28px; border-radius: 4px; font-weight: 900; text-decoration: none; color: #fff; border: 2px solid #fff;">The Vault</a>
             </div>
         </div>
     </section>
 
     <section class="section">
         <div class="section-header">
-            <h2>Culinary Infrastructure</h2>
-            <p>We've built the most sophisticated food network in the archipelago, designed to map flavor profiles and nutritional density from soil to table.</p>
+            <h2>Infrastructure</h2>
         </div>
         <div class="feature-grid">
             <div class="feature-card">
-                <span class="icon">🌿</span>
-                <h3>Culinary Nodes</h3>
-                <p>Real-time market intelligence across 18 island nations. Track availability, peak ripeness, and heritage sourcing in one unified grid.</p>
+                <h3>Nodes</h3>
+                <p>Market intelligence across 18 island nations.</p>
             </div>
             <div class="feature-card">
-                <span class="icon">🧠</span>
-                <h3>Neural Protocols</h3>
-                <p>Ancestral recipes decoded through neural diagnostics. Every dish is optimized for metabolic performance and cellular resonance.</p>
+                <h3>Protocols</h3>
+                <p>Ancestral recipes decoded through neural diagnostics.</p>
             </div>
             <div class="feature-card">
-                <span class="icon">🏛️</span>
-                <h3>Heritage Vault</h3>
-                <p>A decentralized archive of the Caribbean's culinary DNA. Your taste profile is preserved as a high-fidelity digital asset.</p>
+                <h3>Vault</h3>
+                <p>Decentralized archive of culinary DNA.</p>
             </div>
         </div>
     </section>
 
-    <div class="magazine-bg">
-        <div style="max-width: 600px;">
-            <h2>The Logistics <br>of Flavor.</h2>
-            <p>Read our latest dispatches on deep-soil integrity, coconut electrolytes, and the future of coastal gastronomy.</p>
-            <a href="/magazine/" style="display:inline-block; margin-top: 32px; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 4px;">Explore Dispatches</a>
-        </div>
-        <div class="magazine-grid">
-            <div class="mag-card" onclick="location.href='/magazine/the-coconut-protocol.html'">
-                <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: var(--accent);">NUTRITION PROTOCOL</div>
-                <h4 style="font-family: var(--font-display); font-size: 20px; margin-bottom: 12px;">The Coconut Electrolyte Sync</h4>
-                <p style="font-size: 13px; opacity: 0.6;">Mapping the hydration profiles of the Golden Malay and West Coast Tall varieties.</p>
-            </div>
-            <div class="mag-card" onclick="location.href='/magazine/preserving-pelau/'">
-                <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: var(--accent);">HERITAGE ARCHIVE</div>
-                <h4 style="font-family: var(--font-display); font-size: 20px; margin-bottom: 12px;">The Science of the Pelau Maillard</h4>
-                <p style="font-size: 13px; opacity: 0.6;">A deep dive into the thermodynamics of sugar browning in ancestral Trinidadian cooking.</p>
-            </div>
-        </div>
-    </div>
-
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <img src="/assets/logo.png" style="height: 24px; margin-bottom: 24px; opacity: 0.5;">
-                <p style="font-size: 12px; opacity: 0.4;">© 2026 PRISCA DEZIGNS EMPIRE.<br>ALL FLAVOR PROTOCOLS RESERVED.</p>
+                <img src="https://drive.google.com/uc?export=view&id=174bHbG8JeFEtXm9bpZnJ89SfmAh4cQOm" style="height: 24px; margin-bottom: 24px; filter: brightness(0) invert(1);">
+                <p style="font-size: 11px; opacity: 0.3;">© 2026 PRISCA DEZIGNS EMPIRE.</p>
             </div>
             <div class="footer-col">
-                <h4>LAB ACCESS</h4>
+                <h4>Lab</h4>
                 <a href="/dashboard/">Neural Hub</a>
-                <a href="/markets/">Market Nodes</a>
-                <a href="/recipes/">Recipe Vault</a>
+                <a href="/markets/">Markets</a>
+                <a href="/recipes/">Vault</a>
             </div>
             <div class="footer-col">
-                <h4>THE EMPIRE</h4>
+                <h4>Network</h4>
                 <a href="https://priscadezigns.org/thewaymadeknown/">The Way Made Known</a>
                 <a href="https://priscadezigns.org/ateliagaming/">Atelia Gaming</a>
-                <a href="https://dreaminganime.com/">Dreaming Anime</a>
             </div>
         </div>
     </footer>
-
-    <script>
-        window.onscroll = function() {
-            var header = document.getElementById('header');
-            if (window.pageYOffset > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        };
-    </script>
 </body>
 </html>
