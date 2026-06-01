@@ -268,6 +268,9 @@
                 if(profile) profile.style.display = 'block';
                 status.innerText = "Synchronized: High-Fidelity Taste Profile Active.";
             } else {
+                if(signin) signin.style.display = 'block';
+                if(signup) signup.style.display = 'block';
+                if(profile) profile.style.display = 'none';
                 status.innerText = "Guest Mode: Sign in to sync your culinary DNA.";
             }
         })();
