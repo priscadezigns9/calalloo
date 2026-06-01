@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calalloo | The Caribbean Food Lab</title>
+    <meta name="description" content="Discover, share, and preserve the high-fidelity heritage of Caribbean cuisine.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #E87722; --dark: #1A0D00; --white: #FFFFFF; --bg: #FAFAFA; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--dark); font-family: 'Inter', sans-serif; line-height: 1.6; }
+        header { padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .nav-brand { font-family: 'Fraunces', serif; font-weight: 900; font-size: 2rem; color: var(--primary); text-decoration: none; }
+        .hero { padding: 100px 5%; text-align: center; background: linear-gradient(rgba(232, 119, 34, 0.05), transparent); }
+        .hero h1 { font-family: 'Fraunces', serif; font-size: 4rem; margin-bottom: 1.5rem; line-height: 1; }
+        .hero p { font-size: 1.25rem; max-width: 700px; margin: 0 auto 2rem; opacity: 0.8; }
+        .btn-p { background: var(--primary); color: white; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 800; display: inline-block; transition: 0.3s; }
+        .btn-p:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(232, 119, 34, 0.2); }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="nav-brand"><img src="/assets/logo_horizontal.png" alt="Calalloo" style="height:45px; vertical-align:middle;"></a>
+        <nav class="nav-links">
+            <a href="/recipes/index.html">Recipes</a>
+            <a href="/community/index.html">Community</a>
+            <a href="/dashboard/index.html" style="background:var(--dark); color:white; padding:8px 20px; border-radius:50px;">Go to Dashboard</a>
+        </nav>
+    </header>
+    <section class="hero">
+        <h1>Preserving the Caribbean<br><span style="color:var(--primary);">Culinary Backbone.</span></h1>
+        <p>The high-fidelity research hub for heritage recipes, local ingredients, and the people who keep the culture alive.</p>
+        <a href="/dashboard/index.html" class="btn-p">Launch Discovery Hub</a>
+    </section>
+</body>
+</html>
+
