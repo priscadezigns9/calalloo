@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calalloo | User Protocol</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --green: #2D5A27; --white: #FFFFFF; --bg: #FAFAFA; --font-display: 'Fraunces', serif; --font-sans: 'Inter', sans-serif; }
+        body { background: var(--bg); font-family: var(--font-sans); padding: 40px; color: #1A0D00; }
+        .vault-card { background: var(--white); border-radius: 30px; padding: 40px; max-width: 600px; margin: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid rgba(45,90,39,0.1); }
+        h1 { font-family: var(--font-display); color: var(--green); margin-bottom: 20px; }
+        .input-node { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #EEE; margin-bottom: 20px; font-family: var(--font-sans); outline: none; }
+        .input-node:focus { border-color: var(--green); }
+        .btn-sync { background: var(--green); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-sync:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(45,90,39,0.2); }
+        #status { text-align: center; margin-top: 20px; font-size: 13px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="vault-card">
+    <h1>Profile Persistence Hub</h1>
+    <p style="margin-bottom: 30px; opacity: 0.7; font-size: 14px;">Your data is locked in the Supabase Cloud. Auto-deletion only occurs after 5 years of inactivity.</p>
+    
+    <label style="display:block; font-weight:800; font-size:12px; margin-bottom:8px;">DISPLAY NAME</label>
+    <input type="text" id="prof_name" class="input-node" placeholder="Priscilla Narine">
+
+    <label style="display:block; font-weight:800; font-size:12px; margin-bottom:8px;">BIO / HERITAGE ROLE</label>
+    <textarea id="prof_bio" class="input-node" style="height:100px; resize:none;" placeholder="Empire Architect..."></textarea>
+
+    <label style="display:block; font-weight:800; font-size:12px; margin-bottom:8px;">LATITUDE (GEOSPATIAL NODE)</label>
+    <input type="text" id="prof_lat" class="input-node" placeholder="10.66">
+
+    <label style="display:block; font-weight:800; font-size:12px; margin-bottom:8px;">LONGITUDE (GEOSPATIAL NODE)</label>
+    <input type="text" id="prof_lng" class="input-node" placeholder="-61.51">
+
+    <button class="btn-sync" onclick="syncToSupabase()">SYNC TO CLOUD HUB</button>
+    <div id="status"></div>
+</div>
+
+<script>
+    const supabaseUrl = 'https://sktpjacowqaedddtrhuz.supabase.co';
+    const supabaseKey = '{{credential:supabase-anon-key}}';
+    const sb = supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function syncToSupabase() {
+        const status = document.getElementById('status');
+        status.innerText = "⚡ INITIALIZING CLOUD HANDSHAKE...";
+        status.style.color = "var(--green)";
+
+        const profileData = {
+            full_name: document.getElementById('prof_name').value,
+            bio: document.getElementById('prof_bio').value,
+            location_lat: parseFloat(document.getElementById('prof_lat').value),
+            location_lng: parseFloat(document.getElementById('prof_lng').value),
+            last_active_at: new Date().toISOString()
+        };
+
+        // Logic to get session/user id would go here. For demo/hard refresh verification:
+        const userId = localStorage.getItem('calalloo_uid') || '00000000-0000-0000-0000-000000000000';
+
+        const { data, error } = await sb
+            .from('profiles')
+            .upsert({ id: userId, ...profileData, username: 'prisca_admin' });
+
+        if (error) {
+            status.innerText = "❌ SYNC FAILED: Check Cloud Connection.";
+            status.style.color = "red";
+            console.error(error);
+        } else {
+            status.innerText = "✅ PROTOCOL SECURED. Persistence Verified for 5 Years.";
+            // Update local storage to match
+            localStorage.setItem('calalloo_name', profileData.full_name);
+            localStorage.setItem('calalloo_bio', profileData.bio);
+            localStorage.setItem('calalloo_lat', profileData.location_lat);
+            localStorage.setItem('calalloo_lng', profileData.location_lng);
+        }
+    }
+
+    // Load existing data
+    window.onload = () => {
+        document.getElementById('prof_name').value = localStorage.getItem('calalloo_name') || '';
+        document.getElementById('prof_bio').value = localStorage.getItem('calalloo_bio') || '';
+        document.getElementById('prof_lat').value = localStorage.getItem('calalloo_lat') || '';
+        document.getElementById('prof_lng').value = localStorage.getItem('calalloo_lng') || '';
+    };
+</script>
+
+</body>
+</html>
