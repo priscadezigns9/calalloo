@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://sktpjacowqaedddtrhuz.supabase.co";
-const SUPABASE_KEY = "{{credential:supabase-callaloo-dpanyard}}";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs";
 
 const supabase = {
     async request(path, options = {}) {
@@ -153,3 +153,4 @@ const ThemeManager = {
         // Class-based theme management for modern toggles
     }
 };
+
