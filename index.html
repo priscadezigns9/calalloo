@@ -11,11 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&family=Space+Mono&display=swap" rel="stylesheet">
     
-    <!-- Infrastructure -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
         :root {
             --bg: #FAFAFA;
@@ -26,13 +21,7 @@
             --border: rgba(0,0,0,0.08);
             --font-display: 'Fraunces', serif;
             --font-sans: 'Inter', sans-serif;
-        }
-
-        body.dark-mode {
-            --bg: #0B0E14;
-            --dark: #F8FAFC;
-            --white: #1A1F26;
-            --border: rgba(255,255,255,0.1);
+            --font-mono: 'Space Mono', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -71,130 +60,122 @@
             top: 32px;
             left: 0;
             width: 100%;
-            height: 72px;
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
+            height: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 5%;
             z-index: 1000;
-            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
         }
 
-        .nav-brand img { height: 32px; display: block; }
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            height: 72px;
+        }
+
+        .nav-brand img { height: 36px; display: block; }
 
         .nav-links { display: flex; gap: 32px; align-items: center; }
         .nav-links a { 
             text-decoration: none; 
-            font-weight: 800; 
+            font-weight: 700; 
             color: var(--dark); 
             font-size: 14px;
             transition: 0.2s;
         }
         .nav-links a:hover { color: var(--primary); }
 
-        .layout { 
-            display: flex; 
-            margin-top: 104px;
-            min-height: calc(100vh - 104px);
-        }
-
-        .sidebar { 
-            width: 360px; 
-            background: var(--white); 
-            border-right: 1px solid var(--border); 
-            padding: 40px 24px;
-            position: sticky;
-            top: 104px;
-            height: calc(100vh - 104px);
-        }
-
-        .main { 
-            flex: 1; 
-            padding: 40px 5%;
-        }
-
-        .taste-profile-card {
-            background: linear-gradient(135deg, var(--calalloo-green), #1a3617);
-            border-radius: 24px;
-            padding: 32px;
-            color: white;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 40px rgba(45,90,39,0.15);
-        }
-        .taste-profile-card h2 { font-family: var(--font-display); font-size: 24px; margin-bottom: 8px; }
-        .taste-profile-card p { font-size: 14px; opacity: 0.8; font-weight: 500; }
-
-        .omni-search-container { margin-bottom: 48px; }
-        .omni-search {
-            width: 100%;
-            padding: 20px 32px;
-            border-radius: 100px;
-            border: 2px solid var(--calalloo-green);
-            font-size: 16px;
-            font-weight: 700;
-            outline: none;
-            background: var(--white);
-            color: var(--dark);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            transition: 0.3s;
-        }
-        .omni-search:focus { border-color: var(--primary); box-shadow: 0 15px 40px rgba(232,119,34,0.1); }
-
-        .discovery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 32px;
-        }
-
-        .node-card {
-            background: var(--white);
-            border-radius: 28px;
-            padding: 32px;
-            border: 1px solid var(--border);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .node-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.06);
-            border-color: var(--calalloo-green);
-        }
-        .node-card .tag {
-            font-size: 10px;
+        .btn-cta {
+            background: var(--primary);
+            color: white !important;
+            padding: 12px 28px;
+            border-radius: 12px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--primary);
-            margin-bottom: 12px;
-            display: block;
+            box-shadow: 0 10px 20px rgba(232, 119, 34, 0.2);
         }
-        .node-card h3 { font-family: var(--font-display); font-size: 20px; margin-bottom: 12px; }
-        .node-card p { font-size: 14px; opacity: 0.7; font-weight: 500; }
 
-        .map-wrapper {
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 5%;
+            background: radial-gradient(circle at center, rgba(45, 90, 39, 0.05) 0%, transparent 70%);
+            position: relative;
+        }
+
+        .hero-content { max-width: 900px; z-index: 10; }
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 0.9;
+            margin-bottom: 24px;
+            font-weight: 900;
+            color: var(--calalloo-green);
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--mid);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .hero-actions { display: flex; gap: 16px; justify-content: center; }
+
+        /* Sections */
+        .section { padding: 120px 5%; position: relative; }
+        .section-header { text-align: center; margin-bottom: 80px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .section-header h2 { font-family: var(--font-display); font-size: 48px; margin-bottom: 16px; color: var(--calalloo-green); }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 48px;
             border-radius: 32px;
-            overflow: hidden;
-            height: 600px;
-            border: 2px solid var(--calalloo-green);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease;
         }
-        #map-node { width: 100%; height: 100%; }
+        .feature-card:hover { transform: translateY(-10px); }
+        .feature-card .icon { font-size: 40px; margin-bottom: 24px; display: block; }
+        .feature-card h3 { font-family: var(--font-display); font-size: 24px; margin-bottom: 16px; }
+        .feature-card p { font-size: 15px; opacity: 0.7; font-weight: 500; }
 
-        #auth-section { display: flex; gap: 16px; align-items: center; }
-        .btn-signup {
-            background: var(--primary);
-            color: white !important;
-            padding: 10px 24px;
-            border-radius: 12px;
-        }
-        
-        @media (max-width: 900px) {
-            .layout { flex-direction: column; }
-            .sidebar { width: 100%; position: static; height: auto; }
+        /* Magazine Teaser */
+        .magazine-bg { background: #1A3617; color: white; border-radius: 48px; margin: 0 5%; padding: 100px 8%; position: relative; overflow: hidden; }
+        .magazine-bg h2 { font-family: var(--font-display); font-size: 48px; margin-bottom: 24px; }
+        .magazine-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; margin-top: 60px; }
+        .mag-card { background: rgba(255,255,255,0.05); border-radius: 24px; padding: 24px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; }
+        .mag-card:hover { background: rgba(255,255,255,0.1); }
+        .mag-card img { width: 100%; border-radius: 16px; margin-bottom: 16px; }
+
+        footer { padding: 80px 5%; background: var(--white); border-top: 1px solid var(--border); margin-top: 120px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+        .footer-col h4 { font-weight: 800; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 24px; }
+        .footer-col a { display: block; text-decoration: none; color: var(--dark); font-size: 14px; margin-bottom: 12px; opacity: 0.6; transition: 0.2s; }
+        .footer-col a:hover { opacity: 1; color: var(--primary); }
+
+        @media (max-width: 768px) {
+            header { padding: 0 20px; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 3.5rem; }
+            .section { padding: 80px 20px; }
         }
     </style>
 </head>
@@ -206,152 +187,102 @@
         </a> MISSION.
     </div>
 
-    <header>
+    <header id="header">
         <a href="/" class="nav-brand">
             <img src="https://drive.google.com/uc?export=view&id=174bHbG8JeFEtXm9bpZnJ89SfmAh4cQOm" alt="Calalloo Logo">
         </a>
         <nav class="nav-links">
-            <a href="javascript:void(0)" onclick="switchTab('feed', this)">Feed</a>
-            <a href="javascript:void(0)" onclick="switchTab('map-tab', this)">Markets</a>
-            <div id="auth-section">
-                <a href="/login/" id="signin-link">Sign In</a>
-                <a href="/signup/" id="signup-link" class="btn-signup">Sign Up</a>
-            </div>
-            <a href="/profile/" id="profile-link" style="display:none;">My Kitchen</a>
+            <a href="/magazine/">Magazine</a>
+            <a href="/shop/">The Store</a>
+            <a href="/login/">Sign In</a>
+            <a href="/signup/" class="btn-cta">Enter the Lab</a>
         </nav>
     </header>
 
-    <div class="layout">
-        <aside class="sidebar">
-            <div class="taste-profile-card">
-                <h2>Taste Profile</h2>
-                <p id="profile-status">AI Syncing your preferences...</p>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>The Caribbean <br>Food Lab.</h1>
+            <p>Where ancestral heritage meets neural culinary diagnostics. Preserving the flavor of the islands through high-fidelity technology.</p>
+            <div class="hero-actions">
+                <a href="/signup/" class="btn-cta">Start Your Journey</a>
+                <a href="/dashboard/" style="padding: 12px 28px; border-radius: 12px; font-weight: 800; text-decoration: none; color: var(--dark); border: 2px solid var(--border);">Open the Vault</a>
             </div>
-            <h2 style="font-family: var(--font-display); font-size: 22px; margin-bottom: 24px;">Recommended Nodes</h2>
-            <div id="smart-recommendations" style="display:flex; flex-direction:column; gap:16px;">
-                <!-- Dynamically Populated -->
-            </div>
-        </aside>
+        </div>
+    </section>
 
-        <main class="main">
-            <div id="feed" class="tab-content">
-                <div class="omni-search-container">
-                    <input type="text" class="omni-search" id="omni-search" placeholder="Search the Caribbean Food Lab...">
-                </div>
-                <div class="discovery-grid" id="discovery-grid">
-                    <!-- Nodes -->
-                </div>
+    <section class="section">
+        <div class="section-header">
+            <h2>Culinary Infrastructure</h2>
+            <p>We've built the most sophisticated food network in the archipelago, designed to map flavor profiles and nutritional density from soil to table.</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="icon">🌿</span>
+                <h3>Culinary Nodes</h3>
+                <p>Real-time market intelligence across 18 island nations. Track availability, peak ripeness, and heritage sourcing in one unified grid.</p>
             </div>
+            <div class="feature-card">
+                <span class="icon">🧠</span>
+                <h3>Neural Protocols</h3>
+                <p>Ancestral recipes decoded through neural diagnostics. Every dish is optimized for metabolic performance and cellular resonance.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">🏛️</span>
+                <h3>Heritage Vault</h3>
+                <p>A decentralized archive of the Caribbean's culinary DNA. Your taste profile is preserved as a high-fidelity digital asset.</p>
+            </div>
+        </div>
+    </section>
 
-            <div id="map-tab" class="tab-content" style="display:none;">
-                <div class="map-wrapper">
-                    <div id="map-node"></div>
-                </div>
+    <div class="magazine-bg">
+        <div style="max-width: 600px;">
+            <h2>The Logistics <br>of Flavor.</h2>
+            <p>Read our latest dispatches on deep-soil integrity, coconut electrolytes, and the future of coastal gastronomy.</p>
+            <a href="/magazine/" style="display:inline-block; margin-top: 32px; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; border-bottom: 2px solid var(--primary); padding-bottom: 4px;">Explore Dispatches</a>
+        </div>
+        <div class="magazine-grid">
+            <div class="mag-card" onclick="location.href='/magazine/the-coconut-protocol.html'">
+                <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: var(--primary);">NUTRITION PROTOCOL</div>
+                <h4 style="font-family: var(--font-display); font-size: 20px; margin-bottom: 12px;">The Coconut Electrolyte Sync</h4>
+                <p style="font-size: 13px; opacity: 0.6;">Mapping the hydration profiles of the Golden Malay and West Coast Tall varieties.</p>
             </div>
-        </main>
+            <div class="mag-card" onclick="location.href='/magazine/preserving-pelau/'">
+                <div style="font-weight: 800; font-size: 12px; margin-bottom: 8px; color: var(--primary);">HERITAGE ARCHIVE</div>
+                <h4 style="font-family: var(--font-display); font-size: 20px; margin-bottom: 12px;">The Science of the Pelau Maillard</h4>
+                <p style="font-size: 13px; opacity: 0.6;">A deep dive into the thermodynamics of sugar browning in ancestral Trinidadian cooking.</p>
+            </div>
+        </div>
     </div>
 
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <img src="https://drive.google.com/uc?export=view&id=174bHbG8JeFEtXm9bpZnJ89SfmAh4cQOm" style="height: 24px; margin-bottom: 24px; opacity: 0.5;">
+                <p style="font-size: 12px; opacity: 0.4;">© 2026 PRISCA DEZIGNS EMPIRE.<br>ALL FLAVOR PROTOCOLS RESERVED.</p>
+            </div>
+            <div class="footer-col">
+                <h4>LAB ACCESS</h4>
+                <a href="/dashboard/">Neural Hub</a>
+                <a href="/markets/">Market Nodes</a>
+                <a href="/recipes/">Recipe Vault</a>
+            </div>
+            <div class="footer-col">
+                <h4>THE EMPIRE</h4>
+                <a href="https://priscadezigns.org/thewaymadeknown/">The Way Made Known</a>
+                <a href="https://priscadezigns.org/ateliagaming/">Atelia Gaming</a>
+                <a href="https://dreaminganime.com/">Dreaming Anime</a>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // Supabase Initialization
-        const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
-        const SUPABASE_KEY = '{credential:supabase-anon-key}';
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // --- SESSION MANAGEMENT ---
-        (function() {
-            const session = localStorage.getItem('calalloo_uid');
-            const signin = document.getElementById('signin-link');
-            const signup = document.getElementById('signup-link');
-            const profile = document.getElementById('profile-link');
-            const status = document.getElementById('profile-status');
-            
-            if (session) {
-                if(signin) signin.style.display = 'none';
-                if(signup) signup.style.display = 'none';
-                if(profile) profile.style.display = 'block';
-                status.innerText = "Synchronized: High-Fidelity Taste Profile Active.";
+        window.onscroll = function() {
+            var header = document.getElementById('header');
+            if (window.pageYOffset > 50) {
+                header.classList.add('scrolled');
             } else {
-                status.innerText = "Guest Mode: Sign in to sync your culinary DNA.";
+                header.classList.remove('scrolled');
             }
-        })();
-
-        // --- NAVIGATION ENGINE ---
-        function switchTab(id, el) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            const target = document.getElementById(id);
-            if(target) target.style.display = 'block';
-            
-            if(id === 'map-tab') setTimeout(initMap, 100);
-            
-            // Highlight active link
-            if(el) {
-                document.querySelectorAll('.nav-links a').forEach(a => a.style.color = 'var(--dark)');
-                el.style.color = 'var(--primary)';
-            }
-        }
-
-        // --- DISCOVERY ENGINE ---
-        const nodes = [
-            { title: "Trinidadian Callaloo Protocol", meta: "Sunday Heritage", tag: "RECIPE" },
-            { title: "St. Lucia Street Market", meta: "Castries Central Hub", tag: "MARKET" },
-            { title: "Guyanese Pepperpot Lab", meta: "Ancestral Tech", tag: "WORKSHOP" },
-            { title: "Blue Mountain Coffee Node", meta: "High-Altitude Aroma", tag: "SOURCING" },
-            { title: "Barbadian Flying Fish Sync", meta: "Coastal Grid", tag: "RECIPE" }
-        ];
-
-        function renderNodes() {
-            const grid = document.getElementById('discovery-grid');
-            if(grid) {
-                grid.innerHTML = nodes.map(n => `
-                    <div class="node-card">
-                        <span class="tag">${n.tag}</span>
-                        <h3>${n.title}</h3>
-                        <p>${n.meta}</p>
-                    </div>
-                `).join('');
-            }
-            
-            // Populate sidebar recs
-            const smartRecs = document.getElementById('smart-recommendations');
-            if(smartRecs) {
-                smartRecs.innerHTML = nodes.slice(0,3).map(n => `
-                    <div style="padding:16px; background:var(--white); border:1px solid var(--border); border-radius:16px;">
-                        <small style="color:var(--primary); font-weight:800; font-size:10px;">${n.tag}</small>
-                        <div style="font-weight:700; font-size:14px;">${n.title}</div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        // --- MAP ENGINE ---
-        let map;
-        function initMap() {
-            if(map) { map.invalidateSize(); return; }
-            map = L.map('map-node').setView([10.66, -61.51], 10);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-            
-            // Add nodes to map
-            nodes.forEach(n => {
-                const lat = 10.66 + (Math.random() - 0.5) * 0.5;
-                const lng = -61.51 + (Math.random() - 0.5) * 0.5;
-                L.marker([lat, lng]).addTo(map).bindPopup(`<b>${n.title}</b><br>${n.tag}`);
-            });
-        }
-
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            if(params.get('tab') === 'markets') {
-                switchTab('map-tab');
-                const marketsLink = Array.from(document.querySelectorAll('.nav-links a')).find(a => a.innerText === 'Markets');
-                if(marketsLink) marketsLink.style.color = 'var(--primary)';
-            } else {
-                switchTab('feed');
-                const feedLink = Array.from(document.querySelectorAll('.nav-links a')).find(a => a.innerText === 'Feed');
-                if(feedLink) feedLink.style.color = 'var(--primary)';
-            }
-            renderNodes();
         };
     </script>
 </body>
