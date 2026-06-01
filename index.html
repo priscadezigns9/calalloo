@@ -252,7 +252,10 @@
     </div>
 
     <script>
-        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{credential:supabase-anon-key}');
+        // Supabase Initialization
+        const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
+        const SUPABASE_KEY = '{credential:supabase-anon-key}';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // --- SESSION MANAGEMENT ---
         (function() {
@@ -268,9 +271,6 @@
                 if(profile) profile.style.display = 'block';
                 status.innerText = "Synchronized: High-Fidelity Taste Profile Active.";
             } else {
-                if(signin) signin.style.display = 'block';
-                if(signup) signup.style.display = 'block';
-                if(profile) profile.style.display = 'none';
                 status.innerText = "Guest Mode: Sign in to sync your culinary DNA.";
             }
         })();
@@ -278,7 +278,8 @@
         // --- NAVIGATION ENGINE ---
         function switchTab(id, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
+            const target = document.getElementById(id);
+            if(target) target.style.display = 'block';
             
             if(id === 'map-tab') setTimeout(initMap, 100);
             
@@ -300,14 +301,15 @@
 
         function renderNodes() {
             const grid = document.getElementById('discovery-grid');
-            if(!grid) return;
-            grid.innerHTML = nodes.map(n => `
-                <div class="node-card">
-                    <span class="tag">${n.tag}</span>
-                    <h3>${n.title}</h3>
-                    <p>${n.meta}</p>
-                </div>
-            `).join('');
+            if(grid) {
+                grid.innerHTML = nodes.map(n => `
+                    <div class="node-card">
+                        <span class="tag">${n.tag}</span>
+                        <h3>${n.title}</h3>
+                        <p>${n.meta}</p>
+                    </div>
+                `).join('');
+            }
             
             // Populate sidebar recs
             const smartRecs = document.getElementById('smart-recommendations');
@@ -332,7 +334,6 @@
             
             // Add nodes to map
             nodes.forEach(n => {
-                // Simulating coordinates for demo
                 const lat = 10.66 + (Math.random() - 0.5) * 0.5;
                 const lng = -61.51 + (Math.random() - 0.5) * 0.5;
                 L.marker([lat, lng]).addTo(map).bindPopup(`<b>${n.title}</b><br>${n.tag}`);
