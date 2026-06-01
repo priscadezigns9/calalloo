@@ -50,10 +50,10 @@
 
         .form-group { margin-bottom: 20px; text-align: left; }
         label { display: block; font-weight: 800; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; color: var(--primary); }
-        input { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #F0F0F0; outline: none; font-size: 16px; transition: 0.3s; }
+        input { width: 100%; padding: 16px; border-radius: 12px; border:  2px solid #F0F0F0; outline: none; font-size: 16px; transition: 0.3s; }
         input:focus { border-color: var(--primary); }
 
-        .btn-login {
+        .btn-login({
             background: var(--primary);
             color: white;
             padding: 16px;
@@ -69,7 +69,7 @@
         .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .footer-text { margin-top: 24px; font-size: 14px; }
-        .footer-text a { color: var(--primary); text-decoration: none; font-weight: 700; }
+        .footer-text a{ color: var(--primary); text-decoration: none; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -90,8 +90,8 @@
             <button type="submit" class="btn-login" id="loginBtn">Sign In</button>
         </form>
 
-        <div class="form-text">
-            Don't have an account? <a href="/sigunp/">Sign Up</a>
+        <div class="footer-text">
+            Don't have an account? <a href="/signup/">Sign Up</a>
         </div>
     </div>
 
@@ -112,7 +112,7 @@
             const { data, error } = await sb.auth.signInWithPassword({
                 email: email,
                 password: password
-           });
+            });
 
             if (error) {
                 alert(error.message);
