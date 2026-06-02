@@ -252,14 +252,28 @@
             const instagram = document.getElementById('p-instagram').value;
             const facebook = document.getElementById('p-facebook').value;
 
-            await sb.auth.updateUser({ data: { full_name: fullName, username: username } });
-            const { error } = await sb.from('profiles').upsert({
-                id: currentUserId, bio, whatsapp, instagram, facebook, updated_at: new Date()
-            });
+            try {
+                // Update Auth Metadata (Identity) - Run in parallel where possible if auth allows
+                const authPromise = sb.auth.updateUser({ data: { full_name: fullName, username: username } });
+                
+                // Update Profiles Table (Social)
+                const dbPromise = sb.from('profiles').upsert({
+                    id: currentUserId, bio, whatsapp, instagram, facebook, updated_at: new Date()
+                });
 
-            if(!error) {
-                btn.innerHTML = '<i data-lucide="check"></i> Saved';
-                setTimeout(() => { btn.innerHTML = 'Update Identity'; lucide.createIcons(); }, 2000);
+                const [authRes, dbRes] = await Promise.all([authPromise, dbPromise]);
+
+                if (!dbRes.error) {
+                    btn.innerHTML = '<i data-lucide="check"></i> Saved';
+                    setTimeout(() => { btn.innerHTML = 'Update Identity'; lucide.createIcons(); }, 2000);
+                } else {
+                    console.error("Profile update error:", dbRes.error);
+                    btn.innerHTML = 'Error Saving';
+                    setTimeout(() => { btn.innerHTML = 'Update Identity'; lucide.createIcons(); }, 3000);
+                }
+            } catch (err) {
+                console.error("Save failed:", err);
+                btn.innerHTML = 'Retry Save';
             }
             lucide.createIcons();
         }
