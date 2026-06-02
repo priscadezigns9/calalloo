@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Calalloo | Beta</title>
-    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="icon" type="image/png" href="https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,20 +86,12 @@
 
         /* Utilities */
         .grey-text { color: var(--grey-text); }
-        #app-loader { position: fixed; inset: 0; background: white; display: flex; align-items: center; justify-content: center; z-index: 9999; }
     </style>
 </head>
 <body>
-    <div id="app-loader">
-        <div style="text-align: center;">
-            <img src="/assets/logo.png" style="width: 60px; margin-bottom: 20px;">
-            <p class="display-font" style="font-size: 1.2rem;">Warming up the Kitchen...</p>
-        </div>
-    </div>
-
     <header>
         <div class="logo-box">
-            <img src="/assets/logo.png">
+            <img src="https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB">
             <span class="display-font">Calalloo</span>
         </div>
         <div class="nav-pills">
@@ -147,7 +139,7 @@
             <img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100">
             <h1 id="profile-name" class="display-font">Keeper</h1>
             <div class="stats">
-                <div class="stat-item"><span class="stat-val">100</span><span class="stat-label">Recipes</span></div>
+                <div class="stat-item"><span class="stat-val">87</span><span class="stat-label">Recipes</span></div>
                 <div class="stat-item"><span class="stat-val">12</span><span class="stat-label">Followers</span></div>
                 <div class="stat-item"><span class="stat-val">24</span><span class="stat-label">Following</span></div>
             </div>
@@ -212,28 +204,10 @@
         let mapInitialized = false;
         let currentFacingMode = 'environment';
         let stream = null;
-        let isAppReady = false;
 
-        async function initAuth() {
-            const { data: { session } } = await sb.auth.getSession();
-            if (session) {
-                await initApp(session.user);
-            } else {
-                // Wait a moment for session recovery
-                setTimeout(async () => {
-                    const { data: { session: retrySession } } = await sb.auth.getSession();
-                    if (!retrySession) {
-                        window.location.href = '/login/';
-                    } else {
-                        await initApp(retrySession.user);
-                    }
-                }, 1000);
-            }
-        }
-
-        async function initApp(user) {
-            if (isAppReady) return;
-            isAppReady = true;
+        async function loadData() {
+            const { data: { user } } = await sb.auth.getUser();
+            if(!user) { window.location.href = '/login/'; return; }
 
             // Load Recipes
             const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true);
@@ -242,13 +216,11 @@
 
             // Load Profile
             const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
-            if (profile) {
+            if(profile) {
                 document.getElementById('p-bio').value = profile.bio || '';
                 document.getElementById('p-avatar').src = profile.avatar_url || 'https://via.placeholder.com/100';
                 document.getElementById('profile-name').innerText = user.email.split('@')[0];
             }
-
-            document.getElementById('app-loader').style.display = 'none';
             lucide.createIcons();
         }
 
@@ -278,6 +250,7 @@
             document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             
+            // Map Init
             if(id === 'map' && !mapInitialized) {
                 setTimeout(() => {
                     const map = L.map('map-container').setView([10.6918, -61.2225], 10);
@@ -333,6 +306,7 @@
             closeRecipe();
         }
 
+        // Hub / Chat
         function openHub() { document.getElementById('hub-modal').style.display = 'flex'; }
         function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
         async function sendHubMessage() {
@@ -340,15 +314,16 @@
             const msg = input.value.trim();
             if(!msg) return;
             const { data: { user } } = await sb.auth.getUser();
-            const { error } = await sb.from('messages').insert({ content: msg, sender_id: user.id, recipient_id: user.id });
+            const { error } = await sb.from('messages').insert({ content: msg, sender_id: user.id, recipient_id: user.id }); // Self-chat for testing
             if(!error) {
                 document.getElementById('hub-messages').innerHTML += `<div style="background: var(--primary); color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; align-self: flex-end; margin-left: auto; max-width: 80%;">${msg}</div>`;
                 input.value = '';
             } else {
-                alert('Connection error.');
+                alert('Messaging table missing. Run the SQL script I gave you!');
             }
         }
 
+        // Camera logic
         async function initCam() {
             if(stream) stream.getTracks().forEach(t => t.stop());
             try {
@@ -366,7 +341,6 @@
         function handleVisionUpload(el) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                if(stream) stream.getTracks().forEach(t => t.stop());
                 document.getElementById('video-feed').style.display = 'none';
                 const img = document.getElementById('upload-preview');
                 img.src = e.target.result;
@@ -381,7 +355,7 @@
         }
         function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
 
-        window.onload = initAuth;
+        window.onload = loadData;
     </script>
 </body>
 </html>
