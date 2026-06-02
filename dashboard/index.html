@@ -401,6 +401,30 @@
                 }, 100);
             }
             document.querySelectorAll('video').forEach(v => id === 'reels' ? v.play() : v.pause());
+            
+            // Permission Logic
+            if(id === 'vision') {
+                const camOn = document.getElementById('camera-toggle').checked;
+                document.getElementById('camera-blocked').style.display = camOn ? 'none' : 'block';
+                document.getElementById('video-feed').style.display = 'none'; // Hide until started
+                document.getElementById('cam-action-btn').style.display = camOn ? 'flex' : 'none';
+            }
+            if(id === 'map') {
+                const mapOn = document.getElementById('location-toggle').checked;
+                document.getElementById('map-container').style.display = mapOn ? 'block' : 'none';
+                // If map container is hidden, we might want a blocked div too
+            }
+        }
+
+        async function initCam() {
+            if(!document.getElementById('camera-toggle').checked) return;
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                const v = document.getElementById('video-feed');
+                v.srcObject = s; v.style.display = 'block';
+                document.getElementById('camera-blocked').style.display = 'none';
+                document.getElementById('cam-action-btn').style.display = 'none';
+            } catch (e) { console.error(e); }
         }
 
         function renderRecipes(list) { document.getElementById('discovery-grid').innerHTML = list.map(r => `<div class="recipe-card"><div class="recipe-image" style="background-image: url(${r.cover_photo_url})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`).join(''); }
@@ -423,6 +447,9 @@
                 [key + '_enabled']: isChecked,
                 updated_at: new Date()
             });
+            // Update UI if current tab is affected
+            const activeTab = document.querySelector('.tab-content.active').id;
+            if(activeTab === 'vision' || activeTab === 'map') showTab(activeTab);
         }
 
         window.onload = loadData;
