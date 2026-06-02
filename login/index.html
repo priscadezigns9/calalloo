@@ -92,16 +92,14 @@
         };
 
                 // Check if already logged in
-        async function checkSession() {
-            try {
-                const { data: { session } } = await sb.auth.getSession();
-                if (session) { 
-                    console.log('Login: Session detected, moving to dashboard.');
-                    window.location.replace('/dashboard/'); 
-                }
-            } catch (e) { console.error(e); }
+                async function checkSession() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                console.log('Login Sentry: Stable session found. Releasing to dashboard.');
+                window.location.replace('/dashboard/');
+            }
         }
-        setTimeout(checkSession, 1500);
+        setTimeout(checkSession, 2000);
     </script>
 </body>
 </html>
