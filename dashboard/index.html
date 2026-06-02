@@ -228,6 +228,11 @@
             if(profile) {
                 document.getElementById('p-bio').value = profile.bio || '';
                 
+                // Set Permission Toggles
+                if (document.getElementById('camera-toggle')) document.getElementById('camera-toggle').checked = profile.camera_enabled || false;
+                if (document.getElementById('location-toggle')) document.getElementById('location-toggle').checked = profile.location_enabled || false;
+                if (document.getElementById('privacy-toggle')) document.getElementById('privacy-toggle').checked = profile.privacy_enabled || false;
+
                 // Robust Avatar Loading
                 let finalAvatar = 'https://via.placeholder.com/100?text=HP';
                 if (profile.avatar_url && profile.avatar_url.length > 10) {
@@ -404,7 +409,21 @@
         function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
         function openCreateGroup() { document.getElementById('create-group-modal').style.display = 'flex'; }
         function closeCreateGroup() { document.getElementById('create-group-modal').style.display = 'none'; }
-        function signOut() { sb.auth.signOut().then(() => window.location.href = '/login/'); }
+        function toggleTheme() { 
+            const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; 
+            document.documentElement.setAttribute('data-theme', n); 
+            localStorage.setItem('theme', n); 
+        }
+
+        async function togglePermission(key) {
+            const isChecked = document.getElementById(`${key}-toggle`).checked;
+            // Auto-save permission to Supabase
+            await sb.from('profiles').upsert({
+                id: currentUserId,
+                [key + '_enabled']: isChecked,
+                updated_at: new Date()
+            });
+        }
 
         window.onload = loadData;
     </script>
