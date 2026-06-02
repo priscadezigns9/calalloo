@@ -216,6 +216,34 @@
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
         let currentUserId = null, allRecipes = [];
 
+        const HERITAGE_IMAGE_MAP = {
+            "Coconut Sugar Cake": "https://simplytrinicooking.com/wp-content/uploads/2007/04/sugar-cake-1024x768.jpg",
+            "Toolum": "https://simplytrinicooking.com/wp-content/uploads/2012/10/toolum-1024x768.jpg",
+            "Cassava Pone": "https://simplytrinicooking.com/wp-content/uploads/2008/01/cassava-pone-1024x768.jpg",
+            "Trini Stew Chicken": "https://simplytrinicooking.com/wp-content/uploads/2007/03/stew-chicken-1024x768.jpg",
+            "Caribbean Macaroni Pie": "https://simplytrinicooking.com/wp-content/uploads/2007/03/macaroni-pie-1024x768.jpg",
+            "Rice and Peas": "https://simplytrinicooking.com/wp-content/uploads/2009/01/rice-and-peas-1024x768.jpg",
+            "Stewed Red Beans": "https://simplytrinicooking.com/wp-content/uploads/2007/03/stewed-red-beans-1024x768.jpg",
+            "Trini Sweet Bread": "https://simplytrinicooking.com/wp-content/uploads/2008/01/sweet-bread-1024x768.jpg",
+            "Jamaican Gizzada (Ancestral Pinch)": "https://tasteslikehome.org/wp-content/uploads/2021/05/gizzada-1.jpg",
+            "Guyanese Pine Tart (Village Style)": "https://tasteslikehome.org/wp-content/uploads/2007/03/pine-tart.jpg",
+            "Trinidad Doubles": "https://simplytrinicooking.com/wp-content/uploads/2007/04/doubles-1024x768.jpg",
+            "Jamaican Beef Patties": "https://simplytrinicooking.com/wp-content/uploads/2008/02/jamaican-beef-patty-1024x768.jpg",
+            "Bake and Shark": "https://simplytrinicooking.com/wp-content/uploads/2007/11/bake-and-shark-1024x768.jpg",
+            "Classic Sorrel": "https://simplytrinicooking.com/wp-content/uploads/2007/12/sorrel-1024x768.jpg",
+            "Mauby Bark Brew": "https://simplytrinicooking.com/wp-content/uploads/2007/12/mauby-1024x768.jpg",
+            "Caribbean Ginger Beer": "https://simplytrinicooking.com/wp-content/uploads/2008/01/ginger-beer-1024x768.jpg",
+            "Bake and Saltfish": "https://simplytrinicooking.com/wp-content/uploads/2008/01/bake-saltfish.jpg",
+            "Baigan Choka (Roasted Eggplant)": "https://simplytrinicooking.com/wp-content/uploads/2007/03/baigan-choka-1024x768.jpg",
+            "Tomato Choka": "https://simplytrinicooking.com/wp-content/uploads/2007/03/tomato-choka-1024x768.jpg",
+            "Sada Roti": "https://simplytrinicooking.com/wp-content/uploads/2007/04/sada-roti-1024x768.jpg",
+            "Cornmeal Porridge": "https://simplytrinicooking.com/wp-content/uploads/2008/01/cornmeal-porridge-1024x768.jpg",
+            "Saltfish Buljol": "https://simplytrinicooking.com/wp-content/uploads/2007/03/buljol-1024x768.jpg",
+            "Smoked Herring": "https://simplytrinicooking.com/wp-content/uploads/2007/03/smoked-herring-1024x768.jpg",
+            "Coconut Bake": "https://simplytrinicooking.com/wp-content/uploads/2008/01/coconut-bake-1024x768.jpg",
+            "Pumpkin Choka": "https://simplytrinicooking.com/wp-content/uploads/2007/03/pumpkin-choka-1024x768.jpg"
+        };
+
         async function sendHubMessage() {
             const input = document.getElementById('hub-input');
             const text = input.value;
@@ -437,7 +465,16 @@
             } catch (e) { console.error(e); }
         }
 
-        function renderRecipes(list) { document.getElementById('discovery-grid').innerHTML = list.map(r => `<div class="recipe-card"><div class="recipe-image" style="background-image: url(${r.cover_photo_url})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`).join(''); }
+        function renderRecipes(list) { 
+            document.getElementById('discovery-grid').innerHTML = list.map(r => {
+                let img = r.cover_photo_url;
+                if (!img || img.includes('placeholder')) {
+                    if (HERITAGE_IMAGE_MAP[r.title]) img = HERITAGE_IMAGE_MAP[r.title];
+                    else img = 'https://via.placeholder.com/400x200?text=Heritage+Recipe';
+                }
+                return `<div class="recipe-card"><div class="recipe-image" style="background-image: url(${img})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`;
+            }).join(''); 
+        }
         function toggleMenu() { const m = document.getElementById('menu-overlay'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; lucide.createIcons(); }
         function openHub() { document.getElementById('hub-modal').style.display = 'flex'; lucide.createIcons(); }
         function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
