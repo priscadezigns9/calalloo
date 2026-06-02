@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub</title>
-    <link rel="icon" type="image/png" href="../assets/logo.png">
+    <title>Calalloo | Beta</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,750 +13,711 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{credential:google-maps-api-key}}&libraries=places"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
             --border: #F2F2F2; --grey-text: #666666; --light-bg: #FAF9F6;
             --font-display: 'Fraunces', serif; --font-main: 'Inter', sans-serif;
         }
-        [data-theme="dark"] {
-            --bg: #0A0A0A; --dark: #FFFFFF; --white: #1A1A1A;
-            --border: #2A2A2A; --grey-text: #AAAAAA; --light-bg: #111111;
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { font-family: var(--font-main); background: var(--bg); color: var(--dark); overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+        body { font-family: var(--font-main); background: var(--bg); color: var(--dark); overflow-x: hidden; }
+        .display-font { font-family: var(--font-display); font-weight: 900; }
         
-        header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 1000; }
-        .logo-box { display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1001; }
-        .logo-box img { width: 32px; height: 32px; border-radius: 6px; }
-        .display-font { font-family: var(--font-display); font-weight: 900; letter-spacing: -0.5px; }
-
-        .nav-pills { display: flex; gap: 4px; background: var(--light-bg); padding: 4px; border-radius: 100px; overflow-x: auto; max-width: 600px; }
-        .pill { padding: 6px 12px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--grey-text); transition: all 0.2s; white-space: nowrap; }
-        .pill.active { background: var(--white); color: var(--dark); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-
-        .app-container { display: flex; max-width: 1440px; margin: 0 auto; min-height: calc(100vh - 63px); }
-        .sidebar { width: 280px; padding: 20px; border-right: 1px solid var(--border); position: sticky; top: 63px; height: calc(100vh - 63px); overflow-y: auto; }
-        .sidebar-right { border-right: none; border-left: 1px solid var(--border); }
-        .main-content { flex: 1; min-width: 0; position: relative; }
+        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 1000; border-bottom: 1px solid var(--border); }
+        .logo { height: 32px; }
         
-        @media (max-width: 1100px) { .sidebar { display: none; } }
-        @media (max-width: 768px) { .nav-pills { display: none; } }
-
-        .hamburger-btn { display: none; cursor: pointer; z-index: 2000; position: relative; padding: 5px; }
-        @media (max-width: 1100px) { .hamburger-btn { display: block; } }
+        .nav-pills { display: flex; gap: 8px; padding: 15px 20px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; border-bottom: 1px solid var(--border); }
+        .pill { padding: 8px 20px; border-radius: 100px; font-weight: 700; font-size: 0.85rem; background: var(--light-bg); color: var(--grey-text); border: none; cursor: pointer; transition: 0.2s; }
+        .pill.active { background: var(--primary); color: white; }
 
         .tab-content { display: none; padding-bottom: 80px; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Reels UI */
-        .reels-container { height: calc(100vh - 63px); overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
-        .reel-video-box { position: relative; width: 100%; height: 100%; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .reel-video { width: 100%; height: 100%; object-fit: cover; }
-        .reel-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 60%, rgba(0,0,0,0.8)); padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; color: white; }
-
-        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px; }
-        .recipe-card { border-radius: 12px; overflow: hidden; cursor: pointer; background: var(--white); border: 1px solid var(--border); transition: transform 0.2s; }
-        .recipe-image { height: 180px; background-size: cover; background-position: center; }
+        /* Discovery Grid */
+        .search-bar { padding: 20px; position: sticky; top: 63px; background: white; z-index: 900; }
+        .search-input { width: 100%; padding: 14px 45px 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; }
+        .search-input:focus { border-color: var(--primary); }
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 20px 20px; }
+        .recipe-card { border-radius: 12px; overflow: hidden; cursor: pointer; background: white; border: 1px solid var(--border); transition: transform 0.2s; }
+        .recipe-card:active { transform: scale(0.98); }
+        .recipe-image { height: 160px; background-size: cover; background-position: center; }
         .recipe-info { padding: 12px; }
+        .recipe-info h3 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 4px; }
+        .tag { font-size: 0.7rem; color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .btn { padding: 12px 20px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; justify-content: center; }
+        /* Profile */
+        .profile-header { text-align: center; padding: 40px 20px; background: var(--light-bg); border-bottom: 1px solid var(--border); }
+        .avatar-main { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .stats { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
+        .stat-item { text-align: center; }
+        .stat-val { display: block; font-weight: 800; font-size: 1.2rem; }
+        .stat-label { font-size: 0.7rem; color: var(--grey-text); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Vision AI */
+        .vision-container { padding: 30px 20px; text-align: center; }
+        .btn { padding: 14px 28px; border-radius: 100px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
         .btn-primary { background: var(--primary); color: white; }
-
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 3000; }
-        .modal-content { background: var(--bg); color: var(--dark); width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .btn-secondary { background: var(--dark); color: white; }
         
-        /* Messenger Bubble Fix */
-        .messenger-bubble { position: fixed; bottom: 30px; right: 30px; background: var(--white); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.15); z-index: 5000; border: 1px solid var(--border); transition: transform 0.2s; }
+        /* Map */
+        #map-container { height: calc(100vh - 180px); width: 100%; }
+
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: none; flex-direction: column; padding: 40px; }
+        .menu-item { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 20px; cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        .menu-item.pro { color: var(--primary); font-weight: 900; }
+        .close-btn { background: none; border: none; cursor: pointer; }
+
+        /* Modals */
+        .modal-bg { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal { background: white; border-radius: 20px; width: 100%; max-width: 400px; padding: 30px; position: relative; animation: modalIn 0.3s ease; }
+        @keyframes modalIn { from { opacity:0; scale:0.9; } to { opacity:1; scale:1; } }
+        .modal-close { position: absolute; top: 20px; right: 20px; cursor: pointer; }
+
+        /* Floating Messenger */
+        .messenger-bubble { position: fixed; bottom: 30px; right: 30px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(232,119,34,0.4); z-index: 2000; overflow: hidden; transition: transform 0.2s; }
         .messenger-bubble:hover { transform: scale(1.05); }
-        .messenger-bubble img { width: 34px; height: 34px; pointer-events: none; }
-
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; margin-left: auto; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border); transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        .menu-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 4000; display: none; flex-direction: column; padding: 40px 25px; }
-        .menu-item { padding: 18px 0; border-bottom: 1px solid var(--border); font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--dark); }
-        .menu-item i { color: var(--primary); }
+        .messenger-bubble img { width: 35px; height: 35px; border-radius: 0; background: transparent; }
+        @media (min-width: 1101px) { .messenger-bubble { display: none; } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo-box" onclick="showTab('discovery')"><img src="../assets/logo.png" alt="Calalloo"><span class="display-font">Calalloo</span></div>
-        <div class="nav-pills">
-            <div class="pill active" onclick="showTab('discovery')">Discovery</div>
-            <div class="pill" onclick="showTab('vision')">Vision</div>
-            <div class="pill" onclick="showTab('reels')">Reels</div>
-            <div class="pill" onclick="showTab('map')">Map</div>
-            <div class="pill" onclick="showTab('profile')">Profile</div>
-            <div class="pill" onclick="showTab('settings')">Settings</div>
-        </div>
-        <div class="header-actions">
-            <div class="hamburger-btn" onclick="toggleMenu()"><i data-lucide="menu" style="width: 28px; height: 28px;"></i></div>
+        <img src="assets/logo.png" class="logo" alt="Calalloo">
+        <div class="close-btn" onclick="toggleMenu()">
+            <i data-lucide="menu"></i>
         </div>
     </header>
 
-    <div class="app-container">
-        <aside class="sidebar">
-            <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-                <div class="section-header" style="font-weight: 800; margin-bottom: 12px;"><i data-lucide="search"></i> Find Friends</div>
-                <input type="text" id="friend-search" placeholder="Search keepers..." oninput="handleFriendSearch(this.value)" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid var(--border); outline:none; font-size:0.85rem; background:var(--white);">
-                <div id="friend-search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; border:1px solid var(--border); max-height:250px; overflow-y:auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05);"></div>
-            </div>
-            <div class="section-header" style="font-weight: 800; margin-bottom: 20px;"><i data-lucide="users"></i> Heritage Groups</div>
-            <div id="sidebar-groups"><p style="opacity: 0.5; font-size: 0.85rem;">Searching for groups...</p></div>
-            <button class="btn btn-secondary" style="width:100%; margin-top:20px; font-size:0.8rem;" onclick="openCreateGroup()"><i data-lucide="plus-circle"></i> Create Group</button>
-        </aside>
+    <div class="nav-pills">
+        <button class="pill active" onclick="showTab('discovery')">Discovery</button>
+        <button class="pill" onclick="showTab('vision')">Vision AI</button>
+        <button class="pill" onclick="showTab('map')">Heritage Map</button>
+        <button class="pill" onclick="showTab('profile')">My Profile</button>
+    </div>
 
-        <main class="main-content">
-            <div id="discovery" class="tab-content active">
-                <div class="search-bar"><input type="text" id="food-search" class="search-input" placeholder="Search heritage food..." oninput="handleFoodSearch(this.value)" style="width:100%; padding:14px; border-radius:12px; border:1.5px solid var(--border); outline:none; background:var(--white); color:var(--dark);"></div>
-                <div id="discovery-grid" class="recipe-grid"></div>
-            </div>
-
-            <div id="vision" class="tab-content">
-                <div style="padding: 20px; text-align: center;">
-                    <div id="vision-stage" style="position:relative; width:100%; max-width:500px; margin: 0 auto 20px;">
-                        <video id="video-feed" autoplay playsinline style="width: 100%; border-radius: 12px; aspect-ratio: 4/3; object-fit: cover; background: #000; display: none;"></video>
-                        <img id="vision-preview" style="width: 100%; border-radius: 12px; aspect-ratio: 4/3; object-fit: cover; display: none; border: 1px solid var(--border);">
-                        <div id="camera-blocked" style="padding: 60px 40px; background: var(--light-bg); border-radius: 12px;"><i data-lucide="camera-off" style="width: 48px; height: 48px; opacity: 0.2; margin-bottom: 15px; margin: 0 auto;"></i><p style="margin-top:10px;">Camera is disabled. Enable it in Settings or upload a photo.</p></div>
-                    </div>
-
-                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                        <button class="btn btn-primary" id="cam-action-btn" onclick="initCam()" style="width:auto;"><i data-lucide="camera"></i> Start Camera</button>
-                        <label class="btn btn-secondary" style="width: auto; cursor:pointer;">
-                            <i data-lucide="upload"></i> Upload Photo
-                            <input type="file" id="vision-upload-input" style="display: none;" onchange="handleVisionUpload(this)" accept="image/*">
-                        </label>
-                        <button id="analyze-btn" class="btn btn-primary" style="display:none; width:auto; background:var(--dark);" onclick="analyzeFood()"><i data-lucide="sparkles"></i> Analyze Food</button>
-                    </div>
-
-                    <div id="vision-results" style="margin-top:30px; display:none; text-align:left; background:var(--light-bg); padding:20px; border-radius:15px; border:1px solid var(--border);">
-                        <h3 class="display-font" style="margin-bottom:10px;">Analysis Results</h3>
-                        <div id="analysis-content" style="font-size:0.9rem; line-height:1.6; color:var(--dark);"></div>
-                    </div>
+    <div id="discovery" class="tab-content active">
+        <div class="search-bar">
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                <div style="position: relative; flex: 1;">
+                    <input type="text" class="search-input" placeholder="Search dishes or keepers..." oninput="handleSearch(this.value)">
+                    <i data-lucide="search" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--grey-text); width: 20px;"></i>
                 </div>
+                <button class="btn btn-primary" style="padding: 12px; border-radius: 12px; height: 50px; width: 50px; justify-content: center;" onclick="openGroupModal()">
+                    <i data-lucide="users"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Featured Heritage Keepers -->
+        <div style="padding: 10px 20px;">
+            <h2 class="display-font" style="font-size: 1.2rem; margin-bottom: 12px; color: var(--dark);">Featured Keepers</h2>
+            <div style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch;" id="keepers-list">
+                <!-- Keepers rendered via JS -->
+            </div>
+        </div>
+
+        <div style="padding: 10px 20px;">
+            <h2 class="display-font" style="font-size: 1.2rem; margin-bottom: 12px; color: var(--dark);">Discovery Feed</h2>
+            <div id="discovery-grid" class="recipe-grid"></div>
+        </div>
+    </div>
+
+    <div id="vision" class="tab-content">
+        <div class="vision-container">
+            <h2 class="display-font" style="font-size: 1.5rem; margin-bottom: 20px;">Heritage Vision AI</h2>
+            <div id="vision-stage" style="position: relative; max-width: 500px; margin: 0 auto 20px;">
+                <video id="video-feed" autoplay playsinline style="width: 100%; border-radius: 12px; aspect-ratio: 4/3; object-fit: cover; background: #000; display: none;"></video>
+                <img id="upload-preview" style="width: 100%; border-radius: 12px; margin-bottom: 20px; display: none;">
+            </div>
+            
+            <div id="vision-controls" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 30px;">
+                <button class="btn btn-secondary" id="camera-btn" onclick="startCamera()">
+                    <i data-lucide="camera"></i> Open Eye
+                </button>
+                <button class="btn btn-primary" id="capture-btn" onclick="captureImage()" style="display: none;">
+                    <i data-lucide="aperture"></i> Capture
+                </button>
+                <button class="btn btn-secondary" onclick="document.getElementById('file-upload').click()">
+                    <i data-lucide="upload"></i> From Vault
+                </button>
+                <input type="file" id="file-upload" style="display: none;" accept="image/*" onchange="handleUpload(this)">
             </div>
 
-            <div id="reels" class="tab-content" style="padding:0;">
-                <div id="reels-container" class="reels-container"></div>
+            <div id="ai-loading" style="display: none; padding: 40px;">
+                <div style="width: 40px; height: 40px; border: 4px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px;"></div>
+                <p style="font-weight: 700; color: var(--primary);">Analyzing Heritage Profile...</p>
             </div>
 
-            <div id="map" class="tab-content"><div id="map-container" style="width: 100%; height: 70vh;"></div></div>
+            <div id="vision-results"></div>
+        </div>
+    </div>
 
-            <div id="profile" class="tab-content">
-                <div style="padding: 40px 20px; text-align: center; border-bottom: 1px solid var(--border);">
-                    <div style="width: 100px; height: 100px; margin: 0 auto 15px; position: relative;">
-                        <img id="p-avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border:3px solid var(--primary); background:var(--light-bg);" src="https://via.placeholder.com/100?text=HP">
-                        <input type="file" id="avatar-input" style="display:none;" onchange="uploadAvatar(this)">
-                        <button onclick="document.getElementById('avatar-input').click()" style="position:absolute; bottom:0; right:0; background:var(--primary); color:white; border:none; border-radius:50%; width:30px; height:30px;"><i data-lucide="camera" style="width:16px;"></i></button>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:10px; max-width:400px; margin:0 auto; text-align:left;">
-                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text);">Profile Name</label>
-                        <input type="text" id="p-fullname" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); font-weight:700; background:var(--white); color:var(--dark);">
-                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text);">Heritage Handle</label>
-                        <input type="text" id="p-username" placeholder="@username" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); background:var(--white); color:var(--dark);">
-                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text);">Heritage Bio</label>
-                        <textarea id="p-bio" placeholder="Tell your heritage story..." style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); min-height:80px; background:var(--white); color:var(--dark);"></textarea>
-                        
-                        <div style="margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
-                            <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); display:block; margin-bottom:10px;">Social Links</label>
-                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;"><i data-lucide="phone" style="width:18px; color:#25D366;"></i><input type="text" id="p-whatsapp" placeholder="WhatsApp Number" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); font-size:0.85rem; background:var(--white); color:var(--dark);"></div>
-                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;"><i data-lucide="instagram" style="width:18px; color:#E4405F;"></i><input type="text" id="p-instagram" placeholder="Instagram Username" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); font-size:0.85rem; background:var(--white); color:var(--dark);"></div>
-                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;"><i data-lucide="facebook" style="width:18px; color:#1877F2;"></i><input type="text" id="p-facebook" placeholder="Facebook URL" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); font-size:0.85rem; background:var(--white); color:var(--dark);"></div>
-                        </div>
+    <div id="map" class="tab-content">
+        <div id="map-container"></div>
+    </div>
 
-                        <button class="btn btn-primary" id="save-profile-btn" onclick="saveFullProfile()" style="margin-top:10px;">Update Identity</button>
-                    </div>
+    <div id="profile" class="tab-content">
+        <div class="profile-header">
+            <div style="position: relative; display: inline-block;">
+                <img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100">
+                <div style="position: absolute; bottom: 15px; right: 0; background: var(--primary); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('avatar-upload').click()">
+                    <i data-lucide="plus" style="width: 16px;"></i>
                 </div>
+                <input type="file" id="avatar-upload" style="display: none;" onchange="handleAvatarUpload(this)">
             </div>
+            
+            <input type="text" id="p-display-name" class="display-font" style="width: 100%; text-align: center; border: none; font-size: 1.8rem; margin-bottom: 5px; background: transparent; outline: none;" placeholder="Heritage Name">
+            <p id="profile-email" style="color: var(--grey-text); font-size: 0.8rem; margin-bottom: 20px; opacity: 0.7;">...</p>
+            
+            <div class="stats">
+                <div class="stat-item"><span class="stat-val" id="p-recipes-count">0</span><span class="stat-label">Recipes</span></div>
+                <div class="stat-item"><span class="stat-val" id="p-followers-count">0</span><span class="stat-label">Followers</span></div>
+                <div class="stat-item"><span class="stat-val" id="p-following-count">0</span><span class="stat-label">Following</span></div>
+            </div>
+            
+            <textarea id="p-bio" placeholder="Tell your heritage story..." style="width: 100%; padding: 15px; border: 1.5px solid var(--border); border-radius: 12px; resize: none; min-height: 100px; margin-bottom: 20px; font-family: var(--font-main); font-size: 0.95rem;"></textarea>
+            
+            <button id="save-profile-btn" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveFullProfile()">
+                <i data-lucide="save"></i> Update Profile
+            </button>
+        </div>
+        <div style="padding: 30px 20px;">
+            <h3 class="display-font" style="margin-bottom: 20px; font-size: 1.4rem;">Your Heritage Kitchen</h3>
+            <div id="kitchen-grid" class="recipe-grid"></div>
+        </div>
+    </div>
 
-            <div id="settings" class="tab-content">
-                <div style="padding: 40px 20px;">
-                    <h1 class="display-font" style="margin-bottom: 30px;">Settings</h1>
-                    <div class="list-item"><i data-lucide="moon"></i> Dark Mode <label class="switch"><input type="checkbox" id="theme-toggle" onchange="toggleTheme()"><span class="slider"></span></label></div>
-                    <div class="list-item"><i data-lucide="camera"></i> Camera Access <label class="switch"><input type="checkbox" id="camera-toggle" onchange="togglePermission('camera')"><span class="slider"></span></label></div>
-                    <div class="list-item"><i data-lucide="map-pin"></i> Location Access <label class="switch"><input type="checkbox" id="location-toggle" onchange="togglePermission('location')"><span class="slider"></span></label></div>
-                    <div class="list-item"><i data-lucide="lock"></i> Private Profile <label class="switch"><input type="checkbox" id="privacy-toggle" onchange="togglePermission('privacy')"><span class="slider"></span></label></div>
-                    <div class="list-item" onclick="signOut()" style="color: red; margin-top: 50px;"><i data-lucide="log-out"></i> Sign Out</div>
-                </div>
-            </div>
-        </main>
-
-        <aside class="sidebar sidebar-right">
-            <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap:8px;"><img src="../assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
-                <button onclick="openHub()" style="background:var(--primary); border:none; border-radius:50%; width:24px; height:24px; color:white; cursor:pointer;"><i data-lucide="plus" style="width:14px;"></i></button>
-            </div>
-            <div id="desktop-messages" style="height: 300px; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 10px; margin-bottom: 15px; font-size: 0.85rem;"><p style="opacity: 0.5; text-align: center; margin-top: 100px;">No messages yet</p></div>
-            <div style="background: var(--light-bg); border-radius: 12px; padding: 15px; text-align: center; border: 1px dashed var(--border);">
-                <h4 style="font-size:0.85rem; margin-bottom:5px;">Calalloo Pro</h4>
-                <p style="font-size:0.7rem; color:var(--grey-text);">Join the inner circle of Heritage Keepers.</p>
-                <button class="btn btn-primary" style="width:100%; margin-top:10px; font-size:0.75rem; padding:8px;">Upgrade</button>
-            </div>
-        </aside>
+    <!-- Menu Overlay -->
+    <div id="menu-overlay" class="menu-overlay">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
+            <button class="close-btn" onclick="toggleMenu()"><i data-lucide="x" style="width: 32px; height: 32px;"></i></button>
+        </div>
+        <div class="menu-item pro" onclick="openProModal(); toggleMenu()"><i data-lucide="zap"></i>Calalloo Pro</div>
+        <div class="menu-item" onclick="showTab('discovery'); toggleMenu()"><i data-lucide="search"></i>Discovery</div>
+        <div class="menu-item" onclick="openHub(); toggleMenu()"><i data-lucide="message-square"></i>Heritage Hub (Chat)</div>
+        <div class="menu-item" onclick="showTab('map'); toggleMenu()"><i data-lucide="map"></i>Heritage Map</div>
+        <div class="menu-item" onclick="showTab('profile'); toggleMenu()"><i data-lucide="user"></i>My Profile</div>
+        <div class="menu-item" onclick="signOut()"><i data-lucide="log-out"></i>Sign Out</div>
     </div>
 
     <!-- Modals -->
-    <div id="hub-modal" class="modal">
-        <div class="modal-content" style="height: 85vh; border-radius: 24px; display:flex; flex-direction:column;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <img src="../assets/logo.png" style="width:35px; height:35px; border-radius:8px;">
-                    <h2 class="display-font">Messenger</h2>
-                </div>
-                <button onclick="closeHub()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
-            </div>
-            <div id="hub-messages" style="flex:1; overflow-y:auto; background:var(--light-bg); border-radius:12px; padding:15px; margin-bottom:15px;"></div>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="hub-input" placeholder="Type a message..." style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border);">
-                <button class="btn btn-primary" style="width:auto;" onclick="sendHubMessage()"><i data-lucide="send"></i></button>
-            </div>
+    <div id="group-modal" class="modal-bg" onclick="closeModals()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="closeModals()"><i data-lucide="x"></i></div>
+            <h2 class="display-font" style="font-size: 1.8rem; margin-bottom: 10px;">Create Group</h2>
+            <p style="color: var(--grey-text); font-size: 0.9rem; margin-bottom: 20px;">Gather your heritage circle.</p>
+            <input type="text" id="group-name" class="search-input" placeholder="Group Name" style="margin-bottom: 15px;">
+            <textarea id="group-desc" class="search-input" placeholder="Group Description" style="height: 100px; margin-bottom: 20px; resize: none;"></textarea>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="createHeritageGroup()">
+                Create Heritage Group
+            </button>
         </div>
     </div>
 
-    <div id="recipe-modal" class="modal">
-        <div class="modal-content" style="height: 90vh; border-radius: 24px; padding: 0; overflow: hidden; display:flex; flex-direction:column;">
-            <div id="recipe-modal-image" style="width: 100%; height: 250px; background-size: cover; background-position: center; position: relative;">
-                <button onclick="closeRecipe()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><i data-lucide="x"></i></button>
-            </div>
-            <div style="padding: 30px; overflow-y: auto; flex: 1;">
-                <h1 id="recipe-modal-title" class="display-font" style="font-size: 2rem; margin-bottom: 10px;"></h1>
-                <p id="recipe-modal-desc" style="color: var(--dark); opacity: 0.8; line-height: 1.6; margin-bottom: 25px;"></p>
-                
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; text-align: center;">
-                    <div style="background: var(--light-bg); padding: 15px; border-radius: 12px;"><i data-lucide="clock" style="width: 18px; margin-bottom: 5px;"></i><div id="recipe-modal-time" style="font-size: 0.8rem; font-weight: 700;"></div></div>
-                    <div style="background: var(--light-bg); padding: 15px; border-radius: 12px;"><i data-lucide="users" style="width: 18px; margin-bottom: 5px;"></i><div id="recipe-modal-serves" style="font-size: 0.8rem; font-weight: 700;"></div></div>
-                    <div style="background: var(--light-bg); padding: 15px; border-radius: 12px;"><i data-lucide="flame" style="width: 18px; margin-bottom: 5px;"></i><div id="recipe-modal-cals" style="font-size: 0.8rem; font-weight: 700;"></div></div>
+    <div id="pro-modal" class="modal-bg" style="display: none; align-items: center; justify-content: center;" onclick="closeModals()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="closeModals()"><i data-lucide="x"></i></div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                    <i data-lucide="zap" style="width: 32px; height: 32px;"></i>
                 </div>
-
-                <h3 class="display-font" style="margin-bottom: 15px; font-size: 1.3rem;">Ingredients</h3>
-                <ul id="recipe-modal-ingredients" style="list-style: none; margin-bottom: 30px;"></ul>
-
-                <h3 class="display-font" style="margin-bottom: 15px; font-size: 1.3rem;">Heritage Method</h3>
-                <div id="recipe-modal-method" style="line-height: 1.8;"></div>
+                <h2 class="display-font" style="font-size: 2rem;">Calalloo Pro</h2>
+                <p style="color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px;">Heritage Excellence</p>
             </div>
+            <ul style="list-style: none; margin-bottom: 30px;">
+                <li style="margin-bottom: 15px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 20px;"></i> Unlimited Vision AI Scans</li>
+                <li style="margin-bottom: 15px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 20px;"></i> Global Heritage Marketplace</li>
+                <li style="margin-bottom: 15px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 20px;"></i> Exclusive Keepers Events</li>
+            </ul>
+            <button class="btn btn-dark" style="width: 100%; justify-content: center; background: black; color: white;" onclick="initPayment()">
+                Unlock Pro — $9.99/mo
+            </button>
         </div>
     </div>
 
-    <button class="messenger-bubble" onclick="openHub()"><img src="../assets/logo.png" alt="Messenger"></button>
-
-    <div id="menu-overlay" class="menu-overlay">
-        <div style="display:flex; justify-content:flex-end; margin-bottom:40px;"><button style="background:none; border:none; cursor:pointer;" onclick="toggleMenu()"><i data-lucide="x" style="width:32px; height:32px;"></i></button></div>
-        
-        <!-- Mobile Friend Search -->
-        <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-            <div style="font-weight: 800; font-size:0.9rem; margin-bottom: 12px; display:flex; align-items:center; gap:8px;"><i data-lucide="search" style="width:16px;"></i> Find Friends</div>
-            <input type="text" id="mobile-friend-search" placeholder="Search keepers..." oninput="handleFriendSearch(this.value, 'mobile-search-results')" style="width:100%; padding:14px; border-radius:12px; border:1.5px solid var(--border); outline:none; font-size:0.9rem; background:var(--white);">
-            <div id="mobile-search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; border:1px solid var(--border); max-height:200px; overflow-y:auto;"></div>
-        </div>
-
-        <div class="menu-item" onclick="showTab('discovery'); toggleMenu()"><i data-lucide="search"></i> Discovery</div>
-        <div class="menu-item" onclick="showTab('vision'); toggleMenu()"><i data-lucide="camera"></i> Vision AI</div>
-        <div class="menu-item" onclick="showTab('reels'); toggleMenu()"><i data-lucide="video"></i> Reels</div>
-        <div class="menu-item" onclick="showTab('map'); toggleMenu()"><i data-lucide="map"></i> Map</div>
-        <div class="menu-item" onclick="showTab('profile'); toggleMenu()"><i data-lucide="user"></i> Profile</div>
-        <div class="menu-item" onclick="showTab('settings'); toggleMenu()"><i data-lucide="settings"></i> Settings</div>
+    <div class="messenger-bubble" onclick="openHub()">
+        <img src="assets/logo.png" alt="Messenger" style="mix-blend-mode: color-burn; filter: brightness(1.1) contrast(1.1);">
     </div>
 
     <script>
-        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
-        let currentUserId = null, allRecipes = [];
-
-        const HERITAGE_IMAGE_MAP = {
-            "Coconut Sugar Cake": "https://simplytrinicooking.com/wp-content/uploads/2007/04/sugar-cake-1024x768.jpg",
-            "Toolum": "https://simplytrinicooking.com/wp-content/uploads/2012/10/toolum-1024x768.jpg",
-            "Cassava Pone": "https://simplytrinicooking.com/wp-content/uploads/2008/01/cassava-pone-1024x768.jpg",
-            "Trini Stew Chicken": "https://simplytrinicooking.com/wp-content/uploads/2007/03/stew-chicken-1024x768.jpg",
-            "Caribbean Macaroni Pie": "https://simplytrinicooking.com/wp-content/uploads/2007/03/macaroni-pie-1024x768.jpg",
-            "Rice and Peas": "https://simplytrinicooking.com/wp-content/uploads/2009/01/rice-and-peas-1024x768.jpg",
-            "Stewed Red Beans": "https://simplytrinicooking.com/wp-content/uploads/2007/03/stewed-red-beans-1024x768.jpg",
-            "Trini Sweet Bread": "https://simplytrinicooking.com/wp-content/uploads/2008/01/sweet-bread-1024x768.jpg",
-            "Jamaican Gizzada (Ancestral Pinch)": "https://tasteslikehome.org/wp-content/uploads/2021/05/gizzada-1.jpg",
-            "Guyanese Pine Tart (Village Style)": "https://tasteslikehome.org/wp-content/uploads/2007/03/pine-tart.jpg",
-            "Trinidad Doubles": "https://simplytrinicooking.com/wp-content/uploads/2007/04/doubles-1024x768.jpg",
-            "Jamaican Beef Patties": "https://simplytrinicooking.com/wp-content/uploads/2008/02/jamaican-beef-patty-1024x768.jpg",
-            "Bake and Shark": "https://simplytrinicooking.com/wp-content/uploads/2007/11/bake-and-shark-1024x768.jpg",
-            "Classic Sorrel": "https://simplytrinicooking.com/wp-content/uploads/2007/12/sorrel-1024x768.jpg",
-            "Mauby Bark Brew": "https://simplytrinicooking.com/wp-content/uploads/2007/12/mauby-1024x768.jpg",
-            "Caribbean Ginger Beer": "https://simplytrinicooking.com/wp-content/uploads/2008/01/ginger-beer-1024x768.jpg",
-            "Bake and Saltfish": "https://simplytrinicooking.com/wp-content/uploads/2008/01/bake-saltfish.jpg",
-            "Baigan Choka (Roasted Eggplant)": "https://simplytrinicooking.com/wp-content/uploads/2007/03/baigan-choka-1024x768.jpg",
-            "Tomato Choka": "https://simplytrinicooking.com/wp-content/uploads/2007/03/tomato-choka-1024x768.jpg",
-            "Sada Roti": "https://simplytrinicooking.com/wp-content/uploads/2007/04/sada-roti-1024x768.jpg",
-            "Cornmeal Porridge": "https://simplytrinicooking.com/wp-content/uploads/2008/01/cornmeal-porridge-1024x768.jpg",
-            "Saltfish Buljol": "https://simplytrinicooking.com/wp-content/uploads/2007/03/buljol-1024x768.jpg",
-            "Smoked Herring": "https://simplytrinicooking.com/wp-content/uploads/2007/03/smoked-herring-1024x768.jpg",
-            "Coconut Bake": "https://simplytrinicooking.com/wp-content/uploads/2008/01/coconut-bake-1024x768.jpg",
-            "Pumpkin Choka": "https://simplytrinicooking.com/wp-content/uploads/2007/03/pumpkin-choka-1024x768.jpg"
-        };
-
-        async function sendHubMessage(overrideText) {
-            const input = document.getElementById('hub-input');
-            const text = overrideText || input.value;
-            if(!text) return;
-            const { error } = await sb.from('messages').insert({ user_id: currentUserId, text: text });
-            if(!error) {
-                input.value = '';
-                if(document.getElementById('desktop-msg-input')) document.getElementById('desktop-msg-input').value = '';
-            }
-        }
+        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-callaloo-dpanyard}}');
+        let allRecipes = [];
+        let allKeepers = [];
+        let mapInitialized = false;
+        let currentFacingMode = 'environment';
+        let stream = null;
 
         async function loadData() {
-            const { data: { user } } = await sb.auth.getUser();
-            if(!user) { window.location.href = '/login/'; return; }
-            currentUserId = user.id;
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                if(!user) { window.location.href = '/login/'; return; }
 
-            setupRealtime();
+                // Restore last active tab
+                const lastTab = localStorage.getItem('activeTab') || 'discovery';
+                showTab(lastTab);
 
-            const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
-            document.getElementById('p-fullname').value = user.user_metadata.full_name || '';
-            document.getElementById('p-username').value = user.user_metadata.username || '';
-            
-            if(profile) {
-                document.getElementById('p-bio').value = profile.bio || '';
+                // Load Recipes
+                const { data: recipes, error: rError } = await sb.from('recipes').select('*').eq('is_published', true);
+                if(rError) console.error('Recipes Load Error:', rError);
+                allRecipes = recipes || [];
+                renderRecipes(allRecipes);
+
+        // Load Keepers (Join Profiles and Cooks)
+                const { data: cooks, error: cError } = await sb.from('cooks').select('*').limit(100);
+                if(cError) console.error('Cooks Load Error:', cError);
+                console.log('Loaded Cooks:', cooks ? cooks.length : 0);
                 
-                // Set Permission Toggles
-                if (document.getElementById('camera-toggle')) document.getElementById('camera-toggle').checked = profile.camera_enabled || false;
-                if (document.getElementById('location-toggle')) document.getElementById('location-toggle').checked = profile.location_enabled || false;
-                if (document.getElementById('privacy-toggle')) document.getElementById('privacy-toggle').checked = profile.privacy_enabled || false;
-
-                // Load initial location if enabled
-                if (profile.location_enabled) updateLiveLocation();
-
-                // Robust Avatar Loading
-                let finalAvatar = 'https://via.placeholder.com/100?text=HP';
-                if (profile.avatar_url && profile.avatar_url.length > 10) {
-                    // Check if it's a massive string that might be causing lag
-                    if (profile.avatar_url.length > 500000) { // Over 0.5MB
-                        console.warn("Avatar too large, using fallback");
-                    } else {
-                        finalAvatar = profile.avatar_url;
-                    }
+                if(!cooks || cooks.length === 0) {
+                    const { data: profiles } = await sb.from('profiles').select('*').limit(100);
+                    allKeepers = (profiles || []).map(p => ({
+                        id: p.id,
+                        username: 'Heritage Keeper',
+                        display_name: 'Heritage Keeper',
+                        avatar_url: p.avatar_url,
+                        bio: p.bio
+                    }));
+                } else {
+                    allKeepers = cooks.map(c => ({
+                        id: c.user_id,
+                        username: c.display_name || 'Keeper',
+                        display_name: c.display_name || 'Keeper',
+                        avatar_url: c.avatar_url,
+                        bio: c.bio
+                    }));
                 }
-                document.getElementById('p-avatar').src = finalAvatar;
+                console.log('Final allKeepers count:', allKeepers.length);
                 
-                document.getElementById('p-whatsapp').value = profile.whatsapp || '';
-                document.getElementById('p-instagram').value = profile.instagram || '';
-                document.getElementById('p-facebook').value = profile.facebook || '';
-            }
+                renderKeepers(allKeepers);
 
-            const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true).order('created_at', {ascending:false});
-            allRecipes = recipes || [];
-            renderRecipes(allRecipes);
-            loadReels();
-            loadGroups();
-            lucide.createIcons();
+                // Load Profile
+                const { data: profile, error: pError } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+                const { data: cook, error: ckError } = await sb.from('cooks').select('*').eq('user_id', user.id).maybeSingle();
+                
+                if (pError) console.error('Profile Fetch Error:', pError);
+                if (ckError) console.error('Cook Fetch Error:', ckError);
+
+                document.getElementById('profile-email').innerText = user.email;
+                if(profile) {
+                    document.getElementById('p-bio').value = profile.bio || '';
+                    document.getElementById('p-avatar').src = profile.avatar_url || 'https://via.placeholder.com/100';
+                }
+                if(cook) {
+                    document.getElementById('p-display-name').value = cook.display_name || '';
+                    document.getElementById('p-recipes-count').innerText = cook.recipe_count || 0;
+                    document.getElementById('p-followers-count').innerText = cook.follower_count || 0;
+                } else {
+                    document.getElementById('p-display-name').value = user.email.split('@')[0];
+                }
+                
+                lucide.createIcons();
+            } catch (e) {
+                console.error('System Load Error:', e);
+            }
         }
 
-        async function uploadAvatar(input) {
-            const file = input.files[0];
-            if (!file) return;
+        function renderKeepers(list, isSearch = false) {
+            const container = document.getElementById('keepers-list');
+            if(!list || !list.length) {
+                container.innerHTML = isSearch 
+                    ? '<p style="color: var(--grey-text); font-size: 0.8rem; padding: 10px; width: 100%;">No keepers found matching your search.</p>'
+                    : '<p style="color: var(--grey-text); font-size: 0.8rem; padding: 10px;">Join as a Heritage Keeper to be featured.</p>';
+                return;
+            }
             
-            const btn = document.getElementById('save-profile-btn');
-            btn.innerHTML = '<i data-lucide="loader"></i> Processing...'; lucide.createIcons();
+            // If searching, we might want a slightly different layout, but for now we keep it consistent
+            container.innerHTML = list.map(k => `
+                <div style="flex: 0 0 80px; text-align: center; cursor: pointer; transition: transform 0.2s;" onclick="openKeeper('${k.id}')" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    <img src="${k.avatar_url || 'https://via.placeholder.com/60'}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); padding: 2px; margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    <p style="font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--dark);">${k.display_name || k.username || 'Keeper'}</p>
+                </div>
+            `).join('');
+        }
 
+        function renderRecipes(list) {
+            const grid = document.getElementById('discovery-grid');
+            if(!list || !list.length) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--grey-text); padding: 40px;">No heritage dishes found.</p>';
+                return;
+            }
+            grid.innerHTML = list.map(r => `
+                <div class="recipe-card" onclick="openRecipe('${r.id}')">
+                    <div class="recipe-image" style="background-image: url(${r.cover_photo_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=800'})"></div>
+                    <div class="recipe-info">
+                        <h3 style="margin:0; font-size: 1rem;">${r.title}</h3>
+                        <span class="tag" style="font-size: 0.7rem;">${(r.vibe_tags || []).join(' • ')}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleSearch(val) {
+            const query = (val || '').toLowerCase().trim();
+            console.log('Searching for:', query);
+            
+            // Filter Recipes
+            const filteredRecipes = allRecipes.filter(r => 
+                (r.title || '').toLowerCase().includes(query) || 
+                (r.vibe_tags || []).some(t => t.toLowerCase().includes(query))
+            );
+            renderRecipes(filteredRecipes);
+
+            // Filter Keepers (Friends)
+            const filteredKeepers = allKeepers.filter(k => 
+                (k.display_name || '').toLowerCase().includes(query) || 
+                (k.username || '').toLowerCase().includes(query) || 
+                (k.bio || '').toLowerCase().includes(query)
+            );
+            console.log('Filtered Keepers:', filteredKeepers.length);
+            renderKeepers(filteredKeepers, query.length > 0);
+        }
+
+        function openKeeper(id) {
+            console.log('Opening keeper:', id);
+            // Future: Show keeper profile modal
+        }
+
+        // Map Init
+        let googleMap;
+        function showTab(id) {
+            localStorage.setItem('activeTab', id);
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.pill').forEach(p => {
+                p.classList.remove('active');
+                if(p.innerText.toLowerCase().includes(id.toLowerCase())) p.classList.add('active');
+            });
+            const target = document.getElementById(id);
+            if(target) target.classList.add('active');
+            
+            if(id === 'map' && !mapInitialized) {
+                initGoogleMap();
+                mapInitialized = true;
+            }
+            if(id === 'profile') loadKitchen();
+        }
+
+        function initGoogleMap() {
+            const mapOptions = {
+                zoom: 14,
+                center: { lat: 10.6918, lng: -61.2225 },
+                styles: [
+                    { "elementType": "geometry", "stylers": [{ "color": "#212121" }] },
+                    { "elementType": "labels.text.stroke", "stylers": [{ "color": "#212121" }] },
+                    { "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
+                    { "featureType": "administrative.country", "elementType": "geometry.stroke", "stylers": [{ "color": "#E87722" }] },
+                    { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#000000" }] }
+                ],
+                disableDefaultUI: true
+            };
+            
+            googleMap = new google.maps.Map(document.getElementById('map-container'), mapOptions);
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const pos = { lat: position.coords.latitude, lng: position.coords.longitude };
+                    googleMap.setCenter(pos);
+                    new google.maps.Marker({
+                        position: pos,
+                        map: googleMap,
+                        title: "Your Heritage Kitchen",
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 10,
+                            fillColor: "#E87722",
+                            fillOpacity: 1,
+                            strokeWeight: 2,
+                            strokeColor: "#FFFFFF"
+                        }
+                    });
+                    searchNearbyGroceries(pos);
+                });
+            }
+        }
+
+        function searchNearbyGroceries(pos) {
+            const service = new google.maps.places.PlacesService(googleMap);
+            const request = {
+                location: pos,
+                radius: '5000',
+                type: ['grocery_or_supermarket']
+            };
+
+            service.nearbySearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    results.forEach(place => {
+                        new google.maps.Marker({
+                            position: place.geometry.location,
+                            map: googleMap,
+                            title: place.name,
+                            icon: {
+                                url: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png'
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+        async function loadKitchen() {
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                const { data: saved } = await sb.from('saved_recipes').select('recipe_id').eq('user_id', user.id);
+                if(!saved || saved.length === 0) return;
+                
+                const ids = saved.map(s => s.recipe_id);
+                const { data: recipes } = await sb.from('recipes').select('*').in('id', ids);
+                
+                const grid = document.getElementById('kitchen-grid');
+                grid.innerHTML = (recipes || []).map(r => `
+                    <div class="recipe-card" onclick="openRecipe('${r.id}')">
+                        <div class="recipe-image" style="background-image: url(${r.cover_photo_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=800'})"></div>
+                        <div class="recipe-info">
+                            <h3 style="font-size:0.9rem;">${r.title}</h3>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function handleAvatarUpload(el) {
+            const file = el.files[0];
+            if(!file) return;
             const reader = new FileReader();
             reader.onload = async (e) => {
-                // Resize image using Canvas to avoid massive Base64 strings
-                const img = new Image();
-                img.onload = async () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 200;
-                    const MAX_HEIGHT = 200;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                    document.getElementById('p-avatar').src = optimizedBase64;
-                    
-                    // Save immediately to DB
-                    const { error } = await sb.from('profiles').upsert({
-                        id: currentUserId,
-                        avatar_url: optimizedBase64,
-                        updated_at: new Date()
-                    });
-                    
-                    if(!error) {
-                        btn.innerHTML = '<i data-lucide="check"></i> Avatar Updated';
-                        setTimeout(() => { btn.innerHTML = 'Update Identity'; lucide.createIcons(); }, 2000);
-                    } else {
-                        btn.innerHTML = 'Upload Error';
-                    }
-                    lucide.createIcons();
-                };
-                img.src = e.target.result;
+                const base64 = e.target.result;
+                document.getElementById('p-avatar').src = base64;
+                const { data: { user } } = await sb.auth.getUser();
+                await sb.from('profiles').upsert({ id: user.id, avatar_url: base64 });
+                await sb.from('cooks').upsert({ user_id: user.id, avatar_url: base64 }, { onConflict: 'user_id' });
             };
             reader.readAsDataURL(file);
         }
 
         async function saveFullProfile() {
             const btn = document.getElementById('save-profile-btn');
-            btn.innerHTML = '<i data-lucide="loader"></i> Saving...'; lucide.createIcons();
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Saving to Supabase...';
+            lucide.createIcons();
             
-            const fullName = document.getElementById('p-fullname').value;
-            const username = document.getElementById('p-username').value;
-            const bio = document.getElementById('p-bio').value;
-            const whatsapp = document.getElementById('p-whatsapp').value;
-            const instagram = document.getElementById('p-instagram').value;
-            const facebook = document.getElementById('p-facebook').value;
-
             try {
-                // Identity update
-                const authPromise = sb.auth.updateUser({ data: { full_name: fullName, username: username } });
-                
-                // Construct dynamic update to avoid writing to non-existent columns
-                // We use a safe subset that we know exists
-                const updateData = { id: currentUserId, bio, updated_at: new Date() };
-                
-                // Only add social links if the profile structure in the DB is confirmed
-                // For now, we wrap in a try-catch per-field or use metadata if preferred.
-                // Based on previous 404/Error saving, we will check if columns exist or use a safer 'metadata' approach
-                const dbPromise = sb.from('profiles').upsert(updateData);
-                const [authRes, dbRes] = await Promise.all([authPromise, dbPromise]);
-                if (!dbRes.error) {
-                    btn.innerHTML = '<i data-lucide="check"></i> Saved';
-                    setTimeout(() => { btn.innerHTML = 'Update Identity'; lucide.createIcons(); }, 2000);
-                } else {
-                    btn.innerHTML = 'Error Saving';
-                    setTimeout(() => { btn.innerHTML = 'Update Identity'; lucide.createIcons(); }, 3000);
-                }
-            } catch (err) { btn.innerHTML = 'Retry Save'; }
-            lucide.createIcons();
-        }
+                const { data: { user } } = await sb.auth.getUser();
+                if(!user) throw new Error("No authenticated user found.");
 
-        async function handleFoodSearch(query) {
-            if(query.length < 2) { 
-                renderRecipes(allRecipes); 
-                return; 
-            }
-            const r = allRecipes.filter(x => x.title.toLowerCase().includes(query.toLowerCase()));
-            renderRecipes(r);
-        }
+                const bio = document.getElementById('p-bio').value;
+                const displayName = document.getElementById('p-display-name').value;
+                const avatarUrl = document.getElementById('p-avatar').src;
 
-        async function handleFriendSearch(query, resultsContainerId = 'friend-search-results') {
-            const resultsDiv = document.getElementById(resultsContainerId);
-            if(query.length < 2) { 
-                resultsDiv.style.display = 'none';
-                return; 
-            }
-            
-            const { data: u } = await sb.from('profiles').select('*').or(`bio.ilike.%${query}%`).limit(5);
-            
-            if(u && u.length) {
-                resultsDiv.style.display = 'block';
-                resultsDiv.innerHTML = u.map(user => {
-                    let av = 'https://via.placeholder.com/30?text=HP';
-                    if (user.avatar_url && user.avatar_url.length < 500000) av = user.avatar_url;
-                    return `
-                        <div style="display:flex; align-items:center; gap:10px; padding:12px; border-bottom:1px solid var(--border); cursor:pointer;" onclick="openHub(); toggleMenu();">
-                            <img src="${av}" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
-                            <div style="flex:1;">
-                                <div style="font-size:0.85rem; font-weight:700;">Heritage Keeper</div>
-                                <div style="font-size:0.7rem; opacity:0.6;">Island Chef</div>
-                            </div>
-                            <i data-lucide="message-square" style="width:16px; color:var(--primary);"></i>
-                        </div>
-                    `;
-                }).join('');
+                console.log('Saving profile for:', user.id);
+
+                // 1. Sync to profiles table
+                const { error: pError } = await sb.from('profiles').upsert({ 
+                    id: user.id, 
+                    bio: bio, 
+                    avatar_url: avatarUrl,
+                    updated_at: new Date().toISOString()
+                });
+                if(pError) throw pError;
+
+                // 2. Sync to cooks table (The Searchable Identity)
+                const { error: cError } = await sb.from('cooks').upsert({ 
+                    user_id: user.id, 
+                    display_name: displayName, 
+                    bio: bio,
+                    avatar_url: avatarUrl,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'user_id' });
+
+                if(cError) throw cError;
+                
+                // Visual Success Feedback
+                btn.style.background = '#22c55e'; // Green success color
+                btn.innerHTML = '<i data-lucide="check"></i> Settings Synced!';
                 lucide.createIcons();
-            } else {
-                resultsDiv.innerHTML = '<p style="padding:15px; font-size:0.8rem; opacity:0.5; text-align:center;">No keepers found.</p>';
-                resultsDiv.style.display = 'block';
-            }
-        }
-
-        async function loadReels() {
-            const reelsContainer = document.getElementById('reels-container');
-            // Functional Engineering: Using actual Caribbean Heritage video content
-            const heritageVideos = [
-                { id: 1, url: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-a-fresh-meal-in-the-kitchen-22634-large.mp4', title: 'Curry Channa Prep' },
-                { id: 2, url: 'https://assets.mixkit.co/videos/preview/mixkit-frying-potatoes-in-a-pan-with-oil-22631-large.mp4', title: 'Island Spice Stew' },
-                { id: 3, url: 'https://assets.mixkit.co/videos/preview/mixkit-preparing-a-salad-with-fresh-vegetables-22637-large.mp4', title: 'Chutney Essentials' }
-            ];
-
-            reelsContainer.innerHTML = heritageVideos.map(v => `
-                <div class="reel-slide">
-                    <video loop playsinline onclick="toggleReel(this)" style="width:100%; height:100%; object-fit:cover;">
-                        <source src="${v.url}" type="video/mp4">
-                    </video>
-                    <div class="reel-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 20px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; display: flex; justify-content: space-between; align-items: flex-end;">
-                        <div style="flex: 1;">
-                            <h3 class="display-font" style="font-size: 1.2rem; margin-bottom: 5px;">${v.title}</h3>
-                            <p style="font-size: 0.8rem; opacity: 0.8;">Heritage Kitchen Series</p>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin-left: 15px;">
-                            <div style="text-align: center;"><i data-lucide="heart" style="width: 26px; height: 26px;"></i><span style="font-size: 0.7rem; display: block; margin-top: 5px;">4.2k</span></div>
-                            <div style="text-align: center;"><i data-lucide="message-circle" style="width: 26px; height: 26px;"></i><span style="font-size: 0.7rem; display: block; margin-top: 5px;">128</span></div>
-                            <div style="text-align: center;"><i data-lucide="share-2" style="width: 26px; height: 26px;"></i><span style="font-size: 0.7rem; display: block; margin-top: 5px;">Share</span></div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        function toggleReel(v) {
-            if (v.paused) v.play();
-            else v.pause();
-        }
-
-        async function loadGroups() {
-            const { data: groups } = await sb.from('groups').select('*').limit(5);
-            document.getElementById('sidebar-groups').innerHTML = (groups || []).map(g => `<div class="list-item"><i data-lucide="users"></i> ${g.name}</div>`).join('') || '<p style="opacity:0.5; font-size:0.8rem;">No groups joined yet.</p>';
-            lucide.createIcons();
-        }
-
-        async function submitCreateGroup() {
-            const name = document.getElementById('group-name').value;
-            const desc = document.getElementById('group-desc').value;
-            const { error } = await sb.from('groups').insert({ name, description: desc, creator_id: currentUserId });
-            if(!error) { closeCreateGroup(); loadGroups(); }
-        }
-
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll(`.pill[onclick*="${id}"]`).forEach(p => p.classList.add('active'));
-            if(id === 'map' && !window.heritageMap) {
+                
                 setTimeout(() => {
-                    window.heritageMap = L.map('map-container').setView([10.6918, -61.2225], 13);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(window.heritageMap);
-                }, 100);
-            }
-            document.querySelectorAll('video').forEach(v => id === 'reels' ? v.play() : v.pause());
-            
-            // Permission Logic
-            if(id === 'vision') {
-                const camOn = document.getElementById('camera-toggle').checked;
-                document.getElementById('camera-blocked').style.display = camOn ? 'none' : 'block';
-                document.getElementById('video-feed').style.display = 'none'; // Hide until started
-                document.getElementById('cam-action-btn').style.display = camOn ? 'flex' : 'none';
-            }
-            if(id === 'map') {
-                const mapOn = document.getElementById('location-toggle').checked;
-                document.getElementById('map-container').style.display = mapOn ? 'block' : 'none';
-                // If map container is hidden, we might want a blocked div too
+                    btn.style.background = 'var(--primary)';
+                    btn.innerHTML = originalContent;
+                    lucide.createIcons();
+                }, 3000);
+
+            } catch (e) {
+                console.error('Save Error:', e);
+                alert('Sync Failed: ' + e.message);
+                btn.innerHTML = originalContent;
+                lucide.createIcons();
             }
         }
 
-        async function initCam() {
-            const camToggle = document.getElementById('camera-toggle');
-            if(camToggle && !camToggle.checked) return alert("Enable camera in Settings first");
+        // Vision AI Logic
+        async function startCamera() {
+            const video = document.getElementById('video-feed');
+            const preview = document.getElementById('upload-preview');
+            const camBtn = document.getElementById('camera-btn');
+            const capBtn = document.getElementById('capture-btn');
             
             try {
-                const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                const v = document.getElementById('video-feed');
-                v.srcObject = s; 
-                v.style.display = 'block';
-                document.getElementById('vision-preview').style.display = 'none';
-                document.getElementById('camera-blocked').style.display = 'none';
-                document.getElementById('cam-action-btn').style.display = 'none';
-                document.getElementById('analyze-btn').style.display = 'flex';
-                lucide.createIcons();
-            } catch (e) { 
-                console.error(e);
-                alert("Could not access camera. Please check permissions.");
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: currentFacingMode } 
+                });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                preview.style.display = 'none';
+                camBtn.style.display = 'none';
+                capBtn.style.display = 'inline-flex';
+            } catch (err) {
+                alert("Camera access denied.");
             }
         }
 
-        function handleVisionUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
+        async function captureImage() {
+            const video = document.getElementById('video-feed');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+            
+            stopCamera();
+            const preview = document.getElementById('upload-preview');
+            preview.src = dataUrl;
+            preview.style.display = 'block';
+            video.style.display = 'none';
+            
+            processVision(dataUrl);
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            document.getElementById('camera-btn').style.display = 'inline-flex';
+            document.getElementById('capture-btn').style.display = 'none';
+        }
+
+        async function handleUpload(el) {
+            const file = el.files[0];
+            if(!file) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-                const preview = document.getElementById('vision-preview');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
+                const dataUrl = e.target.result;
+                document.getElementById('upload-preview').src = dataUrl;
+                document.getElementById('upload-preview').style.display = 'block';
                 document.getElementById('video-feed').style.display = 'none';
-                document.getElementById('camera-blocked').style.display = 'none';
-                document.getElementById('analyze-btn').style.display = 'flex';
-                lucide.createIcons();
+                processVision(dataUrl);
             };
             reader.readAsDataURL(file);
         }
 
-        async function analyzeFood() {
-            const btn = document.getElementById('analyze-btn');
+        async function processVision(image) {
+            const loader = document.getElementById('ai-loading');
             const results = document.getElementById('vision-results');
-            const content = document.getElementById('analysis-content');
-            
-            btn.innerHTML = '<i data-lucide="loader"></i> Analyzing Heritage...';
-            lucide.createIcons();
+            loader.style.display = 'block';
+            results.innerHTML = '';
 
-            // Simulate AI Analysis
-            setTimeout(() => {
-                btn.innerHTML = '<i data-lucide="sparkles"></i> Analyze Food';
-                results.style.display = 'block';
-                content.innerHTML = `
-                    <p><strong>Identified:</strong> Traditional Caribbean Curry Chicken</p>
-                    <p><strong>Key Ingredients:</strong> Pimento peppers, Green seasoning, Madras curry powder, Coconut milk.</p>
-                    <p style="margin-top:10px; color:var(--primary); font-weight:700;">Matching recipes found in your Discovery feed!</p>
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer {{credential:openai-calalloo-vision}}'
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4o-mini",
+                        messages: [
+                            {
+                                role: "user",
+                                content: [
+                                    { type: "text", text: "Identify this Caribbean dish. Provide: Name, Origin, Key Ingredients, and a brief cultural heritage fact. Format: Concise paragraphs." },
+                                    { type: "image_url", image_url: { url: image } }
+                                ]
+                            }
+                        ]
+                    })
+                });
+                
+                const data = await response.json();
+                const aiAnalysis = data.choices[0].message.content;
+                
+                loader.style.display = 'none';
+                results.innerHTML = `
+                    <div style="background:var(--light-bg); padding:25px; border-radius:16px; text-align:left; border:1px solid rgba(0,0,0,0.05);">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                            <div style="background:var(--primary); color:white; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+                                <i data-lucide="brain-circuit" style="width:20px;"></i>
+                            </div>
+                            <div>
+                                <h3 class="display-font" style="font-size:1.1rem; color:var(--dark);">Neural Analysis</h3>
+                                <p style="font-size:0.65rem; opacity:0.6; font-weight:800; text-transform:uppercase;">Vision AI v21.1</p>
+                            </div>
+                        </div>
+                        <div style="line-height:1.6; font-size:0.9rem; color:var(--dark);">
+                            ${aiAnalysis.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
                 `;
                 lucide.createIcons();
-                results.scrollIntoView({ behavior: 'smooth' });
-            }, 2000);
-        }
-
-        function renderRecipes(list) { 
-            document.getElementById('discovery-grid').innerHTML = list.map(r => {
-                let img = r.cover_photo_url;
-                if (!img || img.includes('placeholder')) {
-                    if (HERITAGE_IMAGE_MAP[r.title]) img = HERITAGE_IMAGE_MAP[r.title];
-                    else img = 'https://via.placeholder.com/400x200?text=Heritage+Recipe';
-                }
-                return `<div class="recipe-card" onclick="openRecipe('${r.id}')"><div class="recipe-image" style="background-image: url(${img})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`;
-            }).join(''); 
-        }
-
-        function openRecipe(id) {
-            const r = allRecipes.find(x => x.id === id);
-            if (!r) return;
-
-            let img = r.cover_photo_url;
-            if (!img || img.includes('placeholder')) {
-                if (HERITAGE_IMAGE_MAP[r.title]) img = HERITAGE_IMAGE_MAP[r.title];
+            } catch (err) {
+                loader.style.display = 'none';
+                alert("Analysis failed. Check your network.");
             }
-
-            document.getElementById('recipe-modal-image').style.backgroundImage = `url(${img})`;
-            document.getElementById('recipe-modal-title').innerText = r.title;
-            document.getElementById('recipe-modal-desc').innerText = r.description || 'Traditional Caribbean heritage recipe.';
-            document.getElementById('recipe-modal-time').innerText = ((r.prep_time_mins || 15) + (r.cook_time_mins || 30)) + ' mins';
-            document.getElementById('recipe-modal-serves').innerText = 'Serves ' + (r.servings || 4);
-            document.getElementById('recipe-modal-cals').innerText = (r.calories_per_serving || 300) + ' kcal';
-
-            const ingredients = r.instructions ? r.instructions.filter(i => i.toLowerCase().includes('cup') || i.toLowerCase().includes('tsp') || i.toLowerCase().includes('tbsp')) : [];
-            document.getElementById('recipe-modal-ingredients').innerHTML = (r.ingredients || ingredients).map(i => `<li style="padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;"><i data-lucide="check-circle" style="width: 14px; color: var(--primary); margin-right: 10px;"></i>${i}</li>`).join('');
-            
-            const method = r.instructions || [];
-            document.getElementById('recipe-modal-method').innerHTML = method.map((m, i) => `<div style="margin-bottom: 15px;"><span style="font-weight: 700; color: var(--primary); margin-right: 10px;">${i+1}.</span>${m}</div>`).join('');
-
-            document.getElementById('recipe-modal').style.display = 'flex';
-            lucide.createIcons();
         }
 
-        function closeRecipe() {
-            document.getElementById('recipe-modal').style.display = 'none';
-        }
-        function toggleMenu() { const m = document.getElementById('menu-overlay'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; lucide.createIcons(); }
-        function openHub() { document.getElementById('hub-modal').style.display = 'flex'; lucide.createIcons(); }
-        function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
-        function openCreateGroup() { document.getElementById('create-group-modal').style.display = 'flex'; }
-        function closeCreateGroup() { document.getElementById('create-group-modal').style.display = 'none'; }
-        function toggleTheme() { 
-            const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; 
-            document.documentElement.setAttribute('data-theme', n); 
-            localStorage.setItem('theme', n); 
+        function toggleMenu() {
+            const menu = document.getElementById('menu-overlay');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        async function togglePermission(key) {
-            const toggle = document.getElementById(`${key}-toggle`);
-            if (!toggle) return;
-            const isChecked = toggle.checked;
-            
-            // Auto-save permission to Supabase
-            // Note: We use a simplified upsert for performance
-            await sb.from('profiles').upsert({
-                id: currentUserId,
-                [key + '_enabled']: isChecked,
-                updated_at: new Date()
-            });
-
-            // If location is enabled, attempt to get and update map
-            if (key === 'location' && isChecked) {
-                updateLiveLocation();
+        // Modal Controls
+        function openGroupModal() { document.getElementById('group-modal').style.display = 'flex'; }
+        function openProModal() { 
+            console.log('Opening Pro Modal');
+            const modal = document.getElementById('pro-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.zIndex = '9999';
+            } else {
+                console.error('Pro Modal not found');
             }
-
-            // Update UI if current tab is affected
-            const activeTab = document.querySelector('.tab-content.active').id;
-            if(activeTab === 'vision' || activeTab === 'map') showTab(activeTab);
+        }
+        function closeModals() { 
+            document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none'); 
         }
 
-        function updateLiveLocation() {
-            if (!navigator.geolocation) return;
+        async function createHeritageGroup() {
+            const name = document.getElementById('group-name').value;
+            if(!name) return alert('Please enter a group name.');
             
-            navigator.geolocation.getCurrentPosition((position) => {
-                const { latitude, longitude } = position.coords;
-                if (window.heritageMap) {
-                    window.heritageMap.setView([latitude, longitude], 15);
-                    if (window.userMarker) {
-                        window.userMarker.setLatLng([latitude, longitude]);
-                    } else {
-                        window.userMarker = L.marker([latitude, longitude]).addTo(window.heritageMap)
-                            .bindPopup('You are here (Heritage Keeper)')
-                            .openPopup();
-                    }
-                }
-            }, (err) => {
-                console.error("Geolocation error:", err);
-            });
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                const { data, error } = await sb.from('groups').insert({
+                    name: name,
+                    description: document.getElementById('group-desc').value,
+                    creator_id: user.id
+                }).select();
+                
+                if(error) throw error;
+                alert('Group Created: ' + name);
+                closeModals();
+            } catch (e) {
+                alert('Group Error: ' + e.message);
+            }
         }
 
-        function setupRealtime() {
-            // Subscribe to Profiles (for identity sync)
-            sb.channel('profiles-sync')
-                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${currentUserId}` }, payload => {
-                    if (payload.new.avatar_url) document.getElementById('p-avatar').src = payload.new.avatar_url;
-                    if (payload.new.bio) document.getElementById('p-bio').value = payload.new.bio;
-                })
-                .subscribe();
-
-            // Subscribe to Messages (Real-time Hub)
-            sb.channel('hub-messages')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-                    const hubMsgs = document.getElementById('hub-messages');
-                    const msgDiv = document.createElement('div');
-                    msgDiv.style.cssText = "background:var(--white); padding:10px; border-radius:10px; margin-bottom:10px; font-size:0.9rem; border:1px solid var(--border);";
-                    msgDiv.innerHTML = `<span style="font-weight:700; color:var(--primary);">Keeper:</span> ${payload.new.text}`;
-                    hubMsgs.appendChild(msgDiv);
-                    hubMsgs.scrollTop = hubMsgs.scrollHeight;
-                    document.getElementById('desktop-messages').innerHTML = `<div style="padding:10px; border-bottom:1px solid var(--border);">${payload.new.text}</div>` + document.getElementById('desktop-messages').innerHTML;
-                })
-                .subscribe();
-
-            // Subscribe to Recipes (Discovery Feed)
-            sb.channel('discovery-feed')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recipes' }, payload => {
-                    if (payload.new.is_published) {
-                        const grid = document.getElementById('discovery-grid');
-                        const card = document.createElement('div');
-                        card.className = 'recipe-card';
-                        card.onclick = () => openRecipe(payload.new.id);
-                        let img = payload.new.cover_photo_url;
-                        if (!img || img.includes('placeholder')) {
-                            if (HERITAGE_IMAGE_MAP[payload.new.title]) img = HERITAGE_IMAGE_MAP[payload.new.title];
-                        }
-                        card.innerHTML = `<div class="recipe-image" style="background-image: url(${img})"></div><div class="recipe-info"><h3>${payload.new.title}</h3></div>`;
-                        grid.prepend(card);
-                    }
-                })
-                .subscribe();
+        function initPayment() {
+            alert('Redirecting to secure heritage payment gateway...');
+            // Future: Stripe integration
         }
 
-        function signOut() { sb.auth.signOut().then(() => window.location.href = '/login/'); }
+        function openRecipe(id) { console.log('Opening recipe:', id); }
+        function openHub() { console.log('Opening hub'); }
+        function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
 
         window.onload = loadData;
+        lucide.createIcons();
     </script>
 </body>
 </html>
