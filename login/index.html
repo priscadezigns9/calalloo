@@ -94,7 +94,7 @@
         // Check if already logged in
         async function checkSession() {
             const { data: { session } } = await sb.auth.getSession();
-            if (session) window.location.href = '/dashboard/';
+            if (session) { console.log("Session confirmed"); setTimeout(() => { window.location.href = "/dashboard/"; }, 1500); }
         }
         checkSession();
     </script>
