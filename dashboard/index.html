@@ -160,7 +160,7 @@
                         <img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100">
                         <input type="file" id="avatar-input" style="display: none;" onchange="uploadAvatar(this)" accept="image/*">
                     </div>
-                    <!-- Unified editable Name/Username -->
+                    
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
                         <input type="text" id="p-username" class="display-font" style="text-align: center; border: 1.5px dashed var(--border); border-radius: 8px; padding: 5px 15px; background: none; font-size: 1.8rem; width: auto; color: var(--dark); outline: none;" placeholder="username">
                         <span style="color: var(--grey-text); font-size: 0.9rem; font-weight: 500;">Your Heritage Handle</span>
@@ -217,21 +217,9 @@
 
     <div class="messenger-bubble" onclick="openHub()"><img src="/assets/logo.png" alt="Messenger"></div>
 
-    <!-- Modals -->
     <div id="create-group-modal" class="modal"><div class="modal-content"><h2 class="display-font" style="margin-bottom: 20px;">Create Heritage Group</h2><input type="text" id="group-name" placeholder="Group Name" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px;"><textarea id="group-desc" placeholder="Group Description" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px;"></textarea><button class="btn btn-primary" onclick="submitCreateGroup()">Create Now</button><button class="btn btn-secondary" onclick="closeCreateGroup()" style="margin-top: 10px;">Cancel</button></div></div>
     <div id="recipe-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="rd-title" class="display-font"></h2><button class="close-btn" onclick="closeRecipe()"><i data-lucide="x"></i></button></div><img id="rd-img" style="width:100%;height:200px;object-fit:cover;border-radius:12px;margin-bottom:20px"><p id="rd-desc" class="grey-text" style="margin-bottom:20px"></p><div id="rd-instructions" style="margin-bottom:30px"></div><button class="btn btn-primary" id="save-recipe-btn">Save to Kitchen</button></div></div>
     <div id="hub-modal" class="modal"><div class="modal-content" style="height: 85vh; border-radius: 24px;"><div class="modal-header"><div style="display:flex;align-items:center;gap:10px"><img src="/assets/logo.png" style="width:30px;height:30px;border-radius:6px"><h2 class="display-font">Messenger</h2></div><button class="close-btn" onclick="closeHub()"><i data-lucide="x"></i></button></div><div id="hub-messages" style="flex-grow: 1; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px;"></div><div style="display: flex; gap: 10px;"><input type="text" id="hub-input" placeholder="Type a message..." style="flex-grow: 1; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px;"><button class="btn btn-primary" style="width: auto;" onclick="sendHubMessage()"><i data-lucide="send"></i></button></div></div></div>
-
-    <div id="menu-overlay" class="menu-overlay">
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;"><button class="close-btn" onclick="toggleMenu()"><i data-lucide="x" style="width: 32px; height: 32px;"></i></button></div>
-        <div class="menu-item" onclick="showTab('discovery'); toggleMenu()"><i data-lucide="search"></i>Discovery</div>
-        <div class="menu-item" onclick="showTab('vision'); toggleMenu()"><i data-lucide="camera"></i>Vision AI Camera</div>
-        <div class="menu-item" onclick="openHub(); toggleMenu()"><i data-lucide="message-square"></i>Messenger</div>
-        <div class="menu-item" onclick="openCreateGroup(); toggleMenu()"><i data-lucide="plus-circle"></i>Create Group</div>
-        <div class="menu-item" onclick="showTab('profile'); toggleMenu()"><i data-lucide="user"></i>Profile</div>
-        <div class="menu-item" onclick="showTab('settings'); toggleMenu()"><i data-lucide="settings"></i>Settings</div>
-        <div class="menu-item" onclick="signOut()"><i data-lucide="log-out"></i>Sign Out</div>
-    </div>
 
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
@@ -244,8 +232,9 @@
             allRecipes = (recipes || []).map(r => ({...r, cover_photo_url: r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'}));
             renderRecipes(allRecipes);
             const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
+            
+            document.getElementById('p-username').value = user.user_metadata.username || 'keeper';
             if(profile) {
-                document.getElementById('p-username').value = profile.username || 'keeper';
                 document.getElementById('p-bio').value = profile.bio || '';
                 document.getElementById('p-avatar').src = profile.avatar_url || 'https://via.placeholder.com/100';
                 document.getElementById('stat-followers').innerText = profile.followers_count || 0;
@@ -257,11 +246,33 @@
             lucide.createIcons();
         }
 
-        function syncPermissionToggles() {
-            document.getElementById('camera-toggle').checked = localStorage.getItem('perm-camera') === 'true';
-            document.getElementById('location-toggle').checked = localStorage.getItem('perm-location') === 'true';
-            document.getElementById('theme-toggle').checked = localStorage.getItem('theme') === 'dark';
-            if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        async function saveFullProfile() {
+            const { data: { user } } = await sb.auth.getUser();
+            const btn = document.getElementById('save-profile-btn');
+            btn.innerText = 'Syncing...';
+            
+            const newUsername = document.getElementById('p-username').value;
+            const newBio = document.getElementById('p-bio').value;
+
+            // 1. Update Auth Metadata (for the username)
+            const { error: authError } = await sb.auth.updateUser({
+                data: { username: newUsername }
+            });
+
+            // 2. Update Profile Table (for the bio)
+            const { error: profError } = await sb.from('profiles').upsert({
+                id: user.id,
+                bio: newBio
+            }, { onConflict: 'id' });
+
+            if(!authError && !profError) {
+                alert('Sovereign Identity Synced!');
+                btn.innerText = 'Save Profile';
+                await sb.auth.refreshSession();
+            } else {
+                alert('Sync Error: ' + (authError?.message || profError?.message));
+                btn.innerText = 'Save Profile';
+            }
         }
 
         async function uploadAvatar(input) {
@@ -270,19 +281,16 @@
             const fileName = `avatars/${user.id}/${Date.now()}.${file.name.split('.').pop()}`;
             await sb.storage.from('heritage-media').upload(fileName, file);
             const { data: { publicUrl } } = sb.storage.from('heritage-media').getPublicUrl(fileName);
-            // Cache bust the image URL
             const finalUrl = `${publicUrl}?t=${Date.now()}`;
             await sb.from('profiles').update({ avatar_url: finalUrl }).eq('id', user.id);
             document.getElementById('p-avatar').src = finalUrl;
         }
 
-        async function saveFullProfile() {
-            const { data: { user } } = await sb.auth.getUser();
-            const btn = document.getElementById('save-profile-btn'); btn.innerText = 'Syncing...';
-            // Removed non-existent 'full_name' column, using 'username' only
-            const { error } = await sb.from('profiles').upsert({ id: user.id, username: document.getElementById('p-username').value, bio: document.getElementById('p-bio').value }, { onConflict: 'id' });
-            if(!error) { alert('Synced!'); btn.innerText = 'Save Profile'; }
-            else { alert('Error: ' + error.message); btn.innerText = 'Save Profile'; }
+        function syncPermissionToggles() {
+            document.getElementById('camera-toggle').checked = localStorage.getItem('perm-camera') === 'true';
+            document.getElementById('location-toggle').checked = localStorage.getItem('perm-location') === 'true';
+            document.getElementById('theme-toggle').checked = localStorage.getItem('theme') === 'dark';
+            if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
         }
 
         function renderRecipes(list) {
