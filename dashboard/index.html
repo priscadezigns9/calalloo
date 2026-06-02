@@ -48,9 +48,6 @@
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(20px); }
-        .messenger-bubble { position: fixed; bottom: 30px; right: 30px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(232,119,34,0.4); z-index: 2000; }
-        .messenger-bubble img { width: 35px; height: 35px; filter: brightness(0) invert(1); }
-        @media (min-width: 1101px) { .messenger-bubble { display: none; } }
         .tab-content { display: none; padding-bottom: 80px; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         .search-bar { padding: 20px; position: sticky; top: 0; background: var(--bg); z-index: 900; }
@@ -71,13 +68,18 @@
         .profile-tab.active::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--primary); }
         .btn { padding: 14px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; justify-content: center; width: 100%; }
         .btn-primary { background: var(--primary); color: white; }
-        .invite-box { background: var(--light-bg); border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 10px; margin: 20px; border: 1px solid var(--border); }
-        .invite-link { flex: 1; font-size: 0.8rem; color: var(--grey-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 3000; }
-        .modal-content { background: var(--bg); color: var(--dark); width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: var(--bg); color: var(--dark); width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; position: relative; }
         .close-btn { background: none; border: none; cursor: pointer; color: var(--dark); }
-        .load-more-container { padding: 20px; text-align: center; }
-        .load-more-btn { background: var(--light-bg); color: var(--dark); border: 1.5px solid var(--border); width: auto; display: inline-flex; margin: 0 auto; }
+        .messenger-bubble { position: fixed; bottom: 30px; right: 30px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(232,119,34,0.4); z-index: 2000; }
+        .messenger-bubble img { width: 35px; height: 35px; filter: brightness(0) invert(1); }
+
+        /* Comment Section */
+        .comment-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
+        .comment-item { display: flex; gap: 12px; margin-bottom: 15px; font-size: 0.9rem; }
+        .comment-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--light-bg); flex-shrink: 0; }
+        .comment-body { background: var(--light-bg); padding: 10px; border-radius: 12px; flex: 1; }
+        .comment-user { font-weight: 700; margin-bottom: 2px; display: block; }
     </style>
 </head>
 <body>
@@ -92,12 +94,14 @@
         </div>
         <div class="header-actions"><div class="hamburger-btn" onclick="toggleMenu()"><i data-lucide="menu" style="width: 28px; height: 28px;"></i></div></div>
     </header>
+
     <div class="app-container">
         <aside class="sidebar">
             <div class="section-header"><i data-lucide="users"></i> Heritage Groups</div>
             <div id="sidebar-groups"><p style="font-size: 0.8rem; opacity: 0.5; padding: 10px;">No groups yet</p></div>
             <div class="list-item" onclick="openCreateGroup()" style="color: var(--primary); border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px;"><i data-lucide="plus-circle"></i> Create Group</div>
         </aside>
+
         <main class="main-content">
             <div id="discovery" class="tab-content active">
                 <div class="search-bar"><input type="text" class="search-input" placeholder="Search recipes or keepers..." oninput="handleUnifiedSearch(this.value)"></div>
@@ -105,12 +109,13 @@
                 <div id="search-results-recipes">
                     <h3 class="display-font" id="recipe-search-title" style="margin: 0 20px 15px; display:none;">Recipes</h3>
                     <div id="discovery-grid" class="recipe-grid"></div>
-                    <div id="load-more-area" class="load-more-container" style="display:none;">
-                        <button class="btn load-more-btn" onclick="loadMoreRecipes()"><i data-lucide="chevron-down"></i> Load More Heritage</button>
+                    <div id="load-more-area" class="load-more-container" style="display:none; text-align:center; padding: 20px;">
+                        <button class="btn btn-secondary" style="width:auto;" onclick="loadMoreRecipes()">Load More Heritage</button>
                     </div>
                 </div>
             </div>
-            <!-- Vision, Map, Profile, Settings sections remain same -->
+
+            <!-- Vision, Map, Settings sections same as before -->
             <div id="vision" class="tab-content">
                 <div style="padding: 20px; text-align: center;">
                     <video id="video-feed" autoplay playsinline style="width: 100%; border-radius: 12px; aspect-ratio: 4/3; object-fit: cover; background: #000; margin-bottom: 20px; display: none;"></video>
@@ -123,6 +128,7 @@
                 </div>
             </div>
             <div id="map" class="tab-content"><div id="location-blocked" style="padding: 40px; background: var(--light-bg); text-align: center; display: none;"><i data-lucide="map-pin-off" style="width: 48px; height: 48px; opacity: 0.2; margin-bottom: 10px;"></i><p>Location is disabled. Enable it in Settings.</p></div><div id="map-container" style="width: 100%; height: 60vh;"></div></div>
+            
             <div id="profile" class="tab-content">
                 <div class="profile-header">
                     <div class="avatar-wrapper" onclick="document.getElementById('avatar-input').click()"><img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100"><input type="file" id="avatar-input" style="display: none;" onchange="uploadAvatar(this)" accept="image/*"></div>
@@ -130,11 +136,15 @@
                     <textarea id="p-bio" placeholder="Add your heritage bio..." style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; resize: none; min-height: 80px; margin-bottom: 15px; background: var(--white); color: var(--dark);"></textarea>
                     <button class="btn btn-primary" id="save-profile-btn" onclick="saveFullProfile()">Save Profile</button>
                 </div>
-                <div class="invite-box"><div class="invite-link" id="p-invite-link">https://calalloo.com/profile?id=...</div><button onclick="copyInvite()" style="background:none; border:none; color:var(--primary); cursor:pointer;"><i data-lucide="copy" style="width:18px;"></i></button></div>
+                <div id="p-invite-box" style="padding: 20px; background: var(--light-bg); margin: 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
+                    <div id="p-invite-link" style="flex: 1; font-size: 0.8rem; color: var(--grey-text); overflow: hidden; text-overflow: ellipsis;"></div>
+                    <button class="btn btn-secondary" style="width:auto; padding: 8px;" onclick="copyInvite()"><i data-lucide="copy" style="width:16px;"></i></button>
+                </div>
                 <div class="profile-tabs"><div class="profile-tab active" onclick="switchProfileTab('saved')">Saved Kitchen</div><div class="profile-tab" onclick="switchProfileTab('public')">Public Kitchen</div><div class="profile-tab" onclick="switchProfileTab('private')">Private Kitchen</div></div>
                 <div style="padding: 0 20px 15px; display:flex; justify-content:flex-end;"><button class="btn btn-primary" style="width:auto; font-size:0.8rem; padding:8px 16px;" onclick="openKitchenUpload()"><i data-lucide="plus"></i> New Recipe</button></div>
                 <div id="profile-kitchen-grid" class="recipe-grid"></div>
             </div>
+
             <div id="settings" class="tab-content">
                 <div style="padding: 40px 20px;">
                     <h1 class="display-font" style="margin-bottom: 30px;">Settings</h1>
@@ -146,22 +156,63 @@
                 </div>
             </div>
         </main>
+
         <aside class="sidebar sidebar-right">
             <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;"><div style="display:flex; align-items:center; gap:8px;"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div><button onclick="openHub()" style="background:var(--primary); border:none; border-radius:50%; width:24px; height:24px; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i data-lucide="plus" style="width:14px; height:14px;"></i></button></div>
             <div id="desktop-messages" style="height: 300px; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 10px; margin-bottom: 15px; font-size: 0.85rem;"><p style="opacity: 0.5; text-align: center; margin-top: 100px;">No active chats</p></div>
+            <div style="display: flex; gap: 8px;"><input type="text" id="desktop-msg-input" placeholder="Quick reply..." style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.8rem; background: var(--white); color: var(--dark);"><button class="btn btn-primary" style="width: auto; padding: 10px;" onclick="sendHubMessage(document.getElementById('desktop-msg-input').value)"><i data-lucide="send" style="width: 16px;"></i></button></div>
             <div style="background: var(--light-bg); border-radius: 12px; padding: 20px; text-align: center; border: 1.5px dashed var(--border); margin-top: 20px;"><span style="background: var(--primary); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Sponsor</span><h4 style="margin: 10px 0 5px; font-size: 0.9rem;">Calalloo Pro</h4><p style="font-size: 0.75rem; color: var(--grey-text);">Unlock high-fidelity analytics and unlimited storage.</p><button class="btn btn-primary" style="margin-top: 15px; font-size: 0.8rem; padding: 8px;">Upgrade Now</button></div>
         </aside>
     </div>
-    <div class="messenger-bubble" onclick="openHub()"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" alt="Messenger"></div>
+
+    <!-- Modals -->
+    <div id="public-profile-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px; border-radius: 24px;">
+            <button class="close-btn" style="position: absolute; top: 20px; right: 20px;" onclick="closePublicProfile()"><i data-lucide="x"></i></button>
+            <div id="pp-header" style="text-align: center; padding: 40px 20px; border-bottom: 1px solid var(--border);">
+                <img id="pp-avatar" class="avatar-main" style="width: 100px; height: 100px; margin-bottom: 15px;">
+                <h2 id="pp-username" class="display-font">@keeper</h2>
+                <p id="pp-bio" class="grey-text" style="margin-bottom: 20px;"></p>
+                <button id="follow-btn" class="btn btn-primary" style="width: auto; margin: 0 auto;">Follow Keeper</button>
+            </div>
+            <div id="pp-kitchen" class="recipe-grid" style="padding: 20px;"></div>
+        </div>
+    </div>
+
+    <div id="recipe-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 id="rd-title" class="display-font"></h2>
+                <button class="close-btn" onclick="closeRecipe()"><i data-lucide="x"></i></button>
+            </div>
+            <img id="rd-img" style="width:100%; height:250px; object-fit:cover; border-radius:12px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <button id="like-btn" class="btn btn-secondary" style="width:auto; padding: 8px 16px;"><i data-lucide="heart"></i> Like</button>
+                <button id="save-recipe-btn" class="btn btn-primary" style="width:auto; padding: 8px 16px;"><i data-lucide="bookmark"></i> Save</button>
+            </div>
+            <p id="rd-desc" class="grey-text" style="margin-bottom:20px;"></p>
+            
+            <div class="comment-section">
+                <h4 class="display-font" style="margin-bottom:15px;">Comments</h4>
+                <div id="rd-comments" style="max-height: 200px; overflow-y:auto; margin-bottom:15px;"></div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="comment-input" placeholder="Add a comment..." style="flex:1; padding:12px; border-radius:12px; border:1px solid var(--border);">
+                    <button class="btn btn-primary" style="width:auto;" onclick="submitComment()"><i data-lucide="send"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="kitchen-upload-modal" class="modal"><div class="modal-content"><h2 class="display-font" style="margin-bottom: 20px;">Upload to Kitchen</h2><div id="upload-stage-1"><label class="btn btn-primary" style="margin-bottom: 15px;"><i data-lucide="image"></i> Select Photo <input type="file" id="kitchen-photo-input" style="display: none;" onchange="previewKitchenUpload(this)" accept="image/*"></label><img id="k-preview" style="width:100%; border-radius:12px; margin-bottom:15px; display:none;"><input type="text" id="k-title" placeholder="Recipe Title" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:15px; background: var(--white); color: var(--dark);"><div style="display:flex; gap:10px; margin-bottom:20px;"><button class="btn btn-secondary" onclick="setKitchenPrivacy(true)" id="btn-pub">Public</button><button class="btn btn-secondary" onclick="setKitchenPrivacy(false)" id="btn-priv">Private</button></div><button class="btn btn-primary" onclick="submitKitchenUpload()">Push to Kitchen</button></div><button class="btn btn-secondary" onclick="closeKitchenUpload()" style="margin-top: 10px;">Cancel</button></div></div>
     <div id="create-group-modal" class="modal"><div class="modal-content"><h2 class="display-font" style="margin-bottom: 20px;">Create Heritage Group</h2><input type="text" id="group-name" placeholder="Group Name" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; background: var(--white); color: var(--dark);"><textarea id="group-desc" placeholder="Group Description" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; background: var(--white); color: var(--dark);"></textarea><button class="btn btn-primary" onclick="submitCreateGroup()">Create Now</button><button class="btn btn-secondary" onclick="closeCreateGroup()" style="margin-top: 10px;">Cancel</button></div></div>
-    <div id="recipe-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="rd-title" class="display-font"></h2><button class="close-btn" onclick="closeRecipe()"><i data-lucide="x"></i></button></div><img id="rd-img" style="width:100%;height:200px;object-fit:cover;border-radius:12px;margin-bottom:20px"><p id="rd-desc" class="grey-text" style="margin-bottom:20px"></p><button class="btn btn-primary" id="save-recipe-btn">Save to Kitchen</button></div></div>
     <div id="hub-modal" class="modal"><div class="modal-content" style="height: 85vh; border-radius: 24px;"><div class="modal-header"><div style="display:flex;align-items:center;gap:10px"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" style="width:30px;height:30px;border-radius:6px"><h2 class="display-font">Messenger</h2></div><button class="close-btn" onclick="closeHub()"><i data-lucide="x"></i></button></div><div id="hub-messages" style="flex-grow: 1; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px;"></div><div style="display: flex; gap: 10px;"><input type="text" id="hub-input" placeholder="Type a message..." style="flex-grow: 1; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--white); color: var(--dark);"><button class="btn btn-primary" style="width: auto;" onclick="sendHubMessage()"><i data-lucide="send"></i></button></div></div></div>
-    <div id="menu-overlay" class="menu-overlay"><div style="display: flex; justify-content: flex-end; margin-bottom: 40px;"><button class="close-btn" onclick="toggleMenu()"><i data-lucide="x" style="width: 32px; height: 32px;"></i></button></div><div class="menu-item" onclick="showTab('discovery'); toggleMenu()"><i data-lucide="search"></i>Discovery</div><div class="menu-item" onclick="showTab('vision'); toggleMenu()"><i data-lucide="camera"></i>Vision AI Camera</div><div class="menu-item" onclick="openHub(); toggleMenu()"><i data-lucide="message-square"></i>Messenger</div><div class="menu-item" onclick="openCreateGroup(); toggleMenu()"><i data-lucide="plus-circle"></i>Create Group</div><div class="menu-item" onclick="showTab('profile'); toggleMenu()"><i data-lucide="user"></i>Profile</div><div class="menu-item" onclick="showTab('settings'); toggleMenu()"><i data-lucide="settings"></i>Settings</div><div class="menu-item" onclick="signOut()"><i data-lucide="log-out"></i>Sign Out</div></div>
+    
+    <div class="messenger-bubble" onclick="openHub()"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" alt="Messenger"></div>
+
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
         let allRecipes = [], mapInitialized = false, stream = null, currentKitchenTab = 'saved', isPublic = true;
-        let recipeLimit = 50, recipeOffset = 0;
+        let recipeLimit = 50, recipeOffset = 0, currentOpenRecipeId = null, currentViewedUserId = null;
 
         async function loadData() {
             const { data: { user } } = await sb.auth.getUser(); if(!user) { window.location.href = '/login/'; return; }
@@ -181,158 +232,108 @@
             syncPermissionToggles(); loadGroups(); switchProfileTab('saved'); lucide.createIcons();
         }
 
-        async function loadMoreRecipes() {
-            recipeOffset += recipeLimit;
-            const { data: more } = await sb.from('recipes').select('*').eq('is_published', true).order('created_at', {ascending:false}).range(recipeOffset, recipeOffset + recipeLimit - 1);
-            if(more && more.length) {
-                const processed = more.map(r => ({...r, cover_photo_url: r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'}));
-                allRecipes = [...allRecipes, ...processed];
-                renderRecipes(allRecipes);
-                if(more.length < recipeLimit) document.getElementById('load-more-area').style.display = 'none';
-            } else {
-                document.getElementById('load-more-area').style.display = 'none';
-            }
-        }
-
         async function handleUnifiedSearch(query) {
             if(query.length < 2) { 
-                recipeOffset = 0;
-                const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true).order('created_at', {ascending:false}).range(0, recipeLimit - 1);
-                allRecipes = (recipes || []).map(r => ({...r, cover_photo_url: r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'}));
                 renderRecipes(allRecipes); 
                 document.getElementById('search-results-users').style.display = 'none';
                 document.getElementById('recipe-search-title').style.display = 'none';
-                document.getElementById('load-more-area').style.display = allRecipes.length >= recipeLimit ? 'block' : 'none';
                 return; 
             }
-            document.getElementById('load-more-area').style.display = 'none';
-            // 1. Search Recipes by Keywords in Title
-            const { data: filteredRecipes } = await sb.from('recipes').select('*').eq('is_published', true).ilike('title', `%${query}%`).limit(50);
-            const processed = (filteredRecipes || []).map(r => ({...r, cover_photo_url: r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'}));
-            renderRecipes(processed);
+            // 1. Recipes
+            const { data: r } = await sb.from('recipes').select('*').eq('is_published', true).ilike('title', `%${query}%`).limit(20);
+            renderRecipes(r || []);
             document.getElementById('recipe-search-title').style.display = 'block';
 
-            // 2. Search Users (Private filter simulation)
-            const { data: users } = await sb.from('profiles').select('*').not('id', 'is', null).limit(10);
-            if(users && users.length) {
+            // 2. Users (Excluding Private simulation)
+            const { data: u } = await sb.from('profiles').select('*').limit(5);
+            if(u && u.length) {
                 document.getElementById('search-results-users').style.display = 'block';
-                document.getElementById('user-results-grid').innerHTML = users.map(u => `<div class="user-card"><img class="avatar" src="${u.avatar_url || 'https://via.placeholder.com/60'}"><h4 style="font-size:0.9rem;">@keeper</h4><p style="font-size:0.7rem; color:var(--grey-text);">Heritage Keeper</p></div>`).join('');
+                document.getElementById('user-results-grid').innerHTML = u.map(user => `
+                    <div class="user-card" onclick="openPublicProfile('${user.id}')">
+                        <img class="avatar" src="${user.avatar_url || 'https://via.placeholder.com/60'}">
+                        <h4>@keeper</h4>
+                    </div>
+                `).join('');
             }
         }
 
-        async function saveFullProfile() {
-            const { data: { user } } = await sb.auth.getUser();
-            const btn = document.getElementById('save-profile-btn'); btn.innerText = 'Syncing...';
-            await sb.auth.updateUser({ data: { username: document.getElementById('p-username').value } });
-            await sb.from('profiles').upsert({ id: user.id, bio: document.getElementById('p-bio').value });
-            alert('Synced!'); btn.innerText = 'Save Profile'; await sb.auth.refreshSession();
+        async function openPublicProfile(userId) {
+            currentViewedUserId = userId;
+            const { data: profile } = await sb.from('profiles').select('*').eq('id', userId).single();
+            const { data: recipes } = await sb.from('recipes').select('*').eq('author_id', userId).eq('is_published', true);
+            
+            document.getElementById('pp-username').innerText = '@keeper';
+            document.getElementById('pp-bio').innerText = profile?.bio || 'Heritage Keeper';
+            document.getElementById('pp-avatar').src = profile?.avatar_url || 'https://via.placeholder.com/100';
+            
+            document.getElementById('pp-kitchen').innerHTML = (recipes || []).map(r => `
+                <div class="recipe-card" onclick="openRecipe('${r.id}')">
+                    <div class="recipe-image" style="background-image: url(${r.cover_photo_url})"></div>
+                    <div class="recipe-info"><h3>${r.title}</h3></div>
+                </div>
+            `).join('') || '<p style="text-align:center;width:100%;">No public recipes yet</p>';
+            
+            document.getElementById('public-profile-modal').style.display = 'flex';
+            lucide.createIcons();
         }
-        function copyInvite() { const link = document.getElementById('p-invite-link').innerText; navigator.clipboard.writeText(link).then(() => alert('Invite Link Copied!')); }
-        function togglePermission(type) { const c = document.getElementById(`${type}-toggle`).checked; localStorage.setItem(`perm-${type}`, c); if(type === 'camera') c ? initCam() : stopCam(); }
+
+        function closePublicProfile() { document.getElementById('public-profile-modal').style.display = 'none'; }
+
+        async function openRecipe(id) {
+            currentOpenRecipeId = id;
+            const r = allRecipes.find(x => x.id === id) || (await sb.from('recipes').select('*').eq('id', id).single()).data;
+            if(!r) return;
+            document.getElementById('rd-title').innerText = r.title;
+            document.getElementById('rd-desc').innerText = r.description || '';
+            document.getElementById('rd-img').src = r.cover_photo_url;
+            
+            // Load Comments (Real-time update logic)
+            loadComments(id);
+            
+            document.getElementById('recipe-modal').style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        async function loadComments(recipeId) {
+            const { data: comms } = await sb.from('comments').select('*').eq('recipe_id', recipeId).order('created_at', {ascending:true});
+            document.getElementById('rd-comments').innerHTML = (comms || []).map(c => `
+                <div class="comment-item">
+                    <div class="comment-avatar"></div>
+                    <div class="comment-body"><span class="comment-user">@keeper</span>${c.text}</div>
+                </div>
+            `).join('') || '<p style="opacity:0.5; font-size:0.8rem;">No comments yet.</p>';
+        }
+
+        async function submitComment() {
+            const text = document.getElementById('comment-input').value;
+            if(!text) return;
+            const { data: { user } } = await sb.auth.getUser();
+            const { error } = await sb.from('comments').insert({ recipe_id: currentOpenRecipeId, user_id: user.id, text });
+            if(!error) { document.getElementById('comment-input').value = ''; loadComments(currentOpenRecipeId); }
+        }
+
+        // Standard helpers
+        function renderRecipes(list) { document.getElementById('discovery-grid').innerHTML = list.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id}')"><div class="recipe-image" style="background-image: url(${r.cover_photo_url})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`).join('') || '<p style="text-align:center;width:100%;padding:40px;opacity:0.5">No recipes found</p>'; }
+        function closeRecipe() { document.getElementById('recipe-modal').style.display = 'none'; }
         function showTab(id) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll(`.pill[onclick*="${id}"]`).forEach(p => p.classList.add('active'));
-            if(id === 'map' && localStorage.getItem('perm-location') === 'true') {
-                document.getElementById('location-blocked').style.display = 'none';
-                if(!window.heritageMap) {
-                    setTimeout(() => {
-                        window.heritageMap = L.map('map-container').setView([10.6918, -61.2225], 13);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(window.heritageMap);
-                        setTimeout(() => window.heritageMap.invalidateSize(), 400);
-                    }, 200);
-                } else { setTimeout(() => window.heritageMap.invalidateSize(), 400); }
-            } else if(id === 'map') { document.getElementById('location-blocked').style.display = 'block'; }
-            if(id === 'vision') initCam(); else stopCam();
-        }
-        function renderRecipes(list) { document.getElementById('discovery-grid').innerHTML = list.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id}')"><div class="recipe-image" style="background-image: url(${r.cover_photo_url})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`).join('') || '<p style="text-align:center;width:100%;padding:40px;opacity:0.5">No recipes found</p>'; }
-        async function switchProfileTab(tab) {
-            currentKitchenTab = tab; document.querySelectorAll('.profile-tab').forEach(t => t.classList.toggle('active', t.innerText.toLowerCase().includes(tab)));
-            const { data: { user } } = await sb.auth.getUser(); let recipes = [];
-            if(tab === 'saved') { const { data: saved } = await sb.from('saved_recipes').select('recipe_id').eq('user_id', user.id); const ids = (saved || []).map(s => s.recipe_id); if(ids.length) { const { data: r } = await sb.from('recipes').select('*').in('id', ids); recipes = r || []; } }
-            else { const { data: r } = await sb.from('recipes').select('*').eq('author_id', user.id).eq('is_published', tab === 'public'); recipes = r || []; }
-            document.getElementById('profile-kitchen-grid').innerHTML = recipes.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id}')"><div class="recipe-image" style="background-image: url(${r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`).join('') || '<p style="text-align:center;width:100%;grid-column:1/-1;padding:40px;opacity:0.5">Kitchen is empty</p>';
-        }
-        function openKitchenUpload() { document.getElementById('kitchen-upload-modal').style.display = 'flex'; }
-        function closeKitchenUpload() { document.getElementById('kitchen-upload-modal').style.display = 'none'; }
-        function setKitchenPrivacy(pub) { isPublic = pub; document.getElementById('btn-pub').className = pub ? 'btn btn-primary' : 'btn btn-secondary'; document.getElementById('btn-priv').className = !pub ? 'btn btn-primary' : 'btn btn-secondary'; }
-        async function submitKitchenUpload() {
-            const { data: { user } } = await sb.auth.getUser();
-            const file = document.getElementById('kitchen-photo-input').files[0]; if(!file) return alert('Photo required');
-            const title = document.getElementById('k-title').value; if(!title) return alert('Title required');
-            const fileName = `recipes/${user.id}/${Date.now()}.jpg`;
-            await sb.storage.from('heritage-media').upload(fileName, file);
-            const { data: { publicUrl } } = sb.storage.from('heritage-media').getPublicUrl(fileName);
-            await sb.from('recipes').insert({ author_id: user.id, title, cover_photo_url: publicUrl, is_published: isPublic });
-            closeKitchenUpload(); switchProfileTab(isPublic ? 'public' : 'private');
-        }
-        function syncPermissionToggles() {
-            document.getElementById('camera-toggle').checked = localStorage.getItem('perm-camera') === 'true';
-            document.getElementById('location-toggle').checked = localStorage.getItem('perm-location') === 'true';
-            document.getElementById('theme-toggle').checked = localStorage.getItem('theme') === 'dark';
-            document.getElementById('privacy-toggle').checked = localStorage.getItem('perm-privacy') === 'true';
-            if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-        }
-        async function loadGroups() { const { data: g } = await sb.from('groups').select('*'); if(g && g.length) document.getElementById('sidebar-groups').innerHTML = g.map(x => `<div class="list-item"><div style="width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:0.6rem">${x.name.charAt(0)}</div>${x.name}</div>`).join(''); }
-        function openCreateGroup() { document.getElementById('create-group-modal').style.display = 'flex'; }
-        function closeCreateGroup() { document.getElementById('create-group-modal').style.display = 'none'; }
-        async function submitCreateGroup() {
-            const { data: { user } } = await sb.auth.getUser();
-            await sb.from('groups').insert({ name: document.getElementById('group-name').value, description: document.getElementById('group-desc').value, created_by: user.id });
-            closeCreateGroup(); loadGroups();
+            if(id === 'map' && !window.heritageMap) {
+                 setTimeout(() => {
+                    window.heritageMap = L.map('map-container').setView([10.6918, -61.2225], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(window.heritageMap);
+                    setTimeout(() => window.heritageMap.invalidateSize(), 400);
+                }, 200);
+            }
         }
         function toggleTheme() { const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', n); localStorage.setItem('theme', n); }
         function toggleMenu() { const m = document.getElementById('menu-overlay'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
         function openHub() { document.getElementById('hub-modal').style.display = 'flex'; }
         function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
-        function openRecipe(id) {
-            const r = allRecipes.find(x => x.id === id); if(!r) return;
-            document.getElementById('rd-title').innerText = r.title; document.getElementById('rd-img').src = r.cover_photo_url;
-            document.getElementById('recipe-modal').style.display = 'flex';
-        }
-        function closeRecipe() { document.getElementById('recipe-modal').style.display = 'none'; }
         function signOut() { sb.auth.signOut().then(() => window.location.href = '/login/'); }
-        function previewKitchenUpload(input) { const file = input.files[0]; if(file) { const r = new FileReader(); r.onload = e => { const p = document.getElementById('k-preview'); p.src = e.target.result; p.style.display = 'block'; }; r.readAsDataURL(file); } }
-        async function initCam() {
-            if(localStorage.getItem('perm-camera') !== 'true') return;
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                document.getElementById('video-feed').srcObject = stream;
-                document.getElementById('video-feed').style.display = 'block';
-                document.getElementById('camera-blocked').style.display = 'none';
-                document.getElementById('analyze-btn').style.display = 'block';
-                document.getElementById('cam-action-btn').innerHTML = '<i data-lucide="camera-off"></i> Stop Camera';
-                lucide.createIcons();
-            } catch (e) { alert('Denied'); }
-        }
-        function stopCam() {
-            if(stream) stream.getTracks().forEach(t => t.stop());
-            document.getElementById('video-feed').style.display = 'none';
-            document.getElementById('camera-blocked').style.display = 'block';
-            document.getElementById('analyze-btn').style.display = 'none';
-            document.getElementById('cam-action-btn').innerHTML = '<i data-lucide="camera"></i> Start Camera';
-            lucide.createIcons();
-        }
-        function analyzeFood() {
-            const btn = document.getElementById('analyze-btn'); btn.innerText = 'Analyzing Heritage...';
-            setTimeout(() => {
-                alert("AI Detects: Saltfish Buljol\nIngredients: Saltfish, Onion, Scotch Bonnet, Lime.");
-                btn.innerHTML = '<i data-lucide="map-pin"></i> Find Ingredients Near Me';
-                btn.onclick = () => showTab('map');
-                lucide.createIcons();
-            }, 2000);
-        }
-        async function uploadAvatar(input) {
-            const file = input.files[0]; if(!file) return;
-            const { data: { user } } = await sb.auth.getUser();
-            const fileName = `avatars/${user.id}/${Date.now()}.jpg`;
-            await sb.storage.from('heritage-media').upload(fileName, file);
-            const { data: { publicUrl } } = sb.storage.from('heritage-media').getPublicUrl(fileName);
-            const finalUrl = `${publicUrl}?t=${Date.now()}`;
-            await sb.from('profiles').update({ avatar_url: finalUrl }).eq('id', user.id);
-            document.getElementById('p-avatar').src = finalUrl;
-        }
+
         window.onload = loadData;
     </script>
 </body>
