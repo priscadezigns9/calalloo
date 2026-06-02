@@ -160,8 +160,12 @@
                         <img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100">
                         <input type="file" id="avatar-input" style="display: none;" onchange="uploadAvatar(this)" accept="image/*">
                     </div>
-                    <input type="text" id="p-name" class="display-font" style="text-align: center; border: none; background: none; font-size: 2rem; width: 100%; color: var(--dark); outline: none; margin-bottom: 5px;" placeholder="Your Name">
-                    <p id="p-handle" class="grey-text" style="margin-bottom: 20px;"></p>
+                    <!-- Unified editable Name/Username -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
+                        <input type="text" id="p-username" class="display-font" style="text-align: center; border: 1.5px dashed var(--border); border-radius: 8px; padding: 5px 15px; background: none; font-size: 1.8rem; width: auto; color: var(--dark); outline: none;" placeholder="username">
+                        <span style="color: var(--grey-text); font-size: 0.9rem; font-weight: 500;">Your Heritage Handle</span>
+                    </div>
+
                     <div class="stats">
                         <div class="stat-item"><span class="stat-val" id="stat-recipes">0</span><span class="stat-label">Recipes</span></div>
                         <div class="stat-item"><span class="stat-val" id="stat-followers">0</span><span class="stat-label">Followers</span></div>
@@ -170,11 +174,13 @@
                     <textarea id="p-bio" placeholder="Add your heritage bio..." style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; resize: none; min-height: 80px; margin-bottom: 15px; background: var(--white); color: var(--dark);"></textarea>
                     <button class="btn btn-primary" id="save-profile-btn" onclick="saveFullProfile()">Save Profile</button>
                 </div>
+                
                 <div class="profile-tabs">
                     <div class="profile-tab active" onclick="switchProfileTab('saved')">Saved Kitchen</div>
                     <div class="profile-tab" onclick="switchProfileTab('public')">Public Kitchen</div>
                     <div class="profile-tab" onclick="switchProfileTab('private')">Private Kitchen</div>
                 </div>
+
                 <div id="profile-kitchen-grid" class="recipe-grid"></div>
             </div>
 
@@ -211,6 +217,7 @@
 
     <div class="messenger-bubble" onclick="openHub()"><img src="/assets/logo.png" alt="Messenger"></div>
 
+    <!-- Modals -->
     <div id="create-group-modal" class="modal"><div class="modal-content"><h2 class="display-font" style="margin-bottom: 20px;">Create Heritage Group</h2><input type="text" id="group-name" placeholder="Group Name" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px;"><textarea id="group-desc" placeholder="Group Description" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px;"></textarea><button class="btn btn-primary" onclick="submitCreateGroup()">Create Now</button><button class="btn btn-secondary" onclick="closeCreateGroup()" style="margin-top: 10px;">Cancel</button></div></div>
     <div id="recipe-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="rd-title" class="display-font"></h2><button class="close-btn" onclick="closeRecipe()"><i data-lucide="x"></i></button></div><img id="rd-img" style="width:100%;height:200px;object-fit:cover;border-radius:12px;margin-bottom:20px"><p id="rd-desc" class="grey-text" style="margin-bottom:20px"></p><div id="rd-instructions" style="margin-bottom:30px"></div><button class="btn btn-primary" id="save-recipe-btn">Save to Kitchen</button></div></div>
     <div id="hub-modal" class="modal"><div class="modal-content" style="height: 85vh; border-radius: 24px;"><div class="modal-header"><div style="display:flex;align-items:center;gap:10px"><img src="/assets/logo.png" style="width:30px;height:30px;border-radius:6px"><h2 class="display-font">Messenger</h2></div><button class="close-btn" onclick="closeHub()"><i data-lucide="x"></i></button></div><div id="hub-messages" style="flex-grow: 1; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px;"></div><div style="display: flex; gap: 10px;"><input type="text" id="hub-input" placeholder="Type a message..." style="flex-grow: 1; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px;"><button class="btn btn-primary" style="width: auto;" onclick="sendHubMessage()"><i data-lucide="send"></i></button></div></div></div>
@@ -238,8 +245,7 @@
             renderRecipes(allRecipes);
             const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
             if(profile) {
-                document.getElementById('p-name').value = profile.full_name || '';
-                document.getElementById('p-handle').innerText = `@${profile.username || 'keeper'}`;
+                document.getElementById('p-username').value = profile.username || 'keeper';
                 document.getElementById('p-bio').value = profile.bio || '';
                 document.getElementById('p-avatar').src = profile.avatar_url || 'https://via.placeholder.com/100';
                 document.getElementById('stat-followers').innerText = profile.followers_count || 0;
@@ -264,15 +270,19 @@
             const fileName = `avatars/${user.id}/${Date.now()}.${file.name.split('.').pop()}`;
             await sb.storage.from('heritage-media').upload(fileName, file);
             const { data: { publicUrl } } = sb.storage.from('heritage-media').getPublicUrl(fileName);
-            await sb.from('profiles').update({ avatar_url: publicUrl }).eq('id', user.id);
-            document.getElementById('p-avatar').src = publicUrl;
+            // Cache bust the image URL
+            const finalUrl = `${publicUrl}?t=${Date.now()}`;
+            await sb.from('profiles').update({ avatar_url: finalUrl }).eq('id', user.id);
+            document.getElementById('p-avatar').src = finalUrl;
         }
 
         async function saveFullProfile() {
             const { data: { user } } = await sb.auth.getUser();
             const btn = document.getElementById('save-profile-btn'); btn.innerText = 'Syncing...';
-            const { error } = await sb.from('profiles').upsert({ id: user.id, full_name: document.getElementById('p-name').value, bio: document.getElementById('p-bio').value });
-            if(!error) alert('Synced!'); btn.innerText = 'Save Profile';
+            // Removed non-existent 'full_name' column, using 'username' only
+            const { error } = await sb.from('profiles').upsert({ id: user.id, username: document.getElementById('p-username').value, bio: document.getElementById('p-bio').value }, { onConflict: 'id' });
+            if(!error) { alert('Synced!'); btn.innerText = 'Save Profile'; }
+            else { alert('Error: ' + error.message); btn.innerText = 'Save Profile'; }
         }
 
         function renderRecipes(list) {
