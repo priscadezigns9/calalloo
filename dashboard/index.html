@@ -32,8 +32,7 @@
         .pill.active { background: var(--primary); color: white; }
 
         .tab-content { display: none; padding-bottom: 80px; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content.active { display: block; }
 
         /* Discovery Grid */
         .search-bar { padding: 20px; position: sticky; top: 63px; background: white; z-index: 900; }
@@ -287,7 +286,7 @@
                     }));
                 }
 
-                // 3. Render UI
+                // 3. Render UI (No icons yet)
                 renderRecipes(allRecipes);
                 renderKeepers(allKeepers);
 
@@ -305,11 +304,9 @@
                     document.getElementById('p-display-name').value = user.email.split('@')[0];
                 }
 
-                // 5. Restore last active tab (ONLY AFTER DATA IS READY)
+                // 5. Restore last active tab (Syncs UI and creates Icons)
                 const lastTab = localStorage.getItem('activeTab') || 'discovery';
                 showTab(lastTab);
-                
-                lucide.createIcons();
             } catch (e) {
                 console.error('System Load Error:', e);
             }
@@ -378,13 +375,18 @@
 
         // Map Init
         let googleMap;
+        let currentTab = 'discovery';
         function showTab(id) {
+            if(!id) return;
+            currentTab = id;
             localStorage.setItem('activeTab', id);
+            
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.pill').forEach(p => {
                 p.classList.remove('active');
                 if(p.innerText.toLowerCase().includes(id.toLowerCase())) p.classList.add('active');
             });
+            
             const target = document.getElementById(id);
             if(target) target.classList.add('active');
             
@@ -393,6 +395,8 @@
                 mapInitialized = true;
             }
             if(id === 'profile') loadKitchen();
+            
+            lucide.createIcons();
         }
 
         function initGoogleMap() {
@@ -713,7 +717,6 @@
         function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
 
         window.onload = loadData;
-        lucide.createIcons();
     </script>
 </body>
 </html>
