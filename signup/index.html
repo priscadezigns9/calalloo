@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Join the Heritage | Calalloo</title>
+    <link rel="icon" type="image/png" href="https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #E87722; --bg: #FFFFFF; --dark: #000000; --border: #F2F2F2; --grey: #666666; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .auth-card { width: 100%; max-width: 400px; text-align: center; }
+        .logo { width: 60px; margin-bottom: 20px; }
+        h1 { font-family: 'Fraunces', serif; font-size: 2rem; margin-bottom: 10px; color: var(--dark); }
+        p { color: var(--grey); margin-bottom: 30px; font-size: 0.95rem; }
+        .input-group { margin-bottom: 15px; text-align: left; position: relative; }
+        input { width: 100%; padding: 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; transition: border-color 0.2s; }
+        input:focus { border-color: var(--primary); }
+        .password-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--grey); cursor: pointer; display: flex; align-items: center; }
+        .btn { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; margin-top: 10px; }
+        .btn:active { opacity: 0.8; }
+        .footer { margin-top: 30px; font-size: 0.9rem; color: var(--grey); }
+        .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        #msg { margin-top: 15px; font-weight: 600; padding: 10px; border-radius: 8px; display: none; }
+        .error { background: #FEE2E2; color: #DC2626; }
+        .success { background: #DCFCE7; color: #166534; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <img src="https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB" class="logo">
+        <h1>Join the Heritage</h1>
+        <p>Start your journey as a Heritage Keeper.</p>
+        <form id="signup-form">
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Create Password" required>
+                <div class="password-toggle" onclick="togglePass()">
+                    <i data-lucide="eye" id="eye-icon"></i>
+                </div>
+            </div>
+            <button type="submit" id="submit-btn" class="btn">Create Account</button>
+            <div id="msg"></div>
+        </form>
+        <div class="footer">
+            Already a member? <a href="/login/">Sign In</a>
+        </div>
+    </div>
+
+    <script>
+        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-callaloo-dpanyard}}');
+        
+        lucide.createIcons();
+
+        function togglePass() {
+            const pass = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            if (pass.type === 'password') {
+                pass.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                pass.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        document.getElementById('signup-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('submit-btn');
+            const msgBox = document.getElementById('msg');
+
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            msgBox.style.display = 'none';
+
+            const { data, error } = await sb.auth.signUp({ email, password });
+            
+            if (error) {
+                msgBox.innerText = error.message;
+                msgBox.className = 'error';
+                msgBox.style.display = 'block';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                
+                if (error.message.includes("already registered")) {
+                    msgBox.innerHTML = 'Account already exists. <a href="/login/">Sign in here.</a>';
+                }
+            } else if (data.user && data.session === null) {
+                msgBox.innerText = 'Success! Check your email to confirm your account.';
+                msgBox.className = 'success';
+                msgBox.style.display = 'block';
+            } else {
+                window.location.href = '/dashboard/';
+            }
+        };
+    </script>
+</body>
+</html>
