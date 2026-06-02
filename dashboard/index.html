@@ -48,7 +48,6 @@
             overflow: hidden;
         }
 
-        /* --- Header --- */
         header {
             height: 80px;
             background: var(--white);
@@ -104,7 +103,6 @@
             gap: 6px;
         }
 
-        /* --- Layout --- */
         .layout {
             flex: 1;
             display: flex;
@@ -125,11 +123,9 @@
             padding: 40px 5%;
         }
 
-        /* --- Views --- */
         .view { display: none; }
         .view.active { display: block; }
 
-        /* --- Components --- */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -147,7 +143,6 @@
         .card-img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
         .card-body { padding: 20px; }
 
-        /* --- Social Hub (New) --- */
         .social-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
         .search-bar { 
             width: 100%; 
@@ -182,7 +177,6 @@
             cursor: pointer;
         }
 
-        /* --- Profile / Portfolio (New) --- */
         .profile-hero { text-align: center; padding: 40px 0; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
         .profile-avatar { width: 120px; height: 120px; border-radius: 50%; background: #eee; margin: 0 auto 20px; border: 4px solid var(--primary); position: relative; }
         .edit-avatar { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; padding: 8px; border-radius: 50%; cursor: pointer; }
@@ -194,13 +188,17 @@
         .privacy-toggle { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #888; }
         .whatsapp-pin { display: flex; align-items: center; gap: 8px; color: #25D366; font-weight: 800; font-size: 14px; margin-top: 8px; }
 
-        /* --- Chat UI --- */
         .chat-container { height: 500px; display: flex; flex-direction: column; background: var(--white); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; }
         .chat-messages { flex: 1; padding: 24px; overflow-y: auto; background: #fcfcfc; }
         .chat-input-area { padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; }
         .chat-bubble { padding: 12px 18px; border-radius: 18px; margin-bottom: 8px; max-width: 70%; font-size: 14px; font-weight: 500; }
         .bubble-me { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
         .bubble-them { align-self: flex-start; background: #eee; border-bottom-left-radius: 4px; }
+
+        .settings-card { background: var(--white); padding: 32px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 24px; }
+        .form-row { margin-bottom: 20px; }
+        .form-row label { display: block; font-weight: 800; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; color: var(--primary); }
+        .form-row input, .form-row textarea { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); font-family: var(--font-sans); }
     </style>
 </head>
 <body>
@@ -233,18 +231,14 @@
 
             <div id="active-chats" style="margin-bottom: 32px;">
                 <h4 style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 16px;">Active Chats</h4>
-                <!-- Chat List -->
             </div>
 
             <h4 style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 16px;">Top Sourcing Nodes</h4>
-            <div id="ai-recommendations" style="display: flex; flex-direction: column; gap: 12px;">
-                <!-- Recommendations -->
-            </div>
+            <div id="ai-recommendations" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </aside>
 
         <main class="main-content">
             
-            <!-- Discovery View (Catalog) -->
             <div id="feed" class="view active">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
                     <h2 style="font-family: var(--font-display); font-size: 32px;">Heritage Catalog</h2>
@@ -253,14 +247,10 @@
                 
                 <input type="text" class="search-bar" style="margin-bottom: 32px; max-width: 100%;" placeholder="Search 500+ authentic recipes from primary sources...">
 
-                <div class="card-grid" id="catalog-grid">
-                    <!-- Catalog Cards -->
-                </div>
+                <div class="card-grid" id="catalog-grid"></div>
             </div>
 
-            <!-- Vision View -->
             <div id="scanner" class="view">
-                <!-- Previous Scanner UI remains here -->
                 <div style="text-align: center; padding: 100px 0;">
                     <i data-lucide="scan" style="width: 64px; height: 64px; color: var(--primary); margin-bottom: 24px;"></i>
                     <h2 style="font-family: var(--font-display);">Vision Lab</h2>
@@ -268,31 +258,15 @@
                 </div>
             </div>
 
-            <!-- Community View (Find People, Chat, Groups) -->
             <div id="community" class="view">
                 <div class="social-header">
                     <h2 style="font-family: var(--font-display);">Heritage Hub</h2>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="pill active" style="padding: 8px 16px;">People</button>
-                        <button class="pill" style="padding: 8px 16px;">Groups</button>
-                        <button class="pill" style="padding: 8px 16px;">Global Chat</button>
-                    </div>
                 </div>
 
                 <div style="display: flex; gap: 40px;">
                     <div style="flex: 1;">
                         <input type="text" class="search-bar" style="margin-bottom: 24px;" placeholder="Find people to follow...">
-                        <div id="people-list">
-                            <!-- Person Cards -->
-                            <div class="person-card">
-                                <div class="avatar"></div>
-                                <div>
-                                    <div style="font-weight: 800;">Chef Maria</div>
-                                    <div style="font-size: 12px; color: #888;">Heritage Keeper • Barbados</div>
-                                </div>
-                                <button class="follow-btn">Follow</button>
-                            </div>
-                        </div>
+                        <div id="people-list"></div>
                     </div>
 
                     <div style="width: 400px;">
@@ -300,7 +274,6 @@
                         <div class="chat-container">
                             <div class="chat-messages" id="chat-messages">
                                 <div class="chat-bubble bubble-them">Welcome to the Calalloo Heritage Hub!</div>
-                                <div class="chat-bubble bubble-me">Thanks! Looking for authentic Pepperpot recipes.</div>
                             </div>
                             <div class="chat-input-area">
                                 <input type="text" placeholder="Type a message..." style="flex:1; border:none; outline:none; font-weight:600;">
@@ -311,40 +284,48 @@
                 </div>
             </div>
 
-            <!-- Profile / Portfolio View -->
             <div id="profile" class="view">
                 <div class="profile-hero">
                     <div class="profile-avatar">
                         <div class="edit-avatar"><i data-lucide="camera" style="width:16px;"></i></div>
                     </div>
-                    <h2 id="profile-display-name" style="font-family: var(--font-display); font-size: 28px;">Prisca Node</h2>
-                    <p id="profile-username" style="color: #888; font-weight: 600;">@prisca_heritage</p>
-                    <div id="profile-whatsapp" class="whatsapp-pin" style="justify-content: center;">
-                        <i data-lucide="phone"></i> +44 7576 505652
-                    </div>
-                    
-                    <div style="margin-top: 24px; display: flex; justify-content: center; gap: 24px;">
-                        <div><div style="font-weight: 900; font-size: 20px;">12</div><small style="color:#888;">Posts</small></div>
-                        <div><div style="font-weight: 900; font-size: 20px;">1.2k</div><small style="color:#888;">Followers</small></div>
-                        <div><div style="font-weight: 900; font-size: 20px;">450</div><small style="color:#888;">Following</small></div>
+                    <h2 id="profile-display-name" style="font-family: var(--font-display); font-size: 28px;">Anonymous Node</h2>
+                    <p id="profile-username" style="color: #888; font-weight: 600;">@username</p>
+                    <div id="profile-whatsapp-display" class="whatsapp-pin" style="justify-content: center; display: none;">
+                        <i data-lucide="phone"></i> <span id="whatsapp-val"></span>
                     </div>
                 </div>
 
                 <div class="portfolio-tabs">
                     <div class="tab-btn active">Public Portfolio</div>
                     <div class="tab-btn">Private Vault</div>
-                    <div class="tab-btn">Information</div>
                 </div>
 
-                <div class="card-grid" id="portfolio-grid">
-                    <!-- Portfolio Items -->
-                </div>
+                <div class="card-grid" id="portfolio-grid"></div>
             </div>
 
-            <!-- Settings View -->
             <div id="settings" class="view">
-                <h2 style="font-family: var(--font-display); margin-bottom: 24px;">Node Configuration</h2>
-                <!-- Settings Content -->
+                <h2 style="font-family: var(--font-display); margin-bottom: 24px;">System Preferences</h2>
+                
+                <div class="settings-card">
+                    <h3 style="margin-bottom: 20px;">Identity Settings</h3>
+                    <form id="profile-form">
+                        <div class="form-row">
+                            <label>Display Name</label>
+                            <input type="text" id="set-fullname" placeholder="Chef Heritage">
+                        </div>
+                        <div class="form-row">
+                            <label>Username</label>
+                            <input type="text" id="set-username" placeholder="chef_heritage">
+                        </div>
+                        <div class="form-row">
+                            <label>WhatsApp Pin (Optional)</label>
+                            <input type="text" id="set-whatsapp" placeholder="+123...">
+                            <small style="color: #888;">Only shown on your profile if provided.</small>
+                        </div>
+                        <button type="submit" class="pill active" style="border:none; padding: 12px 24px; width: 100%;">Save Identity</button>
+                    </form>
+                </div>
             </div>
 
         </main>
@@ -369,13 +350,40 @@
             window.location.href = '/';
         }
 
+        async function updateSidebar(user) {
+            const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
+            const name = profile?.full_name || user.user_metadata.full_name || "Heritage Node";
+            const username = profile?.username || user.email.split('@')[0];
+            
+            document.getElementById('sidebar-name').innerText = name;
+            document.getElementById('profile-display-name').innerText = name;
+            document.getElementById('profile-username').innerText = "@" + username;
+
+            if (profile?.whatsapp_number) {
+                document.getElementById('profile-whatsapp-display').style.display = 'flex';
+                document.getElementById('whatsapp-val').innerText = profile.whatsapp_number;
+            }
+        }
+
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const { data: { user } } = await sb.auth.getUser();
+            const updates = {
+                id: user.id,
+                full_name: document.getElementById('set-fullname').value,
+                username: document.getElementById('set-username').value,
+                whatsapp_number: document.getElementById('set-whatsapp').value,
+                updated_at: new Date()
+            };
+            const { error } = await sb.from('profiles').upsert(updates);
+            if (error) alert(error.message);
+            else { alert('Identity Saved!'); updateSidebar(user); }
+        });
+
         window.onload = async () => {
             const { data: { user } } = await sb.auth.getUser();
             if (!user) { window.location.href = '/login/'; return; }
-            
-            document.getElementById('sidebar-name').innerText = user.user_metadata.full_name || "Heritage Node";
-            document.getElementById('profile-display-name').innerText = user.user_metadata.full_name || "My Node";
-            document.getElementById('profile-username').innerText = "@" + (user.email.split('@')[0]);
+            updateSidebar(user);
         };
     </script>
 </body>
