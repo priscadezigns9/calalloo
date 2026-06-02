@@ -76,6 +76,8 @@
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 3000; }
         .modal-content { background: var(--bg); color: var(--dark); width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; }
         .close-btn { background: none; border: none; cursor: pointer; color: var(--dark); }
+        .load-more-container { padding: 20px; text-align: center; }
+        .load-more-btn { background: var(--light-bg); color: var(--dark); border: 1.5px solid var(--border); width: auto; display: inline-flex; margin: 0 auto; }
     </style>
 </head>
 <body>
@@ -100,8 +102,15 @@
             <div id="discovery" class="tab-content active">
                 <div class="search-bar"><input type="text" class="search-input" placeholder="Search recipes or keepers..." oninput="handleUnifiedSearch(this.value)"></div>
                 <div id="search-results-users" style="display:none;"><h3 class="display-font" style="margin: 0 20px 15px;">Heritage Keepers</h3><div id="user-results-grid" class="user-grid"></div></div>
-                <div id="search-results-recipes"><h3 class="display-font" id="recipe-search-title" style="margin: 0 20px 15px; display:none;">Recipes</h3><div id="discovery-grid" class="recipe-grid"></div></div>
+                <div id="search-results-recipes">
+                    <h3 class="display-font" id="recipe-search-title" style="margin: 0 20px 15px; display:none;">Recipes</h3>
+                    <div id="discovery-grid" class="recipe-grid"></div>
+                    <div id="load-more-area" class="load-more-container" style="display:none;">
+                        <button class="btn load-more-btn" onclick="loadMoreRecipes()"><i data-lucide="chevron-down"></i> Load More Heritage</button>
+                    </div>
+                </div>
             </div>
+            <!-- Vision, Map, Profile, Settings sections remain same -->
             <div id="vision" class="tab-content">
                 <div style="padding: 20px; text-align: center;">
                     <video id="video-feed" autoplay playsinline style="width: 100%; border-radius: 12px; aspect-ratio: 4/3; object-fit: cover; background: #000; margin-bottom: 20px; display: none;"></video>
@@ -152,11 +161,16 @@
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
         let allRecipes = [], mapInitialized = false, stream = null, currentKitchenTab = 'saved', isPublic = true;
+        let recipeLimit = 50, recipeOffset = 0;
+
         async function loadData() {
             const { data: { user } } = await sb.auth.getUser(); if(!user) { window.location.href = '/login/'; return; }
-            const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true);
+            recipeOffset = 0;
+            const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true).order('created_at', {ascending:false}).range(0, recipeLimit - 1);
             allRecipes = (recipes || []).map(r => ({...r, cover_photo_url: r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'}));
             renderRecipes(allRecipes);
+            document.getElementById('load-more-area').style.display = allRecipes.length >= recipeLimit ? 'block' : 'none';
+
             const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
             document.getElementById('p-username').value = user.user_metadata.username || 'keeper';
             document.getElementById('p-invite-link').innerText = `https://calalloo.com/profile?id=${user.id}`;
@@ -166,16 +180,46 @@
             }
             syncPermissionToggles(); loadGroups(); switchProfileTab('saved'); lucide.createIcons();
         }
+
+        async function loadMoreRecipes() {
+            recipeOffset += recipeLimit;
+            const { data: more } = await sb.from('recipes').select('*').eq('is_published', true).order('created_at', {ascending:false}).range(recipeOffset, recipeOffset + recipeLimit - 1);
+            if(more && more.length) {
+                const processed = more.map(r => ({...r, cover_photo_url: r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'}));
+                allRecipes = [...allRecipes, ...processed];
+                renderRecipes(allRecipes);
+                if(more.length < recipeLimit) document.getElementById('load-more-area').style.display = 'none';
+            } else {
+                document.getElementById('load-more-area').style.display = 'none';
+            }
+        }
+
         async function handleUnifiedSearch(query) {
-            if(query.length < 2) { renderRecipes(allRecipes); document.getElementById('search-results-users').style.display = 'none'; document.getElementById('recipe-search-title').style.display = 'none'; return; }
-            const filteredRecipes = allRecipes.filter(r => r.title.toLowerCase().includes(query.toLowerCase()));
-            renderRecipes(filteredRecipes); document.getElementById('recipe-search-title').style.display = 'block';
-            const { data: users } = await sb.from('profiles').select('*').limit(10);
+            if(query.length < 2) { 
+                recipeOffset = 0;
+                const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true).order('created_at', {ascending:false}).range(0, recipeLimit - 1);
+                allRecipes = (recipes || []).map(r => ({...r, cover_photo_url: r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'}));
+                renderRecipes(allRecipes); 
+                document.getElementById('search-results-users').style.display = 'none';
+                document.getElementById('recipe-search-title').style.display = 'none';
+                document.getElementById('load-more-area').style.display = allRecipes.length >= recipeLimit ? 'block' : 'none';
+                return; 
+            }
+            document.getElementById('load-more-area').style.display = 'none';
+            // 1. Search Recipes by Keywords in Title
+            const { data: filteredRecipes } = await sb.from('recipes').select('*').eq('is_published', true).ilike('title', `%${query}%`).limit(50);
+            const processed = (filteredRecipes || []).map(r => ({...r, cover_photo_url: r.cover_photo_url || 'https://via.placeholder.com/400x200?text=Heritage+Recipe'}));
+            renderRecipes(processed);
+            document.getElementById('recipe-search-title').style.display = 'block';
+
+            // 2. Search Users (Private filter simulation)
+            const { data: users } = await sb.from('profiles').select('*').not('id', 'is', null).limit(10);
             if(users && users.length) {
                 document.getElementById('search-results-users').style.display = 'block';
                 document.getElementById('user-results-grid').innerHTML = users.map(u => `<div class="user-card"><img class="avatar" src="${u.avatar_url || 'https://via.placeholder.com/60'}"><h4 style="font-size:0.9rem;">@keeper</h4><p style="font-size:0.7rem; color:var(--grey-text);">Heritage Keeper</p></div>`).join('');
             }
         }
+
         async function saveFullProfile() {
             const { data: { user } } = await sb.auth.getUser();
             const btn = document.getElementById('save-profile-btn'); btn.innerText = 'Syncing...';
