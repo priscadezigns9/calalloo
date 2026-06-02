@@ -208,9 +208,51 @@
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-callaloo-dpanyard}}');
         let allRecipes = [], allKeepers = [], mapInitialized = false;
 
-        async function loadData() {
+                async function loadData() {
             try {
                 const { data: { session } } = await sb.auth.getSession();
+                if(!session) {
+                    console.warn('Dashboard: No session detected.');
+                    setTimeout(() => {
+                        if (!localStorage.getItem('supabase.auth.token')) {
+                            window.location.replace('/login/');
+                        }
+                    }, 3000); 
+                    return;
+                }
+                const { data: { user } } = await sb.auth.getUser();
+                if(!user) { 
+                    window.location.replace('/login/');
+                    return; 
+                }
+                sb.auth.onAuthStateChange((event, s) => { 
+                    if(event === 'SIGNED_OUT') window.location.replace('/login/'); 
+                });
+                const [rRes, cRes, pRes] = await Promise.all([
+                    sb.from('recipes').select('*').eq('is_published', true),
+                    sb.from('cooks').select('*').limit(100),
+                    sb.from('profiles').select('*').eq('id', user.id).maybeSingle()
+                ]);
+                allRecipes = rRes.data || [];
+                allKeepers = (cRes.data || []).map(c => ({
+                    id: c.user_id, username: c.display_name, display_name: c.display_name, avatar_url: c.avatar_url, bio: c.bio
+                }));
+                renderRecipes(allRecipes);
+                renderKeepers(allKeepers);
+                document.getElementById('profile-email').innerText = user.email;
+                if(pRes.data) {
+                    document.getElementById('p-bio').value = pRes.data.bio || '';
+                    document.getElementById('p-avatar').src = pRes.data.avatar_url || 'https://via.placeholder.com/100';
+                    document.getElementById('p-maps-key').value = pRes.data.maps_key || '';
+                }
+                const { data: cook } = await sb.from('cooks').select('*').eq('user_id', user.id).maybeSingle();
+                if(cook) document.getElementById('p-display-name').value = cook.display_name || '';
+                const lastTab = localStorage.getItem('activeTab') || 'discovery';
+                showTab(lastTab);
+                document.getElementById('loader-overlay').style.display = 'none';
+                lucide.createIcons();
+            } catch (e) { console.error('System Load Error:', e); }
+        } } = await sb.auth.getSession();
                 if(!session) {
                     setTimeout(() => { window.location.href = '/login/'; }, 2000);
                     return;
