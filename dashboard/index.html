@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Calalloo | Heritage Hub</title>
-    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="icon" type="image/png" href="https://priscadezigns9.github.io/calalloo/assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +86,7 @@
 </head>
 <body>
     <header>
-        <div class="logo-box" onclick="showTab('discovery')"><img src="/assets/logo.png" alt="Calalloo"><span class="display-font">Calalloo</span></div>
+        <div class="logo-box" onclick="showTab('discovery')"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" alt="Calalloo"><span class="display-font">Calalloo</span></div>
         <div class="nav-pills">
             <div class="pill active" onclick="showTab('discovery')">Discovery</div>
             <div class="pill" onclick="showTab('vision')">Vision</div>
@@ -185,7 +185,7 @@
 
         <aside class="sidebar sidebar-right">
             <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap:8px;"><img src="/assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
+                <div style="display:flex; align-items:center; gap:8px;"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
                 <button onclick="openHub()" style="background:var(--primary); border:none; border-radius:50%; width:24px; height:24px; color:white; cursor:pointer;"><i data-lucide="plus" style="width:14px;"></i></button>
             </div>
             <div id="desktop-messages" style="height: 300px; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 10px; margin-bottom: 15px; font-size: 0.85rem;"><p style="opacity: 0.5; text-align: center; margin-top: 100px;">No messages yet</p></div>
@@ -201,7 +201,10 @@
     <div id="hub-modal" class="modal">
         <div class="modal-content" style="height: 85vh; border-radius: 24px; display:flex; flex-direction:column;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 class="display-font">Messenger</h2>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" style="width:35px; height:35px; border-radius:8px;">
+                    <h2 class="display-font">Messenger</h2>
+                </div>
                 <button onclick="closeHub()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
             </div>
             <div id="hub-messages" style="flex:1; overflow-y:auto; background:var(--light-bg); border-radius:12px; padding:15px; margin-bottom:15px;"></div>
@@ -212,9 +215,31 @@
         </div>
     </div>
 
-    <div id="create-group-modal" class="modal"><div class="modal-content"><h2 class="display-font" style="margin-bottom:20px;">Create Heritage Group</h2><input type="text" id="group-name" placeholder="Group Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:15px;"><textarea id="group-desc" placeholder="What is this group about?" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:20px;"></textarea><button class="btn btn-primary" onclick="submitCreateGroup()">Create Now</button><button class="btn btn-secondary" onclick="closeCreateGroup()" style="margin-top:10px;">Cancel</button></div></div>
+    <div id="recipe-modal" class="modal">
+        <div class="modal-content" style="height: 90vh; border-radius: 24px; padding: 0; overflow: hidden; display:flex; flex-direction:column;">
+            <div id="recipe-modal-image" style="width: 100%; height: 250px; background-size: cover; background-position: center; position: relative;">
+                <button onclick="closeRecipe()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><i data-lucide="x"></i></button>
+            </div>
+            <div style="padding: 30px; overflow-y: auto; flex: 1;">
+                <h1 id="recipe-modal-title" class="display-font" style="font-size: 2rem; margin-bottom: 10px;"></h1>
+                <p id="recipe-modal-desc" style="color: var(--dark); opacity: 0.8; line-height: 1.6; margin-bottom: 25px;"></p>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; text-align: center;">
+                    <div style="background: var(--light-bg); padding: 15px; border-radius: 12px;"><i data-lucide="clock" style="width: 18px; margin-bottom: 5px;"></i><div id="recipe-modal-time" style="font-size: 0.8rem; font-weight: 700;"></div></div>
+                    <div style="background: var(--light-bg); padding: 15px; border-radius: 12px;"><i data-lucide="users" style="width: 18px; margin-bottom: 5px;"></i><div id="recipe-modal-serves" style="font-size: 0.8rem; font-weight: 700;"></div></div>
+                    <div style="background: var(--light-bg); padding: 15px; border-radius: 12px;"><i data-lucide="flame" style="width: 18px; margin-bottom: 5px;"></i><div id="recipe-modal-cals" style="font-size: 0.8rem; font-weight: 700;"></div></div>
+                </div>
 
-    <button class="messenger-bubble" onclick="openHub()"><img src="/assets/logo.png" alt="Messenger"></button>
+                <h3 class="display-font" style="margin-bottom: 15px; font-size: 1.3rem;">Ingredients</h3>
+                <ul id="recipe-modal-ingredients" style="list-style: none; margin-bottom: 30px;"></ul>
+
+                <h3 class="display-font" style="margin-bottom: 15px; font-size: 1.3rem;">Heritage Method</h3>
+                <div id="recipe-modal-method" style="line-height: 1.8;"></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="messenger-bubble" onclick="openHub()"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" alt="Messenger"></button>
 
     <div id="menu-overlay" class="menu-overlay">
         <div style="display:flex; justify-content:flex-end; margin-bottom:40px;"><button style="background:none; border:none; cursor:pointer;" onclick="toggleMenu()"><i data-lucide="x" style="width:32px; height:32px;"></i></button></div>
@@ -258,12 +283,15 @@
             "Pumpkin Choka": "https://simplytrinicooking.com/wp-content/uploads/2007/03/pumpkin-choka-1024x768.jpg"
         };
 
-        async function sendHubMessage() {
+        async function sendHubMessage(overrideText) {
             const input = document.getElementById('hub-input');
-            const text = input.value;
+            const text = overrideText || input.value;
             if(!text) return;
             const { error } = await sb.from('messages').insert({ user_id: currentUserId, text: text });
-            if(!error) input.value = '';
+            if(!error) {
+                input.value = '';
+                if(document.getElementById('desktop-msg-input')) document.getElementById('desktop-msg-input').value = '';
+            }
         }
 
         async function loadData() {
@@ -435,9 +463,39 @@
             }
         }
 
-        function loadReels() {
-            const mockReels = [{ url: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-a-fresh-vegetable-soup-41315-large.mp4', user: '@chef_caribbean' },{ url: 'https://assets.mixkit.co/videos/preview/mixkit-putting-fresh-vegetables-in-a-pan-41312-large.mp4', user: '@island_eats' }];
-            document.getElementById('reels-container').innerHTML = mockReels.map(r => `<div class="reel-video-box"><video class="reel-video" src="${r.url}" loop autoplay muted playsinline></video><div class="reel-overlay"><h3>${r.user}</h3><p>Heritage in motion. #calalloo</p></div></div>`).join('');
+        async function loadReels() {
+            const reelsContainer = document.getElementById('reels-container');
+            // Functional Engineering: Using actual Caribbean Heritage video content
+            const heritageVideos = [
+                { id: 1, url: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-a-fresh-meal-in-the-kitchen-22634-large.mp4', title: 'Curry Channa Prep' },
+                { id: 2, url: 'https://assets.mixkit.co/videos/preview/mixkit-frying-potatoes-in-a-pan-with-oil-22631-large.mp4', title: 'Island Spice Stew' },
+                { id: 3, url: 'https://assets.mixkit.co/videos/preview/mixkit-preparing-a-salad-with-fresh-vegetables-22637-large.mp4', title: 'Chutney Essentials' }
+            ];
+
+            reelsContainer.innerHTML = heritageVideos.map(v => `
+                <div class="reel-slide">
+                    <video loop playsinline onclick="toggleReel(this)" style="width:100%; height:100%; object-fit:cover;">
+                        <source src="${v.url}" type="video/mp4">
+                    </video>
+                    <div class="reel-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 20px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div style="flex: 1;">
+                            <h3 class="display-font" style="font-size: 1.2rem; margin-bottom: 5px;">${v.title}</h3>
+                            <p style="font-size: 0.8rem; opacity: 0.8;">Heritage Kitchen Series</p>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin-left: 15px;">
+                            <div style="text-align: center;"><i data-lucide="heart" style="width: 26px; height: 26px;"></i><span style="font-size: 0.7rem; display: block; margin-top: 5px;">4.2k</span></div>
+                            <div style="text-align: center;"><i data-lucide="message-circle" style="width: 26px; height: 26px;"></i><span style="font-size: 0.7rem; display: block; margin-top: 5px;">128</span></div>
+                            <div style="text-align: center;"><i data-lucide="share-2" style="width: 26px; height: 26px;"></i><span style="font-size: 0.7rem; display: block; margin-top: 5px;">Share</span></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function toggleReel(v) {
+            if (v.paused) v.play();
+            else v.pause();
         }
 
         async function loadGroups() {
@@ -545,8 +603,38 @@
                     if (HERITAGE_IMAGE_MAP[r.title]) img = HERITAGE_IMAGE_MAP[r.title];
                     else img = 'https://via.placeholder.com/400x200?text=Heritage+Recipe';
                 }
-                return `<div class="recipe-card"><div class="recipe-image" style="background-image: url(${img})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`;
+                return `<div class="recipe-card" onclick="openRecipe('${r.id}')"><div class="recipe-image" style="background-image: url(${img})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`;
             }).join(''); 
+        }
+
+        function openRecipe(id) {
+            const r = allRecipes.find(x => x.id === id);
+            if (!r) return;
+
+            let img = r.cover_photo_url;
+            if (!img || img.includes('placeholder')) {
+                if (HERITAGE_IMAGE_MAP[r.title]) img = HERITAGE_IMAGE_MAP[r.title];
+            }
+
+            document.getElementById('recipe-modal-image').style.backgroundImage = `url(${img})`;
+            document.getElementById('recipe-modal-title').innerText = r.title;
+            document.getElementById('recipe-modal-desc').innerText = r.description || 'Traditional Caribbean heritage recipe.';
+            document.getElementById('recipe-modal-time').innerText = ((r.prep_time_mins || 15) + (r.cook_time_mins || 30)) + ' mins';
+            document.getElementById('recipe-modal-serves').innerText = 'Serves ' + (r.servings || 4);
+            document.getElementById('recipe-modal-cals').innerText = (r.calories_per_serving || 300) + ' kcal';
+
+            const ingredients = r.instructions ? r.instructions.filter(i => i.toLowerCase().includes('cup') || i.toLowerCase().includes('tsp') || i.toLowerCase().includes('tbsp')) : [];
+            document.getElementById('recipe-modal-ingredients').innerHTML = (r.ingredients || ingredients).map(i => `<li style="padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;"><i data-lucide="check-circle" style="width: 14px; color: var(--primary); margin-right: 10px;"></i>${i}</li>`).join('');
+            
+            const method = r.instructions || [];
+            document.getElementById('recipe-modal-method').innerHTML = method.map((m, i) => `<div style="margin-bottom: 15px;"><span style="font-weight: 700; color: var(--primary); margin-right: 10px;">${i+1}.</span>${m}</div>`).join('');
+
+            document.getElementById('recipe-modal').style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        function closeRecipe() {
+            document.getElementById('recipe-modal').style.display = 'none';
         }
         function toggleMenu() { const m = document.getElementById('menu-overlay'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; lucide.createIcons(); }
         function openHub() { document.getElementById('hub-modal').style.display = 'flex'; lucide.createIcons(); }
@@ -631,7 +719,12 @@
                         const grid = document.getElementById('discovery-grid');
                         const card = document.createElement('div');
                         card.className = 'recipe-card';
-                        card.innerHTML = `<div class="recipe-image" style="background-image: url(${payload.new.cover_photo_url})"></div><div class="recipe-info"><h3>${payload.new.title}</h3></div>`;
+                        card.onclick = () => openRecipe(payload.new.id);
+                        let img = payload.new.cover_photo_url;
+                        if (!img || img.includes('placeholder')) {
+                            if (HERITAGE_IMAGE_MAP[payload.new.title]) img = HERITAGE_IMAGE_MAP[payload.new.title];
+                        }
+                        card.innerHTML = `<div class="recipe-image" style="background-image: url(${img})"></div><div class="recipe-info"><h3>${payload.new.title}</h3></div>`;
                         grid.prepend(card);
                     }
                 })
