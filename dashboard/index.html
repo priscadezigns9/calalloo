@@ -256,21 +256,18 @@
                 const { data: { user } } = await sb.auth.getUser();
                 if(!user) { window.location.href = '/login/'; return; }
 
-                // Restore last active tab
-                const lastTab = localStorage.getItem('activeTab') || 'discovery';
-                showTab(lastTab);
+                // 1. Load Data First (Parallel)
+                const [rRes, cRes, pRes, ckRes] = await Promise.all([
+                    sb.from('recipes').select('*').eq('is_published', true),
+                    sb.from('cooks').select('*').limit(100),
+                    sb.from('profiles').select('*').eq('id', user.id).maybeSingle(),
+                    sb.from('cooks').select('*').eq('user_id', user.id).maybeSingle()
+                ]);
 
-                // Load Recipes
-                const { data: recipes, error: rError } = await sb.from('recipes').select('*').eq('is_published', true);
-                if(rError) console.error('Recipes Load Error:', rError);
-                allRecipes = recipes || [];
-                renderRecipes(allRecipes);
-
-        // Load Keepers (Join Profiles and Cooks)
-                const { data: cooks, error: cError } = await sb.from('cooks').select('*').limit(100);
-                if(cError) console.error('Cooks Load Error:', cError);
-                console.log('Loaded Cooks:', cooks ? cooks.length : 0);
+                // 2. Populate Variables
+                allRecipes = rRes.data || [];
                 
+                const cooks = cRes.data;
                 if(!cooks || cooks.length === 0) {
                     const { data: profiles } = await sb.from('profiles').select('*').limit(100);
                     allKeepers = (profiles || []).map(p => ({
@@ -289,29 +286,28 @@
                         bio: c.bio
                     }));
                 }
-                console.log('Final allKeepers count:', allKeepers.length);
-                
+
+                // 3. Render UI
+                renderRecipes(allRecipes);
                 renderKeepers(allKeepers);
 
-                // Load Profile
-                const { data: profile, error: pError } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
-                const { data: cook, error: ckError } = await sb.from('cooks').select('*').eq('user_id', user.id).maybeSingle();
-                
-                if (pError) console.error('Profile Fetch Error:', pError);
-                if (ckError) console.error('Cook Fetch Error:', ckError);
-
+                // 4. Populate Profile
                 document.getElementById('profile-email').innerText = user.email;
-                if(profile) {
-                    document.getElementById('p-bio').value = profile.bio || '';
-                    document.getElementById('p-avatar').src = profile.avatar_url || 'https://via.placeholder.com/100';
+                if(pRes.data) {
+                    document.getElementById('p-bio').value = pRes.data.bio || '';
+                    document.getElementById('p-avatar').src = pRes.data.avatar_url || 'https://via.placeholder.com/100';
                 }
-                if(cook) {
-                    document.getElementById('p-display-name').value = cook.display_name || '';
-                    document.getElementById('p-recipes-count').innerText = cook.recipe_count || 0;
-                    document.getElementById('p-followers-count').innerText = cook.follower_count || 0;
+                if(ckRes.data) {
+                    document.getElementById('p-display-name').value = ckRes.data.display_name || '';
+                    document.getElementById('p-recipes-count').innerText = ckRes.data.recipe_count || 0;
+                    document.getElementById('p-followers-count').innerText = ckRes.data.follower_count || 0;
                 } else {
                     document.getElementById('p-display-name').value = user.email.split('@')[0];
                 }
+
+                // 5. Restore last active tab (ONLY AFTER DATA IS READY)
+                const lastTab = localStorage.getItem('activeTab') || 'discovery';
+                showTab(lastTab);
                 
                 lucide.createIcons();
             } catch (e) {
