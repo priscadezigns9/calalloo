@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <rect width="1024" height="1024" fill="#000000"/>
+  <defs>
+    <linearGradient id="neo_alpha_grad" x1="512" y1="50" x2="512" y2="850" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFB347"/>
+      <stop offset="50%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(512, 512) rotate(45) translate(-512, -512)">
+    <path d="M512,850 C256,650 100,450 100,280 C100,150 200,50 350,50 C440,50 512,120 512,120 C512,120 584,50 674,50 C824,50 924,150 924,280 C924,450 768,650 512,850 Z" fill="url(#neo_alpha_grad)"/>
+    <g stroke="#9A3412" stroke-width="4" stroke-linecap="round" opacity="0.4">
+      <path d="M512,400 L512,800"/><path d="M512,400 L300,100"/><path d="M512,400 L724,100"/><path d="M512,400 L180,300"/><path d="M512,400 L844,300"/><path d="M512,400 L320,620"/><path d="M512,400 L704,620"/>
+    </g>
+  </g>
+</svg>
+
