@@ -216,10 +216,20 @@
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
         let currentUserId = null, allRecipes = [];
 
+        async function sendHubMessage() {
+            const input = document.getElementById('hub-input');
+            const text = input.value;
+            if(!text) return;
+            const { error } = await sb.from('messages').insert({ user_id: currentUserId, text: text });
+            if(!error) input.value = '';
+        }
+
         async function loadData() {
             const { data: { user } } = await sb.auth.getUser();
             if(!user) { window.location.href = '/login/'; return; }
             currentUserId = user.id;
+
+            setupRealtime();
 
             const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
             document.getElementById('p-fullname').value = user.user_metadata.full_name || '';
@@ -451,6 +461,44 @@
             const activeTab = document.querySelector('.tab-content.active').id;
             if(activeTab === 'vision' || activeTab === 'map') showTab(activeTab);
         }
+
+        function setupRealtime() {
+            // Subscribe to Profiles (for identity sync)
+            sb.channel('profiles-sync')
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${currentUserId}` }, payload => {
+                    if (payload.new.avatar_url) document.getElementById('p-avatar').src = payload.new.avatar_url;
+                    if (payload.new.bio) document.getElementById('p-bio').value = payload.new.bio;
+                })
+                .subscribe();
+
+            // Subscribe to Messages (Real-time Hub)
+            sb.channel('hub-messages')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+                    const hubMsgs = document.getElementById('hub-messages');
+                    const msgDiv = document.createElement('div');
+                    msgDiv.style.cssText = "background:var(--white); padding:10px; border-radius:10px; margin-bottom:10px; font-size:0.9rem; border:1px solid var(--border);";
+                    msgDiv.innerHTML = `<span style="font-weight:700; color:var(--primary);">Keeper:</span> ${payload.new.text}`;
+                    hubMsgs.appendChild(msgDiv);
+                    hubMsgs.scrollTop = hubMsgs.scrollHeight;
+                    document.getElementById('desktop-messages').innerHTML = `<div style="padding:10px; border-bottom:1px solid var(--border);">${payload.new.text}</div>` + document.getElementById('desktop-messages').innerHTML;
+                })
+                .subscribe();
+
+            // Subscribe to Recipes (Discovery Feed)
+            sb.channel('discovery-feed')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recipes' }, payload => {
+                    if (payload.new.is_published) {
+                        const grid = document.getElementById('discovery-grid');
+                        const card = document.createElement('div');
+                        card.className = 'recipe-card';
+                        card.innerHTML = `<div class="recipe-image" style="background-image: url(${payload.new.cover_photo_url})"></div><div class="recipe-info"><h3>${payload.new.title}</h3></div>`;
+                        grid.prepend(card);
+                    }
+                })
+                .subscribe();
+        }
+
+        function signOut() { sb.auth.signOut().then(() => window.location.href = '/login/'); }
 
         window.onload = loadData;
     </script>
