@@ -34,17 +34,18 @@
         .nav-pills { display: flex; gap: 5px; background: var(--light-bg); padding: 5px; border-radius: 100px; }
         .pill { padding: 8px 16px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--grey-text); transition: all 0.2s; }
         .pill.active { background: var(--white); color: var(--dark); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        @media (max-width: 600px) { .nav-pills { display: none; } }
 
-        .hamburger { padding: 8px; cursor: pointer; display: flex; align-items: center; gap: 15px; }
-        .desktop-messenger { display: flex; align-items: center; gap: 5px; color: var(--primary); font-weight: 700; cursor: pointer; }
-        @media (max-width: 768px) { .desktop-messenger { display: none; } }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .desktop-messenger { display: flex; align-items: center; gap: 5px; color: var(--primary); font-weight: 700; cursor: pointer; font-size: 0.9rem; }
+        .hamburger-btn { cursor: pointer; color: var(--dark); display: flex; align-items: center; }
 
         .tab-content { display: none; padding-bottom: 80px; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .search-bar { padding: 20px; position: sticky; top: 63px; background: var(--bg); z-index: 900; }
-        .search-input { width: 100%; padding: 14px 45px 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; background: var(--white); color: var(--dark); }
+        .search-input { width: 100%; padding: 14px 45px 14px 16px; border: 1.5 solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; background: var(--white); color: var(--dark); }
         
         .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 20px 20px; }
         .recipe-card { border-radius: 12px; overflow: hidden; cursor: pointer; background: var(--white); border: 1px solid var(--border); transition: transform 0.2s; }
@@ -61,7 +62,7 @@
         .stat-val { font-weight: 800; font-size: 1.2rem; display: block; }
         .stat-label { font-size: 0.8rem; color: var(--grey-text); }
 
-        .btn { padding: 14px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .btn { padding: 14px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; justify-content: center; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--light-bg); color: var(--dark); border: 1.5px solid var(--border); }
 
@@ -74,6 +75,8 @@
         .menu-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2500; display: none; flex-direction: column; padding: 40px 25px; }
         .menu-item { padding: 18px 0; border-bottom: 1px solid var(--border); font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--dark); }
         .menu-item i { color: var(--primary); }
+
+        #install-banner { display: none; background: var(--primary); color: white; padding: 15px 20px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 3000; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
@@ -89,9 +92,9 @@
             <div class="pill" onclick="showTab('profile')">Profile</div>
             <div class="pill" onclick="showTab('settings')">Settings</div>
         </div>
-        <div class="hamburger">
-            <div class="desktop-messenger" onclick="openHub()"><i data-lucide="message-circle"></i> Messenger</div>
-            <i data-lucide="menu" onclick="toggleMenu()"></i>
+        <div class="header-actions">
+            <div class="desktop-messenger" onclick="openHub()"><i data-lucide="message-circle" style="width: 18px;"></i> Messenger</div>
+            <div class="hamburger-btn" onclick="toggleMenu()"><i data-lucide="menu" style="width: 24px; height: 24px;"></i></div>
         </div>
     </header>
 
@@ -139,7 +142,7 @@
                 <div class="stat-item"><span class="stat-val" id="stat-following">0</span><span class="stat-label">Following</span></div>
             </div>
             <textarea id="p-bio" placeholder="Add your heritage bio..." style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; resize: none; min-height: 80px; margin-bottom: 15px; background: var(--white); color: var(--dark);"></textarea>
-            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveFullProfile()">Save Profile</button>
+            <button class="btn btn-primary" style="width: 100%;" onclick="saveFullProfile()">Save Profile</button>
         </div>
         <div style="padding: 20px;">
             <h3 class="display-font" style="margin-bottom: 20px;">Saved to Kitchen</h3>
@@ -153,6 +156,10 @@
             <div class="menu-item" onclick="toggleTheme()">
                 <i data-lucide="moon"></i> Dark Mode
                 <div style="margin-left: auto;" id="theme-status">Off</div>
+            </div>
+            <div class="menu-item" onclick="installApp()" id="install-option" style="display: none;">
+                <i data-lucide="download"></i> Download App
+                <div style="margin-left: auto; color: var(--primary);">Install</div>
             </div>
             <div class="menu-item" onclick="requestPermission('camera')">
                 <i data-lucide="camera"></i> Camera Permissions
@@ -168,6 +175,11 @@
         </div>
     </div>
 
+    <div id="install-banner">
+        <span>Experience Calalloo as an App</span>
+        <button class="btn btn-white" style="background: white; color: var(--primary); padding: 8px 16px;" onclick="installApp()">Download</button>
+    </div>
+
     <!-- Modals -->
     <div id="recipe-modal" class="modal">
         <div class="modal-content">
@@ -179,7 +191,7 @@
             <p id="rd-desc" class="grey-text" style="margin-bottom: 20px;"></p>
             <h4 class="display-font" style="margin-bottom: 10px;">Instructions</h4>
             <div id="rd-instructions" style="margin-bottom: 30px;"></div>
-            <button class="btn btn-primary" id="save-recipe-btn" style="width: 100%; justify-content: center;"><i data-lucide="heart"></i> Save to Kitchen</button>
+            <button class="btn btn-primary" id="save-recipe-btn" style="width: 100%;"><i data-lucide="heart"></i> Save to Kitchen</button>
         </div>
     </div>
 
@@ -211,7 +223,26 @@
 
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
-        let allRecipes = [], mapInitialized = false, currentFacingMode = 'environment', stream = null;
+        let allRecipes = [], mapInitialized = false, currentFacingMode = 'environment', stream = null, deferredPrompt = null;
+
+        // PWA logic
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('install-banner').style.display = 'flex';
+            document.getElementById('install-option').style.display = 'flex';
+        });
+
+        async function installApp() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                document.getElementById('install-banner').style.display = 'none';
+                document.getElementById('install-option').style.display = 'none';
+            }
+            deferredPrompt = null;
+        }
 
         async function loadData() {
             const { data: { user } } = await sb.auth.getUser();
@@ -322,6 +353,32 @@
             document.getElementById('recipe-modal').style.display = 'flex';
         }
         function closeRecipe() { document.getElementById('recipe-modal').style.display = 'none'; }
+
+        // Camera logic
+        async function initCam() {
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
+                const video = document.getElementById('video-feed');
+                video.srcObject = stream;
+                video.style.display = 'block';
+                document.getElementById('upload-preview').style.display = 'none';
+            } catch (e) { alert('Camera access required.'); }
+        }
+        function flipCamera() {
+            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            initCam();
+        }
+        function handleVisionUpload(el) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('video-feed').style.display = 'none';
+                const img = document.getElementById('upload-preview');
+                img.src = e.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(el.files[0]);
+        }
 
         window.onload = loadData;
     </script>
