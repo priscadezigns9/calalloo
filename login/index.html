@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sign In | Calalloo</title>
+    <link rel="icon" type="image/png" href="https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #E87722; --bg: #FFFFFF; --dark: #000000; --border: #F2F2F2; --grey: #666666; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .auth-card { width: 100%; max-width: 400px; text-align: center; }
+        .logo { width: 60px; margin-bottom: 20px; }
+        h1 { font-family: 'Fraunces', serif; font-size: 2rem; margin-bottom: 10px; color: var(--dark); }
+        p { color: var(--grey); margin-bottom: 30px; font-size: 0.95rem; }
+        .input-group { margin-bottom: 15px; text-align: left; position: relative; }
+        input { width: 100%; padding: 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; transition: border-color 0.2s; }
+        input:focus { border-color: var(--primary); }
+        .password-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--grey); cursor: pointer; display: flex; align-items: center; }
+        .btn { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; margin-top: 10px; }
+        .btn:active { opacity: 0.8; }
+        .footer { margin-top: 30px; font-size: 0.9rem; color: var(--grey); }
+        .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        #loading { display: none; margin-top: 10px; color: var(--primary); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <img src="https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB" class="logo">
+        <h1>Welcome Back</h1>
+        <p>Enter your credentials to continue.</p>
+        <form id="login-form">
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Password" required>
+                <div class="password-toggle" onclick="togglePass()">
+                    <i data-lucide="eye" id="eye-icon"></i>
+                </div>
+            </div>
+            <button type="submit" id="submit-btn" class="btn">Sign In</button>
+            <div id="loading">Signing in...</div>
+        </form>
+        <div class="footer">
+            Don't have an account? <a href="/signup/">Join the Heritage</a>
+        </div>
+    </div>
+
+    <script>
+        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-callaloo-dpanyard}}');
+        
+        lucide.createIcons();
+
+        function togglePass() {
+            const pass = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            if (pass.type === 'password') {
+                pass.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                pass.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('submit-btn');
+            const loading = document.getElementById('loading');
+
+            btn.style.display = 'none';
+            loading.style.display = 'block';
+
+            const { data, error } = await sb.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                alert(error.message);
+                btn.style.display = 'block';
+                loading.style.display = 'none';
+            } else {
+                // Successful login
+                window.location.href = '/dashboard/';
+            }
+        };
+
+        // Check if already logged in
+        async function checkSession() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) window.location.href = '/dashboard/';
+        }
+        checkSession();
+    </script>
+</body>
+</html>
