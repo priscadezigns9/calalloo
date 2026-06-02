@@ -68,9 +68,9 @@
         .modal-content { background: var(--bg); color: var(--dark); width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; position: relative; }
         
         /* Messenger Bubble Fix */
-        .messenger-bubble { position: fixed; bottom: 30px; right: 30px; background: var(--primary); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 20px rgba(232,119,34,0.5); z-index: 5000; border: none; transition: transform 0.2s; }
+        .messenger-bubble { position: fixed; bottom: 30px; right: 30px; background: var(--white); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.15); z-index: 5000; border: 1px solid var(--border); transition: transform 0.2s; }
         .messenger-bubble:hover { transform: scale(1.05); }
-        .messenger-bubble img { width: 34px; height: 34px; filter: brightness(0) invert(1); pointer-events: none; }
+        .messenger-bubble img { width: 34px; height: 34px; pointer-events: none; }
 
         .switch { position: relative; display: inline-block; width: 44px; height: 24px; margin-left: auto; }
         .switch input { opacity: 0; width: 0; height: 0; }
