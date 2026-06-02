@@ -80,7 +80,6 @@
         .stat-val { font-weight: 800; font-size: 1.2rem; display: block; }
         .stat-label { font-size: 0.8rem; color: var(--grey-text); }
 
-        /* Profile Tabs */
         .profile-tabs { display: flex; justify-content: center; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
         .profile-tab { padding: 15px 25px; cursor: pointer; font-weight: 600; color: var(--grey-text); position: relative; }
         .profile-tab.active { color: var(--primary); }
@@ -121,10 +120,8 @@
     <div class="app-container">
         <aside class="sidebar">
             <div class="section-header"><i data-lucide="users"></i> Heritage Groups</div>
-            <div id="sidebar-groups">
-                <p style="font-size: 0.8rem; opacity: 0.5; padding: 10px;">No groups yet</p>
-            </div>
-            <div class="list-item" onclick="openCreateGroup()" style="color: var(--primary); border-top: 1px solid var(--border); margin-top: 10px; pt: 10px;">
+            <div id="sidebar-groups"><p style="font-size: 0.8rem; opacity: 0.5; padding: 10px;">No groups yet</p></div>
+            <div class="list-item" onclick="openCreateGroup()" style="color: var(--primary); border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px;">
                 <i data-lucide="plus-circle"></i> Create Group
             </div>
         </aside>
@@ -173,13 +170,11 @@
                     <textarea id="p-bio" placeholder="Add your heritage bio..." style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; resize: none; min-height: 80px; margin-bottom: 15px; background: var(--white); color: var(--dark);"></textarea>
                     <button class="btn btn-primary" id="save-profile-btn" onclick="saveFullProfile()">Save Profile</button>
                 </div>
-                
                 <div class="profile-tabs">
                     <div class="profile-tab active" onclick="switchProfileTab('saved')">Saved Kitchen</div>
                     <div class="profile-tab" onclick="switchProfileTab('public')">Public Kitchen</div>
                     <div class="profile-tab" onclick="switchProfileTab('private')">Private Kitchen</div>
                 </div>
-
                 <div id="profile-kitchen-grid" class="recipe-grid"></div>
             </div>
 
@@ -204,26 +199,19 @@
         </main>
 
         <aside class="sidebar sidebar-right">
-            <div class="section-header"><img src="/assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
+            <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;"><img src="/assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
+                <button onclick="openHub()" style="background:var(--primary); border:none; border-radius:50%; width:24px; height:24px; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i data-lucide="plus" style="width:14px; height:14px;"></i></button>
+            </div>
             <div id="desktop-messages" style="height: 300px; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 10px; margin-bottom: 15px; font-size: 0.85rem;"><p style="opacity: 0.5; text-align: center; margin-top: 100px;">No active chats</p></div>
             <div style="display: flex; gap: 8px;"><input type="text" id="desktop-msg-input" placeholder="Quick reply..." style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.8rem; background: var(--white); color: var(--dark);"><button class="btn btn-primary" style="width: auto; padding: 10px;" onclick="sendHubMessage(document.getElementById('desktop-msg-input').value)"><i data-lucide="send" style="width: 16px;"></i></button></div>
-            <div style="background: var(--light-bg); border-radius: 12px; padding: 20px; text-align: center; border: 1.5px dashed var(--border); margin-top: 20px;"><span style="background: var(--primary); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Sponsor</span><h4 style="margin: 10px 0 5px; font-size: 0.9rem;">Prisca Dezigns Pro</h4><p style="font-size: 0.75rem; color: var(--grey-text);">Unlock high-fidelity analytics and unlimited storage.</p><button class="btn btn-primary" style="margin-top: 15px; font-size: 0.8rem; padding: 8px;">Upgrade Now</button></div>
+            <div style="background: var(--light-bg); border-radius: 12px; padding: 20px; text-align: center; border: 1.5px dashed var(--border); margin-top: 20px;"><span style="background: var(--primary); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Sponsor</span><h4 style="margin: 10px 0 5px; font-size: 0.9rem;">Calalloo Pro</h4><p style="font-size: 0.75rem; color: var(--grey-text);">Unlock high-fidelity analytics and unlimited storage.</p><button class="btn btn-primary" style="margin-top: 15px; font-size: 0.8rem; padding: 8px;">Upgrade Now</button></div>
         </aside>
     </div>
 
     <div class="messenger-bubble" onclick="openHub()"><img src="/assets/logo.png" alt="Messenger"></div>
 
-    <!-- Modals -->
-    <div id="create-group-modal" class="modal">
-        <div class="modal-content">
-            <h2 class="display-font" style="margin-bottom: 20px;">Create Heritage Group</h2>
-            <input type="text" id="group-name" placeholder="Group Name" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px;">
-            <textarea id="group-desc" placeholder="Group Description" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px;"></textarea>
-            <button class="btn btn-primary" onclick="submitCreateGroup()">Create Now</button>
-            <button class="btn btn-secondary" onclick="closeCreateGroup()" style="margin-top: 10px;">Cancel</button>
-        </div>
-    </div>
-
+    <div id="create-group-modal" class="modal"><div class="modal-content"><h2 class="display-font" style="margin-bottom: 20px;">Create Heritage Group</h2><input type="text" id="group-name" placeholder="Group Name" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px;"><textarea id="group-desc" placeholder="Group Description" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px;"></textarea><button class="btn btn-primary" onclick="submitCreateGroup()">Create Now</button><button class="btn btn-secondary" onclick="closeCreateGroup()" style="margin-top: 10px;">Cancel</button></div></div>
     <div id="recipe-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="rd-title" class="display-font"></h2><button class="close-btn" onclick="closeRecipe()"><i data-lucide="x"></i></button></div><img id="rd-img" style="width:100%;height:200px;object-fit:cover;border-radius:12px;margin-bottom:20px"><p id="rd-desc" class="grey-text" style="margin-bottom:20px"></p><div id="rd-instructions" style="margin-bottom:30px"></div><button class="btn btn-primary" id="save-recipe-btn">Save to Kitchen</button></div></div>
     <div id="hub-modal" class="modal"><div class="modal-content" style="height: 85vh; border-radius: 24px;"><div class="modal-header"><div style="display:flex;align-items:center;gap:10px"><img src="/assets/logo.png" style="width:30px;height:30px;border-radius:6px"><h2 class="display-font">Messenger</h2></div><button class="close-btn" onclick="closeHub()"><i data-lucide="x"></i></button></div><div id="hub-messages" style="flex-grow: 1; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px;"></div><div style="display: flex; gap: 10px;"><input type="text" id="hub-input" placeholder="Type a message..." style="flex-grow: 1; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px;"><button class="btn btn-primary" style="width: auto;" onclick="sendHubMessage()"><i data-lucide="send"></i></button></div></div></div>
 
@@ -271,24 +259,20 @@
         }
 
         async function uploadAvatar(input) {
-            const file = input.files[0];
-            if(!file) return;
+            const file = input.files[0]; if(!file) return;
             const { data: { user } } = await sb.auth.getUser();
             const fileName = `avatars/${user.id}/${Date.now()}.${file.name.split('.').pop()}`;
-            const { error: uploadError } = await sb.storage.from('heritage-media').upload(fileName, file);
-            if(uploadError) return alert('Upload failed');
+            await sb.storage.from('heritage-media').upload(fileName, file);
             const { data: { publicUrl } } = sb.storage.from('heritage-media').getPublicUrl(fileName);
-            const { error: updateError } = await sb.from('profiles').update({ avatar_url: publicUrl }).eq('id', user.id);
-            if(!updateError) document.getElementById('p-avatar').src = publicUrl;
+            await sb.from('profiles').update({ avatar_url: publicUrl }).eq('id', user.id);
+            document.getElementById('p-avatar').src = publicUrl;
         }
 
         async function saveFullProfile() {
             const { data: { user } } = await sb.auth.getUser();
-            const btn = document.getElementById('save-profile-btn');
-            btn.innerText = 'Syncing...';
-            const { error } = await sb.from('profiles').upsert({ id: user.id, full_name: document.getElementById('p-name').value, bio: document.getElementById('p-bio').value }, { onConflict: 'id' });
-            if(!error) { alert('Synced!'); btn.innerText = 'Save Profile'; }
-            else { alert('Error: ' + error.message); btn.innerText = 'Save Profile'; }
+            const btn = document.getElementById('save-profile-btn'); btn.innerText = 'Syncing...';
+            const { error } = await sb.from('profiles').upsert({ id: user.id, full_name: document.getElementById('p-name').value, bio: document.getElementById('p-bio').value });
+            if(!error) alert('Synced!'); btn.innerText = 'Save Profile';
         }
 
         function renderRecipes(list) {
@@ -297,7 +281,7 @@
                     <div class="recipe-image" style="background-image: url(${r.cover_photo_url})"></div>
                     <div class="recipe-info"><h3>${r.title}</h3></div>
                 </div>
-            `).join('');
+            `).join('') || '<p style="text-align:center;width:100%;padding:40px;opacity:0.5">No recipes found</p>';
         }
 
         async function switchProfileTab(tab) {
@@ -324,8 +308,7 @@
         function togglePermission(type) {
             const checked = document.getElementById(`${type}-toggle`).checked;
             localStorage.setItem(`perm-${type}`, checked);
-            if(type === 'camera' && checked) initCam();
-            if(type === 'camera' && !checked) stopCam();
+            if(type === 'camera') checked ? initCam() : stopCam();
         }
 
         async function initCam() {
@@ -344,26 +327,21 @@
             document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll(`.pill[onclick*="${id}"]`).forEach(p => p.classList.add('active'));
-            if(id === 'map') {
-                if(localStorage.getItem('perm-location') === 'true') {
-                    document.getElementById('location-blocked').style.display = 'none';
-                    if(!mapInitialized) {
-                        setTimeout(() => {
-                            const map = L.map('map-container').setView([10.6918, -61.2225], 10);
-                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                            mapInitialized = true;
-                        }, 200);
-                    }
-                } else { document.getElementById('location-blocked').style.display = 'block'; }
-            }
+            if(id === 'map' && localStorage.getItem('perm-location') === 'true') {
+                document.getElementById('location-blocked').style.display = 'none';
+                if(!mapInitialized) {
+                    setTimeout(() => {
+                        const map = L.map('map-container').setView([10.6918, -61.2225], 10);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); mapInitialized = true;
+                    }, 200);
+                }
+            } else if(id === 'map') { document.getElementById('location-blocked').style.display = 'block'; }
             if(id === 'vision') initCam(); else stopCam();
         }
 
         async function loadGroups() {
             const { data: groups } = await sb.from('groups').select('*');
-            if(groups && groups.length) {
-                document.getElementById('sidebar-groups').innerHTML = groups.map(g => `<div class="list-item"><div style="width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:0.6rem">${g.name.charAt(0)}</div>${g.name}</div>`).join('');
-            }
+            if(groups && groups.length) document.getElementById('sidebar-groups').innerHTML = groups.map(g => `<div class="list-item"><div style="width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:0.6rem">${g.name.charAt(0)}</div>${g.name}</div>`).join('');
         }
         function openCreateGroup() { document.getElementById('create-group-modal').style.display = 'flex'; }
         function closeCreateGroup() { document.getElementById('create-group-modal').style.display = 'none'; }
@@ -375,16 +353,27 @@
             if(!error) { closeCreateGroup(); loadGroups(); } else alert('Error creating group');
         }
 
-        function toggleTheme() {
-            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        }
+        function toggleTheme() { const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', n); localStorage.setItem('theme', n); }
         function toggleMenu() { const m = document.getElementById('menu-overlay'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
         function openHub() { document.getElementById('hub-modal').style.display = 'flex'; }
         function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
         function closeRecipe() { document.getElementById('recipe-modal').style.display = 'none'; }
         function signOut() { sb.auth.signOut().then(() => window.location.href = '/login/'); }
+
+        function openRecipe(id) {
+            const r = allRecipes.find(x => x.id === id); if(!r) return;
+            document.getElementById('rd-title').innerText = r.title;
+            document.getElementById('rd-desc').innerText = r.description;
+            document.getElementById('rd-img').src = r.cover_photo_url;
+            document.getElementById('rd-instructions').innerHTML = `<ol style="padding-left:20px">${(r.instructions || []).map(i => `<li style="margin-bottom:8px">${i}</li>`).join('')}</ol>`;
+            document.getElementById('save-recipe-btn').onclick = () => saveRecipe(id);
+            document.getElementById('recipe-modal').style.display = 'flex';
+        }
+        async function saveRecipe(recipeId) {
+            const { data: { user } } = await sb.auth.getUser();
+            const { error } = await sb.from('saved_recipes').upsert({ user_id: user.id, recipe_id: recipeId });
+            if(!error) alert('Added!'); loadKitchen();
+        }
 
         window.onload = loadData;
     </script>
