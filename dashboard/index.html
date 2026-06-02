@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Beta</title>
+    <title>Calalloo | Heritage Hub</title>
     <link rel="icon" type="image/png" href="/assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,78 +19,66 @@
             --border: #F2F2F2; --grey-text: #666666; --light-bg: #FAF9F6;
             --font-display: 'Fraunces', serif; --font-main: 'Inter', sans-serif;
         }
+        [data-theme="dark"] {
+            --bg: #0A0A0A; --dark: #FFFFFF; --white: #1A1A1A;
+            --border: #2A2A2A; --grey-text: #AAAAAA; --light-bg: #111111;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { font-family: var(--font-main); background: var(--bg); color: var(--dark); overflow-x: hidden; }
+        body { font-family: var(--font-main); background: var(--bg); color: var(--dark); overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         
-        /* Header & Nav */
-        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 1000; }
-        .logo-box { display: flex; align-items: center; gap: 10px; }
+        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 1000; }
+        .logo-box { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-box img { width: 32px; height: 32px; border-radius: 6px; }
         .display-font { font-family: var(--font-display); font-weight: 900; letter-spacing: -0.5px; }
 
-        .nav-pills { display: flex; gap: 10px; background: var(--light-bg); padding: 5px; border-radius: 100px; }
-        @media (max-width: 768px) { .nav-pills { display: none; } }
+        .nav-pills { display: flex; gap: 5px; background: var(--light-bg); padding: 5px; border-radius: 100px; }
         .pill { padding: 8px 16px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--grey-text); transition: all 0.2s; }
-        .pill.active { background: var(--white); color: var(--dark); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .pill.active { background: var(--white); color: var(--dark); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-        .hamburger { padding: 8px; cursor: pointer; }
+        .hamburger { padding: 8px; cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        .desktop-messenger { display: flex; align-items: center; gap: 5px; color: var(--primary); font-weight: 700; cursor: pointer; }
+        @media (max-width: 768px) { .desktop-messenger { display: none; } }
 
-        /* Main Content */
         .tab-content { display: none; padding-bottom: 80px; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Discovery Grid */
-        .search-bar { padding: 20px; position: sticky; top: 63px; background: white; z-index: 900; }
-        .search-input { width: 100%; padding: 14px 45px 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; }
-        .search-input:focus { border-color: var(--primary); }
+        .search-bar { padding: 20px; position: sticky; top: 63px; background: var(--bg); z-index: 900; }
+        .search-input { width: 100%; padding: 14px 45px 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; background: var(--white); color: var(--dark); }
+        
         .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 20px 20px; }
-        .recipe-card { border-radius: 12px; overflow: hidden; cursor: pointer; background: white; border: 1px solid var(--border); transition: transform 0.2s; }
-        .recipe-card:active { transform: scale(0.98); }
+        .recipe-card { border-radius: 12px; overflow: hidden; cursor: pointer; background: var(--white); border: 1px solid var(--border); transition: transform 0.2s; }
         .recipe-image { height: 160px; background-size: cover; background-position: center; }
         .recipe-info { padding: 12px; }
-        .recipe-info h3 { font-size: 1rem; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        .tag { font-size: 0.75rem; color: var(--grey-text); }
 
-        /* Profile Hub */
         .profile-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid var(--border); }
-        .avatar-main { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 15px; object-fit: cover; }
+        .avatar-wrapper { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; cursor: pointer; }
+        .avatar-main { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; }
+        .avatar-edit { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; padding: 5px; border-radius: 50%; border: 2px solid var(--bg); }
+
         .stats { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
         .stat-item { text-align: center; }
         .stat-val { font-weight: 800; font-size: 1.2rem; display: block; }
         .stat-label { font-size: 0.8rem; color: var(--grey-text); }
 
-        /* Vision Lab */
-        .vision-container { padding: 20px; text-align: center; }
-        #video-feed { width: 100%; border-radius: 12px; aspect-ratio: 4/3; object-fit: cover; background: #000; margin-bottom: 20px; display: none; }
-        #upload-preview { width: 100%; border-radius: 12px; margin-bottom: 20px; display: none; }
-        .controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .btn { padding: 14px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-dark { background: var(--dark); color: white; }
         .btn-secondary { background: var(--light-bg); color: var(--dark); border: 1.5px solid var(--border); }
 
-        /* Map */
         #map-container { width: 100%; height: 70vh; z-index: 1; }
 
-        /* Modals */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .close-btn { background: none; border: none; cursor: pointer; }
+        .modal-content { background: var(--bg); color: var(--dark); width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; }
+        .close-btn { background: none; border: none; cursor: pointer; color: var(--dark); }
 
-        /* Menu */
-        .menu-overlay { position: fixed; inset: 0; background: white; z-index: 2500; display: none; flex-direction: column; padding: 40px 25px; }
-        .menu-item { padding: 18px 0; border-bottom: 1px solid var(--border); font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        .menu-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2500; display: none; flex-direction: column; padding: 40px 25px; }
+        .menu-item { padding: 18px 0; border-bottom: 1px solid var(--border); font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--dark); }
         .menu-item i { color: var(--primary); }
-
-        /* Utilities */
-        .grey-text { color: var(--grey-text); }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo-box">
+        <div class="logo-box" onclick="showTab('discovery')">
             <img src="/assets/logo.png">
             <span class="display-font">Calalloo</span>
         </div>
@@ -99,16 +87,18 @@
             <div class="pill" onclick="showTab('vision')">Vision</div>
             <div class="pill" onclick="showTab('map')">Map</div>
             <div class="pill" onclick="showTab('profile')">Profile</div>
+            <div class="pill" onclick="showTab('settings')">Settings</div>
         </div>
-        <div class="hamburger" onclick="toggleMenu()">
-            <i data-lucide="menu"></i>
+        <div class="hamburger">
+            <div class="desktop-messenger" onclick="openHub()"><i data-lucide="message-circle"></i> Messenger</div>
+            <i data-lucide="menu" onclick="toggleMenu()"></i>
         </div>
     </header>
 
     <div id="discovery" class="tab-content active">
         <div class="search-bar">
             <div style="position: relative;">
-                <input type="text" class="search-input" placeholder="Search dishes or keepers..." oninput="handleSearch(this.value)">
+                <input type="text" class="search-input" placeholder="Search heritage recipes..." oninput="handleSearch(this.value)">
                 <i data-lucide="search" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--grey-text); width: 20px;"></i>
             </div>
         </div>
@@ -116,13 +106,13 @@
     </div>
 
     <div id="vision" class="tab-content">
-        <div class="vision-container">
-            <video id="video-feed" autoplay playsinline></video>
-            <img id="upload-preview">
-            <div class="controls">
+        <div style="padding: 20px; text-align: center;">
+            <video id="video-feed" autoplay playsinline style="width: 100%; border-radius: 12px; aspect-ratio: 4/3; object-fit: cover; background: #000; margin-bottom: 20px; display: none;"></video>
+            <img id="upload-preview" style="width: 100%; border-radius: 12px; margin-bottom: 20px; display: none;">
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                 <button class="btn btn-primary" onclick="initCam()"><i data-lucide="camera"></i> Start Camera</button>
                 <button class="btn btn-secondary" onclick="flipCamera()"><i data-lucide="refresh-cw"></i> Flip</button>
-                <label class="btn btn-dark">
+                <label class="btn btn-secondary">
                     <i data-lucide="upload"></i> Upload
                     <input type="file" style="display: none;" onchange="handleVisionUpload(this)" accept="image/*">
                 </label>
@@ -136,15 +126,20 @@
 
     <div id="profile" class="tab-content">
         <div class="profile-header">
-            <img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100">
-            <h1 id="profile-name" class="display-font">Keeper</h1>
-            <div class="stats">
-                <div class="stat-item"><span class="stat-val">87</span><span class="stat-label">Recipes</span></div>
-                <div class="stat-item"><span class="stat-val">12</span><span class="stat-label">Followers</span></div>
-                <div class="stat-item"><span class="stat-val">24</span><span class="stat-label">Following</span></div>
+            <div class="avatar-wrapper" onclick="document.getElementById('avatar-input').click()">
+                <img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100">
+                <div class="avatar-edit"><i data-lucide="camera" style="width: 14px; height: 14px;"></i></div>
+                <input type="file" id="avatar-input" style="display: none;" onchange="uploadAvatar(this)">
             </div>
-            <textarea id="p-bio" placeholder="Add your heritage bio..." style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; resize: none; min-height: 80px; margin-bottom: 15px;"></textarea>
-            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveFullProfile()">Save Profile Changes</button>
+            <input type="text" id="p-name" class="display-font" style="text-align: center; border: none; background: none; font-size: 2rem; width: 100%; color: var(--dark); outline: none; margin-bottom: 5px;" placeholder="Your Name">
+            <p id="p-handle" class="grey-text" style="margin-bottom: 20px;"></p>
+            <div class="stats">
+                <div class="stat-item"><span class="stat-val" id="stat-recipes">0</span><span class="stat-label">Recipes</span></div>
+                <div class="stat-item"><span class="stat-val" id="stat-followers">0</span><span class="stat-label">Followers</span></div>
+                <div class="stat-item"><span class="stat-val" id="stat-following">0</span><span class="stat-label">Following</span></div>
+            </div>
+            <textarea id="p-bio" placeholder="Add your heritage bio..." style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; resize: none; min-height: 80px; margin-bottom: 15px; background: var(--white); color: var(--dark);"></textarea>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveFullProfile()">Save Profile</button>
         </div>
         <div style="padding: 20px;">
             <h3 class="display-font" style="margin-bottom: 20px;">Saved to Kitchen</h3>
@@ -152,10 +147,31 @@
         </div>
     </div>
 
+    <div id="settings" class="tab-content">
+        <div style="padding: 40px 20px;">
+            <h1 class="display-font" style="margin-bottom: 30px;">Settings</h1>
+            <div class="menu-item" onclick="toggleTheme()">
+                <i data-lucide="moon"></i> Dark Mode
+                <div style="margin-left: auto;" id="theme-status">Off</div>
+            </div>
+            <div class="menu-item" onclick="requestPermission('camera')">
+                <i data-lucide="camera"></i> Camera Permissions
+                <div style="margin-left: auto; color: var(--primary);">Review</div>
+            </div>
+            <div class="menu-item" onclick="requestPermission('location')">
+                <i data-lucide="map-pin"></i> Location Access
+                <div style="margin-left: auto; color: var(--primary);">Review</div>
+            </div>
+            <div class="menu-item" onclick="signOut()" style="color: red; margin-top: 50px; border-top: 1px solid var(--border);">
+                <i data-lucide="log-out"></i> Sign Out
+            </div>
+        </div>
+    </div>
+
     <!-- Modals -->
     <div id="recipe-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 id="rd-title" class="display-font">Recipe</h2>
                 <button class="close-btn" onclick="closeRecipe()"><i data-lucide="x"></i></button>
             </div>
@@ -163,63 +179,64 @@
             <p id="rd-desc" class="grey-text" style="margin-bottom: 20px;"></p>
             <h4 class="display-font" style="margin-bottom: 10px;">Instructions</h4>
             <div id="rd-instructions" style="margin-bottom: 30px;"></div>
-            <button class="btn btn-primary" id="save-recipe-btn" style="width: 100%; justify-content: center;">
-                <i data-lucide="heart"></i> Save to Kitchen
-            </button>
+            <button class="btn btn-primary" id="save-recipe-btn" style="width: 100%; justify-content: center;"><i data-lucide="heart"></i> Save to Kitchen</button>
         </div>
     </div>
 
-    <!-- Heritage Hub Modal -->
     <div id="hub-modal" class="modal">
         <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
-            <div class="modal-header">
-                <h2 class="display-font">Heritage Hub</h2>
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="display-font">Heritage Messenger</h2>
                 <button class="close-btn" onclick="closeHub()"><i data-lucide="x"></i></button>
             </div>
-            <div id="hub-messages" style="flex-grow: 1; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
-                <p class="grey-text" style="text-align: center; margin-top: 50%;">Start a conversation with a Heritage Keeper.</p>
-            </div>
+            <div id="hub-messages" style="flex-grow: 1; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px;"></div>
             <div style="display: flex; gap: 10px;">
-                <input type="text" id="hub-input" placeholder="Type a message..." style="flex-grow: 1; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px;">
+                <input type="text" id="hub-input" placeholder="Type a message..." style="flex-grow: 1; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--white); color: var(--dark);">
                 <button class="btn btn-primary" onclick="sendHubMessage()"><i data-lucide="send"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- Menu Overlay -->
     <div id="menu-overlay" class="menu-overlay">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
             <button class="close-btn" onclick="toggleMenu()"><i data-lucide="x" style="width: 32px; height: 32px;"></i></button>
         </div>
         <div class="menu-item" onclick="showTab('discovery'); toggleMenu()"><i data-lucide="search"></i>Discovery</div>
-        <div class="menu-item" onclick="openHub(); toggleMenu()"><i data-lucide="message-square"></i>Heritage Hub (Chat)</div>
+        <div class="menu-item" onclick="openHub(); toggleMenu()"><i data-lucide="message-square"></i>Heritage Messenger</div>
         <div class="menu-item" onclick="showTab('map'); toggleMenu()"><i data-lucide="map"></i>Heritage Map</div>
         <div class="menu-item" onclick="showTab('profile'); toggleMenu()"><i data-lucide="user"></i>My Profile</div>
+        <div class="menu-item" onclick="showTab('settings'); toggleMenu()"><i data-lucide="settings"></i>Settings</div>
         <div class="menu-item" onclick="signOut()"><i data-lucide="log-out"></i>Sign Out</div>
     </div>
 
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
-        let allRecipes = [];
-        let mapInitialized = false;
-        let currentFacingMode = 'environment';
-        let stream = null;
+        let allRecipes = [], mapInitialized = false, currentFacingMode = 'environment', stream = null;
 
         async function loadData() {
             const { data: { user } } = await sb.auth.getUser();
             if(!user) { window.location.href = '/login/'; return; }
 
-            // Load Recipes
             const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true);
             allRecipes = recipes || [];
             renderRecipes(allRecipes);
 
-            // Load Profile
             const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
             if(profile) {
+                document.getElementById('p-name').value = profile.full_name || '';
+                document.getElementById('p-handle').innerText = `@${profile.username || 'keeper'}`;
                 document.getElementById('p-bio').value = profile.bio || '';
                 document.getElementById('p-avatar').src = profile.avatar_url || 'https://via.placeholder.com/100';
-                document.getElementById('profile-name').innerText = user.email.split('@')[0];
+                document.getElementById('stat-followers').innerText = profile.followers_count || 0;
+                document.getElementById('stat-following').innerText = profile.following_count || 0;
+            }
+            
+            const { count } = await sb.from('recipes').select('*', { count: 'exact', head: true }).eq('author_id', user.id);
+            document.getElementById('stat-recipes').innerText = count || 0;
+
+            if(localStorage.getItem('theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('theme-status').innerText = 'On';
             }
             lucide.createIcons();
         }
@@ -237,54 +254,64 @@
             `).join('');
         }
 
-        function handleSearch(q) {
-            const filtered = allRecipes.filter(r => 
-                r.title.toLowerCase().includes(q.toLowerCase()) || 
-                (r.vibe_tags || []).some(t => t.toLowerCase().includes(q.toLowerCase()))
-            );
-            renderRecipes(filtered);
-        }
-
         function showTab(id) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
-            // Map Init
-            if(id === 'map' && !mapInitialized) {
-                setTimeout(() => {
-                    const map = L.map('map-container').setView([10.6918, -61.2225], 10);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                    mapInitialized = true;
-                }, 200);
-            }
+            const el = document.getElementById(id);
+            if(el) el.classList.add('active');
+            document.querySelectorAll(`.pill[onclick*="${id}"]`).forEach(p => p.classList.add('active'));
+            if(id === 'map' && !mapInitialized) initMap();
             if(id === 'profile') loadKitchen();
         }
 
-        async function loadKitchen() {
-            const { data: { user } } = await sb.auth.getUser();
-            const { data: saved } = await sb.from('saved_recipes').select('recipe_id').eq('user_id', user.id);
-            const ids = saved.map(s => s.recipe_id);
-            const { data: recipes } = await sb.from('recipes').select('*').in('id', ids);
-            
-            const grid = document.getElementById('kitchen-grid');
-            grid.innerHTML = (recipes || []).map(r => `
-                <div class="recipe-card" onclick="openRecipe('${r.id}')">
-                    <div class="recipe-image" style="background-image: url(${r.cover_photo_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=800'})"></div>
-                    <div class="recipe-info">
-                        <h3>${r.title}</h3>
-                    </div>
-                </div>
-            `).join('');
+        function initMap() {
+            setTimeout(() => {
+                const map = L.map('map-container').setView([10.6918, -61.2225], 10);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                mapInitialized = true;
+            }, 200);
         }
 
         async function saveFullProfile() {
             const { data: { user } } = await sb.auth.getUser();
+            const name = document.getElementById('p-name').value;
             const bio = document.getElementById('p-bio').value;
-            const { error } = await sb.from('profiles').update({ bio }).eq('id', user.id);
-            if(!error) alert('Profile saved successfully!');
+            const { error } = await sb.from('profiles').update({ full_name: name, bio }).eq('id', user.id);
+            if(!error) alert('Heritage Identity Updated!');
         }
 
+        async function uploadAvatar(el) {
+            const file = el.files[0];
+            const { data: { user } } = await sb.auth.getUser();
+            const path = `avatars/${user.id}_${Date.now()}.png`;
+            const { data, error } = await sb.storage.from('heritage-media').upload(path, file);
+            if(!error) {
+                const { data: { publicUrl } } = sb.storage.from('heritage-media').getPublicUrl(path);
+                await sb.from('profiles').update({ avatar_url: publicUrl }).eq('id', user.id);
+                document.getElementById('p-avatar').src = publicUrl;
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const next = isDark ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            document.getElementById('theme-status').innerText = next === 'dark' ? 'On' : 'Off';
+        }
+
+        async function requestPermission(type) {
+            if(type === 'camera') initCam();
+            if(type === 'location') navigator.geolocation.getCurrentPosition(() => alert('Location Access Granted'), () => alert('Location Access Denied'));
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('menu-overlay');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+        function openHub() { document.getElementById('hub-modal').style.display = 'flex'; }
+        function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
+        function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
         function openRecipe(id) {
             const r = allRecipes.find(x => x.id === id);
             if(!r) return;
@@ -292,73 +319,11 @@
             document.getElementById('rd-desc').innerText = r.description;
             document.getElementById('rd-img').src = r.cover_photo_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=800';
             document.getElementById('rd-instructions').innerHTML = `<ol style="padding-left: 20px;">${(r.instructions || []).map(i => `<li style="margin-bottom: 8px;">${i}</li>`).join('')}</ol>`;
-            document.getElementById('save-recipe-btn').onclick = () => saveRecipeToKitchen(r.id);
             document.getElementById('recipe-modal').style.display = 'flex';
-            lucide.createIcons();
         }
-
         function closeRecipe() { document.getElementById('recipe-modal').style.display = 'none'; }
-
-        async function saveRecipeToKitchen(id) {
-            const { data: { user } } = await sb.auth.getUser();
-            const { error } = await sb.from('saved_recipes').insert({ user_id: user.id, recipe_id: id });
-            if(!error) alert('Saved to Kitchen!');
-            closeRecipe();
-        }
-
-        // Hub / Chat
-        function openHub() { document.getElementById('hub-modal').style.display = 'flex'; }
-        function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
-        async function sendHubMessage() {
-            const input = document.getElementById('hub-input');
-            const msg = input.value.trim();
-            if(!msg) return;
-            const { data: { user } } = await sb.auth.getUser();
-            const { error } = await sb.from('messages').insert({ content: msg, sender_id: user.id, recipient_id: user.id }); // Self-chat for testing
-            if(!error) {
-                document.getElementById('hub-messages').innerHTML += `<div style="background: var(--primary); color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; align-self: flex-end; margin-left: auto; max-width: 80%;">${msg}</div>`;
-                input.value = '';
-            } else {
-                alert('Messaging table missing. Run the SQL script I gave you!');
-            }
-        }
-
-        // Camera logic
-        async function initCam() {
-            if(stream) stream.getTracks().forEach(t => t.stop());
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
-                const video = document.getElementById('video-feed');
-                video.srcObject = stream;
-                video.style.display = 'block';
-                document.getElementById('upload-preview').style.display = 'none';
-            } catch (e) { alert('Camera access required.'); }
-        }
-        function flipCamera() {
-            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
-            initCam();
-        }
-        function handleVisionUpload(el) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('video-feed').style.display = 'none';
-                const img = document.getElementById('upload-preview');
-                img.src = e.target.result;
-                img.style.display = 'block';
-            };
-            reader.readAsDataURL(el.files[0]);
-        }
-
-        function toggleMenu() {
-            const menu = document.getElementById('menu-overlay');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        }
-        function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
 
         window.onload = loadData;
     </script>
 </body>
 </html>
-
-
-
