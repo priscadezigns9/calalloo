@@ -210,16 +210,23 @@
 
         async function loadData() {
             try {
+                // High-Fidelity Auth Sentry
+                sb.auth.onAuthStateChange((event, session) => {
+                    console.log('Auth Event:', event);
+                    if (event === 'SIGNED_OUT' || !session) {
+                        window.location.href = '/login/';
+                    }
+                });
+
                 const { data: { session } } = await sb.auth.getSession();
                 if(!session) { 
-                    // Wait 500ms to prevent rapid redirects before redirecting
-                    setTimeout(() => { window.location.href = '/login/'; }, 500);
+                    window.location.href = '/login/';
                     return; 
                 }
 
                 const { data: { user } } = await sb.auth.getUser();
                 if(!user) { 
-                    setTimeout(() => { window.location.href = '/login/'; }, 500);
+                    window.location.href = '/login/';
                     return; 
                 }
 
@@ -253,7 +260,11 @@
                 
                 document.getElementById('loader-overlay').style.display = 'none';
                 lucide.createIcons();
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error('Load Error:', e);
+                // If there is an error loading data, it might be an expired session
+                // window.location.href = '/login/'; 
+            }
         }
 
         function showTab(id) {
