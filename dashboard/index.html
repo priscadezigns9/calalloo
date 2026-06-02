@@ -210,19 +210,12 @@
 
         async function loadData() {
             try {
-                // High-Fidelity Auth Sentry
-                sb.auth.onAuthStateChange((event, session) => {
-                    console.log('Auth Event:', event);
-                    if (event === 'SIGNED_OUT' || !session) {
-                        window.location.href = '/login/';
-                    }
-                });
-
                 const { data: { session } } = await sb.auth.getSession();
-                if(!session) { 
-                    window.location.href = '/login/';
-                    return; 
+                if(!session) {
+                    setTimeout(() => { window.location.href = '/login/'; }, 2000);
+                    return;
                 }
+                sb.auth.onAuthStateChange((event, s) => { if(event === 'SIGNED_OUT') window.location.href = '/login/'; });
 
                 const { data: { user } } = await sb.auth.getUser();
                 if(!user) { 
