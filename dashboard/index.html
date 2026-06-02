@@ -258,20 +258,32 @@
 
         async function saveFullProfile() {
             const { data: { user } } = await sb.auth.getUser();
+            if(!user) { alert('Auth Error: Please re-login.'); return; }
+            
             const name = document.getElementById('p-name').value;
             const bio = document.getElementById('p-bio').value;
             const btn = document.getElementById('save-profile-btn');
             
             btn.innerText = 'Syncing...';
+            btn.disabled = true;
             
-            const { error } = await sb.from('profiles').update({ full_name: name, bio }).eq('id', user.id);
+            // USE UPSERT instead of update to ensure record exists
+            const { error } = await sb.from('profiles').upsert({ 
+                id: user.id, 
+                full_name: name, 
+                bio: bio,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'id' });
+
             if(!error) { 
                 alert('Sovereign Hub Synced!'); 
                 btn.innerText = 'Save Profile';
             } else {
-                alert('Sync Failed.');
+                console.error(error);
+                alert('Sync Failed: ' + (error.message || 'Database Restriction (RLS)'));
                 btn.innerText = 'Save Profile';
             }
+            btn.disabled = false;
         }
 
         async function saveRecipe(recipeId) {
@@ -349,7 +361,7 @@
             const { error } = await sb.storage.from('heritage-media').upload(path, file);
             if(!error) {
                 const { data: { publicUrl } } = sb.storage.from('heritage-media').getPublicUrl(path);
-                await sb.from('profiles').update({ avatar_url: publicUrl }).eq('id', user.id);
+                await sb.from('profiles').upsert({ id: user.id, avatar_url: publicUrl });
             }
         }
 
