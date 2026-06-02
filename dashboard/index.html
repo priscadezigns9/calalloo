@@ -56,7 +56,12 @@
             z-index: 1000;
         }
         .nav-brand img { height: 40px; }
+        
+        /* Navigation Controls */
         .nav-pills { display: flex; gap: 8px; background: var(--light-bg); padding: 6px; border-radius: 100px; }
+        @media (max-width: 900px) {
+            .nav-pills { display: none; }
+        }
         .pill {
             padding: 10px 20px;
             border-radius: 100px;
@@ -73,6 +78,15 @@
         }
         .pill.active { background: var(--white); color: var(--primary); box-shadow: var(--shadow); }
 
+        /* Hamburger Menu */
+        .hamburger { display: none; background: none; border: none; color: var(--dark); cursor: pointer; }
+        @media (max-width: 900px) {
+            .hamburger { display: block; }
+        }
+        .mobile-menu { display: none; position: fixed; inset: 0; background: var(--white); z-index: 3000; flex-direction: column; padding: 40px; gap: 24px; }
+        .mobile-menu.active { display: flex; }
+        .mobile-link { font-family: var(--font-display); font-size: 32px; text-decoration: none; color: var(--dark); font-weight: 900; }
+
         .layout { flex: 1; display: flex; overflow: hidden; }
         .main-content { flex: 1; overflow-y: auto; padding: 40px 5%; position: relative; background: var(--bg); }
         .view { display: none; }
@@ -80,7 +94,7 @@
 
         /* Discovery Layout */
         .feed-container { display: grid; grid-template-columns: 300px 1fr 300px; gap: 40px; }
-        @media (max-width: 1100px) {
+        @media (max-width: 1200px) {
             .feed-container { grid-template-columns: 1fr; }
             .sidebar-panel { display: none; }
         }
@@ -109,10 +123,10 @@
         .feed-btn.active { color: var(--dark); }
         .feed-btn.active::after { content: ''; position: absolute; bottom: -13px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 100px; }
 
-        /* Modern Settings / Forms */
+        /* Settings Form */
         .form-row { margin-bottom: 24px; }
         .form-label { display: block; font-weight: 800; font-size: 11px; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; letter-spacing: 1px; }
-        .modern-input { width: 100%; padding: 14px 20px; border-radius: 16px; border: 2px solid var(--border); background: var(--light-bg); font-family: var(--font-sans); font-weight: 600; outline: none; transition: 0.3s; color: var(--dark); }
+        .modern-input { width: 100%; padding: 14px 20px; border-radius: 16px; border: 2px solid #F3F4F6; background: #F3F4F6; font-weight: 600; outline: none; transition: 0.3s; color: var(--dark); border: 2px solid transparent; }
         .modern-input:focus { border-color: var(--primary); background: var(--white); }
         
         .toggle-switch { width: 52px; height: 28px; background: #E5E7EB; border-radius: 100px; position: relative; cursor: pointer; transition: 0.3s; border: none; outline: none; }
@@ -124,35 +138,41 @@
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(232, 119, 34, 0.3); }
 
         /* Modals */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
-        .modal-card { background: var(--white); max-width: 800px; width: 100%; border-radius: 40px; padding: 48px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.4); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 4000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
+        .modal-card { background: var(--white); max-width: 800px; width: 100%; border-radius: 40px; padding: 40px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.4); }
 
-        /* Ad Styling */
-        .ad-box { background: #FFF9F2; border: 1px dashed var(--primary); border-radius: 20px; padding: 20px; text-align: center; }
-        .ad-btn { background: none; border: 2px solid var(--primary); color: var(--primary); font-weight: 800; padding: 8px 16px; border-radius: 100px; font-size: 12px; margin-top: 12px; cursor: pointer; }
-
-        /* Profile */
+        /* Profile Hero */
         .profile-hero { display: flex; align-items: center; gap: 40px; margin-bottom: 48px; padding: 40px; background: var(--light-bg); border-radius: 40px; }
-        @media (max-width: 600px) {
-            .profile-hero { flex-direction: column; text-align: center; padding: 20px; }
+        @media (max-width: 700px) {
+            .profile-hero { flex-direction: column; text-align: center; padding: 24px; }
         }
-        .avatar-wrap { width: 140px; height: 140px; position: relative; }
+        .avatar-wrap { width: 140px; height: 140px; position: relative; flex-shrink: 0; }
         .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); background: #eee; }
         .avatar-edit { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
         #map-container { width: 100%; height: calc(100vh - 250px); border-radius: 40px; overflow: hidden; border: 2px solid var(--border); }
 
-        /* Chat Requests */
-        .chat-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; cursor: pointer; transition: 0.2s; }
-        .chat-item:hover { background: var(--light-bg); }
-        .chat-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        .chat-info { flex: 1; }
-        .chat-name { font-weight: 700; font-size: 14px; }
-        .chat-msg { font-size: 12px; color: var(--grey-text); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        .chat-badge { font-size: 10px; font-weight: 900; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; }
+        /* Ad & Pro Promo */
+        .ad-box { background: #FFF9F2; border: 1px dashed var(--primary); border-radius: 20px; padding: 24px; text-align: center; }
+        .pro-card { background: linear-gradient(135deg, var(--primary), #D15A10); color:white; border-radius: 24px; padding: 24px; box-shadow: 0 20px 40px rgba(232,119,34,0.2); }
     </style>
 </head>
 <body>
+
+    <div id="mobile-menu" class="mobile-menu">
+        <button onclick="toggleMenu()" style="position:absolute; top:30px; right:30px; background:none; border:none; color:var(--dark);"><i data-lucide="x" style="width:40px; height:40px;"></i></button>
+        <div style="display:flex; flex-direction:column; gap:32px; margin-top:100px;">
+            <a href="#" class="mobile-link" onclick="switchView('feed'); toggleMenu()">Discovery</a>
+            <a href="#" class="mobile-link" onclick="switchView('scanner'); toggleMenu()">Vision</a>
+            <a href="#" class="mobile-link" onclick="switchView('map'); toggleMenu()">Map</a>
+            <a href="#" class="mobile-link" onclick="switchView('profile'); toggleMenu()">Profile</a>
+            <a href="/magazine/" class="mobile-link">Magazine</a>
+            <a href="/blog/" class="mobile-link">Blog</a>
+            <div style="height:1px; background:var(--border); margin:20px 0;"></div>
+            <button class="btn-action" onclick="alert('Subscription coming soon!')">Upgrade to Pro</button>
+            <button class="btn-action" style="background:var(--dark);" onclick="signOut()">Sign Out</button>
+        </div>
+    </div>
 
     <header>
         <a href="/" class="nav-brand"><img src="/assets/logo.png" alt="Calalloo"></a>
@@ -166,37 +186,19 @@
 
         <div style="display:flex; gap:16px; align-items:center;">
              <button onclick="toggleDarkMode()" style="background:none; border:none; color:var(--dark); cursor:pointer;"><i id="mode-icon" data-lucide="moon"></i></button>
-             <button class="pill" onclick="signOut()"><i data-lucide="log-out"></i></button>
+             <button class="hamburger" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
         </div>
     </header>
 
     <div class="layout">
         <main class="main-content">
             
-            <!-- Discovery / Feed View -->
             <div id="feed" class="view active">
                 <div class="feed-container">
                     <aside class="sidebar-panel">
                         <div class="card">
-                            <h3 class="card-title">Active Conversations</h3>
-                            <div id="convos" style="display:flex; flex-direction:column; gap:8px;">
-                                <div class="chat-item">
-                                    <img src="https://api.dicebear.com/7.x/initials/svg?seed=Joe" class="chat-avatar">
-                                    <div class="chat-info">
-                                        <div class="chat-name">Joe Keeper</div>
-                                        <div class="chat-msg">Sent a recipe extraction request...</div>
-                                    </div>
-                                    <span class="chat-badge">REQUEST</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h3 class="card-title">Find Keepers</h3>
-                            <div class="search-wrap" style="margin-bottom:12px;">
-                                <i data-lucide="search" class="search-icon" style="left:15px; width:14px;"></i>
-                                <input type="text" class="search-input" placeholder="Find people..." style="font-size:12px; padding:12px 12px 12px 40px; border-width:1px;" oninput="searchUsers(this.value)">
-                            </div>
-                            <div id="user-results" style="display:flex; flex-direction:column; gap:8px; font-size:12px;"></div>
+                            <h3 class="card-title">Chat Requests</h3>
+                            <div id="convos" style="text-align:center; padding:20px; color:var(--grey-text); font-size:13px; font-weight:600;">No active requests.</div>
                         </div>
                     </aside>
 
@@ -205,95 +207,63 @@
                             <button class="feed-btn active" onclick="toggleFeedMode('discovery', this)">Discovery</button>
                             <button class="feed-btn" onclick="toggleFeedMode('following', this)">My Feed</button>
                         </div>
-                        
                         <div id="discovery-panel">
-                            <div class="search-wrap">
-                                <i data-lucide="search" class="search-icon"></i>
-                                <input type="text" class="search-input" placeholder="Search 1000+ Caribbean recipes..." oninput="handleSearch(this.value)">
-                            </div>
+                            <div class="search-wrap"><i data-lucide="search" class="search-icon"></i><input type="text" class="search-input" placeholder="Search heritage recipes..." oninput="handleSearch(this.value)"></div>
                             <div id="recipe-grid" class="recipe-grid"></div>
                         </div>
-
-                        <div id="following-panel" style="display:none; text-align:center; padding:100px; color:var(--grey-text);">
-                            <i data-lucide="users" style="width:48px; height:48px; margin-bottom:20px; opacity:0.3;"></i>
-                            <p>Follow users to see their heritage posts here.</p>
-                        </div>
+                        <div id="following-panel" style="display:none; text-align:center; padding:100px; color:var(--grey-text);"><p>Follow users to see their posts.</p></div>
                     </section>
 
                     <aside class="sidebar-panel">
                         <div class="ad-box">
-                            <span style="font-size:10px; font-weight:900; color:var(--primary);">PROMOTED</span>
-                            <h4 style="margin: 10px 0 5px; font-family:var(--font-display);">Promote Your Brand</h4>
-                            <p style="font-size:11px; opacity:0.7;">Get discovered by 10,000+ Caribbean heritage lovers.</p>
-                            <button class="ad-btn" onclick="alert('Contact sales@calalloo.com')">Promote Now</button>
+                            <h4 style="margin-bottom:10px; font-family:var(--font-display);">Promote Your Brand</h4>
+                            <p style="font-size:11px; opacity:0.7; margin-bottom:15px;">Target 10,000+ heritage lovers.</p>
+                            <button class="btn-action" style="font-size:12px; padding:10px;">Get Started</button>
                         </div>
-                        <div class="card" style="background: linear-gradient(135deg, var(--primary), #D15A10); color:white; border:none;">
-                            <h3 style="font-family:var(--font-display); margin-bottom:12px;">Calalloo Pro</h3>
-                            <p style="font-size:12px; margin-bottom:20px; opacity:0.9;">Unlock the Sourcing Map & Global Sourcing Grid.</p>
-                            <button class="btn-action" style="background:white; color:var(--primary); font-size:13px;" onclick="alert('Subscription feature coming soon!')">Upgrade $9.99/mo</button>
+                        <div class="pro-card">
+                            <h3 style="font-family:var(--font-display); margin-bottom:10px;">Calalloo Pro</h3>
+                            <button class="btn-action" style="background:white; color:var(--primary);" onclick="alert('Coming soon!')">Upgrade $9.99/mo</button>
                         </div>
                     </aside>
                 </div>
             </div>
 
-            <!-- Vision Lab View -->
             <div id="scanner" class="view">
-                <div style="max-width: 650px; margin: 0 auto; text-align: center;">
-                    <h2 style="font-family: var(--font-display); font-size: 36px; margin-bottom: 12px;">Vision Lab</h2>
-                    <p style="margin-bottom: 40px; color:var(--grey-text); font-weight:500;">Analyze heritage dishes via camera or photo upload.</p>
-                    
-                    <div id="vision-container" style="width: 100%; height: 450px; background: #000; border-radius: 40px; position: relative; overflow: hidden; border: 8px solid var(--white); box-shadow: var(--shadow);">
+                <div style="max-width:600px; margin:0 auto; text-align:center;">
+                    <h2 style="font-family:var(--font-display); font-size:36px; margin-bottom:12px;">Vision Lab</h2>
+                    <div id="vision-container" style="width:100%; height:400px; background:#000; border-radius:40px; position:relative; overflow:hidden; border:8px solid var(--white); box-shadow:var(--shadow);">
                         <video id="video-feed" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
                         <img id="upload-preview" style="display:none; width:100%; height:100%; object-fit:cover;">
-                        <div style="position:absolute; inset:0; border:2px solid var(--primary); margin:80px; border-radius:30px; pointer-events:none;"></div>
                     </div>
-                    
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-top:40px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:32px;">
                         <button class="btn-action" onclick="initCam()"><i data-lucide="camera"></i> Camera</button>
-                        <button class="btn-action" onclick="document.getElementById('vision-upload').click()"><i data-lucide="upload"></i> Upload</button>
-                        <button class="btn-action" style="background:var(--dark); color:var(--white);" onclick="doScan()"><i data-lucide="scan"></i> Analyze</button>
+                        <button class="btn-action" onclick="document.getElementById('v-upload').click()"><i data-lucide="upload"></i> Photo</button>
                     </div>
-                    <input type="file" id="vision-upload" hidden accept="image/*" onchange="handleVisionUpload(this)">
-                    <div id="scan-log" style="margin-top:24px; font-weight:800; font-size:14px;"></div>
+                    <input type="file" id="v-upload" hidden accept="image/*" onchange="handleVisionUpload(this)">
                 </div>
             </div>
 
-            <!-- Map View -->
             <div id="map" class="view">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
-                    <h2 style="font-family:var(--font-display); font-size:36px;">Sourcing Map</h2>
-                    <span style="background:rgba(232,119,34,0.1); color:var(--primary); padding:8px 20px; border-radius:100px; font-weight:900; font-size:12px;">Beta Access Unlocked</span>
-                </div>
                 <div id="map-container"></div>
             </div>
 
-            <!-- Profile View -->
             <div id="profile" class="view">
                 <div class="profile-hero">
                     <div class="avatar-wrap">
-                        <img id="p-avatar" class="avatar-img" src="https://api.dicebear.com/7.x/initials/svg?seed=User">
+                        <img id="p-avatar" class="avatar-img" src="https://api.dicebear.com/7.x/initials/svg?seed=HK">
                         <label for="p-upload" class="avatar-edit"><i data-lucide="camera" style="width:18px;"></i></label>
                         <input type="file" id="p-upload" hidden onchange="handleAvatar(this)">
                     </div>
                     <div style="flex:1;">
                         <h2 id="p-name" style="font-family:var(--font-display); font-size:36px;">Heritage Keeper</h2>
-                        <p id="p-username" style="color:var(--grey-text); font-weight:700; margin-bottom:12px;">@member_node</p>
-                        <div style="display:flex; gap:32px;">
-                            <div class="stat-item"><div id="s-followers" class="stat-val">0</div><div class="stat-label">Followers</div></div>
-                            <div class="stat-item"><div id="s-following" class="stat-val">0</div><div class="stat-label">Following</div></div>
-                            <div class="stat-item"><div id="s-likes" class="stat-val">0</div><div class="stat-label">Likes</div></div>
+                        <div style="display:flex; gap:32px; margin-top:16px;">
+                            <div class="stat-item"><div id="s-followers" style="font-weight:900;">0</div><div style="font-size:10px; font-weight:800; color:#888;">FOLLOWERS</div></div>
+                            <div class="stat-item"><div id="s-following" style="font-weight:900;">0</div><div style="font-size:10px; font-weight:800; color:#888;">FOLLOWING</div></div>
                         </div>
                     </div>
-                    <button class="btn-action" style="width:auto; padding:12px 24px;" onclick="openSettings()"><i data-lucide="settings"></i> Profile Settings</button>
+                    <button class="btn-action" style="width:auto;" onclick="openSettings()"><i data-lucide="settings"></i> Settings</button>
                 </div>
-
-                <div class="feed-toggle" style="justify-content:center; gap:60px;">
-                    <button id="tab-portfolio" class="feed-btn active" onclick="toggleProfileTab('portfolio')">Portfolio</button>
-                    <button id="tab-kitchen" class="feed-btn" onclick="toggleProfileTab('kitchen')">My Kitchen</button>
-                </div>
-
-                <div id="portfolio-list" class="recipe-grid"></div>
-                <div id="kitchen-list" class="recipe-grid" style="display:none;"></div>
+                <div id="kitchen-list" class="recipe-grid"></div>
             </div>
 
         </main>
@@ -302,63 +272,27 @@
     <!-- Modals -->
     <div id="recipe-modal" class="modal" onclick="this.style.display='none'">
         <div class="modal-card" onclick="event.stopPropagation()">
-            <img id="rm-img" style="width:100%; height:350px; object-fit:cover; border-radius:32px; margin-bottom:32px;">
-            <h2 id="rm-title" style="font-family:var(--font-display); font-size:36px; margin-bottom:16px;"></h2>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
-                <div>
-                    <h4 style="color:var(--primary); font-weight:900; margin-bottom:20px; letter-spacing:1px;">ANCESTRAL STEPS</h4>
-                    <div id="rm-steps" style="line-height:1.8; font-size:15px; font-weight:500;"></div>
-                </div>
-                <div>
-                    <h4 style="color:var(--primary); font-weight:900; margin-bottom:20px; letter-spacing:1px;">INGREDIENTS</h4>
-                    <div id="rm-ingredients" style="line-height:1.6; font-size:15px; opacity:0.8; font-weight:500;"></div>
-                </div>
-            </div>
-            <div style="margin-top:48px; display:flex; gap:20px;">
-                <button id="add-to-kitchen-btn" class="btn-action" style="flex:2;"><i data-lucide="plus"></i> Add to My Kitchen</button>
-                <button class="btn-action" style="background:var(--dark); flex:1;" onclick="closeRecipe()">Close</button>
-            </div>
+            <img id="rm-img" style="width:100%; height:300px; object-fit:cover; border-radius:24px; margin-bottom:24px;">
+            <h2 id="rm-title" style="font-family:var(--font-display); font-size:32px; margin-bottom:16px;"></h2>
+            <div id="rm-ingredients" style="margin-bottom:24px; font-size:14px; opacity:0.8;"></div>
+            <button id="add-btn" class="btn-action">Add to My Kitchen</button>
         </div>
     </div>
 
     <div id="settings-modal" class="modal" onclick="this.style.display='none'">
-        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:550px; border-radius:40px;">
-            <h2 style="font-family:var(--font-display); font-size:32px; margin-bottom:40px; text-align:center;">Settings</h2>
-            
-            <div class="form-row">
-                <label class="form-label">Full Name</label>
-                <input type="text" id="sn-name" class="modern-input">
+        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:500px;">
+            <h2 style="font-family:var(--font-display); margin-bottom:32px;">Settings</h2>
+            <div class="form-row"><label class="form-label">Name</label><input type="text" id="sn-name" class="modern-input"></div>
+            <div class="form-row"><label class="form-label">WhatsApp</label><input type="text" id="sn-whatsapp" class="modern-input"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <span style="font-weight:700;">Camera Permission</span>
+                <button id="perm-cam" class="toggle-switch" onclick="this.classList.toggle('active')"></button>
             </div>
-            <div class="form-row">
-                <label class="form-label">WhatsApp Number</label>
-                <input type="text" id="sn-whatsapp" class="modern-input">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
+                <span style="font-weight:700;">Location Permission</span>
+                <button id="perm-loc" class="toggle-switch" onclick="this.classList.toggle('active')"></button>
             </div>
-            <div class="form-row">
-                <label class="form-label">Facebook Profile Link</label>
-                <input type="text" id="sn-facebook" class="modern-input" placeholder="facebook.com/yourprofile">
-            </div>
-            <div class="form-row">
-                <label class="form-label">Instagram Handle</label>
-                <input type="text" id="sn-instagram" class="modern-input" placeholder="@yourhandle">
-            </div>
-            
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; background:var(--light-bg); padding:16px; border-radius:20px;">
-                <span style="font-weight:700; font-size:13px;">Public Mode</span>
-                <button id="sn-public" class="toggle-switch active" onclick="this.classList.toggle('active')"></button>
-            </div>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:32px;">
-                <div style="background:var(--light-bg); padding:16px; border-radius:20px; text-align:center;">
-                    <div style="font-size:11px; font-weight:800; margin-bottom:8px;">Camera</div>
-                    <button id="perm-cam" class="toggle-switch" onclick="this.classList.toggle('active')"></button>
-                </div>
-                <div style="background:var(--light-bg); padding:16px; border-radius:20px; text-align:center;">
-                    <div style="font-size:11px; font-weight:800; margin-bottom:8px;">Location</div>
-                    <button id="perm-loc" class="toggle-switch" onclick="this.classList.toggle('active')"></button>
-                </div>
-            </div>
-
-            <button id="save-settings-btn" class="btn-action" onclick="saveConfig()">Save</button>
+            <button class="btn-action" onclick="saveConfig()">Save</button>
         </div>
     </div>
 
@@ -377,21 +311,15 @@
             const { data: { user } } = await sb.auth.getUser();
             const { data: p } = await sb.from('profiles').select('*').eq('id', user.id).single();
             profileData = p;
-            
             if(p) {
                 document.getElementById('p-name').innerText = p.full_name || "Heritage Keeper";
-                document.getElementById('p-username').innerText = "@" + (p.username || user.email.split('@')[0]);
                 document.getElementById('sn-name').value = p.full_name || "";
                 document.getElementById('sn-whatsapp').value = p.whatsapp_number || "";
-                document.getElementById('sn-facebook').value = p.facebook_url || "";
-                document.getElementById('sn-instagram').value = p.instagram_handle || "";
-                
                 if(p.camera_permission) document.getElementById('perm-cam').classList.add('active');
                 if(p.location_permission) document.getElementById('perm-loc').classList.add('active');
                 if(p.avatar_url) document.getElementById('p-avatar').src = p.avatar_url;
             }
-
-            const { data: recs } = await sb.from('recipes').select('*').limit(50);
+            const { data: recs } = await sb.from('recipes').select('*').limit(40);
             currentRecipes = recs || [];
             renderGrid('recipe-grid', currentRecipes);
             loadKitchen();
@@ -402,42 +330,22 @@
             document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(el) el.classList.add('active');
-            if(id === 'map') checkLocation();
         }
 
-        async function checkLocation() {
-            const { data: { user } } = await sb.auth.getUser();
-            const { data } = await sb.from('profiles').select('location_permission').eq('id', user.id).single();
-            if(data?.location_permission) {
-                initMap();
-            } else {
-                alert("Please enable Location in your settings first.");
-                switchView('profile');
-            }
-        }
-
-        function initMap() {
-            if (document.getElementById('map-container').innerHTML !== "") return;
-            const map = L.map('map-container').setView([10.66, -61.51], 11);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
-        }
-
-        function toggleFeedMode(mode, el) {
+        function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('active'); }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function toggleFeedMode(m, el) { 
             document.querySelectorAll('.feed-btn').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
-            document.getElementById('discovery-panel').style.display = mode === 'discovery' ? 'block' : 'none';
-            document.getElementById('following-panel').style.display = mode === 'following' ? 'block' : 'none';
+            document.getElementById('discovery-panel').style.display = m === 'discovery' ? 'block' : 'none';
+            document.getElementById('following-panel').style.display = m === 'following' ? 'block' : 'none';
         }
 
-        function renderGrid(target, list) {
-            const grid = document.getElementById(target);
-            grid.innerHTML = list.map(r => `
+        function renderGrid(t, l) {
+            document.getElementById(t).innerHTML = l.map(r => `
                 <div class="recipe-card" onclick="openRecipe('${r.id}')">
-                    <img class="r-img" src="${r.cover_photo_url || 'https://via.placeholder.com/300?text=Extraction'}">
-                    <div class="r-body">
-                        <span class="r-tag">Verified Heritage</span>
-                        <h4 class="r-title">${r.title}</h4>
-                    </div>
+                    <img class="r-img" src="${r.cover_photo_url || 'https://via.placeholder.com/300'}">
+                    <div class="r-body"><span class="r-tag">Heritage</span><h4 class="r-title">${r.title}</h4></div>
                 </div>
             `).join('');
         }
@@ -446,32 +354,16 @@
             const r = currentRecipes.find(x => x.id === id) || kitchenRecipes.find(x => x.id === id);
             document.getElementById('rm-img').src = r.cover_photo_url || 'https://via.placeholder.com/300';
             document.getElementById('rm-title').innerText = r.title;
-            document.getElementById('rm-ingredients').innerText = r.description || "Ingredients pending.";
-            document.getElementById('rm-steps').innerHTML = (r.instructions || []).map((s,i)=>`<div><b>${i+1}.</b> ${s}</div>`).join('');
-            
-            const btn = document.getElementById('add-to-kitchen-btn');
-            btn.onclick = () => syncToKitchen(r.id);
-            btn.innerHTML = '<i data-lucide="plus"></i> Add to My Kitchen';
-            btn.style.background = 'var(--primary)';
-            
+            document.getElementById('rm-ingredients').innerText = r.description || "";
+            document.getElementById('add-btn').onclick = () => syncToKitchen(r.id);
             document.getElementById('recipe-modal').style.display = 'flex';
-            lucide.createIcons();
         }
 
         async function syncToKitchen(rid) {
             const { data: { user } } = await sb.auth.getUser();
-            const btn = document.getElementById('add-to-kitchen-btn');
-            btn.innerText = "Saving...";
-            
-            const { error } = await sb.from('user_kitchen').insert({ user_id: user.id, recipe_id: rid });
-            if(!error) {
-                btn.innerHTML = '<i data-lucide="check"></i> Saved';
-                btn.style.background = '#2D5A27';
-                loadKitchen();
-            } else {
-                btn.innerHTML = '<i data-lucide="plus"></i> Add to My Kitchen';
-            }
-            lucide.createIcons();
+            await sb.from('user_kitchen').insert({ user_id: user.id, recipe_id: rid });
+            alert("Saved to Kitchen!");
+            loadKitchen();
         }
 
         async function loadKitchen() {
@@ -483,104 +375,48 @@
             }
         }
 
-        function toggleProfileTab(tab) {
-            document.getElementById('portfolio-list').style.display = tab === 'portfolio' ? 'grid' : 'none';
-            document.getElementById('kitchen-list').style.display = tab === 'kitchen' ? 'grid' : 'none';
-            document.getElementById('tab-portfolio').classList.toggle('active', tab === 'portfolio');
-            document.getElementById('tab-kitchen').classList.toggle('active', tab === 'kitchen');
-        }
-
         async function saveConfig() {
             const { data: { user } } = await sb.auth.getUser();
-            const btn = document.getElementById('save-settings-btn');
-            btn.innerText = "Saving...";
-            
-            const updates = {
+            const up = {
                 id: user.id,
                 full_name: document.getElementById('sn-name').value,
                 whatsapp_number: document.getElementById('sn-whatsapp').value,
-                facebook_url: document.getElementById('sn-facebook').value,
-                instagram_handle: document.getElementById('sn-instagram').value,
                 camera_permission: document.getElementById('perm-cam').classList.contains('active'),
-                location_permission: document.getElementById('perm-loc').classList.contains('active'),
-                profile_public: document.getElementById('sn-public').classList.contains('active')
+                location_permission: document.getElementById('perm-loc').classList.contains('active')
             };
-            
-            await sb.from('profiles').upsert(updates);
-            btn.innerText = "Save";
+            await sb.from('profiles').upsert(up);
             alert("Settings saved.");
             location.reload();
         }
 
         async function handleAvatar(el) {
-            const file = el.files[0];
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const base64 = e.target.result;
-                document.getElementById('p-avatar').src = base64;
+                const b64 = e.target.result;
+                document.getElementById('p-avatar').src = b64;
                 const { data: { user } } = await sb.auth.getUser();
-                // In production, upload to Supabase Storage. For Beta, upsert to profile avatar_url
-                await sb.from('profiles').update({ avatar_url: base64 }).eq('id', user.id);
-                alert("Photo saved.");
+                await sb.from('profiles').update({ avatar_url: b64 }).eq('id', user.id);
             };
-            reader.readAsDataURL(file);
-        }
-
-        async function handleVisionUpload(el) {
-            const file = el.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('video-feed').style.display = 'none';
-                const prev = document.getElementById('upload-preview');
-                prev.src = e.target.result;
-                prev.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(el.files[0]);
         }
 
         async function initCam() {
-            const { data: { user } } = await sb.auth.getUser();
-            const { data } = await sb.from('profiles').select('camera_permission').eq('id', user.id).single();
-            if(!data?.camera_permission) {
-                alert("Enable camera in settings first.");
-                return;
-            }
-            document.getElementById('upload-preview').style.display = 'none';
-            document.getElementById('video-feed').style.display = 'block';
             const video = document.getElementById('video-feed');
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             video.srcObject = stream;
         }
 
-        function doScan() {
-            const log = document.getElementById('scan-log');
-            log.innerText = "Analyzing extraction fidelity...";
-            setTimeout(() => { log.style.color="var(--primary)"; log.innerText = "Error: Object detection failed. Try uploading a clearer photo."; }, 2000);
+        function handleVisionUpload(el) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('video-feed').style.display = 'none';
+                const p = document.getElementById('upload-preview');
+                p.src = e.target.result; p.style.display = 'block';
+            };
+            reader.readAsDataURL(el.files[0]);
         }
 
-        async function searchUsers(q) {
-            if(q.length < 2) return;
-            const { data } = await sb.from('profiles').select('full_name, username').ilike('full_name', `%${q}%`).limit(5);
-            const results = document.getElementById('user-results');
-            results.innerHTML = data.map(u => `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--light-bg); padding:8px; border-radius:10px;">
-                    <span><b>${u.full_name}</b> <br> <small>@${u.username || 'user'}</small></span>
-                    <button class="pill" style="padding:4px 10px; font-size:10px;">Follow</button>
-                </div>
-            `).join('');
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('mode-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-            lucide.createIcons();
-        }
-
-        function openSettings() { document.getElementById('settings-modal').style.display='flex'; }
-        function closeRecipe() { document.getElementById('recipe-modal').style.display='none'; }
         function signOut() { sb.auth.signOut(); window.location.href='/login/'; }
-
         window.onload = loadData;
     </script>
 </body>
