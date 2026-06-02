@@ -1,19 +1,19 @@
 {
-  "name": "Calalloo Heritage Lab",
+  "name": "Calalloo",
   "short_name": "Calalloo",
-  "description": "Restoring Caribbean culinary heritage through precision sourcing.",
-  "start_url": "/calalloo/index.html",
+  "description": "Authentic Caribbean Heritage & Sourcing",
+  "start_url": "/dashboard/",
   "display": "standalone",
-  "background_color": "#FFF8F0",
+  "background_color": "#FFFFFF",
   "theme_color": "#E87722",
   "icons": [
     {
-      "src": "assets/logo.png",
+      "src": "https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/logo.png",
+      "src": "https://drive.google.com/uc?export=view&id=1MOdc4fha-Guqo1X3Y8l9JdlBuMdDuuzB",
       "sizes": "512x512",
       "type": "image/png"
     }
