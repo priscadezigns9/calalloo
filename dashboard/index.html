@@ -26,8 +26,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { font-family: var(--font-main); background: var(--bg); color: var(--dark); overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         
-        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 1000; }
-        .logo-box { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 1000; }
+        .logo-box { display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1001; }
         .logo-box img { width: 32px; height: 32px; border-radius: 6px; }
         .display-font { font-family: var(--font-display); font-weight: 900; letter-spacing: -0.5px; }
 
@@ -67,8 +67,10 @@
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 3000; }
         .modal-content { background: var(--bg); color: var(--dark); width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; position: relative; }
         
-        .messenger-bubble { position: fixed; bottom: 30px; right: 30px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(232,119,34,0.4); z-index: 2000; border: none; }
-        .messenger-bubble img { width: 32px; height: 32px; filter: brightness(0) invert(1); }
+        /* Messenger Bubble Fix */
+        .messenger-bubble { position: fixed; bottom: 30px; right: 30px; background: var(--primary); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 20px rgba(232,119,34,0.5); z-index: 5000; border: none; transition: transform 0.2s; }
+        .messenger-bubble:hover { transform: scale(1.05); }
+        .messenger-bubble img { width: 34px; height: 34px; filter: brightness(0) invert(1); pointer-events: none; }
 
         .switch { position: relative; display: inline-block; width: 44px; height: 24px; margin-left: auto; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -84,7 +86,7 @@
 </head>
 <body>
     <header>
-        <div class="logo-box" onclick="showTab('discovery')"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" alt="Calalloo"><span class="display-font">Calalloo</span></div>
+        <div class="logo-box" onclick="showTab('discovery')"><img src="/assets/logo.png" alt="Calalloo"><span class="display-font">Calalloo</span></div>
         <div class="nav-pills">
             <div class="pill active" onclick="showTab('discovery')">Discovery</div>
             <div class="pill" onclick="showTab('vision')">Vision</div>
@@ -169,7 +171,7 @@
 
         <aside class="sidebar sidebar-right">
             <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap:8px;"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
+                <div style="display:flex; align-items:center; gap:8px;"><img src="/assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
                 <button onclick="openHub()" style="background:var(--primary); border:none; border-radius:50%; width:24px; height:24px; color:white; cursor:pointer;"><i data-lucide="plus" style="width:14px;"></i></button>
             </div>
             <div id="desktop-messages" style="height: 300px; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 10px; margin-bottom: 15px; font-size: 0.85rem;"><p style="opacity: 0.5; text-align: center; margin-top: 100px;">No messages yet</p></div>
@@ -198,7 +200,7 @@
 
     <div id="create-group-modal" class="modal"><div class="modal-content"><h2 class="display-font" style="margin-bottom:20px;">Create Heritage Group</h2><input type="text" id="group-name" placeholder="Group Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:15px;"><textarea id="group-desc" placeholder="What is this group about?" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:20px;"></textarea><button class="btn btn-primary" onclick="submitCreateGroup()">Create Now</button><button class="btn btn-secondary" onclick="closeCreateGroup()" style="margin-top:10px;">Cancel</button></div></div>
 
-    <button class="messenger-bubble" onclick="openHub()"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" alt="Messenger"></button>
+    <button class="messenger-bubble" onclick="openHub()"><img src="/assets/logo.png" alt="Messenger"></button>
 
     <div id="menu-overlay" class="menu-overlay">
         <div style="display:flex; justify-content:flex-end; margin-bottom:40px;"><button style="background:none; border:none; cursor:pointer;" onclick="toggleMenu()"><i data-lucide="x" style="width:32px; height:32px;"></i></button></div>
@@ -219,20 +221,17 @@
             if(!user) { window.location.href = '/login/'; return; }
             currentUserId = user.id;
 
-            // Load Profile Data
             const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
             document.getElementById('p-fullname').value = user.user_metadata.full_name || '';
             document.getElementById('p-username').value = user.user_metadata.username || '';
             if(profile) {
                 document.getElementById('p-bio').value = profile.bio || '';
                 document.getElementById('p-avatar').src = profile.avatar_url || 'https://via.placeholder.com/100?text=HP';
-                // Load Social Links (from a metadata JSON column if possible, or individual columns)
                 document.getElementById('p-whatsapp').value = profile.whatsapp || '';
                 document.getElementById('p-instagram').value = profile.instagram || '';
                 document.getElementById('p-facebook').value = profile.facebook || '';
             }
 
-            // Load Recipes
             const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true).order('created_at', {ascending:false});
             allRecipes = recipes || [];
             renderRecipes(allRecipes);
@@ -253,42 +252,23 @@
             const facebook = document.getElementById('p-facebook').value;
 
             try {
-                // Update Auth Metadata (Identity) - Run in parallel where possible if auth allows
                 const authPromise = sb.auth.updateUser({ data: { full_name: fullName, username: username } });
-                
-                // Update Profiles Table (Social)
-                const dbPromise = sb.from('profiles').upsert({
-                    id: currentUserId, bio, whatsapp, instagram, facebook, updated_at: new Date()
-                });
-
+                const dbPromise = sb.from('profiles').upsert({ id: currentUserId, bio, whatsapp, instagram, facebook, updated_at: new Date() });
                 const [authRes, dbRes] = await Promise.all([authPromise, dbPromise]);
-
                 if (!dbRes.error) {
                     btn.innerHTML = '<i data-lucide="check"></i> Saved';
                     setTimeout(() => { btn.innerHTML = 'Update Identity'; lucide.createIcons(); }, 2000);
                 } else {
-                    console.error("Profile update error:", dbRes.error);
                     btn.innerHTML = 'Error Saving';
                     setTimeout(() => { btn.innerHTML = 'Update Identity'; lucide.createIcons(); }, 3000);
                 }
-            } catch (err) {
-                console.error("Save failed:", err);
-                btn.innerHTML = 'Retry Save';
-            }
+            } catch (err) { btn.innerHTML = 'Retry Save'; }
             lucide.createIcons();
         }
 
         function loadReels() {
-            const mockReels = [
-                { url: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-a-fresh-vegetable-soup-41315-large.mp4', user: '@chef_caribbean' },
-                { url: 'https://assets.mixkit.co/videos/preview/mixkit-putting-fresh-vegetables-in-a-pan-41312-large.mp4', user: '@island_eats' }
-            ];
-            document.getElementById('reels-container').innerHTML = mockReels.map(r => `
-                <div class="reel-video-box">
-                    <video class="reel-video" src="${r.url}" loop autoplay muted playsinline></video>
-                    <div class="reel-overlay"><h3>${r.user}</h3><p>Heritage in motion. #calalloo</p></div>
-                </div>
-            `).join('');
+            const mockReels = [{ url: 'https://assets.mixkit.co/videos/preview/mixkit-cooking-a-fresh-vegetable-soup-41315-large.mp4', user: '@chef_caribbean' },{ url: 'https://assets.mixkit.co/videos/preview/mixkit-putting-fresh-vegetables-in-a-pan-41312-large.mp4', user: '@island_eats' }];
+            document.getElementById('reels-container').innerHTML = mockReels.map(r => `<div class="reel-video-box"><video class="reel-video" src="${r.url}" loop autoplay muted playsinline></video><div class="reel-overlay"><h3>${r.user}</h3><p>Heritage in motion. #calalloo</p></div></div>`).join('');
         }
 
         async function loadGroups() {
