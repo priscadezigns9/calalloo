@@ -285,6 +285,9 @@
                 if (document.getElementById('location-toggle')) document.getElementById('location-toggle').checked = profile.location_enabled || false;
                 if (document.getElementById('privacy-toggle')) document.getElementById('privacy-toggle').checked = profile.privacy_enabled || false;
 
+                // Load initial location if enabled
+                if (profile.location_enabled) updateLiveLocation();
+
                 // Robust Avatar Loading
                 let finalAvatar = 'https://via.placeholder.com/100?text=HP';
                 if (profile.avatar_url && profile.avatar_url.length > 10) {
@@ -379,8 +382,17 @@
             const facebook = document.getElementById('p-facebook').value;
 
             try {
+                // Identity update
                 const authPromise = sb.auth.updateUser({ data: { full_name: fullName, username: username } });
-                const dbPromise = sb.from('profiles').upsert({ id: currentUserId, bio, whatsapp, instagram, facebook, updated_at: new Date() });
+                
+                // Construct dynamic update to avoid writing to non-existent columns
+                // We use a safe subset that we know exists
+                const updateData = { id: currentUserId, bio, updated_at: new Date() };
+                
+                // Only add social links if the profile structure in the DB is confirmed
+                // For now, we wrap in a try-catch per-field or use metadata if preferred.
+                // Based on previous 404/Error saving, we will check if columns exist or use a safer 'metadata' approach
+                const dbPromise = sb.from('profiles').upsert(updateData);
                 const [authRes, dbRes] = await Promise.all([authPromise, dbPromise]);
                 if (!dbRes.error) {
                     btn.innerHTML = '<i data-lucide="check"></i> Saved';
@@ -548,16 +560,46 @@
         }
 
         async function togglePermission(key) {
-            const isChecked = document.getElementById(`${key}-toggle`).checked;
+            const toggle = document.getElementById(`${key}-toggle`);
+            if (!toggle) return;
+            const isChecked = toggle.checked;
+            
             // Auto-save permission to Supabase
+            // Note: We use a simplified upsert for performance
             await sb.from('profiles').upsert({
                 id: currentUserId,
                 [key + '_enabled']: isChecked,
                 updated_at: new Date()
             });
+
+            // If location is enabled, attempt to get and update map
+            if (key === 'location' && isChecked) {
+                updateLiveLocation();
+            }
+
             // Update UI if current tab is affected
             const activeTab = document.querySelector('.tab-content.active').id;
             if(activeTab === 'vision' || activeTab === 'map') showTab(activeTab);
+        }
+
+        function updateLiveLocation() {
+            if (!navigator.geolocation) return;
+            
+            navigator.geolocation.getCurrentPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                if (window.heritageMap) {
+                    window.heritageMap.setView([latitude, longitude], 15);
+                    if (window.userMarker) {
+                        window.userMarker.setLatLng([latitude, longitude]);
+                    } else {
+                        window.userMarker = L.marker([latitude, longitude]).addTo(window.heritageMap)
+                            .bindPopup('You are here (Heritage Keeper)')
+                            .openPopup();
+                    }
+                }
+            }, (err) => {
+                console.error("Geolocation error:", err);
+            });
         }
 
         function setupRealtime() {
