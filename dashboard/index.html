@@ -205,100 +205,63 @@
     </div>
 
     <script>
-        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', '{{credential:supabase-callaloo-dpanyard}}');
+        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
         let allRecipes = [], allKeepers = [], mapInitialized = false;
 
-                async function loadData() {
+        async function loadData() {
+            const loader = document.getElementById('loader-overlay');
+            console.log('Sovereign Sentry: Initializing...');
             try {
+                // STEP 1: Fast session check
                 const { data: { session } } = await sb.auth.getSession();
-                if(!session) {
-                    console.warn('Dashboard: No session detected.');
-                    setTimeout(() => {
-                        if (!localStorage.getItem('supabase.auth.token')) {
-                            window.location.replace('/login/');
-                        }
-                    }, 3000); 
-                    return;
-                }
-                const { data: { user } } = await sb.auth.getUser();
-                if(!user) { 
+                
+                if (session) {
+                    console.log('Sentry: Session confirmed immediately.');
+                    const { data: { user } } = await sb.auth.getUser();
+                    
+                    // Parallel fetch
+                    const [rRes, cRes, pRes] = await Promise.all([
+                        sb.from('recipes').select('*').eq('is_published', true).order('created_at', { ascending: false }),
+                        sb.from('cooks').select('*').limit(100),
+                        sb.from('profiles').select('*').eq('id', user.id).maybeSingle()
+                    ]);
+
+                    allRecipes = rRes.data || [];
+                    allKeepers = (cRes.data || []).map(c => ({
+                        id: c.user_id, username: c.display_name, display_name: c.display_name, avatar_url: c.avatar_url, bio: c.bio
+                    }));
+
+                    renderRecipes(allRecipes);
+                    renderKeepers(allKeepers);
+
+                    document.getElementById('profile-email').innerText = user.email;
+                    if(pRes.data) {
+                        document.getElementById('p-bio').value = pRes.data.bio || '';
+                        document.getElementById('p-avatar').src = pRes.data.avatar_url || 'https://via.placeholder.com/100';
+                        document.getElementById('p-maps-key').value = pRes.data.maps_key || '';
+                    }
+                    
+                    const { data: cook } = await sb.from('cooks').select('*').eq('user_id', user.id).maybeSingle();
+                    if(cook) document.getElementById('p-display-name').value = cook.display_name || '';
+
+                    const lastTab = localStorage.getItem('activeTab') || 'discovery';
+                    showTab(lastTab);
+                    
+                    loader.style.display = 'none';
+                    lucide.createIcons();
+                } else {
+                    console.log('Sentry: No session. Redirecting to login.');
                     window.location.replace('/login/');
-                    return; 
                 }
-                sb.auth.onAuthStateChange((event, s) => { 
-                    if(event === 'SIGNED_OUT') window.location.replace('/login/'); 
+
+                // Auth Listener for background sign-outs
+                sb.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_OUT') window.location.replace('/login/');
                 });
-                const [rRes, cRes, pRes] = await Promise.all([
-                    sb.from('recipes').select('*').eq('is_published', true),
-                    sb.from('cooks').select('*').limit(100),
-                    sb.from('profiles').select('*').eq('id', user.id).maybeSingle()
-                ]);
-                allRecipes = rRes.data || [];
-                allKeepers = (cRes.data || []).map(c => ({
-                    id: c.user_id, username: c.display_name, display_name: c.display_name, avatar_url: c.avatar_url, bio: c.bio
-                }));
-                renderRecipes(allRecipes);
-                renderKeepers(allKeepers);
-                document.getElementById('profile-email').innerText = user.email;
-                if(pRes.data) {
-                    document.getElementById('p-bio').value = pRes.data.bio || '';
-                    document.getElementById('p-avatar').src = pRes.data.avatar_url || 'https://via.placeholder.com/100';
-                    document.getElementById('p-maps-key').value = pRes.data.maps_key || '';
-                }
-                const { data: cook } = await sb.from('cooks').select('*').eq('user_id', user.id).maybeSingle();
-                if(cook) document.getElementById('p-display-name').value = cook.display_name || '';
-                const lastTab = localStorage.getItem('activeTab') || 'discovery';
-                showTab(lastTab);
-                document.getElementById('loader-overlay').style.display = 'none';
-                lucide.createIcons();
-            } catch (e) { console.error('System Load Error:', e); }
-        } } = await sb.auth.getSession();
-                if(!session) {
-                    setTimeout(() => { window.location.href = '/login/'; }, 2000);
-                    return;
-                }
-                sb.auth.onAuthStateChange((event, s) => { if(event === 'SIGNED_OUT') window.location.href = '/login/'; });
 
-                const { data: { user } } = await sb.auth.getUser();
-                if(!user) { 
-                    window.location.href = '/login/';
-                    return; 
-                }
-
-                // Parallel fetch
-                const [rRes, cRes, pRes] = await Promise.all([
-                    sb.from('recipes').select('*').eq('is_published', true),
-                    sb.from('cooks').select('*').limit(100),
-                    sb.from('profiles').select('*').eq('id', user.id).maybeSingle()
-                ]);
-
-                allRecipes = rRes.data || [];
-                allKeepers = (cRes.data || []).map(c => ({
-                    id: c.user_id, username: c.display_name, display_name: c.display_name, avatar_url: c.avatar_url, bio: c.bio
-                }));
-
-                renderRecipes(allRecipes);
-                renderKeepers(allKeepers);
-
-                document.getElementById('profile-email').innerText = user.email;
-                if(pRes.data) {
-                    document.getElementById('p-bio').value = pRes.data.bio || '';
-                    document.getElementById('p-avatar').src = pRes.data.avatar_url || 'https://via.placeholder.com/100';
-                    document.getElementById('p-maps-key').value = pRes.data.maps_key || '';
-                }
-                
-                const { data: cook } = await sb.from('cooks').select('*').eq('user_id', user.id).maybeSingle();
-                if(cook) document.getElementById('p-display-name').value = cook.display_name || '';
-
-                const lastTab = localStorage.getItem('activeTab') || 'discovery';
-                showTab(lastTab);
-                
-                document.getElementById('loader-overlay').style.display = 'none';
-                lucide.createIcons();
             } catch (e) { 
-                console.error('Load Error:', e);
-                // If there is an error loading data, it might be an expired session
-                // window.location.href = '/login/'; 
+                console.error('Sentry Error:', e);
+                loader.style.display = 'none'; // Hide loader even on error so user can see what's left
             }
         }
 
