@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Calalloo</title>
+    <title>Calalloo | Beta</title>
     <link rel="icon" type="image/png" href="/assets/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,6 +38,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: background 0.3s, color 0.3s;
         }
         header {
             height: var(--header-h);
@@ -49,9 +50,10 @@
             padding: 0 5%;
             z-index: 1000;
         }
-        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .nav-brand img { height: 40px; }
-        .nav-brand span { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--dark); }
+        .nav-brand { display: flex; align-items: center; text-decoration: none; }
+        .nav-brand img { height: 45px; }
+        /* Removed "logo" text from header */
+
         .nav-pills { display: flex; gap: 8px; background: rgba(0,0,0,0.03); padding: 6px; border-radius: 100px; }
         .pill {
             padding: 10px 20px;
@@ -69,53 +71,58 @@
             background: none;
         }
         .pill.active { background: var(--white); color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
         .layout { flex: 1; display: flex; overflow: hidden; }
-        .main-content { flex: 1; overflow-y: auto; padding: 40px 5%; }
-        .view { display: none; }
+        .main-content { flex: 1; overflow-y: auto; padding: 40px 5%; position: relative; }
+        .view { display: none; height: 100%; }
         .view.active { display: block; }
 
-        /* Sidebar Panels */
         .discovery-layout { display: grid; grid-template-columns: 280px 1fr 280px; gap: 40px; }
-        .panel { display: flex; flex-direction: column; gap: 24px; }
+        .panel { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 0; }
         .panel-card { background: var(--white); border-radius: 20px; padding: 20px; border: 1px solid var(--border); }
-        .panel-title { font-family: var(--font-display); font-size: 14px; margin-bottom: 16px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        .panel-title { font-family: var(--font-display); font-size: 13px; margin-bottom: 16px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; font-weight: 900; }
 
-        /* Feed */
         .search-container { position: relative; margin-bottom: 32px; }
-        .search-box { width: 100%; padding: 16px 20px 16px 48px; border-radius: 100px; border: 2px solid var(--border); outline: none; font-weight: 600; font-size: 16px; }
-        .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #888; }
+        .search-box { width: 100%; padding: 18px 20px 18px 52px; border-radius: 100px; border: 2px solid var(--border); outline: none; font-weight: 600; font-size: 16px; background: var(--white); }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--primary); }
+
         .discovery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; }
-        .heritage-card { background: var(--white); border-radius: 24px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
-        .heritage-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-color: var(--primary); }
+        .heritage-card { background: var(--white); border-radius: 24px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .heritage-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); border-color: var(--primary); }
         .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
-        .card-body { padding: 16px; }
+        .card-body { padding: 20px; }
 
         /* Modals */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: var(--white); max-width: 800px; width: 100%; border-radius: 32px; padding: 40px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--white); max-width: 850px; width: 100%; border-radius: 32px; padding: 48px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.3); }
 
         /* Profile Header */
         .profile-header { background: var(--white); border-radius: 32px; padding: 40px; border: 1px solid var(--border); display: flex; gap: 40px; align-items: center; margin-bottom: 40px; }
-        .profile-pic-container { width: 140px; height: 140px; border-radius: 50%; position: relative; background: #eee; border: 4px solid var(--primary); }
+        .profile-pic-container { width: 150px; height: 140px; border-radius: 50%; position: relative; background: #eee; border: 4px solid var(--primary); overflow: visible; }
         .profile-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .pic-edit { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; padding: 8px; border-radius: 50%; cursor: pointer; border: none; }
-        .stats { display: flex; gap: 32px; margin-top: 16px; }
+        .pic-edit { position: absolute; bottom: 5px; right: 5px; background: var(--primary); color: white; padding: 10px; border-radius: 50%; cursor: pointer; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .stats { display: flex; gap: 32px; margin-top: 20px; }
         .stat-item { text-align: center; }
-        .stat-val { font-weight: 900; font-size: 20px; }
-        .stat-label { font-size: 12px; color: #888; font-weight: 700; text-transform: uppercase; }
+        .stat-val { font-weight: 900; font-size: 24px; }
+        .stat-label { font-size: 11px; color: #888; font-weight: 800; text-transform: uppercase; }
 
-        /* Ads */
-        .ad-unit { background: #FFF5EE; border: 1px dashed var(--primary); border-radius: 16px; padding: 12px; margin-bottom: 12px; }
+        /* Sidebar Ad & Pro */
+        .ad-unit { background: rgba(232, 119, 34, 0.05); border: 1px dashed var(--primary); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
         .ad-badge { font-size: 9px; font-weight: 900; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
+        .pro-promo { background: linear-gradient(135deg, var(--primary), #b05a1a); color: white; border-radius: 20px; padding: 20px; text-align: center; margin-top: 24px; }
+        
+        /* Functional Components */
+        .btn-pro { background: var(--primary); color: white; border: none; padding: 16px 32px; border-radius: 100px; font-weight: 800; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-pro:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(232, 119, 34, 0.2); }
+        .btn-pro:active { transform: translateY(0); }
 
-        /* Buttons & Toggles */
-        .btn-pro { background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 100px; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .toggle-btn { background: #ddd; width: 44px; height: 24px; border-radius: 100px; position: relative; cursor: pointer; transition: 0.3s; border: none; }
+        .toggle-btn { background: #ddd; width: 44px; height: 24px; border-radius: 100px; position: relative; cursor: pointer; transition: 0.3s; border: none; outline: none; }
         .toggle-btn::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: 0.3s; }
         .toggle-btn.active { background: var(--primary); }
         .toggle-btn.active::after { left: 23px; }
 
-        #map-container { width: 100%; height: 600px; border-radius: 32px; overflow: hidden; border: 1px solid var(--border); }
+        #map-container { width: 100%; height: calc(100vh - 250px); border-radius: 32px; overflow: hidden; border: 1px solid var(--border); }
+        .messenger-empty { text-align: center; padding: 40px; color: #888; font-weight: 600; font-size: 14px; }
     </style>
 </head>
 <body class="light-mode">
@@ -123,7 +130,6 @@
     <header>
         <a href="/" class="nav-brand">
             <img src="/assets/logo.png" alt="Calalloo">
-            <span>Calalloo</span>
         </a>
 
         <div class="nav-pills">
@@ -134,7 +140,7 @@
         </div>
 
         <div style="display:flex; gap:16px; align-items:center;">
-             <button id="mode-icon" onclick="toggleDarkMode()" style="background:none; border:none; color:var(--dark); cursor:pointer;"><i data-lucide="moon"></i></button>
+             <button onclick="toggleDarkMode()" style="background:none; border:none; color:var(--dark); cursor:pointer;"><i id="mode-icon" data-lucide="moon"></i></button>
              <button class="pill" onclick="signOut()"><i data-lucide="log-out"></i></button>
         </div>
     </header>
@@ -142,38 +148,43 @@
     <div class="layout">
         <main class="main-content">
             
-            <!-- Discovery View -->
+            <!-- Feed View -->
             <div id="feed" class="view active">
                 <div class="discovery-layout">
                     <aside class="panel">
                         <div class="panel-card">
                             <h3 class="panel-title">Active Chats</h3>
-                            <div id="chat-peek" style="font-size:13px; color:#888;">Connect with Heritage Keepers to start messaging.</div>
+                            <div id="chat-list" class="messenger-empty">Follow Keepers to start a conversation.</div>
                         </div>
                         <div class="panel-card">
-                            <h3 class="panel-title">My Groups</h3>
-                            <div style="font-size:13px; color:#888;">Join a culinary collective.</div>
+                            <h3 class="panel-title">Recommendations</h3>
+                            <div id="recs-list" style="font-size:13px; color:#888;">Finding similar Heritage Nodes...</div>
                         </div>
                     </aside>
 
                     <section>
                         <div class="search-container">
                             <i data-lucide="search" class="search-icon"></i>
-                            <input type="text" class="search-box" placeholder="Search heritage recipes, people, or markets...">
+                            <input type="text" id="recipe-search" class="search-box" placeholder="Search 1000+ heritage extractions..." oninput="handleSearch(this.value)">
                         </div>
                         <div class="discovery-grid" id="heritage-grid"></div>
                     </section>
 
                     <aside class="panel">
                         <div class="panel-card">
-                            <h3 class="panel-title">Promoted Nodes</h3>
+                            <h3 class="panel-title">Ads</h3>
                             <div id="ads-container">
                                 <div class="ad-unit">
                                     <span class="ad-badge">PROMOTED</span>
-                                    <div style="font-weight:800; font-size:13px;">Pure Cassareep</div>
-                                    <p style="font-size:11px; opacity:0.7;">Authentic extraction from Guyana.</p>
+                                    <div style="font-weight:800; font-size:13px;">Organic Pimento Nodes</div>
+                                    <p style="font-size:11px; opacity:0.7;">Sourced from the hills of St. Elizabeth.</p>
                                 </div>
                             </div>
+                        </div>
+                        <div class="pro-promo">
+                            <h4 style="margin-bottom:12px;">Calalloo Pro</h4>
+                            <p style="font-size:12px; opacity:0.9; margin-bottom:20px;">Unlock Exact Ingredient Sourcing & Maps.</p>
+                            <button class="btn-pro" style="background:white; color:var(--primary); width:100%;" onclick="openSub()">Unlock $9.99/mo</button>
                         </div>
                     </aside>
                 </div>
@@ -183,17 +194,21 @@
             <div id="scanner" class="view">
                 <div style="max-width: 600px; margin: 0 auto; text-align: center;">
                     <h2 style="font-family: var(--font-display); font-size: 32px; margin-bottom: 24px;">Vision Lab</h2>
-                    <div style="width: 100%; height: 400px; background: #000; border-radius: 24px; position: relative; margin-bottom: 24px; overflow: hidden;">
+                    <div style="width: 100%; height: 400px; background: #000; border-radius: 32px; position: relative; margin-bottom: 24px; overflow: hidden; border: 4px solid var(--white);">
                         <video id="video-feed" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+                        <div style="position:absolute; inset:0; border:2px solid var(--primary); margin:60px; border-radius:24px; pointer-events:none;"></div>
                     </div>
-                    <button class="btn-pro" onclick="processScan()">Analyze Dish</button>
-                    <div id="scan-feedback" style="margin-top:20px; font-weight:700;"></div>
+                    <button class="btn-pro" onclick="processScan()"><i data-lucide="scan"></i> Analyze Extraction</button>
+                    <div id="scan-feedback" style="margin-top:24px; font-weight:800;"></div>
                 </div>
             </div>
 
             <!-- Map View -->
             <div id="map" class="view">
-                <h2 style="font-family: var(--font-display); margin-bottom:24px;">Heritage Sourcing Map</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                    <h2 style="font-family: var(--font-display); font-size: 32px;">Sourcing Grid</h2>
+                    <span style="font-weight:900; color:var(--primary); font-size:12px; background:rgba(232,119,34,0.1); padding:6px 16px; border-radius:100px;">Beta Access: Unlocked</span>
+                </div>
                 <div id="map-container"></div>
             </div>
 
@@ -201,71 +216,31 @@
             <div id="profile" class="view">
                 <div class="profile-header">
                     <div class="profile-pic-container">
-                        <img id="display-pic" class="profile-pic" src="https://api.dicebear.com/7.x/initials/svg?seed=HK">
-                        <button class="pic-edit" onclick="triggerPicUpload()"><i data-lucide="camera" style="width:14px;"></i></button>
+                        <img id="display-pic" class="profile-pic" src="https://api.dicebear.com/7.x/initials/svg?seed=User">
+                        <label for="pic-upload" class="pic-edit"><i data-lucide="camera" style="width:16px;"></i></label>
+                        <input type="file" id="pic-upload" hidden accept="image/*" onchange="uploadAvatar(this)">
                     </div>
                     <div style="flex:1;">
                         <h2 id="display-name" style="font-family:var(--font-display); font-size:32px;">Heritage Keeper</h2>
                         <p id="display-username" style="color:#888; font-weight:600; margin-bottom:8px;">@member_node</p>
                         <div class="stats">
-                            <div class="stat-item"><div class="stat-val" id="count-followers">0</div><div class="stat-label">Followers</div></div>
-                            <div class="stat-item"><div class="stat-val" id="count-following">0</div><div class="stat-label">Following</div></div>
-                            <div class="stat-item"><div class="stat-val" id="count-likes">0</div><div class="stat-label">Likes</div></div>
+                            <div class="stat-item"><div class="stat-val" id="stat-followers">0</div><div class="stat-label">Followers</div></div>
+                            <div class="stat-item"><div class="stat-val" id="stat-following">0</div><div class="stat-label">Following</div></div>
+                            <div class="stat-item"><div class="stat-val" id="stat-likes">0</div><div class="stat-label">Likes</div></div>
                         </div>
                     </div>
-                    <button class="btn-pro" onclick="switchTab('settings-tab')">Settings</button>
+                    <button class="btn-pro" onclick="openSettings()"><i data-lucide="settings"></i> Profile Settings</button>
                 </div>
 
-                <div id="profile-content">
-                    <div style="display:flex; justify-content:center; gap:40px; border-bottom:1px solid var(--border); margin-bottom:32px;">
-                        <button class="pill active">Public Portfolio</button>
-                        <button class="pill">Private Vault</button>
-                    </div>
-                    <div id="portfolio-grid" class="discovery-grid" style="opacity:0.5; text-align:center; padding:40px;">
-                        <i data-lucide="image" style="margin:0 auto 20px;"></i>
-                        <p>No dishes published to heritage portfolio yet.</p>
-                    </div>
+                <div style="display:flex; justify-content:center; gap:40px; border-bottom:1px solid var(--border); margin-bottom:32px;">
+                    <button class="pill active">Public Portfolio</button>
+                    <button class="pill" onclick="alert('Private Vault is a Pro feature.')">Private Vault</button>
+                    <button class="pill" id="my-kitchen-btn">My Kitchen Hub</button>
                 </div>
-            </div>
-
-            <!-- Settings View (Nested in Profile usually) -->
-            <div id="settings-tab" class="view">
-                 <button class="pill" onclick="switchView('profile', document.querySelector('[onclick*=\"profile\"]'))" style="margin-bottom:24px;"><i data-lucide="arrow-left"></i> Back to Profile</button>
-                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
-                    <div class="panel-card">
-                        <h3>Identity Settings</h3>
-                        <div class="form-group" style="margin-top:24px;">
-                            <label>Full Name</label>
-                            <input type="text" id="set-name">
-                        </div>
-                        <div class="form-group">
-                            <label>WhatsApp Number</label>
-                            <input type="text" id="set-whatsapp">
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <label>Public Profile</label>
-                            <button id="set-public" class="toggle-btn active" onclick="this.classList.toggle('active')"></button>
-                        </div>
-                        <button class="btn-pro" style="width:100%; margin-top:24px;" onclick="saveSettings()">Save & Sync to Supabase</button>
-                    </div>
-                    <div class="panel-card">
-                        <h3>Hardware Permissions</h3>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px;">
-                            <div>
-                                <div style="font-weight:800; font-size:14px;">Camera</div>
-                                <div style="font-size:11px; opacity:0.6;">For Vision ID Dish Scanning.</div>
-                            </div>
-                            <button id="perm-cam" class="toggle-btn" onclick="togglePerm('camera')"></button>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                            <div>
-                                <div style="font-weight:800; font-size:14px;">Location</div>
-                                <div style="font-size:11px; opacity:0.6;">For live Sourcing Map nodes.</div>
-                            </div>
-                            <button id="perm-loc" class="toggle-btn" onclick="togglePerm('location')"></button>
-                        </div>
-                    </div>
-                 </div>
+                <div id="portfolio-grid" class="discovery-grid" style="text-align:center; padding:100px; color:#888;">
+                     <i data-lucide="cooking-pot" style="width:48px; height:48px; margin:0 auto 20px; opacity:0.3;"></i>
+                     <p>Your Heritage Portfolio is empty.</p>
+                </div>
             </div>
 
         </main>
@@ -274,19 +249,48 @@
     <!-- Modals -->
     <div id="recipe-modal" class="modal" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <img id="m-img" style="width:100%; height:350px; object-fit:cover; border-radius:24px; margin-bottom:24px;">
-            <h2 id="m-title" style="font-family:var(--font-display); font-size:32px; margin-bottom:12px;"></h2>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
+            <img id="m-img" style="width:100%; height:380px; object-fit:cover; border-radius:24px; margin-bottom:32px;">
+            <h2 id="m-title" style="font-family:var(--font-display); font-size:36px; margin-bottom:16px;"></h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:60px;">
                 <div>
-                    <h4 style="color:var(--primary); margin-bottom:12px;">Ancestral Steps</h4>
-                    <div id="m-steps" style="font-size:14px; line-height:1.6;"></div>
+                    <h4 style="color:var(--primary); margin-bottom:16px; font-weight:900;">ANCESTRAL STEPS</h4>
+                    <div id="m-steps" style="font-size:15px; line-height:1.8;"></div>
                 </div>
                 <div>
-                    <h4 style="color:var(--primary); margin-bottom:12px;">Ingredient Node</h4>
-                    <div id="m-ingredients" style="font-size:14px; opacity:0.8;"></div>
+                    <h4 style="color:var(--primary); margin-bottom:16px; font-weight:900;">INGREDIENT NODE</h4>
+                    <div id="m-ingredients" style="font-size:15px; opacity:0.8; line-height:1.6;"></div>
                 </div>
             </div>
-            <button class="btn-pro" style="margin-top:40px; width:100%;" onclick="addToMyCatalog()">Add to My Kitchen</button>
+            <div style="margin-top:48px; display:flex; gap:16px;">
+                <button id="add-kitchen-btn" class="btn-pro" style="flex:1;"><i data-lucide="plus"></i> Add to My Kitchen</button>
+                <button class="btn-pro" style="background:#333; flex:1;" onclick="closeRecipe()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal" onclick="this.style.display='none'">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width:600px;">
+            <h2 style="font-family:var(--font-display); margin-bottom:32px;">Node Configuration</h2>
+            <div class="panel-card" style="margin-bottom:24px;">
+                <div class="form-group"><label>Display Name</label><input type="text" id="set-name"></div>
+                <div class="form-group"><label>WhatsApp Number</label><input type="text" id="set-whatsapp"></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                    <label>Public Profile Node</label>
+                    <button id="set-public" class="toggle-btn active" onclick="this.classList.toggle('active')"></button>
+                </div>
+            </div>
+            <div class="panel-card">
+                <h4 style="font-size:12px; margin-bottom:16px; color:#888;">HARDWARE PERMISSIONS</h4>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div style="font-size:14px; font-weight:800;">Camera Access</div>
+                    <button id="perm-cam" class="toggle-btn" onclick="toggleHardware('camera')"></button>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:14px; font-weight:800;">Location Sync</div>
+                    <button id="perm-loc" class="toggle-btn" onclick="toggleHardware('location')"></button>
+                </div>
+            </div>
+            <button class="btn-pro" style="width:100%; margin-top:32px;" onclick="saveConfig()">Save & Sync Node</button>
         </div>
     </div>
 
@@ -295,72 +299,95 @@
         const SUPABASE_KEY = 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        let allRecipes = [];
+        let userProfile = null;
         lucide.createIcons();
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('mode-icon').innerHTML = isDark ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
-            lucide.createIcons();
-        }
 
         function switchView(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(el) el.classList.add('active');
-            if(id === 'map') initMap();
-            if(id === 'scanner') initCamera();
+            if(id === 'map') requestLocation();
+            if(id === 'scanner') requestCamera();
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('mode-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            lucide.createIcons();
         }
 
         async function loadFeed() {
-            const { data } = await sb.from('recipes').select('*').limit(20);
+            const { data } = await sb.from('recipes').select('*').limit(100);
+            allRecipes = data || [];
+            renderRecipes(allRecipes);
+        }
+
+        function renderRecipes(list) {
             const grid = document.getElementById('heritage-grid');
-            grid.innerHTML = data.map(r => `
+            grid.innerHTML = list.map(r => `
                 <div class="heritage-card" onclick="viewRecipe('${r.id}')">
-                    <img class="card-img" src="${r.cover_photo_url || 'https://via.placeholder.com/300'}">
+                    <img class="card-img" src="${r.cover_photo_url || 'https://via.placeholder.com/300?text=Heritage+Record'}">
                     <div class="card-body">
-                        <span style="font-size:10px; font-weight:900; color:var(--primary);">HERITAGE</span>
-                        <h4 style="font-family:var(--font-display); margin-top:8px;">${r.title}</h4>
+                        <span style="font-size:9px; font-weight:900; color:var(--primary); letter-spacing:1px;">VERIFIED EXTRACTION</span>
+                        <h4 style="font-family:var(--font-display); margin-top:8px; font-size:16px;">${r.title}</h4>
                     </div>
                 </div>
             `).join('');
         }
 
+        function handleSearch(val) {
+            const filtered = allRecipes.filter(r => r.title.toLowerCase().includes(val.toLowerCase()));
+            renderRecipes(filtered);
+        }
+
         async function viewRecipe(id) {
-            const { data: r } = await sb.from('recipes').select('*').eq('id', id).single();
+            const r = allRecipes.find(x => x.id === id);
             document.getElementById('m-img').src = r.cover_photo_url || 'https://via.placeholder.com/300';
             document.getElementById('m-title').innerText = r.title;
             document.getElementById('m-ingredients').innerText = r.description || "Primary data pending.";
-            document.getElementById('m-steps').innerHTML = (r.instructions || []).map((s,i)=>`<div>${i+1}. ${s}</div>`).join('');
+            document.getElementById('m-steps').innerHTML = (r.instructions || []).map((s,i)=>`<div><b>${i+1}.</b> ${s}</div>`).join('');
+            
+            const btn = document.getElementById('add-kitchen-btn');
+            btn.onclick = () => addToKitchen(r.id);
+            btn.innerHTML = '<i data-lucide="plus"></i> Add to My Kitchen';
+            
             document.getElementById('recipe-modal').style.display = 'flex';
+            lucide.createIcons();
         }
 
-        async function saveSettings() {
+        async function addToKitchen(recipeId) {
             const { data: { user } } = await sb.auth.getUser();
-            const profile = {
-                id: user.id,
-                full_name: document.getElementById('set-name').value,
-                whatsapp_number: document.getElementById('set-whatsapp').value,
-                profile_public: document.getElementById('set-public').classList.contains('active'),
-                camera_permission: document.getElementById('perm-cam').classList.contains('active'),
-                location_permission: document.getElementById('perm-loc').classList.contains('active')
-            };
-            const { error } = await sb.from('profiles').upsert(profile);
-            if(!error) alert("Profile Synced to Supabase.");
-            loadProfile();
+            const btn = document.getElementById('add-kitchen-btn');
+            btn.innerText = "Syncing...";
+            
+            const { error } = await sb.from('user_kitchen').insert({ user_id: user.id, recipe_id: recipeId });
+            if(error) {
+                if(error.code === '23505') alert("This extraction is already in your Kitchen.");
+                else alert(error.message);
+                btn.innerHTML = '<i data-lucide="plus"></i> Add to My Kitchen';
+            } else {
+                btn.innerHTML = '<i data-lucide="check"></i> Saved to Kitchen';
+                btn.style.background = '#2D5A27';
+            }
+            lucide.createIcons();
         }
 
         async function loadProfile() {
             const { data: { user } } = await sb.auth.getUser();
             const { data: p } = await sb.from('profiles').select('*').eq('id', user.id).single();
+            userProfile = p;
             if(p) {
                 document.getElementById('display-name').innerText = p.full_name || "Heritage Keeper";
                 document.getElementById('display-username').innerText = "@" + (p.username || user.email.split('@')[0]);
-                document.getElementById('count-followers').innerText = p.followers_count || 0;
-                document.getElementById('count-following').innerText = p.following_count || 0;
-                document.getElementById('count-likes').innerText = p.likes_count || 0;
-                // Sync settings fields
+                document.getElementById('stat-followers').innerText = p.followers_count || 0;
+                document.getElementById('stat-following').innerText = p.following_count || 0;
+                document.getElementById('stat-likes').innerText = p.likes_count || 0;
+                if(p.avatar_url) document.getElementById('display-pic').src = p.avatar_url;
+                
+                // Sync settings
                 document.getElementById('set-name').value = p.full_name || "";
                 document.getElementById('set-whatsapp').value = p.whatsapp_number || "";
                 if(p.camera_permission) document.getElementById('perm-cam').classList.add('active');
@@ -368,16 +395,24 @@
             }
         }
 
-        async function initCamera() {
-            const video = document.getElementById('video-feed');
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = stream;
+        async function requestCamera() {
+            if(userProfile?.camera_permission) {
+                const video = document.getElementById('video-feed');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } else {
+                alert("Please enable Camera Access in Profile Settings.");
+                switchView('profile');
+            }
         }
 
-        function processScan() {
-            const fb = document.getElementById('scan-feedback');
-            fb.innerText = "Analyzing visual heritage nodes...";
-            setTimeout(() => { fb.style.color="var(--primary)"; fb.innerText = "Error: Please center dish. Lighting insufficient for identification."; }, 2500);
+        async function requestLocation() {
+            if(userProfile?.location_permission) {
+                initMap();
+            } else {
+                alert("Please enable Location Sync in Profile Settings.");
+                switchView('profile');
+            }
         }
 
         function initMap() {
@@ -385,8 +420,33 @@
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
         }
 
-        function signOut() { sb.auth.signOut(); window.location.href='/login/'; }
+        function processScan() {
+            const fb = document.getElementById('scan-feedback');
+            fb.innerText = "Analyzing extraction fidelity...";
+            setTimeout(() => { 
+                fb.style.color="var(--primary)"; 
+                fb.innerText = "Error: No Heritage Object Detected. Please center dish."; 
+            }, 2000);
+        }
 
+        function openSettings() { document.getElementById('settings-modal').style.display='flex'; }
+        async function saveConfig() {
+            const { data: { user } } = await sb.auth.getUser();
+            const config = {
+                id: user.id,
+                full_name: document.getElementById('set-name').value,
+                whatsapp_number: document.getElementById('set-whatsapp').value,
+                camera_permission: document.getElementById('perm-cam').classList.contains('active'),
+                location_permission: document.getElementById('perm-loc').classList.contains('active')
+            };
+            await sb.from('profiles').upsert(config);
+            alert("Node Configured & Synced.");
+            location.reload();
+        }
+
+        function signOut() { sb.auth.signOut(); window.location.href='/login/'; }
+        function closeRecipe() { document.getElementById('recipe-modal').style.display='none'; }
+        
         window.onload = () => { loadFeed(); loadProfile(); };
     </script>
 </body>
