@@ -186,10 +186,7 @@
         </div>
     </div>
 
-    <div class="results-grid" id="results">
-        <!-- Mock Users -->
-        <div class="user-card">
-            <div class="avatar">PN</div>
+    <div class="results-grid" id="results"></div>
             <h3>Priscilla Narine</h3>
             <p>Heritage Chef • Maraval</p>
             <button class="btn-follow">Follow Hub</button>
@@ -217,15 +214,47 @@
         </div>
     </div>
 
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        function searchUsers(query) {
+        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
+
+        async function searchUsers(query) {
             const results = document.getElementById('results');
-            // Mock dynamic search for high-fidelity feel
-            if(query.length > 2) {
-                console.log("Searching for:", query);
+            if(query.length < 2) {
+                results.innerHTML = '<p style="grid-column: 1/-1; text-align: center; opacity: 0.5;">Type at least 2 characters to search...</p>';
+                return;
             }
+
+            const { data, error } = await sb.from('profiles')
+                .select('*')
+                .or(`full_name.ilike.%${query}%,username.ilike.%${query}%`)
+                .limit(20);
+
+            if(error) {
+                console.error(error);
+                return;
+            }
+
+            if(data && data.length === 0) {
+                results.innerHTML = '<p style="grid-column: 1/-1; text-align: center; opacity: 0.5;">No users found matching that search.</p>';
+                return;
+            }
+
+            results.innerHTML = (data || []).map(u => `
+                <div class="user-card">
+                    <div class="avatar">${u.username ? u.username.substring(0,2).toUpperCase() : '??'}</div>
+                    <h3>${u.full_name || u.username || 'Anonymous Hub'}</h3>
+                    <p>${u.bio || 'Heritage Explorer'}</p>
+                    <button class="btn-follow">Follow Hub</button>
+                </div>
+            `).join('');
         }
+
+        // Initial empty state
+        document.getElementById('results').innerHTML = '<p style="grid-column: 1/-1; text-align: center; opacity: 0.5;">Start typing to discover the Calalloo community.</p>';
     </script>
+
 
     <footer>
         <p style="font-family: var(--font-mono); font-size: 0.7rem; color: #AAA; text-transform: uppercase;">&copy; 2026 Calalloo Community Discovery Node</p>
@@ -233,3 +262,4 @@
 
 </body>
 </html>
+
