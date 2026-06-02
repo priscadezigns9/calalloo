@@ -189,56 +189,18 @@
     <div id="pro-modal" class="modal-bg" style="display: none; align-items: center; justify-content: center;">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-close" onclick="closeProModal()"><i data-lucide="x"></i></div>
-            
-            <!-- Step 1: Benefits -->
-            <div id="pro-step-1">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                        <i data-lucide="zap" style="width: 32px; height: 32px;"></i>
-                    </div>
-                    <h2 class="display-font" style="font-size: 2rem;">Calalloo Pro</h2>
-                    <p style="color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.75rem;">Heritage Excellence</p>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                    <i data-lucide="zap" style="width: 32px; height: 32px;"></i>
                 </div>
-                <ul style="list-style: none; margin-bottom: 30px;">
-                    <li style="margin-bottom: 12px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 18px;"></i> Unlimited AI Scans</li>
-                    <li style="margin-bottom: 12px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 18px;"></i> Global Marketplace Access</li>
-                    <li style="margin-bottom: 12px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 18px;"></i> Private Vault Storage</li>
-                </ul>
-                <button class="btn btn-dark" style="width: 100%; justify-content: center;" onclick="goToPayment()">Unlock Pro — $9.99/mo</button>
+                <h2 class="display-font" style="font-size: 2rem;">Calalloo Pro</h2>
+                <p style="color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.75rem;">Heritage Excellence</p>
             </div>
-
-            <!-- Step 2: Payment Modal -->
-            <div id="pro-step-2" style="display: none;">
-                <div style="text-align: center; margin-bottom: 25px;">
-                    <h2 class="display-font" style="font-size: 1.5rem;">Secure Payment</h2>
-                    <p style="color: var(--grey-text); font-size: 0.85rem;">Calalloo Pro Subscription — $9.99/mo</p>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: var(--grey-text);">Cardholder Name</label>
-                    <input type="text" placeholder="Full Name" style="width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none;">
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: var(--grey-text);">Card Details</label>
-                    <div style="position: relative;">
-                        <input type="text" placeholder="0000 0000 0000 0000" style="width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; padding-right: 50px;">
-                        <i data-lucide="credit-card" style="position: absolute; right: 15px; top: 14px; color: var(--grey-text); width: 20px;"></i>
-                    </div>
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <input type="text" placeholder="MM / YY" style="width: 50%; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none;">
-                        <input type="text" placeholder="CVC" style="width: 50%; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none;">
-                    </div>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px; padding: 15px; background: var(--light-bg); border-radius: 12px;">
-                    <i data-lucide="shield-check" style="color: var(--primary); width: 24px;"></i>
-                    <p style="font-size: 0.75rem; color: var(--grey-text); line-height: 1.4;">Your payment is secured with industry-standard 256-bit encryption.</p>
-                </div>
-
-                <button id="process-payment-btn" class="btn btn-primary" style="width: 100%; justify-content: center; height: 55px;" onclick="processPayment()">Complete Payment — $9.99</button>
-                <button class="btn" style="width: 100%; justify-content: center; margin-top: 10px; color: var(--grey-text); font-size: 0.8rem;" onclick="backToBenefits()">Back to details</button>
-            </div>
+            <ul style="list-style: none; margin-bottom: 30px;">
+                <li style="margin-bottom: 12px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 18px;"></i> Unlimited AI Scans</li>
+                <li style="margin-bottom: 12px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 18px;"></i> Global Marketplace</li>
+            </ul>
+            <button class="btn btn-dark" style="width: 100%; justify-content: center;" onclick="alert('Proceeding to Stripe...')">Unlock Pro — $9.99/mo</button>
         </div>
     </div>
 
@@ -248,8 +210,18 @@
 
         async function loadData() {
             try {
+                const { data: { session } } = await sb.auth.getSession();
+                if(!session) { 
+                    // Wait 500ms to prevent rapid redirects before redirecting
+                    setTimeout(() => { window.location.href = '/login/'; }, 500);
+                    return; 
+                }
+
                 const { data: { user } } = await sb.auth.getUser();
-                if(!user) { window.location.href = '/login/'; return; }
+                if(!user) { 
+                    setTimeout(() => { window.location.href = '/login/'; }, 500);
+                    return; 
+                }
 
                 // Parallel fetch
                 const [rRes, cRes, pRes] = await Promise.all([
@@ -357,43 +329,8 @@
             const m = document.getElementById('menu-overlay');
             m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
         }
-        function openProModal() { 
-            document.getElementById('pro-modal').style.display = 'flex'; 
-            document.getElementById('pro-step-1').style.display = 'block';
-            document.getElementById('pro-step-2').style.display = 'none';
-            toggleMenu(); 
-        }
+        function openProModal() { document.getElementById('pro-modal').style.display = 'flex'; toggleMenu(); }
         function closeProModal() { document.getElementById('pro-modal').style.display = 'none'; }
-        function goToPayment() {
-            document.getElementById('pro-step-1').style.display = 'none';
-            document.getElementById('pro-step-2').style.display = 'block';
-            lucide.createIcons();
-        }
-        function backToBenefits() {
-            document.getElementById('pro-step-1').style.display = 'block';
-            document.getElementById('pro-step-2').style.display = 'none';
-        }
-        async function processPayment() {
-            const btn = document.getElementById('process-payment-btn');
-            const originalText = btn.innerText;
-            btn.innerText = 'Processing...';
-            btn.disabled = true;
-
-            // Simulate network delay
-            await new Promise(r => setTimeout(r, 2000));
-
-            try {
-                // In a real scenario, we would call Stripe here.
-                // For now, we simulate success and update UI.
-                alert('Payment Successful! Welcome to Calalloo Pro.');
-                closeProModal();
-            } catch (e) {
-                alert('Payment failed. Please try again.');
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
         function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
 
         window.onload = loadData;
