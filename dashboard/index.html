@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Beta</title>
+    <title>Calalloo | Beta v24.4</title>
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,7 +95,7 @@
         <button class="pill active" onclick="showTab('discovery')">Discovery</button>
         <button class="pill" onclick="showTab('vision')">Vision AI</button>
         <button class="pill" onclick="showTab('map')">Heritage Map</button>
-        <button class="pill" onclick="showTab('profile')">My Profile</button>
+        <button class="pill" onclick="showTab('profile')" id="nav-profile">My Profile & Settings</button>
     </div>
 
     <div id="discovery" class="tab-content active">
@@ -180,8 +180,8 @@
             
             <textarea id="p-bio" placeholder="Tell your heritage story..." style="width: 100%; padding: 15px; border: 1.5px solid var(--border); border-radius: 12px; resize: none; min-height: 100px; margin-bottom: 20px; font-family: var(--font-main); font-size: 0.95rem;"></textarea>
             
-            <button id="save-profile-btn" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveFullProfile()">
-                <i data-lucide="save"></i> Update Profile
+            <button id="save-profile-btn" class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--primary) !important; color: white !important; display: flex !important;" onclick="saveFullProfile()">
+                <i data-lucide="save"></i> Save Heritage Settings
             </button>
         </div>
         <div style="padding: 30px 20px;">
