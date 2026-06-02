@@ -137,7 +137,7 @@
             <div class="avatar-wrapper" onclick="document.getElementById('avatar-input').click()">
                 <img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100">
                 <div class="avatar-edit"><i data-lucide="camera" style="width: 14px; height: 14px;"></i></div>
-                <input type="file" id="avatar-input" style="display: none;" onchange="uploadAvatar(this)">
+                <input type="file" id="avatar-input" style="display: none;" accept="image/png, image/jpeg" onchange="uploadAvatar(this)">
             </div>
             <input type="text" id="p-name" class="display-font" style="text-align: center; border: none; background: none; font-size: 2rem; width: 100%; color: var(--dark); outline: none; margin-bottom: 5px;" placeholder="Your Name">
             <p id="p-handle" class="grey-text" style="margin-bottom: 20px;"></p>
