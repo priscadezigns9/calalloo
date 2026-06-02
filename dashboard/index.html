@@ -247,6 +247,14 @@
 
     <div id="menu-overlay" class="menu-overlay">
         <div style="display:flex; justify-content:flex-end; margin-bottom:40px;"><button style="background:none; border:none; cursor:pointer;" onclick="toggleMenu()"><i data-lucide="x" style="width:32px; height:32px;"></i></button></div>
+        
+        <!-- Mobile Friend Search -->
+        <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+            <div style="font-weight: 800; font-size:0.9rem; margin-bottom: 12px; display:flex; align-items:center; gap:8px;"><i data-lucide="search" style="width:16px;"></i> Find Friends</div>
+            <input type="text" id="mobile-friend-search" placeholder="Search keepers..." oninput="handleFriendSearch(this.value, 'mobile-search-results')" style="width:100%; padding:14px; border-radius:12px; border:1.5px solid var(--border); outline:none; font-size:0.9rem; background:var(--white);">
+            <div id="mobile-search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; border:1px solid var(--border); max-height:200px; overflow-y:auto;"></div>
+        </div>
+
         <div class="menu-item" onclick="showTab('discovery'); toggleMenu()"><i data-lucide="search"></i> Discovery</div>
         <div class="menu-item" onclick="showTab('vision'); toggleMenu()"><i data-lucide="camera"></i> Vision AI</div>
         <div class="menu-item" onclick="showTab('reels'); toggleMenu()"><i data-lucide="video"></i> Reels</div>
@@ -446,8 +454,8 @@
             renderRecipes(r);
         }
 
-        async function handleFriendSearch(query) {
-            const resultsDiv = document.getElementById('friend-search-results');
+        async function handleFriendSearch(query, resultsContainerId = 'friend-search-results') {
+            const resultsDiv = document.getElementById(resultsContainerId);
             if(query.length < 2) { 
                 resultsDiv.style.display = 'none';
                 return; 
@@ -461,7 +469,7 @@
                     let av = 'https://via.placeholder.com/30?text=HP';
                     if (user.avatar_url && user.avatar_url.length < 500000) av = user.avatar_url;
                     return `
-                        <div style="display:flex; align-items:center; gap:10px; padding:12px; border-bottom:1px solid var(--border); cursor:pointer;">
+                        <div style="display:flex; align-items:center; gap:10px; padding:12px; border-bottom:1px solid var(--border); cursor:pointer;" onclick="openHub(); toggleMenu();">
                             <img src="${av}" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
                             <div style="flex:1;">
                                 <div style="font-size:0.85rem; font-weight:700;">Heritage Keeper</div>
