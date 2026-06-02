@@ -91,12 +91,17 @@
             }
         };
 
-        // Check if already logged in
+                // Check if already logged in
         async function checkSession() {
-            const { data: { session } } = await sb.auth.getSession();
-            if (session) { console.log("Session confirmed"); setTimeout(() => { window.location.href = "/dashboard/"; }, 1500); }
+            try {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) { 
+                    console.log('Login: Session detected, moving to dashboard.');
+                    window.location.replace('/dashboard/'); 
+                }
+            } catch (e) { console.error(e); }
         }
-        checkSession();
+        setTimeout(checkSession, 1500);
     </script>
 </body>
 </html>
