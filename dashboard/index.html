@@ -137,7 +137,7 @@
             <div class="avatar-wrapper" onclick="document.getElementById('avatar-input').click()">
                 <img id="p-avatar" class="avatar-main" src="https://via.placeholder.com/100">
                 <div class="avatar-edit"><i data-lucide="camera" style="width: 14px; height: 14px;"></i></div>
-                <input type="file" id="avatar-input" style="display: none;" accept="image/png, image/jpeg" onchange="uploadAvatar(this)">
+                <input type="file" id="avatar-input" style="display: none;" onchange="uploadAvatar(this)" accept="image/png, image/jpeg">
             </div>
             <input type="text" id="p-name" class="display-font" style="text-align: center; border: none; background: none; font-size: 2rem; width: 100%; color: var(--dark); outline: none; margin-bottom: 5px;" placeholder="Your Name">
             <p id="p-handle" class="grey-text" style="margin-bottom: 20px;"></p>
@@ -165,6 +165,15 @@
             <div class="menu-item" onclick="installApp()" id="install-option" style="display: none;">
                 <i data-lucide="download"></i> Download App
                 <div style="margin-left: auto; color: var(--primary);">Install</div>
+            </div>
+            <!-- Restored Permissions -->
+            <div class="menu-item" onclick="requestPermission('camera')">
+                <i data-lucide="camera"></i> Camera Permissions
+                <div style="margin-left: auto; color: var(--primary);">Review</div>
+            </div>
+            <div class="menu-item" onclick="requestPermission('location')">
+                <i data-lucide="map-pin"></i> Location Access
+                <div style="margin-left: auto; color: var(--primary);">Review</div>
             </div>
             <div class="menu-item" onclick="signOut()" style="color: red; margin-top: 50px; border-top: 1px solid var(--border);">
                 <i data-lucide="log-out"></i> Sign Out
@@ -207,8 +216,9 @@
             <button class="close-btn" onclick="toggleMenu()"><i data-lucide="x" style="width: 32px; height: 32px;"></i></button>
         </div>
         <div class="menu-item" onclick="showTab('discovery'); toggleMenu()"><i data-lucide="search"></i>Discovery</div>
+        <div class="menu-item" onclick="showTab('vision'); toggleMenu()"><i data-lucide="camera"></i>Vision AI Camera</div>
         <div class="menu-item" onclick="openHub(); toggleMenu()"><i data-lucide="message-square"></i>Messenger</div>
-        <div class="menu-item" onclick="showTab('map'); toggleMenu()"><i data-lucide="map"></i>Map</div>
+        <div class="menu-item" onclick="showTab('map'); toggleMenu()"><i data-lucide="map"></i>Heritage Map</div>
         <div class="menu-item" onclick="showTab('profile'); toggleMenu()"><i data-lucide="user"></i>Profile</div>
         <div class="menu-item" onclick="showTab('settings'); toggleMenu()"><i data-lucide="settings"></i>Settings</div>
         <div class="menu-item" onclick="signOut()"><i data-lucide="log-out"></i>Sign Out</div>
@@ -251,16 +261,23 @@
             const name = document.getElementById('p-name').value;
             const bio = document.getElementById('p-bio').value;
             const btn = document.getElementById('save-profile-btn');
-            btn.innerText = 'Saving...';
+            
+            btn.innerText = 'Syncing...';
+            
             const { error } = await sb.from('profiles').update({ full_name: name, bio }).eq('id', user.id);
-            if(!error) { alert('Sovereign Hub Synced to Supabase!'); btn.innerText = 'Save Profile'; }
+            if(!error) { 
+                alert('Sovereign Hub Synced!'); 
+                btn.innerText = 'Save Profile';
+            } else {
+                alert('Sync Failed.');
+                btn.innerText = 'Save Profile';
+            }
         }
 
         async function saveRecipe(recipeId) {
             const { data: { user } } = await sb.auth.getUser();
             const { error } = await sb.from('saved_recipes').upsert({ user_id: user.id, recipe_id: recipeId });
-            if(!error) { alert('Added to Kitchen Inventory!'); loadKitchen(); }
-            else { alert('Already in Kitchen.'); }
+            if(!error) { alert('Added to Kitchen!'); loadKitchen(); }
         }
 
         async function loadKitchen() {
@@ -320,13 +337,19 @@
 
         async function uploadAvatar(el) {
             const file = el.files[0];
+            if(!file) return;
+            const ext = file.name.split('.').pop();
             const { data: { user } } = await sb.auth.getUser();
-            const path = `avatars/${user.id}_${Date.now()}.png`;
+            const path = `avatars/${user.id}_${Date.now()}.${ext}`;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => document.getElementById('p-avatar').src = e.target.result;
+            reader.readAsDataURL(file);
+
             const { error } = await sb.storage.from('heritage-media').upload(path, file);
             if(!error) {
                 const { data: { publicUrl } } = sb.storage.from('heritage-media').getPublicUrl(path);
                 await sb.from('profiles').update({ avatar_url: publicUrl }).eq('id', user.id);
-                document.getElementById('p-avatar').src = publicUrl;
             }
         }
 
@@ -338,6 +361,11 @@
             document.getElementById('theme-status').innerText = next === 'dark' ? 'On' : 'Off';
         }
 
+        async function requestPermission(type) {
+            if(type === 'camera') initCam();
+            if(type === 'location') navigator.geolocation.getCurrentPosition(() => alert('Location Granted'), () => alert('Denied'));
+        }
+
         function toggleMenu() {
             const menu = document.getElementById('menu-overlay');
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
@@ -346,6 +374,31 @@
         function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
         function closeRecipe() { document.getElementById('recipe-modal').style.display = 'none'; }
         function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
+
+        async function initCam() {
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
+                const video = document.getElementById('video-feed');
+                video.srcObject = stream;
+                video.style.display = 'block';
+                document.getElementById('upload-preview').style.display = 'none';
+            } catch (e) { alert('Camera required.'); }
+        }
+        function flipCamera() {
+            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            initCam();
+        }
+        function handleVisionUpload(el) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('video-feed').style.display = 'none';
+                const img = document.getElementById('upload-preview');
+                img.src = e.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(el.files[0]);
+        }
 
         window.onload = loadData;
     </script>
