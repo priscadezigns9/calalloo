@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Calalloo | Heritage Hub</title>
-    <link rel="icon" type="image/png" href="https://priscadezigns9.github.io/calalloo/assets/logo.png">
+    <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +86,7 @@
 </head>
 <body>
     <header>
-        <div class="logo-box" onclick="showTab('discovery')"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" alt="Calalloo"><span class="display-font">Calalloo</span></div>
+        <div class="logo-box" onclick="showTab('discovery')"><img src="assets/logo.png" alt="Calalloo"><span class="display-font">Calalloo</span></div>
         <div class="nav-pills">
             <div class="pill active" onclick="showTab('discovery')">Discovery</div>
             <div class="pill" onclick="showTab('vision')">Vision</div>
@@ -102,6 +102,11 @@
 
     <div class="app-container">
         <aside class="sidebar">
+            <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+                <div class="section-header" style="font-weight: 800; margin-bottom: 12px;"><i data-lucide="search"></i> Find Friends</div>
+                <input type="text" id="friend-search" placeholder="Search keepers..." oninput="handleFriendSearch(this.value)" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid var(--border); outline:none; font-size:0.85rem; background:var(--white);">
+                <div id="friend-search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; border:1px solid var(--border); max-height:250px; overflow-y:auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05);"></div>
+            </div>
             <div class="section-header" style="font-weight: 800; margin-bottom: 20px;"><i data-lucide="users"></i> Heritage Groups</div>
             <div id="sidebar-groups"><p style="opacity: 0.5; font-size: 0.85rem;">Searching for groups...</p></div>
             <button class="btn btn-secondary" style="width:100%; margin-top:20px; font-size:0.8rem;" onclick="openCreateGroup()"><i data-lucide="plus-circle"></i> Create Group</button>
@@ -109,8 +114,7 @@
 
         <main class="main-content">
             <div id="discovery" class="tab-content active">
-                <div class="search-bar"><input type="text" id="search-input" class="search-input" placeholder="Search recipes or keepers..." oninput="handleUnifiedSearch(this.value)" style="width:100%; padding:14px; border-radius:12px; border:1.5px solid var(--border); outline:none; background:var(--white); color:var(--dark);"></div>
-                <div id="search-results-users" style="display:none; padding:0 20px;"><h4 class="display-font">Heritage Keepers</h4><div id="user-results-grid" style="display:flex; gap:15px; overflow-x:auto; padding:15px 0;"></div></div>
+                <div class="search-bar"><input type="text" id="food-search" class="search-input" placeholder="Search heritage food..." oninput="handleFoodSearch(this.value)" style="width:100%; padding:14px; border-radius:12px; border:1.5px solid var(--border); outline:none; background:var(--white); color:var(--dark);"></div>
                 <div id="discovery-grid" class="recipe-grid"></div>
             </div>
 
@@ -185,7 +189,7 @@
 
         <aside class="sidebar sidebar-right">
             <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap:8px;"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
+                <div style="display:flex; align-items:center; gap:8px;"><img src="assets/logo.png" style="width:20px;height:20px;border-radius:4px">Messenger</div>
                 <button onclick="openHub()" style="background:var(--primary); border:none; border-radius:50%; width:24px; height:24px; color:white; cursor:pointer;"><i data-lucide="plus" style="width:14px;"></i></button>
             </div>
             <div id="desktop-messages" style="height: 300px; overflow-y: auto; background: var(--light-bg); border-radius: 12px; padding: 10px; margin-bottom: 15px; font-size: 0.85rem;"><p style="opacity: 0.5; text-align: center; margin-top: 100px;">No messages yet</p></div>
@@ -202,7 +206,7 @@
         <div class="modal-content" style="height: 85vh; border-radius: 24px; display:flex; flex-direction:column;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" style="width:35px; height:35px; border-radius:8px;">
+                    <img src="assets/logo.png" style="width:35px; height:35px; border-radius:8px;">
                     <h2 class="display-font">Messenger</h2>
                 </div>
                 <button onclick="closeHub()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
@@ -239,7 +243,7 @@
         </div>
     </div>
 
-    <button class="messenger-bubble" onclick="openHub()"><img src="https://priscadezigns9.github.io/calalloo/assets/logo.png" alt="Messenger"></button>
+    <button class="messenger-bubble" onclick="openHub()"><img src="assets/logo.png" alt="Messenger"></button>
 
     <div id="menu-overlay" class="menu-overlay">
         <div style="display:flex; justify-content:flex-end; margin-bottom:40px;"><button style="background:none; border:none; cursor:pointer;" onclick="toggleMenu()"><i data-lucide="x" style="width:32px; height:32px;"></i></button></div>
@@ -433,33 +437,44 @@
             lucide.createIcons();
         }
 
-        async function handleUnifiedSearch(query) {
+        async function handleFoodSearch(query) {
             if(query.length < 2) { 
                 renderRecipes(allRecipes); 
-                document.getElementById('search-results-users').style.display = 'none'; 
                 return; 
             }
-            // Filter Recipes
             const r = allRecipes.filter(x => x.title.toLowerCase().includes(query.toLowerCase()));
             renderRecipes(r);
+        }
+
+        async function handleFriendSearch(query) {
+            const resultsDiv = document.getElementById('friend-search-results');
+            if(query.length < 2) { 
+                resultsDiv.style.display = 'none';
+                return; 
+            }
             
-            // Filter Users
-            const { data: u } = await sb.from('profiles').select('*').or(`bio.ilike.%${query}%`).limit(10);
+            const { data: u } = await sb.from('profiles').select('*').or(`bio.ilike.%${query}%`).limit(5);
             
             if(u && u.length) {
-                document.getElementById('search-results-users').style.display = 'block';
-                document.getElementById('user-results-grid').innerHTML = u.map(user => {
-                    let av = 'https://via.placeholder.com/60?text=HP';
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = u.map(user => {
+                    let av = 'https://via.placeholder.com/30?text=HP';
                     if (user.avatar_url && user.avatar_url.length < 500000) av = user.avatar_url;
                     return `
-                        <div class="user-card" style="min-width:100px; text-align:center;">
-                            <img src="${av}" style="width:60px; height:60px; border-radius:50%; object-fit:cover; background:var(--light-bg);" onerror="this.src='https://via.placeholder.com/60?text=HP'">
-                            <h4 style="font-size:0.75rem; margin-top:8px;">Keeper</h4>
+                        <div style="display:flex; align-items:center; gap:10px; padding:12px; border-bottom:1px solid var(--border); cursor:pointer;">
+                            <img src="${av}" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
+                            <div style="flex:1;">
+                                <div style="font-size:0.85rem; font-weight:700;">Heritage Keeper</div>
+                                <div style="font-size:0.7rem; opacity:0.6;">Island Chef</div>
+                            </div>
+                            <i data-lucide="message-square" style="width:16px; color:var(--primary);"></i>
                         </div>
                     `;
                 }).join('');
+                lucide.createIcons();
             } else {
-                document.getElementById('search-results-users').style.display = 'none';
+                resultsDiv.innerHTML = '<p style="padding:15px; font-size:0.8rem; opacity:0.5; text-align:center;">No keepers found.</p>';
+                resultsDiv.style.display = 'block';
             }
         }
 
