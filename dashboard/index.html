@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v38.0 Sovereign Platinum</title>
+    <title>Calalloo | Heritage Hub v38.9.7 Sovereign Platinum</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest?v=38.9.7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.9.7"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -348,16 +348,68 @@
         async function init() {
             lucide.createIcons();
             
-            // Sovereignty Patch: Clear legacy defaults if detected
+            // Sovereignty Lockdown: Force-clear legacy developer handles
             const savedProfile = localStorage.getItem('calalloo_profile');
             if (savedProfile) {
                 const p = JSON.parse(savedProfile);
-                if (p.name && (p.name.toLowerCase().includes('prisca') || p.name === "Heritage Hub User")) {
+                const isLegacy = (p.name && /prisca|heritage hub/i.test(p.name)) || 
+                                 (p.username && /prisca|guest/i.test(p.username));
+                
+                if (isLegacy) {
                     localStorage.removeItem('calalloo_profile');
-                    return init();
+                    // Reset and continue to Auth check
+                } else {
+                    populateProfileUI(p.name, p.username, p.avatar, p.settings);
                 }
-                populateProfileUI(p.name, p.username, p.avatar, p.settings);
-            } else {
+            }
+
+            // Restore from Supabase session (Source of Truth)
+            const { data: { user } } = await sb.auth.getUser();
+            if (user) {
+                const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
+                if (profile && !error) {
+                    // Check if DB record itself is a legacy default
+                    const isLegacyDB = (profile.full_name && /prisca/i.test(profile.full_name)) || 
+                                       (profile.username && /prisca/i.test(profile.username));
+                    
+                    const finalName = isLegacyDB ? "" : profile.full_name;
+                    const finalUser = isLegacyDB ? "" : profile.username;
+                    
+                    populateProfileUI(finalName, finalUser, profile.avatar_url, profile.taste_preferences?.settings);
+                    
+                    // Update Cache
+                    localStorage.setItem('calalloo_profile', JSON.stringify({
+                        name: finalName,
+                        username: finalUser,
+                        avatar: profile.avatar_url,
+                        settings: profile.taste_preferences?.settings
+                    }));
+                } else {
+                    // Authenticated but no profile record: Start clean
+                    populateProfileUI("", "", "https://via.placeholder.com/120");
+                }
+            } else if (!localStorage.getItem('calalloo_profile')) {
+                // Anonymous/New user: Start clean
+                populateProfileUI("", "", "https://via.placeholder.com/120");
+            }
+
+            loadDiscovery();
+            setupRealtime();
+            syncPendingDishes(); 
+            
+            // Final Sovereignty Guard: Manual DOM sweep
+            setTimeout(() => {
+                ['prof-name', 'prof-username', 'edit-name', 'edit-username'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && /prisca|dezigns/i.test(el.innerText || el.value)) {
+                        if (el.tagName === 'INPUT') el.value = "";
+                        else el.innerText = "";
+                    }
+                });
+            }, 1000);
+
+            if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+        }
                 // Browsing data cleared: Attempt to restore from Supabase session
                 const { data: { user } } = await sb.auth.getUser();
                 if (user) {
