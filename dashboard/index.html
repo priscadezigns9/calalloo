@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.9.0 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.9.1 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -674,12 +674,14 @@ renderPins('discovery-pins', discoveryFeed);
 function renderPins(gridId, items) {
 const grid = document.getElementById(gridId);
 if(!grid) return;
-const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
+const profUserElem = document.getElementById('prof-username');
+const currentUser = (profUserElem ? profUserElem.innerText.split(' • ')[0] : '') || '@guest';
 // Sovereignty Filter (Scalable): Show published recipes OR user's own recipes
 const visibleItems = items.filter(r => {
 // Column name in DB is 'is_published'
 const isPublished = r.is_published === true || r.is_published === undefined || r.is_published === null;
-return isPublished || r.author_username === currentUser;
+const author = r.author_username || "";
+return isPublished || author === currentUser;
 });
 if (visibleItems.length === 0) {
 grid.innerHTML = `<div style="column-span:all; text-align:center; padding:40px; color:var(--grey-text);">
@@ -688,7 +690,7 @@ grid.innerHTML = `<div style="column-span:all; text-align:center; padding:40px; 
 </div>`;
 } else {
 grid.innerHTML = visibleItems.map(r => `
-<div class="recipe-pin" onclick="openRecipe('${r.id}')">
+<div class="recipe-pin" onclick="openRecipe('${r.id}')" style="cursor:pointer;">
 <img src="${r.cover_photo_url || 'https://via.placeholder.com/400x300?text=Heritage+Recipe'}">
 <div class="pin-overlay">
 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
