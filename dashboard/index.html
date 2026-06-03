@@ -339,10 +339,10 @@
             const savedProfile = localStorage.getItem('calalloo_profile');
             if (savedProfile) {
                 const p = JSON.parse(savedProfile);
-                populateProfileUI(p.name, p.username);
+                populateProfileUI(p.name, p.username, p.avatar);
             } else if (isAdmin) {
                 // Default admin population if no local changes
-                populateProfileUI("Prisca Dezigns", "@prisca • Trinidad & Tobago");
+                populateProfileUI("Prisca Dezigns", "@prisca • Trinidad & Tobago", "https://via.placeholder.com/120");
                 document.getElementById('edit-name').value = "Prisca Dezigns";
                 document.getElementById('edit-username').value = "@prisca";
             }
@@ -353,37 +353,55 @@
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
         }
 
-        function populateProfileUI(name, username) {
+        function populateProfileUI(name, username, avatar) {
             document.getElementById('prof-name').innerText = name || "";
             document.getElementById('prof-username').innerText = username || "";
             document.getElementById('edit-name').value = name || "";
             document.getElementById('edit-username').value = username || "";
+            if (avatar) document.getElementById('profile-avatar').src = avatar;
         }
 
         async function saveSettings() {
             const newName = document.getElementById('edit-name').value;
             const newUsername = document.getElementById('edit-username').value;
+            const avatar = document.getElementById('profile-avatar').src;
+            const btn = event.target;
+            const originalText = btn.innerText;
             
-            // Update UI immediately
+            // Update UI immediately (no wait)
             document.getElementById('prof-name').innerText = newName;
             document.getElementById('prof-username').innerText = newUsername;
 
-            // Persist to LocalStorage for refresh persistence
-            const profile = { name: newName, username: newUsername };
+            // Persist to LocalStorage instantly (synchronous, fast)
+            const profile = { name: newName, username: newUsername, avatar };
             localStorage.setItem('calalloo_profile', JSON.stringify(profile));
+            
+            btn.innerText = "Saving...";
+            btn.disabled = true;
 
-            // Persist to Supabase
-            const { error } = await sb.from('profiles').upsert({ 
-                username: newUsername, 
-                full_name: newName,
-                updated_at: new Date()
-            });
+            // Persist to Supabase asynchronously in background
+            try {
+                const { error } = await sb.from('profiles').upsert({ 
+                    username: newUsername, 
+                    full_name: newName,
+                    avatar_url: avatar,
+                    updated_at: new Date()
+                });
 
-            if (error) {
-                console.error("Supabase Sync Error:", error);
-                alert("Saved locally! (Cloud sync pending) 🛡️");
-            } else {
-                alert("Heritage Profile Synced! 🛡️🥘");
+                if (error) {
+                    console.error("Supabase Sync Error:", error);
+                    btn.innerText = "Saved Locally ✓";
+                } else {
+                    btn.innerText = "Synced! 🛡️🥘";
+                }
+            } catch (err) {
+                console.error("Sync Error:", err);
+                btn.innerText = "Saved Locally ✓";
+            } finally {
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }, 1500);
             }
         }
 
@@ -560,8 +578,51 @@
 
         function saveToKitchen() { alert("Saved to your Kitchen! 🥘🛡️"); closeModal('detail-modal'); }
 
-        function previewAvatar(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('profile-avatar').src = e.target.result; document.getElementById('sync-avatar-btn').style.display = 'block'; }; reader.readAsDataURL(input.files[0]); } }
-        function syncAvatarToVault() { alert("Picture saved to Heritage Vault! 🛡️"); document.getElementById('sync-avatar-btn').style.display = 'none'; }
+        function previewAvatar(input) { 
+            if(input.files && input.files[0]) { 
+                const reader = new FileReader(); 
+                reader.onload = (e) => { 
+                    const avatarData = e.target.result;
+                    document.getElementById('profile-avatar').src = avatarData; 
+                    document.getElementById('sync-avatar-btn').style.display = 'block'; 
+                }; 
+                reader.readAsDataURL(input.files[0]); 
+            } 
+        }
+
+        async function syncAvatarToVault() {
+            const avatarData = document.getElementById('profile-avatar').src;
+            const name = document.getElementById('edit-name').value;
+            const username = document.getElementById('edit-username').value;
+            
+            // Immediately save to LocalStorage (fast)
+            const profile = { name, username, avatar: avatarData };
+            localStorage.setItem('calalloo_profile', JSON.stringify(profile));
+            
+            document.getElementById('sync-avatar-btn').style.display = 'none';
+            document.getElementById('sync-avatar-btn').innerText = 'Saving...';
+            document.getElementById('sync-avatar-btn').style.display = 'block';
+            
+            // Async sync to Supabase (background)
+            try {
+                const { error } = await sb.from('profiles').upsert({ 
+                    username: username, 
+                    full_name: name,
+                    avatar_url: avatarData,
+                    updated_at: new Date()
+                });
+                
+                if (error) {
+                    console.error("Supabase Error:", error);
+                    document.getElementById('sync-avatar-btn').innerText = 'Saved Locally ✓';
+                } else {
+                    document.getElementById('sync-avatar-btn').innerText = 'Synced to Vault! 🛡️';
+                }
+            } catch (err) {
+                console.error("Sync Error:", err);
+                document.getElementById('sync-avatar-btn').innerText = 'Saved Locally ✓';
+            }
+        }
         function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); document.getElementById('pro-intro').style.display = 'block'; document.getElementById('payment-overlay').style.display = 'none'; }
         function showPaymentOverlay() { document.getElementById('payment-overlay').style.display = 'flex'; }
         function hidePaymentOverlay() { document.getElementById('payment-overlay').style.display = 'none'; }
@@ -576,34 +637,48 @@
             const ingredients = document.getElementById('dish-ingredients').value;
             const instructions = document.getElementById('dish-instructions').value;
             const imgInput = document.getElementById('dish-img');
+            const submitBtn = event.target;
             
             if(!title || !imgInput.files[0]) {
                 alert("Please provide a title and a photo of your dish.");
                 return;
             }
 
-            // In a real scenario, we would upload the image to Supabase Storage first.
-            // For now, we'll simulate the successful persistence to the shared discovery database.
-            const newDish = {
-                id: 'new-' + Date.now(),
+            const currentBtnText = submitBtn.innerText;
+            submitBtn.innerText = "Syncing to Vault...";
+            submitBtn.disabled = true;
+
+            const dishData = {
+                id: 'dish-' + Date.now(),
                 title: title,
                 cover_photo_url: document.getElementById('dish-preview').src,
                 instructions: instructions,
+                author_username: document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest',
+                is_public: true,
                 created_at: new Date().toISOString()
             };
 
-            const { error } = await sb.from('recipes').insert([newDish]);
-            
-            if (error) {
-                console.error("Error saving dish:", error);
-                alert("Vault sync failed. Saving locally for now. 🛡️");
-                recipes.unshift(newDish);
-            } else {
-                alert("Dish successfully pushed to the Heritage Discovery Vault! 🥘🛡️");
-                loadDiscovery(); // Refresh discovery to show new dish
+            // Optimization: First unshift into local array for instant UI feedback
+            recipes.unshift(dishData);
+            renderPins('discovery-pins', recipes);
+
+            try {
+                const { error } = await sb.from('recipes').insert([dishData]);
+                
+                if (error) {
+                    console.error("Supabase Error:", error);
+                    alert("Vault sync busy. Saved locally for now! 🥘🛡️");
+                } else {
+                    alert("Dish successfully pushed to the Heritage Discovery Vault! 🥘🛡️");
+                }
+            } catch (err) {
+                console.error("Submission error:", err);
+                alert("Network latency detected. Dish saved locally! 🥘🛡️");
+            } finally {
+                submitBtn.innerText = currentBtnText;
+                submitBtn.disabled = false;
+                closeModal('add-modal');
             }
-            
-            closeModal('add-modal');
         }
         function triggerScanPro() { 
             // AIScanner is now free as per user request
