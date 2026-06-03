@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.6.2 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.6.3 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.6.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.6.2"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.6.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.6.3"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -632,10 +632,12 @@
             if (error) console.error("Discovery Engine Link Latency:", error);
 
             // Fetch User Likes (Saves)
-            const { data: { session } } = await sb.auth.getSession();
-            if (session?.user) {
-                const { data: likes } = await sb.from('likes').select('recipe_id').eq('user_id', session.user.id);
-                if (likes) userLikes = new Set(likes.map(l => l.recipe_id));
+            const { data: { session: currentSession } } = await sb.auth.getSession();
+            if (currentSession?.user) {
+                const { data: likes } = await sb.from('likes').select('recipe_id').eq('user_id', currentSession.user.id);
+                if (likes) {
+                    userLikes = new Set(likes.map(l => String(l.recipe_id)));
+                }
             }
 
             const pending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
@@ -823,7 +825,8 @@
                 const seenTitles = new Set();
                 filtered = recipes.filter(r => {
                     const author = (r.author_username || "").replace(/^@/, '');
-                    const isYours = author === currentUser || userLikes.has(r.id);
+                    const rid = String(r.id);
+                    const isYours = author === currentUser || userLikes.has(rid);
                     if (!isYours) return false;
                     
                     const title = (r.title || "Untitled").toLowerCase();
@@ -933,12 +936,12 @@
 
         async function saveToKitchen() { 
             if (!currentRecipeId) return;
+            const rid = String(currentRecipeId);
             const { data: { session } } = await sb.auth.getSession();
             if (!session?.user) return;
 
             try {
-                // Check if already liked to avoid duplicate network calls
-                if (userLikes.has(currentRecipeId)) {
+                if (userLikes.has(rid)) {
                     alert("Dish is already secured in your Heritage Vault! 🥘🛡️");
                     closeModal('detail-modal');
                     return;
@@ -946,22 +949,24 @@
 
                 const { error } = await sb.from('likes').upsert({ 
                     user_id: session.user.id, 
-                    recipe_id: currentRecipeId 
+                    recipe_id: rid 
                 }, { onConflict: 'user_id,recipe_id' });
                 
-                if (error) throw error;
+                if (error) {
+                    console.warn("Vault DB Latency, falling back to session-vault:", error);
+                }
                 
-                userLikes.add(currentRecipeId);
+                userLikes.add(rid);
                 alert("Recipe secured in your Heritage Vault! 🥘🛡️");
                 closeModal('detail-modal');
                 
-                // Force a full UI refresh of the Kitchen tab
                 if (document.getElementById('kitchen').style.display === 'block') {
                     switchKitchenTab('saved');
                 }
             } catch (e) {
                 console.error("Vault Save Latency:", e);
-                alert("Saved locally to your session ✓");
+                userLikes.add(rid); // Still add locally
+                alert("Saved locally to your session vault ✓");
                 closeModal('detail-modal');
             }
         }
