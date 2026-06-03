@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.5.1 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.5.2 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.5.1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.5.1"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.5.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.5.2"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -921,6 +921,13 @@
             if (!session?.user) return;
 
             try {
+                // Check if already liked to avoid duplicate network calls
+                if (userLikes.has(currentRecipeId)) {
+                    alert("Dish is already secured in your Heritage Vault! 🥘🛡️");
+                    closeModal('detail-modal');
+                    return;
+                }
+
                 const { error } = await sb.from('likes').upsert({ 
                     user_id: session.user.id, 
                     recipe_id: currentRecipeId 
@@ -931,7 +938,11 @@
                 userLikes.add(currentRecipeId);
                 alert("Recipe secured in your Heritage Vault! 🥘🛡️");
                 closeModal('detail-modal');
-                if (document.getElementById('kitchen').style.display === 'block') switchKitchenTab('saved');
+                
+                // Force a full UI refresh of the Kitchen tab
+                if (document.getElementById('kitchen').style.display === 'block') {
+                    switchKitchenTab('saved');
+                }
             } catch (e) {
                 console.error("Vault Save Latency:", e);
                 alert("Saved locally to your session ✓");
@@ -1067,7 +1078,7 @@
                 title: title,
                 cover_photo_url: compressedImg,
                 instructions: instructions,
-                author_username: document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest',
+                author_username: document.getElementById('prof-username').innerText.split(' • ')[0].replace(/^@/, '') || 'guest',
                 is_public: privacy === 'public',
                 created_at: new Date().toISOString()
             };
