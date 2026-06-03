@@ -275,11 +275,40 @@
         </div>
     </div>
 
+    
     <script>
+        console.log('Hub Bootstrap Started...');
+        
+        // IMMEDIATE LOADER CLEAR (Safety)
+        function forceClearLoader() {
+            const loader = document.getElementById('loader-overlay');
+            if (loader) {
+                console.log('Force clearing loader overlay.');
+                loader.style.display = 'none';
+            }
+        }
+        
+        // Clear after 3 seconds no matter what
+        setTimeout(forceClearLoader, 3000);
+
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
+    
         let currentUserId = null, allRecipes = [], allKeepers = [], activeKitchenFilter = 'public';
 
+        
         async function loadData() {
+            console.log('Executing loadData...');
+            try {
+                const { data: { session }, error: sessionError } = await sb.auth.getSession();
+                if(sessionError) throw sessionError;
+                
+                if(!session) { 
+                    console.warn('No session found. Redirecting to login...');
+                    window.location.href = '/login/'; 
+                    return; 
+                }
+                currentUserId = session.user.id;
+    
             try {
                 const { data: { session } } = await sb.auth.getSession();
                 if(!session) { window.location.href = '/login/'; return; }
