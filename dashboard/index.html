@@ -162,7 +162,7 @@
                         <input type="checkbox" id="set-camera" style="width:auto;">
                     </div>
                 </div>
-                <button onclick="alert('Settings saved to Heritage Vault! 🛡️🥘')" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Save Changes</button>
+                <button onclick="saveSettings()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Save Changes</button>
             </div>
             <button onclick="alert('Signed Out')" style="color:red; background:none; border:none; width:100%; font-weight:700; margin-top:20px;">Sign Out</button>
         </div>
@@ -334,20 +334,57 @@
 
         async function init() {
             lucide.createIcons();
+            
+            // 1. First, check if there's a stored session or local profile
+            const savedProfile = localStorage.getItem('calalloo_profile');
+            if (savedProfile) {
+                const p = JSON.parse(savedProfile);
+                populateProfileUI(p.name, p.username);
+            } else if (isAdmin) {
+                // Default admin population if no local changes
+                populateProfileUI("Prisca Dezigns", "@prisca • Trinidad & Tobago");
+                document.getElementById('edit-name').value = "Prisca Dezigns";
+                document.getElementById('edit-username').value = "@prisca";
+            }
+
             loadDiscovery();
             setupRealtime();
             
-            // Set user-specific profile defaults
-            if (isAdmin) {
-                document.getElementById('prof-name').innerText = "Prisca Dezigns";
-                document.getElementById('prof-username').innerText = "@prisca • Trinidad & Tobago";
-                document.getElementById('edit-name').value = "Prisca Dezigns";
-                document.getElementById('edit-username').value = "@prisca";
-                document.getElementById('set-location').checked = true;
-                document.getElementById('set-camera').checked = true;
-            }
-
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+        }
+
+        function populateProfileUI(name, username) {
+            document.getElementById('prof-name').innerText = name || "";
+            document.getElementById('prof-username').innerText = username || "";
+            document.getElementById('edit-name').value = name || "";
+            document.getElementById('edit-username').value = username || "";
+        }
+
+        async function saveSettings() {
+            const newName = document.getElementById('edit-name').value;
+            const newUsername = document.getElementById('edit-username').value;
+            
+            // Update UI immediately
+            document.getElementById('prof-name').innerText = newName;
+            document.getElementById('prof-username').innerText = newUsername;
+
+            // Persist to LocalStorage for refresh persistence
+            const profile = { name: newName, username: newUsername };
+            localStorage.setItem('calalloo_profile', JSON.stringify(profile));
+
+            // Persist to Supabase
+            const { error } = await sb.from('profiles').upsert({ 
+                username: newUsername, 
+                full_name: newName,
+                updated_at: new Date()
+            });
+
+            if (error) {
+                console.error("Supabase Sync Error:", error);
+                alert("Saved locally! (Cloud sync pending) 🛡️");
+            } else {
+                alert("Heritage Profile Synced! 🛡️🥘");
+            }
         }
 
         function setupRealtime() {
