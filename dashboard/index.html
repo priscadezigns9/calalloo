@@ -279,7 +279,18 @@
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
         let currentUserId = null, allRecipes = [], allKeepers = [], activeKitchenFilter = 'public';
 
+        
+        // Failsafe: ensure loader is hidden after 5 seconds
+        setTimeout(() => {
+            const loader = document.getElementById('loader-overlay');
+            if (loader && loader.style.display !== 'none') {
+                console.warn('Loading failsafe triggered.');
+                loader.style.display = 'none';
+            }
+        }, 5000);
+
         async function loadData() {
+    
             try {
                 const { data: { session } } = await sb.auth.getSession();
                 if(!session) { window.location.href = '/login/'; return; }
@@ -320,7 +331,16 @@
                 showTab(lastTab);
                 document.getElementById('loader-overlay').style.display = 'none';
                 lucide.createIcons();
-            } catch (e) { console.error('System Load Error:', e); }
+            
+            } catch (e) { 
+                console.error('System Load Error:', e);
+                document.getElementById('loader-overlay').style.display = 'none';
+                // Only alert if it's a critical auth error
+                if(e.message && e.message.includes('session')) {
+                    window.location.href = '/login/';
+                }
+            }
+    
         }
 
         async function saveFullSettings() {
