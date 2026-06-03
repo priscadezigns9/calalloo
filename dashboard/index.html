@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.6.0 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.6.1 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.6.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.6.0"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.6.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.6.1"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -58,6 +58,7 @@
         .modal-header { position: sticky; top: 0; background: var(--bg); padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
         .pay-tab.active { background: var(--primary); color: white; }
+        .k-tab.active { background: var(--primary); color: white !important; }
 
         @media (max-width: 768px) {
             .desktop-tabs { display: none; }
@@ -808,16 +809,17 @@
         }
 
         function switchKitchenTab(tab) {
+            console.log("Switching Kitchen Tab:", tab);
             document.querySelectorAll('.k-tab').forEach(t => t.classList.remove('active'));
             const activeTab = document.getElementById('k-tab-'+tab);
             if(activeTab) activeTab.classList.add('active');
             
             // Normalize handle for comparison (remove @ if present)
-            const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0].replace(/^@/, '') || 'guest';
+            const profUserElem = document.getElementById('prof-username');
+            const currentUser = (profUserElem ? profUserElem.innerText.split(' • ')[0].replace(/^@/, '') : '') || 'guest';
             let filtered = [];
             
             if (tab === 'saved') {
-                // Show recipes authored by the user OR liked/saved by the user
                 const seenTitles = new Set();
                 filtered = recipes.filter(r => {
                     const author = (r.author_username || "").replace(/^@/, '');
