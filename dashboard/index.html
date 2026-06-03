@@ -174,7 +174,12 @@
         <img id="m-img" style="width:100%; height:45vh; object-fit:cover;">
         <div style="padding:25px;">
             <h1 class="display-font" id="m-title" style="font-size:2.2rem; margin-bottom:10px;"></h1>
-            <p style="color:var(--primary); font-weight:800; margin-bottom:30px;">Prisca Dezigns • Heritage Gold</p>
+            <p style="color:var(--primary); font-weight:800; margin-bottom:30px;">Heritage Gold</p>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button onclick="saveToKitchen()" style="flex:1; padding:12px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <i data-lucide="heart" style="width:18px;"></i> Save to Kitchen
+                </button>
+            </div>
             <div id="m-ingredients" style="margin-bottom:30px;">
                 <h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--grey-text); margin-bottom:15px;">Ingredients</h3>
                 <div id="ing-list" style="line-height:1.8; color:var(--dark);"></div>
@@ -223,8 +228,8 @@
                     <i data-lucide="x" onclick="hidePaymentOverlay()" style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.5; z-index:10;"></i>
                     <div style="background:#111; padding:30px; text-align:center; border-bottom:1px solid #222;">
                         <img src="../assets/logo.png" style="width:50px; border-radius:50%; margin-bottom:15px;">
-                        <h2 class="display-font" style="color:var(--primary); margin-bottom:5px;">Prisca Dezigns</h2>
-                        <p style="font-size:0.8rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.1em;">Secure Empire Payment</p>
+                        <h2 class="display-font" style="color:var(--primary); margin-bottom:5px;">Calalloo</h2>
+                        <p style="font-size:0.8rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.1em;">Secure Heritage Payment</p>
                     </div>
                     <div style="padding:30px;">
                         <div style="display:flex; gap:10px; margin-bottom:25px; background:#111; padding:5px; border-radius:12px;">
@@ -232,9 +237,28 @@
                             <div id="tab-crypto" class="pay-tab" onclick="setPayTab('crypto')" style="flex:1; padding:10px; text-align:center; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:700;">Crypto</div>
                             <div id="tab-bank" class="pay-tab" onclick="setPayTab('bank')" style="flex:1; padding:10px; text-align:center; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:700;">Bank</div>
                         </div>
-                        <div id="pay-card" class="pay-view"><div style="font-size:2.5rem; font-weight:900; text-align:center; margin-bottom:20px;">$9.99<span style="font-size:1rem; opacity:0.5;">/mo</span></div><button onclick="confirmUpgrade()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:900; cursor:pointer;">Pay with PayPal / Card</button></div>
-                        <div id="pay-crypto" class="pay-view" style="display:none;"><p style="font-size:0.8rem; opacity:0.7; margin-bottom:15px; text-align:center;">Send <b>15.0 MATIC</b> to Empire Wallet:</p><div style="background:#111; padding:15px; border-radius:12px; font-family:monospace; font-size:0.7rem; word-break:break-all; border:1px solid #333; margin-bottom:15px;">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</div><button onclick="alert('Verifying...')" style="width:100%; padding:14px; background:#f7931a; color:white; border:none; border-radius:12px; font-weight:800; cursor:pointer;">Verify</button></div>
-                        <div id="pay-bank" class="pay-view" style="display:none;"><div style="text-align:left; font-size:0.85rem; line-height:1.6; opacity:0.9;"><p><b>Bank:</b> Scotiabank</p><p><b>Account:</b> Prisca Dezigns</p><p><b>Number:</b> 12000-XXXX-XXXX</p></div><button onclick="alert('Details sent.')" style="width:100%; padding:14px; background:#fff; color:#000; border:none; border-radius:12px; font-weight:800; cursor:pointer; margin-top:20px;">Get Info</button></div>
+                        <div id="pay-card" class="pay-view">
+                            <div style="font-size:2.5rem; font-weight:900; text-align:center; margin-bottom:20px;">$9.99<span style="font-size:1rem; opacity:0.5;">/mo</span></div>
+                            <button onclick="confirmUpgrade()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:900; cursor:pointer;">Pay with PayPal / Card</button>
+                        </div>
+                        <div id="pay-crypto" class="pay-view" style="display:none;">
+                            <div style="font-size:0.8rem; text-align:center; margin-bottom:15px;">
+                                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222;"><span>Bitcoin (BTC)</span><b>0.00017 BTC</b></div>
+                                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222;"><span>Ethereum (ETH)</span><b>0.0033 ETH</b></div>
+                                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222;"><span>Polygon (MATIC)</span><b>20.0 MATIC</b></div>
+                            </div>
+                            <p style="font-size:0.7rem; opacity:0.6; margin-bottom:10px; text-align:center;">Send to Empire Multi-Chain Wallet:</p>
+                            <div style="background:#111; padding:12px; border-radius:12px; font-family:monospace; font-size:0.65rem; word-break:break-all; border:1px solid #333; margin-bottom:15px;">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</div>
+                            <button onclick="alert('Verifying on-chain...')" style="width:100%; padding:14px; background:#f7931a; color:white; border:none; border-radius:12px; font-weight:800; cursor:pointer;">Verify Transaction</button>
+                        </div>
+                        <div id="pay-bank" class="pay-view" style="display:none;">
+                            <div style="text-align:left; font-size:0.85rem; line-height:1.6; opacity:0.9;">
+                                <p><b>Bank:</b> Scotiabank</p>
+                                <p><b>Account:</b> Calalloo Admin</p>
+                                <p><b>Number:</b> 12000-XXXX-XXXX</p>
+                            </div>
+                            <button onclick="alert('Details sent.')" style="width:100%; padding:14px; background:#fff; color:#000; border:none; border-radius:12px; font-weight:800; cursor:pointer; margin-top:20px;">Get Info</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -252,7 +276,12 @@
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
         let recipes = [], scansToday = 0;
-        const isAdmin = true; // Prisca Dezigns context
+        const isAdmin = true; 
+        const cooks = [
+            { name: "Prisca Dezigns", username: "@prisca", location: "Trinidad & Tobago", avatar: "https://via.placeholder.com/100" },
+            { name: "Chef Andre", username: "@andre", location: "Jamaica", avatar: "https://via.placeholder.com/101" },
+            { name: "Mamma Rose", username: "@rose", location: "Barbados", avatar: "https://via.placeholder.com/102" }
+        ];
 
         async function init() {
             lucide.createIcons();
@@ -316,9 +345,47 @@
 
         function performSearch() {
             const q = document.getElementById('header-search').value.toLowerCase();
-            const f = recipes.filter(r => r.title.toLowerCase().includes(q));
-            renderPins('discovery-pins', f);
+            const filteredRecipes = recipes.filter(r => r.title.toLowerCase().includes(q));
+            const filteredCooks = cooks.filter(c => c.name.toLowerCase().includes(q) || c.username.toLowerCase().includes(q));
+            
+            const grid = document.getElementById('discovery-pins');
+            let html = '';
+            
+            if (filteredCooks.length > 0) {
+                html += `
+                    <div style="column-span:all; padding:10px; margin-bottom:15px; border-bottom:1px solid var(--border);">
+                        <h3 class="display-font" style="font-size:1.2rem;">Cooks</h3>
+                    </div>
+                `;
+                filteredCooks.forEach(c => {
+                    html += `
+                        <div class="recipe-pin" style="padding:15px; display:flex; align-items:center; gap:12px;">
+                            <img src="${c.avatar}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                            <div><p style="font-weight:700;">${c.name}</p><p style="font-size:0.75rem; color:var(--grey-text);">${c.username}</p></div>
+                        </div>
+                    `;
+                });
+            }
+
+            if (filteredRecipes.length > 0) {
+                if (filteredCooks.length > 0) {
+                    html += `<div style="column-span:all; padding:10px; margin:15px 0; border-bottom:1px solid var(--border);"><h3 class="display-font" style="font-size:1.2rem;">Heritage Dishes</h3></div>`;
+                }
+                html += filteredRecipes.map(r => `
+                    <div class="recipe-pin" onclick="openRecipe('${r.id}')">
+                        <img src="${r.cover_photo_url || ''}">
+                        <div class="pin-overlay"><h3>${r.title}</h3></div>
+                    </div>
+                `).join('');
+            }
+
+            if (filteredRecipes.length === 0 && filteredCooks.length === 0) {
+                html = `<div style="column-span:all; text-align:center; padding:50px; color:var(--grey-text);">No matches found in the vault.</div>`;
+            }
+            grid.innerHTML = html;
         }
+
+        function saveToKitchen() { alert("Saved to your Kitchen! 🥘🛡️"); closeModal('detail-modal'); }
 
         function previewAvatar(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('profile-avatar').src = e.target.result; document.getElementById('sync-avatar-btn').style.display = 'block'; }; reader.readAsDataURL(input.files[0]); } }
         function syncAvatarToVault() { alert("Picture saved to Heritage Vault! 🛡️"); document.getElementById('sync-avatar-btn').style.display = 'none'; }
