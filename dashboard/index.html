@@ -348,11 +348,14 @@
         async function init() {
             lucide.createIcons();
             
-            // 1. Recover Identity: First check LocalStorage, then the Cloud Vault (Supabase)
+            // Sovereignty Patch: Clear legacy defaults if detected
             const savedProfile = localStorage.getItem('calalloo_profile');
-            
             if (savedProfile) {
                 const p = JSON.parse(savedProfile);
+                if (p.name && (p.name.toLowerCase().includes('prisca') || p.name === "Heritage Hub User")) {
+                    localStorage.removeItem('calalloo_profile');
+                    return init();
+                }
                 populateProfileUI(p.name, p.username, p.avatar, p.settings);
             } else {
                 // Browsing data cleared: Attempt to restore from Supabase session
@@ -403,11 +406,12 @@
         }
 
         function populateProfileUI(name, username, avatar, settings) {
-            document.getElementById('prof-name').innerText = name || "Heritage Hub User";
-            document.getElementById('prof-username').innerText = username || "@guest • Trinidad & Tobago";
+            document.getElementById('prof-name').innerText = name || "";
+            document.getElementById('prof-username').innerText = username || "";
             document.getElementById('edit-name').value = name || "";
             document.getElementById('edit-username').value = username || "";
             if (avatar) document.getElementById('profile-avatar').src = avatar;
+            else document.getElementById('profile-avatar').src = "https://via.placeholder.com/120";
             
             if (settings) {
                 document.getElementById('set-location').checked = settings.location || false;
@@ -453,25 +457,23 @@
 
             try {
                 const { data: { user } } = await sb.auth.getUser();
+                if (!user) throw new Error("No active session found in the vault.");
+
                 const payload = { 
+                    id: user.id,
                     username: newUsername, 
                     full_name: newName,
                     avatar_url: avatar,
                     taste_preferences: { settings: { location: hasLocation, camera: hasCamera } },
                     updated_at: new Date()
                 };
-                if (user) payload.id = user.id;
 
-                const { error } = await sb.from('profiles').upsert(payload);
+                const { error } = await sb.from('profiles').upsert(payload, { onConflict: 'id' });
 
-                if (error) {
-                    console.error("Supabase Sync Error:", error);
-                    btn.innerText = "Saved Locally ✓";
-                } else {
-                    btn.innerText = "Synced! 🛡️🥘";
-                }
+                if (error) throw error;
+                btn.innerText = "Synced! 🛡️🥘";
             } catch (err) {
-                console.error("Sync Error:", err);
+                console.error("Vault Sync Error:", err);
                 btn.innerText = "Saved Locally ✓";
             } finally {
                 setTimeout(() => {
@@ -524,12 +526,14 @@
             const btn = document.getElementById('follow-btn');
             const isFollowing = btn.innerText === "Following";
             
+            const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
             if (isFollowing) {
-                await sb.from('follows').delete().eq('follower_id', '@prisca').eq('following_id', currentViewedUser.username);
+                await sb.from('follows').delete().eq('follower_id', currentUser).eq('following_id', currentViewedUser.username);
                 btn.innerText = "Follow";
                 btn.style.background = "var(--primary)";
             } else {
-                await sb.from('follows').insert([{ follower_id: '@prisca', following_id: currentViewedUser.username }]);
+                const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
+                await sb.from('follows').insert([{ follower_id: currentUser, following_id: currentViewedUser.username }]);
                 btn.innerText = "Following";
                 btn.style.background = "#333";
             }
@@ -550,7 +554,8 @@
             const msgHtml = `<div style="align-self:flex-end; background:var(--primary); color:white; padding:10px 15px; border-radius:18px 18px 0 18px; font-size:0.9rem; max-width:80%;">${text}</div>`;
             document.getElementById('chat-messages').innerHTML += msgHtml;
             
-            await sb.from('messages').insert([{ sender: '@prisca', receiver: currentViewedUser.username, content: text }]);
+            const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
+            await sb.from('messages').insert([{ sender: currentUser, receiver: currentViewedUser.username, content: text }]);
             
             input.value = '';
             const chatBox = document.getElementById('chat-messages');
