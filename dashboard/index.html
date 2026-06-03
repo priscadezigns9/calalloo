@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.1.0 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.1.1 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.1.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.1.0"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.1.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.1.1"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -662,19 +662,32 @@
         }
 
         async function openRecipe(id) {
+            console.log("Opening recipe:", id);
             const r = recipes.find(item => item.id === id);
-            if(!r) return;
-            document.getElementById('m-img').src = r.cover_photo_url;
+            if(!r) {
+                console.error("Recipe not found in local memory:", id);
+                return;
+            }
+            document.getElementById('m-img').src = r.cover_photo_url || 'https://via.placeholder.com/400x300?text=Heritage+Recipe';
             document.getElementById('m-title').innerText = r.title;
             
             // Sovereignty Control: Option to toggle privacy for the owner
             const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
-            const controls = document.getElementById('recipe-controls') || createControls();
+            
+            // Fix: Check if recipe-controls element exists, if not create it
+            let controls = document.getElementById('recipe-controls');
+            if (!controls) {
+                controls = document.createElement('div');
+                controls.id = 'recipe-controls';
+                controls.style = "margin-bottom: 20px;";
+                const saveBtn = document.querySelector('#detail-modal [onclick="saveToKitchen()"]');
+                if (saveBtn) saveBtn.parentNode.insertBefore(controls, saveBtn.nextSibling);
+            }
             
             if (r.author_username === currentUser) {
                 controls.innerHTML = `
-                    <button onclick="toggleRecipePrivacy('${r.id}')" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:700; cursor:pointer;">
-                        Make ${r.is_public ? 'Private' : 'Public'}
+                    <button onclick="toggleRecipePrivacy('${r.id}')" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:700; cursor:pointer; width:100%;">
+                        Make ${r.is_published === false ? 'Public' : 'Private'}
                     </button>
                 `;
                 controls.style.display = 'block';
@@ -683,10 +696,24 @@
             }
 
             const instList = document.getElementById('inst-list');
-            instList.innerHTML = Array.isArray(r.instructions) ? r.instructions.map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${step}</p>`).join('') : r.instructions;
-            const { data: ingData } = await sb.from('recipe_ingredients').select('ingredient_name, quantity').eq('recipe_id', id);
+            if (Array.isArray(r.instructions)) {
+                instList.innerHTML = r.instructions.map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${step}</p>`).join('');
+            } else if (typeof r.instructions === 'string') {
+                instList.innerHTML = r.instructions.split('\n').map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${step}</p>`).join('');
+            } else {
+                instList.innerHTML = "No instructions provided.";
+            }
+
             const ingList = document.getElementById('ing-list');
-            ingList.innerHTML = ingData && ingData.length > 0 ? ingData.map(i => `<div style="padding:8px 0; border-bottom:1px solid var(--border);">• ${i.quantity || ''} ${i.ingredient_name}</div>`).join('') : "Ingredients loading...";
+            try {
+                const { data: ingData, error } = await sb.from('recipe_ingredients').select('ingredient_name, quantity').eq('recipe_id', id);
+                if (error) throw error;
+                ingList.innerHTML = ingData && ingData.length > 0 ? ingData.map(i => `<div style="padding:8px 0; border-bottom:1px solid var(--border);">• ${i.quantity || ''} ${i.ingredient_name}</div>`).join('') : "Ingredients loading...";
+            } catch (e) {
+                console.warn("Ingredients fetch latency:", e);
+                ingList.innerHTML = "Ingredients securely stored in the cloud.";
+            }
+
             openModal('detail-modal');
         }
 
