@@ -10,9 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-        <script src="https://maps.googleapis.com/maps/api/js?key=REPLACE_KEY&v=weekly"></script>
-    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -84,9 +83,10 @@
         .menu-item { padding: 18px 0; border-bottom: 1px solid var(--border); font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--dark); }
         .menu-item i { color: var(--primary); }
     </style>
+<script src="https://maps.googleapis.com/maps/api/js?key=REPLACE_KEY&v=weekly"></script>
 </head>
 <body>
-        <header>
+    <header>
         <div class="logo-box" onclick="showTab('discovery')"><img src="../assets/logo.png" alt="Calalloo"><span class="display-font">Calalloo</span></div>
         <div class="nav-pills">
             <div class="pill active" onclick="showTab('discovery')">Discovery</div>
@@ -150,57 +150,41 @@
 
             <div id="map" class="tab-content"><div id="map-container" style="width: 100%; height: 70vh;"></div></div>
 
-                        <div id="profile" class="tab-content">
-                <div style="padding: 30px 20px; text-align: center;">
+            <div id="profile" class="tab-content">
+                <div style="padding: 40px 20px; text-align: center; border-bottom: 1px solid var(--border);">
                     <div style="width: 100px; height: 100px; margin: 0 auto 15px; position: relative;">
                         <img id="p-avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border:3px solid var(--primary); background:var(--light-bg);" src="https://via.placeholder.com/100?text=HP">
                         <input type="file" id="avatar-input" style="display:none;" onchange="uploadAvatar(this)">
                         <button onclick="document.getElementById('avatar-input').click()" style="position:absolute; bottom:0; right:0; background:var(--primary); color:white; border:none; border-radius:50%; width:30px; height:30px;"><i data-lucide="camera" style="width:16px;"></i></button>
                     </div>
-                    <h2 id="p-display-name-text" class="display-font" style="font-size:1.5rem; margin-bottom:5px;">Heritage Keeper</h2>
-                    <p id="p-username-text" style="font-size:0.9rem; color:var(--grey-text); margin-bottom:15px;">@username</p>
-                    <p id="p-bio-text" style="font-size:0.9rem; max-width:500px; margin:0 auto 25px;">Traditional Caribbean chef.</p>
-                    
-                    <div style="display:flex; justify-content:center; gap:20px; border-top:1.5px solid var(--border); border-bottom:1.5px solid var(--border); padding:15px 0; margin-bottom:25px;">
-                        <div onclick="showKitchen('public')" style="cursor:pointer;"><span style="display:block; font-weight:800; font-size:1.1rem;" id="count-public">0</span><span style="font-size:0.7rem; color:var(--grey-text);">Public</span></div>
-                        <div onclick="showKitchen('private')" style="cursor:pointer;"><span style="display:block; font-weight:800; font-size:1.1rem;" id="count-private">0</span><span style="font-size:0.7rem; color:var(--grey-text);">Private</span></div>
-                        <div onclick="showKitchen('saved')" style="cursor:pointer;"><span style="display:block; font-weight:800; font-size:1.1rem;" id="count-saved">0</span><span style="font-size:0.7rem; color:var(--grey-text);">Saved</span></div>
-                    </div>
+                    <div style="display:flex; flex-direction:column; gap:10px; max-width:400px; margin:0 auto; text-align:left;">
+                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text);">Profile Name</label>
+                        <input type="text" id="p-fullname" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); font-weight:700; background:var(--white); color:var(--dark);">
+                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text);">Heritage Handle</label>
+                        <input type="text" id="p-username" placeholder="@username" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); background:var(--white); color:var(--dark);">
+                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text);">Heritage Bio</label>
+                        <textarea id="p-bio" placeholder="Tell your heritage story..." style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); min-height:80px; background:var(--white); color:var(--dark);"></textarea>
+                        
+                        <div style="margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
+                            <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); display:block; margin-bottom:10px;">Social Links</label>
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;"><i data-lucide="phone" style="width:18px; color:#25D366;"></i><input type="text" id="p-whatsapp" placeholder="WhatsApp Number" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); font-size:0.85rem; background:var(--white); color:var(--dark);"></div>
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;"><i data-lucide="instagram" style="width:18px; color:#E4405F;"></i><input type="text" id="p-instagram" placeholder="Instagram Username" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); font-size:0.85rem; background:var(--white); color:var(--dark);"></div>
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;"><i data-lucide="facebook" style="width:18px; color:#1877F2;"></i><input type="text" id="p-facebook" placeholder="Facebook URL" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); font-size:0.85rem; background:var(--white); color:var(--dark);"></div>
+                        </div>
 
-                    <div id="kitchen-grid" class="recipe-grid"></div>
+                        <button class="btn btn-primary" id="save-profile-btn" onclick="saveFullProfile()" style="margin-top:10px;">Update Identity</button>
+                    </div>
                 </div>
             </div>
 
-                        <div id="settings" class="tab-content">
-                <div style="padding: 40px 20px; max-width:600px; margin:0 auto;">
+            <div id="settings" class="tab-content">
+                <div style="padding: 40px 20px;">
                     <h1 class="display-font" style="margin-bottom: 30px;">Settings</h1>
-                    
-                    <div style="margin-bottom:30px;">
-                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); margin-bottom:10px; display:block;">IDENTITY</label>
-                        <input type="text" id="p-fullname" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px; font-weight:700;">
-                        <input type="text" id="p-username" placeholder="@username" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px;">
-                        <textarea id="p-bio" placeholder="Bio" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); min-height:80px;"></textarea>
-                    </div>
-
-                    <div style="margin-bottom:30px;">
-                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); margin-bottom:10px; display:block;">SOCIALS</label>
-                        <input type="text" id="p-whatsapp" placeholder="WhatsApp" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px;">
-                        <input type="text" id="p-instagram" placeholder="Instagram" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:10px;">
-                    </div>
-
-                    <div style="margin-bottom:30px;">
-                        <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); margin-bottom:10px; display:block;">PERMISSIONS</label>
-                        <div class="list-item">Location Access <label class="switch"><input type="checkbox" id="location-toggle"><span class="slider"></span></label></div>
-                        <div class="list-item">Camera Access <label class="switch"><input type="checkbox" id="camera-toggle"><span class="slider"></span></label></div>
-                        <div class="list-item">Private Profile <label class="switch"><input type="checkbox" id="privacy-toggle"><span class="slider"></span></label></div>
-                        <div style="margin-top:15px;">
-                            <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); margin-bottom:5px; display:block;">Google Maps API Key</label>
-                            <input type="password" id="p-maps-key" placeholder="Enter API Key" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border);">
-                        </div>
-                    </div>
-
-                    <button class="btn btn-primary" id="save-settings-btn" onclick="saveFullSettings()" style="width:100%;">Save Heritage Preferences</button>
-                    <div class="list-item" onclick="signOut()" style="color: red; margin-top: 50px; cursor:pointer;"><i data-lucide="log-out"></i> Sign Out</div>
+                    <div class="list-item"><i data-lucide="moon"></i> Dark Mode <label class="switch"><input type="checkbox" id="theme-toggle" onchange="toggleTheme()"><span class="slider"></span></label></div>
+                    <div class="list-item"><i data-lucide="camera"></i> Camera Access <label class="switch"><input type="checkbox" id="camera-toggle" onchange="togglePermission('camera')"><span class="slider"></span></label></div>
+                    <div class="list-item"><i data-lucide="map-pin"></i> Location Access <label class="switch"><input type="checkbox" id="location-toggle" onchange="togglePermission('location')"><span class="slider"></span></label></div>
+                    <div class="list-item"><i data-lucide="lock"></i> Private Profile <label class="switch"><input type="checkbox" id="privacy-toggle" onchange="togglePermission('privacy')"><span class="slider"></span></label></div>
+                    <div class="list-item" onclick="signOut()" style="color: red; margin-top: 50px;"><i data-lucide="log-out"></i> Sign Out</div>
                 </div>
             </div>
         </main>
@@ -214,38 +198,12 @@
             <div style="background: var(--light-bg); border-radius: 12px; padding: 15px; text-align: center; border: 1px dashed var(--border);">
                 <h4 style="font-size:0.85rem; margin-bottom:5px;">Calalloo Pro</h4>
                 <p style="font-size:0.7rem; color:var(--grey-text);">Join the inner circle of Heritage Keepers.</p>
-                <button class="btn btn-primary" style="width:100%; margin-top:10px; font-size:0.75rem; padding:8px;">Upgrade</button>
+                <button class="btn btn-primary" style="width:100%; margin-top:10px; font-size:0.75rem; padding:8px;" onclick="openProModal()">Upgrade</button>
             </div>
         </aside>
     </div>
 
     <!-- Modals -->
-    <div id="upload-modal" class="modal">
-        <div class="modal-content" style="border-radius:24px; max-width:400px; padding:30px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 class="display-font">Upload to Kitchen</h2>
-                <button onclick="closeUploadModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
-            </div>
-            <input type="file" id="kitchen-upload-input" onchange="previewKitchenUpload(this)" style="margin-bottom:20px;">
-            <img id="kitchen-upload-preview" style="display:none; width:100%; border-radius:10px; margin-bottom:15px;">
-            <input type="text" id="upload-title" placeholder="Recipe Title" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); margin-bottom:15px;">
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button class="btn" id="btn-public" onclick="setUploadPrivacy(false)" style="flex:1;">Public</button>
-                <button class="btn" id="btn-private" onclick="setUploadPrivacy(true)" style="flex:1; background:var(--dark); color:white;">Private</button>
-            </div>
-            <button class="btn btn-primary" style="width:100%;" onclick="performKitchenUpload()">Save to Kitchen</button>
-        </div>
-    </div>
-
-    <div id="pro-modal" class="modal">
-        <div class="modal-content" style="text-align:center; padding:40px; border-radius:30px; max-width:500px;">
-            <img src="../assets/logo.png" style="width:60px; margin-bottom:20px;">
-            <h1 class="display-font">Calalloo Pro</h1>
-            <p style="color:var(--grey-text); margin-bottom:30px;">Unlimited AI, 3D Maps, and Groups.</p>
-            <button class="btn btn-primary" style="width:100%;" onclick="alert('Payment processing...')">Upgrade - $9.99/mo</button>
-            <p onclick="closeProModal()" style="margin-top:20px; font-size:0.8rem; cursor:pointer; opacity:0.5;">Maybe later</p>
-        </div>
-    </div>
     <div id="hub-modal" class="modal">
         <div class="modal-content" style="height: 85vh; border-radius: 24px; display:flex; flex-direction:column;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -283,7 +241,6 @@
 
                 <h3 class="display-font" style="margin-bottom: 15px; font-size: 1.3rem;">Heritage Method</h3>
                 <div id="recipe-modal-method" style="line-height: 1.8;"></div>
-                <button class="btn btn-primary" id="save-to-kitchen-btn" style="width:100%; margin-top:20px;" onclick="saveToKitchen()">Save to My Kitchen</button>
             </div>
         </div>
     </div>
@@ -309,6 +266,139 @@
     </div>
 
     
-</body>
+    <script>
+        const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
+        let currentUserId = null, allRecipes = [], allKeepers = [], selectedRecipeId = null, uploadIsPrivate = true;
+
+        const HERITAGE_IMAGE_MAP = {
+            "Coconut Sugar Cake": "https://simplytrinicooking.com/wp-content/uploads/2007/04/sugar-cake-1024x768.jpg",
+            "Toolum": "https://simplytrinicooking.com/wp-content/uploads/2012/10/toolum-1024x768.jpg",
+            "Cassava Pone": "https://simplytrinicooking.com/wp-content/uploads/2008/01/cassava-pone-1024x768.jpg"
+        };
+
+        async function loadData() {
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                if(!user) { window.location.href = '/login/'; return; }
+                currentUserId = user.id;
+                setupRealtime();
+                const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+                if(profile) {
+                    if(document.getElementById('p-fullname')) document.getElementById('p-fullname').value = profile.full_name || '';
+                    if(document.getElementById('p-username')) document.getElementById('p-username').value = profile.username || '';
+                    if(document.getElementById('p-bio')) document.getElementById('p-bio').value = profile.bio || '';
+                    if(document.getElementById('p-whatsapp')) document.getElementById('p-whatsapp').value = profile.whatsapp || '';
+                    if(document.getElementById('p-instagram')) document.getElementById('p-instagram').value = profile.instagram || '';
+                    if(document.getElementById('p-maps-key')) document.getElementById('p-maps-key').value = profile.maps_key || '';
+                    if(document.getElementById('location-toggle')) document.getElementById('location-toggle').checked = profile.location_enabled || false;
+                    if(document.getElementById('camera-toggle')) document.getElementById('camera-toggle').checked = profile.camera_enabled || false;
+                    if(document.getElementById('privacy-toggle')) document.getElementById('privacy-toggle').checked = profile.privacy_enabled || false;
+                    if(document.getElementById('p-avatar') && profile.avatar_url) document.getElementById('p-avatar').src = profile.avatar_url;
+                }
+                const { data: recipes } = await sb.from('recipes').select('*').eq('is_published', true).order('created_at', {ascending:false});
+                allRecipes = recipes || [];
+                renderRecipes(allRecipes);
+                const { data: keepers } = await sb.from('cooks').select('*').limit(100);
+                allKeepers = keepers || [];
+                updateKitchenCounts(); loadGroups(); loadReels(); lucide.createIcons();
+            } catch (e) { console.error(e); }
+        }
+
+        function renderRecipes(list) {
+            const grid = document.getElementById('discovery-grid');
+            if(!grid) return;
+            grid.innerHTML = list.map(r => `<div class="recipe-card" onclick="openRecipe('${r.id}')"><div class="recipe-image" style="background-image:url(${HERITAGE_IMAGE_MAP[r.title] || r.cover_photo_url || 'https://via.placeholder.com/400x200'})"></div><div class="recipe-info"><h3>${r.title}</h3><p>${r.description || ''}</p></div></div>`).join('');
+        }
+
+        async function saveFullSettings() {
+            const profileData = { id: currentUserId, full_name: document.getElementById('p-fullname').value, username: document.getElementById('p-username').value, bio: document.getElementById('p-bio').value, whatsapp: document.getElementById('p-whatsapp').value, instagram: document.getElementById('p-instagram').value, maps_key: document.getElementById('p-maps-key').value, location_enabled: document.getElementById('location-toggle').checked, camera_enabled: document.getElementById('camera-toggle').checked, privacy_enabled: document.getElementById('privacy-toggle').checked, updated_at: new Date() };
+            await sb.from('profiles').upsert(profileData);
+            alert('Settings Saved!'); loadData();
+        }
+
+        async function saveToKitchen() {
+            const r = allRecipes.find(x => x.id === selectedRecipeId);
+            if(!r) return;
+            await sb.from('recipes').insert({ title: r.title, description: r.description, ingredients: r.ingredients, instructions: r.instructions, cover_photo_url: r.cover_photo_url, creator_id: currentUserId, is_published: false });
+            alert('Saved to Kitchen'); updateKitchenCounts();
+        }
+
+        async function updateKitchenCounts() {
+            const { count: pub } = await sb.from('recipes').select('*', { count: 'exact', head: true }).eq('creator_id', currentUserId).eq('is_published', true);
+            const { count: priv } = await sb.from('recipes').select('*', { count: 'exact', head: true }).eq('creator_id', currentUserId).eq('is_published', false);
+            if(document.getElementById('count-public')) document.getElementById('count-public').innerText = pub || 0;
+            if(document.getElementById('count-private')) document.getElementById('count-private').innerText = priv || 0;
+        }
+
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            const t = document.getElementById(id); if(t) t.classList.add('active');
+            document.querySelectorAll(`.pill[onclick*="${id}"]`).forEach(p => p.classList.add('active'));
+            if(id === 'map') initGoogleMap();
+            if(id === 'profile') showKitchen('public');
+        }
+
+        async function initGoogleMap() {
+            const key = document.getElementById('p-maps-key').value;
+            if(!key) { document.getElementById('map-container').innerHTML = '<p style="padding:40px;">Google Maps Key required.</p>'; return; }
+            navigator.geolocation.getCurrentPosition((pos) => {
+                new google.maps.Map(document.getElementById('map-container'), { center: { lat: pos.coords.latitude, lng: pos.coords.longitude }, zoom: 15, mapId: "f568a9844f23b7e", tilt: 45 });
+            });
+        }
+
+        function handleFriendSearch(q, resId = 'friend-search-results') {
+            const div = document.getElementById(resId); if(!div) return;
+            const res = allKeepers.filter(k => k.display_name && k.display_name.toLowerCase().includes(q.toLowerCase())).slice(0, 5);
+            div.style.display = q ? 'block' : 'none';
+            div.innerHTML = res.map(k => `<div class="list-item" onclick="openHub()">${k.display_name}</div>`).join('');
+            lucide.createIcons();
+        }
+
+        async function handleFoodSearch(q) { renderRecipes(allRecipes.filter(r => r.title.toLowerCase().includes(q.toLowerCase()))); }
+
+        function openUploadModal() { document.getElementById('upload-modal').style.display = 'flex'; }
+        function closeUploadModal() { document.getElementById('upload-modal').style.display = 'none'; }
+        function setUploadPrivacy(v) { uploadIsPrivate = v; }
+        function previewKitchenUpload(i) {
+            const r = new FileReader(); r.onload = e => { document.getElementById('kitchen-upload-preview').src = e.target.result; document.getElementById('kitchen-upload-preview').style.display = 'block'; };
+            if(i.files[0]) r.readAsDataURL(i.files[0]);
+        }
+        async function performKitchenUpload() {
+            const title = document.getElementById('upload-title').value;
+            const img = document.getElementById('kitchen-upload-preview').src;
+            await sb.from('recipes').insert({ title, cover_photo_url: img, creator_id: currentUserId, is_published: !uploadIsPrivate });
+            closeUploadModal(); updateKitchenCounts();
+        }
+
+        async function setupRealtime() {
+            const { data: msgs } = await sb.from('messages').select('*').order('created_at', { ascending: true }).limit(50);
+            const dev = document.getElementById('desktop-messages');
+            const hub = document.getElementById('hub-messages');
+            const html = (msgs || []).map(m => `<div style="text-align:${m.user_id===currentUserId?'right':'left'}; margin-bottom:5px;"><span style="background:${m.user_id===currentUserId?'var(--primary)':'var(--white)'}; color:${m.user_id===currentUserId?'white':'var(--dark)'}; padding:5px 10px; border-radius:10px;">${m.text}</span></div>`).join('');
+            if(dev) dev.innerHTML = html; if(hub) hub.innerHTML = html;
+        }
+
+        function openHub() { document.getElementById('hub-modal').style.display = 'flex'; }
+        function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
+        function openCreateGroup() { document.getElementById('create-group-modal').style.display = 'flex'; }
+        function closeCreateGroup() { document.getElementById('create-group-modal').style.display = 'none'; }
+        function openProModal() { document.getElementById('pro-modal').style.display = 'flex'; }
+        function closeProModal() { document.getElementById('pro-modal').style.display = 'none'; }
+        function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
+        function loadReels() {}
+        async function loadGroups() {
+            const { data } = await sb.from('groups').select('*');
+            if(document.getElementById('sidebar-groups')) document.getElementById('sidebar-groups').innerHTML = (data || []).map(g => `<div class="list-item">${g.name}</div>`).join('');
+        }
+        function toggleMenu() { const m = document.getElementById('menu-overlay'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
+        async function showKitchen(type) {
+            const { data } = await sb.from('recipes').select('*').eq('creator_id', currentUserId).eq('is_published', type==='public');
+            document.getElementById('kitchen-grid').innerHTML = (data || []).map(r => `<div class="recipe-card"><h3>${r.title}</h3></div>`).join('');
+        }
+
+        window.onload = loadData;
+        lucide.createIcons();
+    </script>
 </html>
 
