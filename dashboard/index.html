@@ -255,6 +255,13 @@
             <div class="form-group"><label>Dish Title</label><input type="text" id="dish-title" placeholder="e.g. Grandma's Callaloo"></div>
             <div class="form-group"><label>Ingredients</label><textarea id="dish-ingredients" rows="4" placeholder="List ingredients..."></textarea></div>
             <div class="form-group"><label>Instructions</label><textarea id="dish-instructions" rows="6" placeholder="Cooking steps..."></textarea></div>
+            <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                <label style="margin-bottom:0;">Privacy Status:</label>
+                <select id="dish-privacy" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--light-bg); font-weight:600;">
+                    <option value="public">Public (Everyone can see)</option>
+                    <option value="private">Private (Only me)</option>
+                </select>
+            </div>
             <button onclick="submitDish()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Post to Discovery</button>
         </div>
     </div>
@@ -515,12 +522,23 @@
         function renderPins(gridId, items) {
             const grid = document.getElementById(gridId);
             if(!grid) return;
-            grid.innerHTML = items.map(r => `
+            const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
+            
+            // Sovereignty Filter: Display public recipes OR recipes created by the current user
+            const visibleItems = items.filter(r => r.is_public || r.author_username === currentUser);
+
+            grid.innerHTML = visibleItems.map(r => `
                 <div class="recipe-pin" onclick="openRecipe('${r.id}')">
                     <img src="${r.cover_photo_url || ''}">
-                    <div class="pin-overlay"><h3>${r.title}</h3></div>
+                    <div class="pin-overlay">
+                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                            <h3>${r.title}</h3>
+                            ${!r.is_public ? '<i data-lucide="lock" style="width:14px; height:14px; color:white;"></i>' : ''}
+                        </div>
+                    </div>
                 </div>
             `).join('');
+            lucide.createIcons();
         }
 
         function showTab(id) {
@@ -539,6 +557,22 @@
             if(!r) return;
             document.getElementById('m-img').src = r.cover_photo_url;
             document.getElementById('m-title').innerText = r.title;
+            
+            // Sovereignty Control: Option to toggle privacy for the owner
+            const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
+            const controls = document.getElementById('recipe-controls') || createControls();
+            
+            if (r.author_username === currentUser) {
+                controls.innerHTML = `
+                    <button onclick="toggleRecipePrivacy('${r.id}')" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:700; cursor:pointer;">
+                        Make ${r.is_public ? 'Private' : 'Public'}
+                    </button>
+                `;
+                controls.style.display = 'block';
+            } else {
+                controls.style.display = 'none';
+            }
+
             const instList = document.getElementById('inst-list');
             instList.innerHTML = Array.isArray(r.instructions) ? r.instructions.map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${step}</p>`).join('') : r.instructions;
             const { data: ingData } = await sb.from('recipe_ingredients').select('ingredient_name, quantity').eq('recipe_id', id);
@@ -585,7 +619,7 @@
                 if (filteredCooks.length > 0) {
                     html += `<div style="column-span:all; padding:10px; margin:15px 0; border-bottom:1px solid var(--border);"><h3 class="display-font" style="font-size:1.2rem;">Heritage Dishes</h3></div>`;
                 }
-                html += filteredRecipes.map(r => `
+                html += filteredRecipes.filter(r => r.is_public).map(r => `
                     <div class="recipe-pin" onclick="openRecipe('${r.id}')">
                         <img src="${r.cover_photo_url || ''}">
                         <div class="pin-overlay"><h3>${r.title}</h3></div>
@@ -651,6 +685,33 @@
         function hidePaymentOverlay() { document.getElementById('payment-overlay').style.display = 'none'; }
         function confirmUpgrade() { alert('PRO Activated! 🛡️'); closeModal('pro-modal'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        async function toggleRecipePrivacy(id) {
+            const r = recipes.find(item => item.id === id);
+            if(!r) return;
+            
+            const newPrivacy = !r.is_public;
+            r.is_public = newPrivacy;
+            
+            // Update UI
+            alert(`Dish set to ${newPrivacy ? 'Public' : 'Private'}! 🥘🛡️`);
+            closeModal('recipe-modal');
+            renderPins('discovery-pins', recipes);
+
+            try {
+                const { error } = await sb.from('recipes').update({ is_public: newPrivacy }).eq('id', id);
+                if (error) console.error("Privacy Sync Error:", error);
+            } catch (e) { console.error("Network Latency:", e); }
+        }
+
+        function createControls() {
+            const div = document.createElement('div');
+            div.id = 'recipe-controls';
+            div.style.padding = '15px';
+            div.style.textAlign = 'center';
+            document.getElementById('recipe-modal').querySelector('.modal-content').appendChild(div);
+            return div;
+        }
+
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function setPayTab(tab) { document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+tab).classList.add('active'); document.querySelectorAll('.pay-view').forEach(v => v.style.display = 'none'); document.getElementById('pay-'+tab).style.display = 'block'; }
         function openAddModal() { openModal('add-modal'); }
@@ -659,6 +720,7 @@
             const title = document.getElementById('dish-title').value;
             const ingredients = document.getElementById('dish-ingredients').value;
             const instructions = document.getElementById('dish-instructions').value;
+            const privacy = document.getElementById('dish-privacy').value;
             const imgInput = document.getElementById('dish-img');
             const submitBtn = event.target;
             
@@ -698,7 +760,7 @@
                 cover_photo_url: compressedImg,
                 instructions: instructions,
                 author_username: document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest',
-                is_public: true,
+                is_public: privacy === 'public',
                 created_at: new Date().toISOString()
             };
 
