@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v38.9.8 Sovereign Platinum</title>
+    <title>Calalloo | Heritage Hub v38.9.9 Sovereign Platinum</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=38.9.8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.9.8"></script>
+    <script src="https://unpkg.com/lucide@latest?v=38.9.9"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.9.9"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -414,36 +414,6 @@
                 });
             }, 1000);
 
-            if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
-        }
-                // Browsing data cleared: Attempt to restore from Supabase session
-                const { data: { user } } = await sb.auth.getUser();
-                if (user) {
-                    const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
-                    if (profile && !error) {
-                        const settings = profile.taste_preferences?.settings || null;
-                        populateProfileUI(profile.full_name, profile.username, profile.avatar_url, settings);
-                        // Re-cache locally for performance
-                        localStorage.setItem('calalloo_profile', JSON.stringify({
-                            name: profile.full_name,
-                            username: profile.username,
-                            avatar: profile.avatar_url,
-                            settings: settings
-                        }));
-                    } else {
-                        // Truly a new user or anonymous
-                        populateProfileUI("", "", "https://via.placeholder.com/120");
-                    }
-                } else {
-                    // Sovereign Platinum: New users start with a clean slate for full autonomy
-                    populateProfileUI("", "", "https://via.placeholder.com/120");
-                }
-            }
-
-            loadDiscovery();
-            setupRealtime();
-            syncPendingDishes(); // Background sync for offline/latent dishes
-            
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
         }
 
