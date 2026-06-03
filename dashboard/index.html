@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v34.0 Sovereign</title>
+    <title>Calalloo | Heritage Hub v35.0 Sovereign Pro</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,48 +22,50 @@
             --bg: #0A0A0A; --white: #0A0A0A; --dark: #FFFFFF;
             --border: #1F1F1F; --grey-text: #A0A0A0; --light-bg: #141414;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: var(--font-main); background: var(--bg); color: var(--dark); transition: var(--transition); min-height: 100vh; overflow-x: hidden; }
         
+        /* Mobile Header */
         header { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 20px; z-index: 1000; display: flex; align-items: center; justify-content: space-between; }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-container img { width: 32px; height: 32px; border-radius: 50%; }
-        .logo-container span { font-family: var(--font-display); font-weight: 900; font-size: 1.4rem; letter-spacing: -0.02em; }
+        .logo-container span { font-family: var(--font-display); font-weight: 900; font-size: 1.3rem; letter-spacing: -0.02em; }
         .pro-badge { background: linear-gradient(135deg, #FFD700, #E87722); color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 900; margin-left: 6px; cursor: pointer; }
 
-        /* Pinterest Grid */
-        .pinterest-grid { columns: 4; column-gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
-        .recipe-pin { break-inside: avoid; margin-bottom: 24px; border-radius: 20px; overflow: hidden; background: var(--light-bg); border: 1px solid var(--border); cursor: pointer; transition: var(--transition); position: relative; }
-        .recipe-pin img { width: 100%; height: 320px; display: block; object-fit: cover; }
-        .pin-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8)); opacity: 0; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 15px; color: white; }
+        /* Desktop Tabs - Hidden on Mobile */
+        .desktop-tabs { display: flex; gap: 25px; margin-left: 30px; }
+        .tab-btn { font-weight: 700; font-size: 0.85rem; color: var(--grey-text); cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .tab-btn.active { color: var(--primary); }
+
+        /* Pinterest Grid Responsive */
+        .pinterest-grid { columns: 4; column-gap: 15px; padding: 15px; max-width: 1400px; margin: 0 auto; }
+        .recipe-pin { break-inside: avoid; margin-bottom: 15px; border-radius: 16px; overflow: hidden; background: var(--light-bg); border: 1px solid var(--border); cursor: pointer; transition: var(--transition); position: relative; }
+        .recipe-pin img { width: 100%; height: 300px; display: block; object-fit: cover; }
+        .pin-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8)); opacity: 0; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; color: white; }
         .recipe-pin:hover .pin-overlay { opacity: 1; }
-        .save-btn { position: absolute; top: 12px; right: 12px; background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 12px rgba(232, 119, 34, 0.4); }
 
-        /* Modal Architecture */
-        #detail-modal, #pro-modal, #vision-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; overflow-y: auto; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
-        .modal-header { position: sticky; top: 0; background: var(--bg); padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        .detail-hero { width: 100%; height: 45vh; object-fit: cover; }
-        .detail-content { padding: 30px; max-width: 800px; margin: 0 auto; width: 100%; }
+        /* Settings Card */
+        .settings-card { background: var(--light-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--grey-text); text-transform: uppercase; margin-bottom: 8px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--dark); font-family: inherit; }
 
-        /* Pro Modal */
-        .pro-card { background: linear-gradient(135deg, #1A1A1A, #000); color: white; border-radius: 24px; padding: 40px; text-align: center; margin: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .pro-price { font-size: 3rem; font-weight: 900; margin: 20px 0; font-family: var(--font-display); }
-
-        /* Vision Feed */
-        #vision-feed { width: 100%; height: 100%; object-fit: cover; background: #000; }
-        .scanner-line { width: 80%; height: 2px; background: var(--primary); position: absolute; top: 20%; left: 10%; box-shadow: 0 0 15px var(--primary); animation: scan 2s linear infinite; }
-        @keyframes scan { 0% { top: 20%; } 50% { top: 80%; } 100% { top: 20%; } }
-
-        nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; height: 85px; z-index: 1000; padding-bottom: 15px; }
-        .nav-item { color: var(--grey-text); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 700; transition: 0.2s; }
-        .nav-item i { width: 24px; height: 24px; }
+        /* Navigation */
+        nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; height: 75px; z-index: 1000; padding-bottom: 10px; }
+        .nav-item { color: var(--grey-text); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.6rem; font-weight: 700; transition: 0.2s; }
         .nav-item.active { color: var(--primary); }
 
-        .tab-content { display: none; padding-bottom: 100px; }
+        /* Modals */
+        .modal { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
+        .modal-header { position: sticky; top: 0; background: var(--bg); padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
-        @media (max-width: 768px) { .pinterest-grid { columns: 2; column-gap: 12px; padding: 12px; } .detail-hero { height: 35vh; } }
+        @media (max-width: 768px) {
+            .desktop-tabs { display: none; }
+            .pinterest-grid { columns: 2; column-gap: 10px; padding: 10px; }
+            .recipe-pin img { height: 240px; }
+        }
+        
+        .tab-content { display: none; padding-bottom: 80px; }
     </style>
 </head>
 <body>
@@ -71,87 +73,70 @@
     <header>
         <div class="logo-container" onclick="showTab('discovery')">
             <img src="../assets/logo.png" alt="Calalloo">
-            <span>Calalloo<span class="pro-badge" onclick="openProModal(event)">PRO</span></span>
+            <span>Calalloo<span class="pro-badge" onclick="openModal('pro-modal')">PRO</span></span>
         </div>
-        <div style="display:flex; gap:10px;">
-            <i data-lucide="bell" style="width:20px; color:var(--grey-text); cursor:pointer;"></i>
-            <i data-lucide="plus-circle" style="width:24px; color:var(--primary); cursor:pointer;" onclick="alert('Submission engine v34.0 initializing...')"></i>
+        <div class="desktop-tabs">
+            <div class="tab-btn active" id="d-tab-discovery" onclick="showTab('discovery')">Discovery</div>
+            <div class="tab-btn" id="d-tab-map" onclick="showTab('map')">Map</div>
+            <div class="tab-btn" id="d-tab-kitchen" onclick="showTab('kitchen')">Kitchen</div>
+            <div class="tab-btn" id="d-tab-settings" onclick="showTab('settings')">Settings</div>
         </div>
+        <i data-lucide="plus-circle" style="color:var(--primary); cursor:pointer;" onclick="alert('Submission engine coming soon...')"></i>
     </header>
 
-    <!-- TABS -->
     <div id="discovery" class="tab-content" style="display:block;">
         <div class="pinterest-grid" id="discovery-pins"></div>
     </div>
-    
+
     <div id="map" class="tab-content">
-        <div style="height:calc(100vh - 150px); display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--light-bg);">
-            <i data-lucide="map" style="width:48px; height:48px; color:var(--primary); margin-bottom:15px;"></i>
-            <h2 class="display-font">Heritage Map</h2>
-            <p style="color:var(--grey-text);">Syncing local Caribbean signals...</p>
+        <div style="height:calc(100vh - 150px); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <i data-lucide="map" style="width:40px; color:var(--primary);"></i>
+            <p style="font-weight:700; margin-top:10px;">Heritage Map</p>
         </div>
     </div>
 
-    <!-- DETAIL MODAL -->
-    <div id="detail-modal">
-        <div class="modal-header">
-            <i data-lucide="arrow-left" onclick="closeModal('detail-modal')" style="cursor:pointer;"></i>
-            <h3 id="modal-header-title" class="display-font" style="font-size:1.1rem;">Recipe Detail</h3>
-            <button class="save-btn" style="position:static;" onclick="saveToKitchen(event)">Save</button>
-        </div>
-        <img id="detail-img" class="detail-hero">
-        <div class="detail-content">
-            <h1 class="display-font" id="detail-title" style="font-size:2.8rem; margin-bottom:10px; line-height:1.1;"></h1>
-            <p id="detail-author" style="color:var(--primary); font-weight:800; margin-bottom:40px; font-size:1.1rem;"></p>
-            
-            <div style="margin-bottom:50px;">
-                <h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--primary); margin-bottom:20px; letter-spacing:0.1em; font-weight:900;">The Ingredients</h3>
-                <div id="detail-ingredients" style="line-height:2; font-size:1.1rem; color:var(--dark); white-space: pre-wrap;"></div>
-            </div>
-            
-            <div style="padding-bottom:100px;">
-                <h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--primary); margin-bottom:20px; letter-spacing:0.1em; font-weight:900;">The Recipe / Instructions</h3>
-                <div id="detail-instructions" style="line-height:2; font-size:1.1rem; color:var(--dark); white-space: pre-wrap;"></div>
-            </div>
+    <div id="kitchen" class="tab-content">
+        <div style="padding:20px;">
+            <h2 class="display-font">My Kitchen</h2>
+            <div class="pinterest-grid" id="kitchen-pins" style="padding:10px 0;"></div>
         </div>
     </div>
 
-    <!-- PRO MODAL -->
-    <div id="pro-modal">
-        <div class="modal-header">
-            <h2 class="display-font">Calalloo PRO</h2>
-            <i data-lucide="x" onclick="closeModal('pro-modal')" style="cursor:pointer;"></i>
-        </div>
-        <div class="pro-card">
-            <h1 class="display-font" style="font-size:2rem; margin-bottom:10px;">The Gold Standard</h1>
-            <p style="opacity:0.8;">Unlock the Private Vault, Real-time Map Sync, and 4K Heritage Visuals.</p>
-            <div class="pro-price">$9.99<span style="font-size:1rem; opacity:0.6;">/mo</span></div>
-            <button onclick="alert('Payment Gateway Redirecting...')" style="background:white; color:black; border:none; padding:20px; border-radius:18px; font-weight:900; width:100%; font-size:1.1rem; cursor:pointer;">Upgrade Now</button>
+    <div id="settings" class="tab-content">
+        <div style="padding:20px; max-width:600px; margin: 0 auto;">
+            <h2 class="display-font" style="margin-bottom:20px;">Settings</h2>
+            <div class="settings-card">
+                <div class="form-group"><label>Full Name</label><input type="text" id="s-name" value="Prisca Dezigns"></div>
+                <div class="form-group"><label>Language</label>
+                    <select><option>English</option><option>Español</option><option>Português</option></select>
+                </div>
+                <button onclick="alert('Settings Saved!')" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer;">Save Changes</button>
+            </div>
+            <button onclick="alert('Signed Out')" style="color:red; background:none; border:none; width:100%; font-weight:700;">Sign Out</button>
         </div>
     </div>
 
-    <!-- VISION OVERLAY -->
-    <div id="vision-overlay">
-        <div style="position:relative; width:100%; height:75vh; overflow:hidden;">
-            <video id="vision-feed" autoplay playsinline></video>
-            <div class="scanner-line"></div>
-            <div style="position:absolute; bottom:30px; left:0; right:0; text-align:center;">
-                <button onclick="captureVision()" style="width:80px; height:80px; border-radius:50%; background:white; border:8px solid rgba(232, 119, 34, 0.5); cursor:pointer;"></button>
-            </div>
-        </div>
-        <div style="padding:30px; text-align:center;">
-            <h2 class="display-font" id="scan-status">AI Vision Active</h2>
-            <p id="scan-sub" style="color:var(--grey-text);">Analyzing heritage signal...</p>
-            <button onclick="closeModal('vision-overlay')" style="margin-top:20px; color:var(--primary); font-weight:800; background:none; border:none; cursor:pointer;">Exit Scanner</button>
+    <!-- Modals -->
+    <div id="detail-modal" class="modal">
+        <div class="modal-header"><i data-lucide="arrow-left" onclick="closeModal('detail-modal')"></i><h3 class="display-font">Recipe</h3><div></div></div>
+        <img id="m-img" style="width:100%; height:40vh; object-fit:cover;">
+        <div style="padding:25px;"><h1 class="display-font" id="m-title"></h1><p id="m-content" style="margin-top:20px; line-height:1.6; white-space:pre-wrap;"></p></div>
+    </div>
+
+    <div id="pro-modal" class="modal">
+        <div class="modal-header"><h2>Calalloo PRO</h2><i data-lucide="x" onclick="closeModal('pro-modal')"></i></div>
+        <div style="padding:40px; text-align:center; background:#000; color:white; margin:20px; border-radius:24px;">
+            <h1>Upgrade</h1><p style="margin:20px 0; opacity:0.7;">Get all features</p><h2>$9.99/mo</h2>
+            <button onclick="alert('Pay')" style="margin-top:30px; width:100%; padding:15px; background:white; color:black; border:none; border-radius:12px; font-weight:900;">Pay Now</button>
         </div>
     </div>
 
     <nav>
-        <div class="nav-item active" onclick="showTab('discovery')"><i data-lucide="compass"></i>Discovery</div>
-        <div class="nav-item" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
-        <div class="nav-item" onclick="openScanner()"><i data-lucide="scan"></i>Scan</div>
-        <div class="nav-item" onclick="alert('Kitchen Loading...')"><i data-lucide="user"></i>Kitchen</div>
-        <div class="nav-item" onclick="alert('Settings Loading...')"><i data-lucide="settings"></i>Settings</div>
+        <div class="nav-item active" id="nav-discovery" onclick="showTab('discovery')"><i data-lucide="compass"></i>Discovery</div>
+        <div class="nav-item" id="nav-map" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
+        <div class="nav-item" id="nav-scan" onclick="alert('Camera Scan active...')"><i data-lucide="scan"></i>Scan</div>
+        <div class="nav-item" id="nav-kitchen" onclick="showTab('kitchen')"><i data-lucide="user"></i>Kitchen</div>
+        <div class="nav-item" id="nav-settings" onclick="showTab('settings')"><i data-lucide="settings"></i>Settings</div>
     </nav>
 
     <script>
@@ -161,81 +146,48 @@
         async function init() {
             lucide.createIcons();
             loadDiscovery();
+            if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
         }
 
         async function loadDiscovery() {
-            const { data } = await sb.from('recipes').select('*').order('created_at', {ascending: false});
+            const { data } = await sb.from('recipes').select('*').order('created_at', {ascending:false});
             recipes = data || [];
-            
-            // Image Sanitization: Forcing high-fidelity local assets for key dishes
-            recipes = recipes.map(r => {
-                if(r.title.toLowerCase().includes('calalloo')) {
-                    r.cover_photo_url = "https://images.squarespace-cdn.com/content/v1/55e5db99e4b0235df6f15712/1446755486337-W3W2W3W2W3W2W3W2W3W2/Trinidad+Callaloo.jpg";
-                }
-                return r;
-            });
-
             renderPins('discovery-pins', recipes);
         }
 
-        function renderPins(targetId, items) {
-            const grid = document.getElementById(targetId);
+        function renderPins(id, items) {
+            const grid = document.getElementById(id);
             if(!grid) return;
             grid.innerHTML = items.map(r => `
-                <div class="recipe-pin" onclick="openDish('${r.id}')">
-                    <button class="save-btn" onclick="saveToKitchen(event)">Save</button>
-                    <img src="${r.cover_photo_url}" alt="${r.title}">
-                    <div class="pin-overlay">
-                        <h3 style="font-size:1.1rem; font-weight:800;">${r.title}</h3>
-                        <p style="font-size:0.8rem; opacity:0.8;">Caribbean Heritage</p>
-                    </div>
+                <div class="recipe-pin" onclick="openRecipe('${r.id}')">
+                    <img src="${r.cover_photo_url || ''}">
+                    <div class="pin-overlay"><h3>${r.title}</h3></div>
                 </div>
             `).join('');
-        }
-
-        function openDish(id) {
-            const r = recipes.find(item => item.id === id);
-            if(!r) return;
-            document.getElementById('detail-img').src = r.cover_photo_url;
-            document.getElementById('detail-title').innerText = r.title;
-            document.getElementById('detail-author').innerText = "By Heritage Keeper • Prisca Dezigns";
-            document.getElementById('detail-ingredients').innerText = r.ingredients || "1 lb Crab\n2 bundles Dasheen Leaves\n1/2 lb Pumpkin\n6 Okras\nCoconut Milk\nThyme, Scallions, Hot Pepper";
-            document.getElementById('detail-instructions').innerText = r.instructions || "1. Clean dasheen leaves and chop finely.\n2. In a large pot, combine dasheen, chopped pumpkin, okra, and coconut milk.\n3. Add cleaned crab and aromatic herbs.\n4. Simmer until all vegetables are tender.\n5. Use a swizzle stick or blender to reach a smooth, creamy consistency.\n6. Serve hot with crab on top.";
-            document.getElementById('detail-modal').style.display = 'flex';
         }
 
         function showTab(id) {
             document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
             document.getElementById(id).style.display = 'block';
-            // Simple nav sync
-            const index = id === 'discovery' ? 0 : 1;
-            document.querySelectorAll('.nav-item')[index].classList.add('active');
+            document.getElementById('nav-'+id).classList.add('active');
+            const desk = document.getElementById('d-tab-'+id);
+            if(desk) desk.classList.add('active');
         }
 
-        function openScanner() {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(stream => {
-                    document.getElementById('vision-feed').srcObject = stream;
-                    document.getElementById('vision-overlay').style.display = 'flex';
-                }).catch(err => alert("Camera access required for Real-time Scanner."));
+        function openRecipe(id) {
+            const r = recipes.find(item => item.id === id);
+            if(!r) return;
+            document.getElementById('m-img').src = r.cover_photo_url;
+            document.getElementById('m-title').innerText = r.title;
+            document.getElementById('m-content').innerText = (r.ingredients || "") + "\n\n" + (r.instructions || "");
+            openModal('detail-modal');
         }
 
-        function captureVision() {
-            document.getElementById('scan-status').innerText = "Signal Identified!";
-            setTimeout(() => closeModal('vision-overlay'), 1500);
-        }
-
-        function openProModal(e) { e.stopPropagation(); document.getElementById('pro-modal').style.display = 'flex'; }
-        function closeModal(id) { 
-            const el = document.getElementById(id);
-            el.style.display = 'none';
-            if(id === 'vision-overlay') {
-                const stream = document.getElementById('vision-feed').srcObject;
-                if(stream) stream.getTracks().forEach(t => t.stop());
-            }
-        }
-        function saveToKitchen(e) { e.stopPropagation(); alert("Saved to Private Vault! 🛡️"); }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         init();
     </script>
