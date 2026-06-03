@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.9.3 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v40.0.0 Sovereign Gold Standard</title>
 <meta name="description" content="Calalloo | Heritage Hub: The definitive Caribbean culinary social network. Discover, share, and preserve authentic recipes from across the Caribbean islands, including Trinidad and Tobago, Jamaica, Barbados, Guyana, Grenada, Saint Lucia, and more. Use our AI Heritage Scanner to analyze dishes and sweets, and find local ingredients with our real-time Heritage Map.">
 <meta name="keywords" content="Calalloo, Heritage Hub, Caribbean food, Caribbean recipes, Trinidadian cuisine, Jamaican food, Guyanese recipes, Barbadian food, Grenadian cuisine, Saint Lucian food, Callaloo recipe, Doubles, Jerk Chicken, Ackee and Saltfish, Oil Down, Pepperpot, Mofongo, Cou-cou, Pelau, Curried Goat, Roti, Caribbean cooking, food scanner, heritage map, Caribbean social network, Caribbean culture, Caribbean heritage, Antigua and Barbuda, Bahamas, Cuba, Dominica, Dominican Republic, Haiti, Saint Kitts and Nevis, Saint Vincent and the Grenadines, Puerto Rico, Cayman Islands, Virgin Islands">
 <meta name="geo.region" content="TT-SIP, JM, BB, GY, GD, LC, AG, BS, CU, DM, DO, HT, KN, VC, PR, KY, VG" />
@@ -88,6 +88,34 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <i data-lucide="plus-circle" style="color:var(--primary); cursor:pointer;" onclick="openAddModal()"></i>
 </header>
 <div id="discovery" class="tab-content" style="display:block;">
+<div id="heritage-reels" style="padding: 15px 0 25px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px;">
+<div style="display: flex; gap: 15px; overflow-x: auto; padding: 0 15px; scrollbar-width: none; -ms-overflow-style: none;">
+<div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openReel('chef-marisa')">
+<div style="width: 70px; height: 70px; border-radius: 50%; padding: 3px; border: 2px solid var(--primary);">
+<img src="https://via.placeholder.com/150?text=Live" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+</div>
+<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--dark);">Chef Marisa</p>
+</div>
+<div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openReel('spice-master')">
+<div style="width: 70px; height: 70px; border-radius: 50%; padding: 3px; border: 2px solid var(--primary);">
+<img src="https://via.placeholder.com/150?text=Hot" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+</div>
+<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--dark);">SpiceMaster</p>
+</div>
+<div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openReel('caribbean-bites')">
+<div style="width: 70px; height: 70px; border-radius: 50%; padding: 3px; border: 2px solid var(--primary);">
+<img src="https://via.placeholder.com/150?text=Tips" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+</div>
+<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--dark);">IslandBites</p>
+</div>
+<div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openAddReel()">
+<div style="width: 70px; height: 70px; border-radius: 50%; border: 2px dashed var(--grey-text); display: flex; align-items: center; justify-content:center;">
+<i data-lucide="plus" style="color: var(--grey-text);"></i>
+</div>
+<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--grey-text);">Add Reel</p>
+</div>
+</div>
+</div>
 <div class="pinterest-grid" id="discovery-pins"></div>
 </div>
 <div id="map" class="tab-content">
