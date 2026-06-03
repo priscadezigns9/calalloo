@@ -398,7 +398,40 @@
         function setPayTab(tab) { document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+tab).classList.add('active'); document.querySelectorAll('.pay-view').forEach(v => v.style.display = 'none'); document.getElementById('pay-'+tab).style.display = 'block'; }
         function openAddModal() { openModal('add-modal'); }
         function previewDish(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('dish-preview').src = e.target.result; document.getElementById('dish-preview').style.display = 'block'; }; reader.readAsDataURL(input.files[0]); } }
-        function submitDish() { alert("Dish submitted to Heritage Vault! 🥘"); closeModal('add-modal'); }
+        async function submitDish() {
+            const title = document.getElementById('dish-title').value;
+            const ingredients = document.getElementById('dish-ingredients').value;
+            const instructions = document.getElementById('dish-instructions').value;
+            const imgInput = document.getElementById('dish-img');
+            
+            if(!title || !imgInput.files[0]) {
+                alert("Please provide a title and a photo of your dish.");
+                return;
+            }
+
+            // In a real scenario, we would upload the image to Supabase Storage first.
+            // For now, we'll simulate the successful persistence to the shared discovery database.
+            const newDish = {
+                id: 'new-' + Date.now(),
+                title: title,
+                cover_photo_url: document.getElementById('dish-preview').src,
+                instructions: instructions,
+                created_at: new Date().toISOString()
+            };
+
+            const { error } = await sb.from('recipes').insert([newDish]);
+            
+            if (error) {
+                console.error("Error saving dish:", error);
+                alert("Vault sync failed. Saving locally for now. 🛡️");
+                recipes.unshift(newDish);
+            } else {
+                alert("Dish successfully pushed to the Heritage Discovery Vault! 🥘🛡️");
+                loadDiscovery(); // Refresh discovery to show new dish
+            }
+            
+            closeModal('add-modal');
+        }
         function triggerScanPro() { if(isAdmin || scansToday < 1) { scansToday++; alert("AI Scanner active..."); } else { openProModal(event); } }
         function toggleDarkMode() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
 
