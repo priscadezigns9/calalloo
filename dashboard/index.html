@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v38.10.2 Sovereign Platinum</title>
+    <title>Calalloo | Heritage Hub v39.0.0 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=38.10.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.10.2"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.0.0"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -349,70 +349,57 @@
             lucide.createIcons();
             
             // 0. Auth Guard: Ensure the session is valid
-            const { data: { user } } = await sb.auth.getUser();
-            if (!user) {
+            const { data: { session }, error: authError } = await sb.auth.getSession();
+            const user = session?.user;
+
+            if (!user || authError) {
+                console.error("Auth Guard: Session invalid", authError);
                 window.location.href = '/login/';
                 return;
             }
 
-            // Sovereignty Lockdown: Force-clear legacy developer handles
-            const savedProfile = localStorage.getItem('calalloo_profile');
-            if (savedProfile) {
-                const p = JSON.parse(savedProfile);
-                const isLegacy = (p.name && /prisca|heritage hub/i.test(p.name)) || 
-                                 (p.username && /prisca|guest/i.test(p.username));
-                
-                if (isLegacy) {
-                    localStorage.removeItem('calalloo_profile');
-                    // Reset and continue to Auth check
-                } else {
-                    populateProfileUI(p.name, p.username, p.avatar, p.settings);
+            // Central Identity Controller (Gold Standard)
+            async function syncIdentity() {
+                try {
+                    // Pull fresh profile from Supabase
+                    const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
+                    
+                    // If no profile exists yet, create one from Auth Metadata
+                    if (!profile || error) {
+                        const newProfile = {
+                            id: user.id,
+                            full_name: user.user_metadata?.full_name || "",
+                            username: user.user_metadata?.username || user.email.split('@')[0],
+                            avatar_url: user.user_metadata?.avatar_url || "https://via.placeholder.com/120",
+                            origin_platform: 'Calalloo'
+                        };
+                        await sb.from('profiles').insert([newProfile]);
+                        populateProfileUI(newProfile.full_name, newProfile.username, newProfile.avatar_url, null);
+                    } else {
+                        // Filter out legacy "Prisca" handles at the source
+                        const isLegacy = /prisca|dezigns/i.test(profile.full_name || "") || /prisca|guest/i.test(profile.username || "");
+                        const name = isLegacy ? "" : profile.full_name;
+                        const username = isLegacy ? "" : profile.username;
+                        
+                        populateProfileUI(name, username, profile.avatar_url, profile.taste_preferences);
+                        
+                        // Sync Local Cache
+                        localStorage.setItem('calalloo_profile', JSON.stringify({
+                            name, username, avatar: profile.avatar_url, settings: profile.taste_preferences
+                        }));
+                    }
+                } catch (e) {
+                    console.error("Identity Sync Latency:", e);
+                    // Critical Fallback: Use last known cache
+                    const cache = JSON.parse(localStorage.getItem('calalloo_profile') || '{}');
+                    populateProfileUI(cache.name || "", cache.username || "", cache.avatar || "", cache.settings || null);
                 }
             }
 
-            // Restore from Supabase session (Source of Truth)
-            if (user) {
-                const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
-                if (profile && !error) {
-                    const isLegacyDB = (profile.full_name && /prisca/i.test(profile.full_name)) || 
-                                       (profile.username && /prisca/i.test(profile.username));
-                    
-                    const finalName = isLegacyDB ? "" : profile.full_name;
-                    const finalUser = isLegacyDB ? "" : profile.username;
-                    
-                    populateProfileUI(finalName, finalUser, profile.avatar_url, profile.taste_preferences);
-                    
-                    localStorage.setItem('calalloo_profile', JSON.stringify({
-                        name: finalName,
-                        username: finalUser,
-                        avatar: profile.avatar_url,
-                        settings: profile.taste_preferences
-                    }));
-                } else {
-                    // Fallback to User Metadata from Auth session
-                    const metaName = user.user_metadata?.full_name || "";
-                    const metaUser = user.user_metadata?.username || "";
-                    populateProfileUI(metaName, metaUser, user.user_metadata?.avatar_url, null);
-                }
-            } else if (!localStorage.getItem('calalloo_profile')) {
-                // Anonymous/New user: Start clean
-                populateProfileUI("", "", "https://via.placeholder.com/120");
-            }
-
+            await syncIdentity();
             loadDiscovery();
             setupRealtime();
             syncPendingDishes(); 
-            
-            // Final Sovereignty Guard: Manual DOM sweep
-            setTimeout(() => {
-                ['prof-name', 'prof-username', 'edit-name', 'edit-username'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el && /prisca|dezigns/i.test(el.innerText || el.value)) {
-                        if (el.tagName === 'INPUT') el.value = "";
-                        else el.innerText = "";
-                    }
-                });
-            }, 1000);
 
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
         }
@@ -622,20 +609,30 @@
             if(!grid) return;
             const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
             
-            // Sovereignty Filter: Display public recipes OR recipes created by the current user
-            const visibleItems = items; // Temporarily bypass filter for discovery debugging
+            // Fixed Sovereignty Filter for 10,000 Users Scale
+            const visibleItems = items.filter(r => {
+                // Show if recipe is public OR if the current user is the author
+                return r.is_public === true || r.is_public === 'true' || r.author_username === currentUser;
+            });
 
-            grid.innerHTML = visibleItems.map(r => `
-                <div class="recipe-pin" onclick="openRecipe('${r.id}')">
-                    <img src="${r.cover_photo_url || ''}">
-                    <div class="pin-overlay">
-                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                            <h3>${r.title}</h3>
-                            ${!r.is_public ? '<i data-lucide="lock" style="width:14px; height:14px; color:white;"></i>' : ''}
+            if (visibleItems.length === 0) {
+                grid.innerHTML = `<div style="column-span:all; text-align:center; padding:40px; color:var(--grey-text);">
+                    <i data-lucide="utensils" style="width:40px; height:40px; margin-bottom:10px; opacity:0.3;"></i>
+                    <p>No recipes found in the vault yet.</p>
+                </div>`;
+            } else {
+                grid.innerHTML = visibleItems.map(r => `
+                    <div class="recipe-pin" onclick="openRecipe('${r.id}')">
+                        <img src="${r.cover_photo_url || 'https://via.placeholder.com/400x300?text=Heritage+Recipe'}">
+                        <div class="pin-overlay">
+                            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                                <h3>${r.title}</h3>
+                                ${(!r.is_public || r.is_public === 'false') ? '<i data-lucide="lock" style="width:14px; height:14px; color:white;"></i>' : ''}
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
             lucide.createIcons();
         }
 
