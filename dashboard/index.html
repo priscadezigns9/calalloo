@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.5.2 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.6.0 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.5.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.5.2"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.6.0"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -638,8 +638,22 @@
             }
 
             const pending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
-            const remoteRecipes = data || [];
+            let remoteRecipes = data || [];
             
+            // Sovereignty Seed Fallback: If DB is empty, inject high-fidelity heritage data
+            if (remoteRecipes.length < 5) {
+                console.log("Sovereignty Alert: Low density detected. Injecting Heritage Seed Data.");
+                const seeds = [
+                    { id: 'seed-1', title: "Signature Trinidadian Callaloo", author_username: "HeritageAdmin", cover_photo_url: "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg" },
+                    { id: 'seed-2', title: "Bake & Saltfish", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2015/02/FRIED-BAKE.jpg" },
+                    { id: 'seed-3', title: "Cornmeal Porridge", author_username: "HeritageAdmin", cover_photo_url: "https://www.africanbites.com/wp-content/uploads/2017/01/IMG_6396.jpg" },
+                    { id: 'seed-4', title: "Trinidad Doubles", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2025/05/trinidad-doubles_.jpeg" },
+                    { id: 'seed-5', title: "Ackee & Saltfish", author_username: "HeritageAdmin", cover_photo_url: "https://www.myforkinglife.com/wp-content/uploads/2021/07/jamaican-ackee-and-saltfish-photo-1.jpg" },
+                    { id: 'seed-6', title: "Bake and Shark", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2024/02/fried-bake-and-shark-with-condiments-3.jpg" }
+                ];
+                remoteRecipes = [...remoteRecipes, ...seeds];
+            }
+
             // Deduplication Engine: Combine pending and remote, then unique by ID
             const allItems = [...pending, ...remoteRecipes];
             const seenIds = new Set();
@@ -1052,6 +1066,9 @@
             submitBtn.innerText = "Processing Dish...";
             submitBtn.disabled = true;
 
+            const { data: { session } } = await sb.auth.getSession();
+            const user = session?.user;
+
             // 1. High-Fidelity Compression (Reduces payload for faster Vault Sync)
             const compressImage = (base64) => {
                 return new Promise((resolve) => {
@@ -1077,9 +1094,10 @@
                 id: 'dish-' + Date.now(),
                 title: title,
                 cover_photo_url: compressedImg,
-                instructions: instructions,
+                description: instructions || "Heritage Culinary Signature",
+                cook_id: user?.id || null,
                 author_username: document.getElementById('prof-username').innerText.split(' • ')[0].replace(/^@/, '') || 'guest',
-                is_public: privacy === 'public',
+                is_published: privacy === 'public',
                 created_at: new Date().toISOString()
             };
 
@@ -1096,14 +1114,21 @@
             submitBtn.innerText = "Syncing to Vault...";
 
             try {
-                // 3. Async Vault Sync (Supabase)
-                const { error } = await sb.from('recipes').insert([dishData]);
+                // 3. Async Vault Sync (Aligned with DB Schema)
+                const payload = {
+                    title: dishData.title,
+                    description: dishData.description,
+                    cover_photo_url: dishData.cover_photo_url,
+                    is_published: dishData.is_published,
+                    cook_id: dishData.cook_id,
+                    instructions: [dishData.description]
+                };
+
+                const { error } = await sb.from('recipes').insert([payload]);
                 
                 if (error) {
                     console.error("Vault Sync Latency:", error);
-                    // Leave in pending for later retry, UI already reflects it
                 } else {
-                    // Success! Remove from pending
                     let currentPending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
                     localStorage.setItem('calalloo_pending_dishes', JSON.stringify(currentPending.filter(d => d.id !== dishData.id)));
                 }
