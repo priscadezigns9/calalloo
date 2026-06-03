@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.8.4 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.8.5 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1207,20 +1207,44 @@ const status = document.getElementById('analysis-status');
 const progress = document.getElementById('loading-progress');
 setTimeout(() => { if(progress) progress.style.width = '100%'; }, 100);
 try {
+// High-Fidelity Pre-Processing: Scaling image for 10k Concurrency
+if(status) status.innerText = "Scaling Heritage Asset for Uplink...";
+const processImage = (src) => {
+return new Promise((resolve) => {
+const img = new Image();
+img.src = src;
+img.onload = () => {
+const canvas = document.createElement('canvas');
+const max = 1200;
+let w = img.width, h = img.height;
+if (w > h && w > max) { h *= max/w; w = max; }
+else if (h > max) { w *= max/h; h = max; }
+canvas.width = w; canvas.height = h;
+canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+resolve(canvas.toDataURL('image/jpeg', 0.7));
+};
+});
+};
+let assetUrl = source;
+if (source instanceof File) {
+const reader = new FileReader();
+assetUrl = await new Promise(r => { reader.onload = e => r(e.target.result); reader.readAsDataURL(source); });
+}
+const optimizedAsset = await processImage(assetUrl);
 const { data: { session } } = await sb.auth.getSession();
-const userId = session?.user?.id || 'anonymous';
+const userId = session?.user?.id || null;
 // 1. Scalable Signal: Creating a pending scan in the Sovereign Vault
-// At 10,000 users, we use a 'status' column to drive the UI reactively
+if(status) status.innerText = "Syncing with Sovereign Vault...";
 const { data: scanRecord, error: vaultError } = await sb.from('recipes').insert([{
 title: "Pending Heritage Discovery...",
-author_id: userId,
-cover_photo_url: typeof source === 'string' && source.startsWith('data') ? source : null,
+cook_id: userId,
+cover_photo_url: optimizedAsset,
 is_published: false,
 is_heritage_scan: true,
 status: 'processing'
 }]).select().single();
 if (vaultError) throw vaultError;
-// 2. Real-Time Subscription: Listening for the Sovereign Backend to fulfill the scan
+// 2. Real-Time Subscription: Listening for the Sovereign Backend
 const scanSubscription = sb.channel(`scan-${scanRecord.id}`)
 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'recipes', filter: `id=eq.${scanRecord.id}` }, payload => {
 if (payload.new.status === 'completed' && payload.new.ai_analysis) {
@@ -1230,34 +1254,32 @@ showAnalysisHub(payload.new.ai_analysis);
 } else if (payload.new.status === 'rejected') {
 scanSubscription.unsubscribe();
 document.body.removeChild(overlay);
-alert("Sovereign Guard: Non-culinary item detected. Please upload a dish or sweet to continue. 🥘🛡️");
+alert("Sovereign Guard: Non-culinary item detected. Please upload a dish or sweet. 🥘🛡️");
 }
 })
 .subscribe();
 // 3. UI Phase Feedback
 const phases = [
-"Bypassing local cache... Syncing with Sovereign Vault.",
 "Neural Uplink Established. Isolating Culinary Signatures...",
 "Smart Focus: Filtering background noise and non-food artifacts...",
 "Analyzing Culinary DNA (Dish or Sweet)...",
 "Calculating Deep Caloric Density per Ingredient...",
+"Finalizing Heritage Analysis...",
 "Analysis Complete. Syncing results to Kitchen."
 ];
 phases.forEach((p, i) => {
-setTimeout(() => { if(status) status.innerText = p; }, i * 2000);
+setTimeout(() => { if(status) status.innerText = p; }, (i + 1) * 2000);
 });
-// 4. Safety Timeout: If the server-side analysis (me or a function) takes too long
+// 4. Safety Timeout
 setTimeout(() => {
 if (document.getElementById('analysis-loader')) {
-console.warn("Deep Analysis Latency: Fetching latest cached result.");
-// Fallback logic for high-concurrency environments
 fetchLatestScanResult(scanRecord.id);
 }
-}, 15000);
+}, 18000);
 } catch (err) {
-console.error("Scale-Level Uplink Failure:", err);
+console.error("Critical Uplink Failure:", err);
 document.body.removeChild(overlay);
-alert("Heritage Analysis Interrupted. Please check your connection. 🛡️");
+alert("Data Uplink Latency. Please ensure your photo size is optimized and try again. 🛡️");
 }
 }
 async function fetchLatestScanResult(id) {
