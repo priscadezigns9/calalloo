@@ -342,13 +342,33 @@
         async function init() {
             lucide.createIcons();
             
+            // 1. Recover Identity: First check LocalStorage, then the Cloud Vault (Supabase)
             const savedProfile = localStorage.getItem('calalloo_profile');
+            
             if (savedProfile) {
                 const p = JSON.parse(savedProfile);
                 populateProfileUI(p.name, p.username, p.avatar);
             } else {
-                // Sovereign Platinum: New users start with a clean slate for full autonomy
-                populateProfileUI("", "", "https://via.placeholder.com/120");
+                // Browsing data cleared: Attempt to restore from Supabase session
+                const { data: { user } } = await sb.auth.getUser();
+                if (user) {
+                    const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
+                    if (profile && !error) {
+                        populateProfileUI(profile.full_name, profile.username, profile.avatar_url);
+                        // Re-cache locally for performance
+                        localStorage.setItem('calalloo_profile', JSON.stringify({
+                            name: profile.full_name,
+                            username: profile.username,
+                            avatar: profile.avatar_url
+                        }));
+                    } else {
+                        // Truly a new user or anonymous
+                        populateProfileUI("", "", "https://via.placeholder.com/120");
+                    }
+                } else {
+                    // Sovereign Platinum: New users start with a clean slate for full autonomy
+                    populateProfileUI("", "", "https://via.placeholder.com/120");
+                }
             }
 
             loadDiscovery();
@@ -402,12 +422,16 @@
 
             // Persist to Supabase asynchronously in background
             try {
-                const { error } = await sb.from('profiles').upsert({ 
+                const { data: { user } } = await sb.auth.getUser();
+                const payload = { 
                     username: newUsername, 
                     full_name: newName,
                     avatar_url: avatar,
                     updated_at: new Date()
-                });
+                };
+                if (user) payload.id = user.id;
+
+                const { error } = await sb.from('profiles').upsert(payload);
 
                 if (error) {
                     console.error("Supabase Sync Error:", error);
@@ -662,12 +686,16 @@
             
             // Async sync to Supabase (background)
             try {
-                const { error } = await sb.from('profiles').upsert({ 
+                const { data: { user } } = await sb.auth.getUser();
+                const payload = { 
                     username: username, 
                     full_name: name,
                     avatar_url: avatarData,
                     updated_at: new Date()
-                });
+                };
+                if (user) payload.id = user.id;
+
+                const { error } = await sb.from('profiles').upsert(payload);
                 
                 if (error) {
                     console.error("Supabase Error:", error);
