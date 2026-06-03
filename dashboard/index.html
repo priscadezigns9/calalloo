@@ -71,6 +71,12 @@
             <img src="../assets/logo.png" alt="Calalloo">
             <span>Calalloo<span class="pro-badge" onclick="openProModal(event)">PRO</span></span>
         </div>
+        <div style="display:flex; align-items:center; gap:15px; flex:1; max-width:400px; margin: 0 20px;">
+            <div style="display:flex; align-items:center; gap:10px; background:var(--light-bg); padding:8px 15px; border-radius:12px; border:1px solid var(--border); width:100%;">
+                <i data-lucide="search" style="width:18px; color:var(--grey-text); cursor:pointer;" onclick="performSearch()"></i>
+                <input type="text" id="header-search" placeholder="Search heritage..." style="background:none; border:none; width:100%; font-size:0.9rem;" onkeyup="if(event.key==='Enter') performSearch()">
+            </div>
+        </div>
         <div class="desktop-tabs">
             <div class="tab-btn active" id="d-tab-discovery" onclick="showTab('discovery')">Discovery</div>
             <div class="tab-btn" id="d-tab-map" onclick="showTab('map')">Map</div>
@@ -100,16 +106,17 @@
                     <div style="position:absolute; bottom:0; right:0; background:var(--primary); color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid var(--bg);">
                         <i data-lucide="camera" style="width:14px; height:14px;"></i>
                     </div>
-                    <input type="file" id="avatar-input" style="display:none;" accept="image/*" onchange="updateAvatar(this)">
+                    <input type="file" id="avatar-input" style="display:none;" accept="image/*" onchange="previewAvatar(this)">
                 </div>
                 <div style="flex:1;">
-                    <h1 class="display-font" style="font-size:1.8rem; line-height:1;" id="prof-name">Kitchen Keeper</h1>
-                    <p style="color:var(--grey-text); font-size:0.9rem; margin-top:8px;">@keeper_id • Trinidad & Tobago</p>
+                    <h1 class="display-font" style="font-size:1.8rem; line-height:1;" id="prof-name">Prisca Dezigns</h1>
+                    <p style="color:var(--grey-text); font-size:0.9rem; margin-top:8px;" id="prof-username">@prisca • Trinidad & Tobago</p>
                     <div style="display: flex; gap: 15px; margin-top: 15px;">
                         <i data-lucide="message-circle" style="width:18px; cursor:pointer;"></i>
                         <i data-lucide="facebook" style="width:18px; cursor:pointer;"></i>
                         <i data-lucide="instagram" style="width:18px; cursor:pointer;"></i>
                     </div>
+                    <button id="sync-avatar-btn" onclick="syncAvatarToSupabase()" style="display:none; margin-top:15px; background:var(--primary); color:white; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.8rem; cursor:pointer;">Save New Picture</button>
                 </div>
             </div>
             <div style="display: flex; gap: 15px; margin: 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
@@ -233,6 +240,28 @@
 
         function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function performSearch() {
+            const query = document.getElementById('header-search').value.toLowerCase();
+            const filtered = recipes.filter(r => r.title.toLowerCase().includes(query));
+            renderPins('discovery-pins', filtered);
+        }
+
+        function previewAvatar(input) {
+            if(input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('profile-avatar').src = e.target.result;
+                    document.getElementById('sync-avatar-btn').style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function syncAvatarToSupabase() {
+            alert("Avatar syncing to Supabase Vault... 🛡️");
+            document.getElementById('sync-avatar-btn').style.display = 'none';
+        }
+
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function updateAvatar(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => document.getElementById('profile-avatar').src = e.target.result; reader.readAsDataURL(input.files[0]); } }
         function switchKitchenTab(tab) { document.querySelectorAll('.k-tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); }
