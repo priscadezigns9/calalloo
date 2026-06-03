@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.7.3 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.7.4 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -329,11 +329,10 @@ if (navigator.geolocation) {
 navigator.geolocation.getCurrentPosition((pos) => {
 userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
 console.log("Sovereignty Location Locked:", userLocation);
-// Force Map Synchronization if active
-const mapFrame = document.getElementById('map-frame');
-if (mapFrame && document.getElementById('set-location').checked) {
-const q = `${userLocation.lat},${userLocation.lng}`;
-mapFrame.src = `https://www.google.com/maps/embed/v1/view?key={{credential:google-maps-embed-api-key}}&center=${q}&zoom=14&maptype=roadmap`;
+// Force Map Synchronization if current view is Map
+const mapContent = document.getElementById('map');
+if (mapContent && mapContent.style.display === 'block') {
+loadSovereignMap();
 }
 }, (err) => {
 console.warn("Location Access Denied - Using Heritage Default:", err);
@@ -447,9 +446,7 @@ document.getElementById('set-camera').checked = settings.settings.camera || fals
 if (settings.settings.location) {
 document.getElementById('map-placeholder').style.display = 'none';
 document.getElementById('actual-map').style.display = 'block';
-const mapFrame = document.getElementById('map-frame');
-const q = `${userLocation.lat},${userLocation.lng}`;
-mapFrame.src = `https://www.google.com/maps/embed/v1/view?key={{credential:google-maps-embed-api-key}}&center=${q}&zoom=14&maptype=roadmap`;
+loadSovereignMap();
 }
 }
 }
@@ -692,10 +689,20 @@ function loadSovereignMap() {
 const actualMap = document.getElementById('actual-map');
 const mapFrame = document.getElementById('map-frame');
 const placeholder = document.getElementById('map-placeholder');
+const locToggle = document.getElementById('set-location');
 if (actualMap && mapFrame && placeholder) {
+if (locToggle && !locToggle.checked) {
+placeholder.style.display = 'flex';
+actualMap.style.display = 'none';
+return;
+}
 placeholder.style.display = 'none';
 actualMap.style.display = 'block';
-mapFrame.src = `https://www.google.com/maps?q=heritage+grocery+stores+near+me&ll=${userLocation.lat},${userLocation.lng}&z=14&output=embed`;
+// Using Universal Heritage Embed (No-Key Sovereign Format)
+const lat = userLocation.lat;
+const lng = userLocation.lng;
+mapFrame.src = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+console.log(`Map Synced to Heritage Node: ${lat}, ${lng}`);
 }
 }
 async function openRecipe(id) {
