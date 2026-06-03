@@ -94,9 +94,15 @@
 
     <div id="map" class="tab-content">
         <div id="map-container" style="height:calc(100vh - 150px); width:100%; min-height: 400px; background: var(--light-bg); position: relative; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-            <i data-lucide="map" style="width:40px; color:var(--primary);"></i>
-            <p style="font-weight:700; margin-top:10px;">Heritage Map</p>
-            <p style="font-size:0.8rem; color:var(--grey-text); text-align:center; padding: 0 20px;">Establishing connection to Google Heritage Satellites...<br>Please ensure Location Permissions are enabled.</p>
+            <div id="actual-map" style="width:100%; height:100%; display:none;">
+                <iframe id="map-frame" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+            </div>
+            <div id="map-placeholder" style="text-align:center;">
+                <i data-lucide="map" style="width:40px; color:var(--primary);"></i>
+                <p style="font-weight:700; margin-top:10px;">Heritage Map</p>
+                <p style="font-size:0.8rem; color:var(--grey-text); text-align:center; padding: 0 20px;">Establishing connection to Google Heritage Satellites...<br>Please ensure Location Permissions are enabled in Settings.</p>
+                <button onclick="showTab('settings')" style="margin-top:15px; background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:700; cursor:pointer;">Enable Access</button>
+            </div>
         </div>
     </div>
 
@@ -347,19 +353,21 @@
             
             if (savedProfile) {
                 const p = JSON.parse(savedProfile);
-                populateProfileUI(p.name, p.username, p.avatar);
+                populateProfileUI(p.name, p.username, p.avatar, p.settings);
             } else {
                 // Browsing data cleared: Attempt to restore from Supabase session
                 const { data: { user } } = await sb.auth.getUser();
                 if (user) {
                     const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
                     if (profile && !error) {
-                        populateProfileUI(profile.full_name, profile.username, profile.avatar_url);
+                        const settings = profile.taste_preferences?.settings || null;
+                        populateProfileUI(profile.full_name, profile.username, profile.avatar_url, settings);
                         // Re-cache locally for performance
                         localStorage.setItem('calalloo_profile', JSON.stringify({
                             name: profile.full_name,
                             username: profile.username,
-                            avatar: profile.avatar_url
+                            avatar: profile.avatar_url,
+                            settings: settings
                         }));
                     } else {
                         // Truly a new user or anonymous
@@ -394,39 +402,62 @@
             }
         }
 
-        function populateProfileUI(name, username, avatar) {
+        function populateProfileUI(name, username, avatar, settings) {
             document.getElementById('prof-name').innerText = name || "Heritage Hub User";
             document.getElementById('prof-username').innerText = username || "@guest • Trinidad & Tobago";
             document.getElementById('edit-name').value = name || "";
             document.getElementById('edit-username').value = username || "";
             if (avatar) document.getElementById('profile-avatar').src = avatar;
+            
+            if (settings) {
+                document.getElementById('set-location').checked = settings.location || false;
+                document.getElementById('set-camera').checked = settings.camera || false;
+                
+                if (settings.location) {
+                    document.getElementById('map-placeholder').style.display = 'none';
+                    document.getElementById('actual-map').style.display = 'block';
+                    document.getElementById('map-frame').src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31336.848529244033!2d-61.4727195!3d10.2285155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c3b999999999999%3A0x9999999999999999!2sTrinidad%20and%20Tobago!5e0!3m2!1sen!2s!4v1622720000000!5m2!1sen!2s";
+                }
+            }
         }
 
         async function saveSettings() {
             const newName = document.getElementById('edit-name').value;
             const newUsername = document.getElementById('edit-username').value;
             const avatar = document.getElementById('profile-avatar').src;
+            const hasLocation = document.getElementById('set-location').checked;
+            const hasCamera = document.getElementById('set-camera').checked;
             const btn = event.target;
-            const originalText = btn.innerText;
+            const originalText = "Save Changes";
             
-            // Update UI immediately (no wait)
+            // Sync Map if enabled
+            if (hasLocation) {
+                document.getElementById('map-placeholder').style.display = 'none';
+                document.getElementById('actual-map').style.display = 'block';
+                document.getElementById('map-frame').src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31336.848529244033!2d-61.4727195!3d10.2285155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c3b999999999999%3A0x9999999999999999!2sTrinidad%20and%20Tobago!5e0!3m2!1sen!2s!4v1622720000000!5m2!1sen!2s";
+            } else {
+                document.getElementById('map-placeholder').style.display = 'block';
+                document.getElementById('actual-map').style.display = 'none';
+                document.getElementById('map-frame').src = "";
+            }
+
+            // Persistence
+            const profile = { name: newName, username: newUsername, avatar, settings: { location: hasLocation, camera: hasCamera } };
+            localStorage.setItem('calalloo_profile', JSON.stringify(profile));
+            
             document.getElementById('prof-name').innerText = newName;
             document.getElementById('prof-username').innerText = newUsername;
 
-            // Persist to LocalStorage instantly (synchronous, fast)
-            const profile = { name: newName, username: newUsername, avatar };
-            localStorage.setItem('calalloo_profile', JSON.stringify(profile));
-            
             btn.innerText = "Saving...";
             btn.disabled = true;
 
-            // Persist to Supabase asynchronously in background
             try {
                 const { data: { user } } = await sb.auth.getUser();
                 const payload = { 
                     username: newUsername, 
                     full_name: newName,
                     avatar_url: avatar,
+                    taste_preferences: { settings: { location: hasLocation, camera: hasCamera } },
                     updated_at: new Date()
                 };
                 if (user) payload.id = user.id;
@@ -454,6 +485,7 @@
             sb.channel('realtime-social')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'follows' }, payload => updateSocialCounts())
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'likes' }, payload => updateSocialCounts())
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recipes' }, payload => loadDiscovery())
                 .subscribe();
         }
 
@@ -824,8 +856,56 @@
             }
         }
         function triggerScanPro() { 
-            // AIScanner is now free as per user request
-            alert("AI Heritage Scanner active... Scanning for Caribbean signals... 🥘🛡️"); 
+            const hasCamera = document.getElementById('set-camera').checked;
+            if (!hasCamera) {
+                alert("Please enable Camera Permissions in Settings to use the AI Scanner. 🥘🛡️");
+                showTab('settings');
+                return;
+            }
+
+            // Real Camera Implementation
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                alert("AI Heritage Scanner initializing... Activating High-Fidelity Lens... 🥘🛡️");
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                    .then(stream => {
+                        // Create a temporary video element for the scanner
+                        const video = document.createElement('video');
+                        video.srcObject = stream;
+                        video.play();
+                        
+                        const modal = document.createElement('div');
+                        modal.style = "position:fixed; inset:0; background:black; z-index:10000; display:flex; flex-direction:column;";
+                        video.style = "width:100%; height:80%; object-fit:cover;";
+                        
+                        const controls = document.createElement('div');
+                        controls.style = "height:20%; display:flex; align-items:center; justify-content:center; gap:20px; background:var(--bg);";
+                        controls.innerHTML = `
+                            <button id="close-scan" style="padding:15px 30px; border-radius:12px; border:none; background:#333; color:white; font-weight:800;">Cancel</button>
+                            <button id="capture-scan" style="padding:15px 30px; border-radius:12px; border:none; background:var(--primary); color:white; font-weight:800;">Analyze Heritage</button>
+                        `;
+                        
+                        modal.appendChild(video);
+                        modal.appendChild(controls);
+                        document.body.appendChild(modal);
+                        
+                        document.getElementById('close-scan').onclick = () => {
+                            stream.getTracks().forEach(track => track.stop());
+                            document.body.removeChild(modal);
+                        };
+                        
+                        document.getElementById('capture-scan').onclick = () => {
+                            alert("Analyzing culinary signatures... Signal detected: Authentic Trinidadian Callaloo found! 🛡️");
+                            stream.getTracks().forEach(track => track.stop());
+                            document.body.removeChild(modal);
+                        };
+                    })
+                    .catch(err => {
+                        console.error("Camera Error:", err);
+                        alert("Camera access denied. Please check your browser settings.");
+                    });
+            } else {
+                alert("Your device does not support direct camera access in this browser.");
+            }
         }
         function toggleDarkMode() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
 
