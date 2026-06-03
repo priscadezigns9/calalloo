@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v38.9.9 Sovereign Platinum</title>
+    <title>Calalloo | Heritage Hub v38.10.0 Sovereign Platinum</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=38.9.9"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.9.9"></script>
+    <script src="https://unpkg.com/lucide@latest?v=38.10.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.10.0"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -374,25 +374,25 @@
             if (user) {
                 const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
                 if (profile && !error) {
-                    // Check if DB record itself is a legacy default
                     const isLegacyDB = (profile.full_name && /prisca/i.test(profile.full_name)) || 
                                        (profile.username && /prisca/i.test(profile.username));
                     
                     const finalName = isLegacyDB ? "" : profile.full_name;
                     const finalUser = isLegacyDB ? "" : profile.username;
                     
-                    populateProfileUI(finalName, finalUser, profile.avatar_url, profile.taste_preferences?.settings);
+                    populateProfileUI(finalName, finalUser, profile.avatar_url, profile.taste_preferences);
                     
-                    // Update Cache
                     localStorage.setItem('calalloo_profile', JSON.stringify({
                         name: finalName,
                         username: finalUser,
                         avatar: profile.avatar_url,
-                        settings: profile.taste_preferences?.settings
+                        settings: profile.taste_preferences
                     }));
                 } else {
-                    // Authenticated but no profile record: Start clean
-                    populateProfileUI("", "", "https://via.placeholder.com/120");
+                    // Fallback to User Metadata from Auth session
+                    const metaName = user.user_metadata?.full_name || "";
+                    const metaUser = user.user_metadata?.username || "";
+                    populateProfileUI(metaName, metaUser, user.user_metadata?.avatar_url, null);
                 }
             } else if (!localStorage.getItem('calalloo_profile')) {
                 // Anonymous/New user: Start clean
@@ -438,76 +438,88 @@
             document.getElementById('prof-username').innerText = username || "";
             document.getElementById('edit-name').value = name || "";
             document.getElementById('edit-username').value = username || "";
-            if (avatar) document.getElementById('profile-avatar').src = avatar;
-            else document.getElementById('profile-avatar').src = "https://via.placeholder.com/120";
             
+            // Restore Extended Profiles
             if (settings) {
-                document.getElementById('set-location').checked = settings.location || false;
-                document.getElementById('set-camera').checked = settings.camera || false;
+                if (settings.socials) {
+                    document.getElementById('edit-whatsapp').value = settings.socials.whatsapp || "";
+                    document.getElementById('edit-facebook').value = settings.socials.facebook || "";
+                    document.getElementById('edit-instagram').value = settings.socials.instagram || "";
+                }
                 
-                if (settings.location) {
-                    document.getElementById('map-placeholder').style.display = 'none';
-                    document.getElementById('actual-map').style.display = 'block';
-                    document.getElementById('map-frame').src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31336.848529244033!2d-61.4727195!3d10.2285155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c3b999999999999%3A0x9999999999999999!2sTrinidad%20and%20Tobago!5e0!3m2!1sen!2s!4v1622720000000!5m2!1sen!2s";
+                if (settings.settings) {
+                    document.getElementById('edit-lang').value = settings.settings.lang || "en";
+                    document.getElementById('set-location').checked = settings.settings.location || false;
+                    document.getElementById('set-camera').checked = settings.settings.camera || false;
+                    
+                    if (settings.settings.location) {
+                        document.getElementById('map-placeholder').style.display = 'none';
+                        document.getElementById('actual-map').style.display = 'block';
+                        document.getElementById('map-frame').src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31336.848529244033!2d-61.4727195!3d10.2285155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c3b999999999999%3A0x9999999999999999!2sTrinidad%20and%20Tobago!5e0!3m2!1sen!2s!4v1622720000000!5m2!1sen!2s";
+                    }
                 }
             }
+
+            if (avatar) document.getElementById('profile-avatar').src = avatar;
+            else document.getElementById('profile-avatar').src = "https://via.placeholder.com/120";
         }
 
         async function saveSettings() {
             const newName = document.getElementById('edit-name').value;
             const newUsername = document.getElementById('edit-username').value;
+            const newWhatsapp = document.getElementById('edit-whatsapp').value;
+            const newFacebook = document.getElementById('edit-facebook').value;
+            const newInstagram = document.getElementById('edit-instagram').value;
+            const newLang = document.getElementById('edit-lang').value;
             const avatar = document.getElementById('profile-avatar').src;
             const hasLocation = document.getElementById('set-location').checked;
             const hasCamera = document.getElementById('set-camera').checked;
             const btn = event.target;
             const originalText = "Save Changes";
             
-            // Sync Map if enabled
-            if (hasLocation) {
-                document.getElementById('map-placeholder').style.display = 'none';
-                document.getElementById('actual-map').style.display = 'block';
-                document.getElementById('map-frame').src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31336.848529244033!2d-61.4727195!3d10.2285155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c3b999999999999%3A0x9999999999999999!2sTrinidad%20and%20Tobago!5e0!3m2!1sen!2s!4v1622720000000!5m2!1sen!2s";
-            } else {
-                document.getElementById('map-placeholder').style.display = 'block';
-                document.getElementById('actual-map').style.display = 'none';
-                document.getElementById('map-frame').src = "";
-            }
-
-            // Persistence
-            const profile = { name: newName, username: newUsername, avatar, settings: { location: hasLocation, camera: hasCamera } };
-            localStorage.setItem('calalloo_profile', JSON.stringify(profile));
-            
+            // Fast UI Update
             document.getElementById('prof-name').innerText = newName;
             document.getElementById('prof-username').innerText = newUsername;
 
-            btn.innerText = "Saving...";
+            const profile = { 
+                name: newName, 
+                username: newUsername, 
+                avatar, 
+                settings: { 
+                    socials: { whatsapp: newWhatsapp, facebook: newFacebook, instagram: newInstagram },
+                    settings: { location: hasLocation, camera: hasCamera, lang: newLang } 
+                } 
+            };
+            localStorage.setItem('calalloo_profile', JSON.stringify(profile));
+
+            btn.innerText = "Syncing to Cloud...";
             btn.disabled = true;
 
             try {
                 const { data: { user } } = await sb.auth.getUser();
-                if (!user) throw new Error("No active session found in the vault.");
+                if (!user) throw new Error("No active session.");
 
                 const payload = { 
                     id: user.id,
                     username: newUsername, 
                     full_name: newName,
                     avatar_url: avatar,
-                    taste_preferences: { settings: { location: hasLocation, camera: hasCamera } },
+                    whatsapp_pin: newWhatsapp,
+                    taste_preferences: { 
+                        socials: { facebook: newFacebook, instagram: newInstagram },
+                        settings: { location: hasLocation, camera: hasCamera, lang: newLang } 
+                    },
                     updated_at: new Date()
                 };
 
                 const { error } = await sb.from('profiles').upsert(payload, { onConflict: 'id' });
-
                 if (error) throw error;
-                btn.innerText = "Synced! 🛡️🥘";
+                btn.innerText = "Synced to Vault! 🛡️🥘";
             } catch (err) {
-                console.error("Vault Sync Error:", err);
+                console.error("Vault Sync Latency:", err);
                 btn.innerText = "Saved Locally ✓";
             } finally {
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }, 1500);
+                setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 2000);
             }
         }
 
