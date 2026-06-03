@@ -3,108 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Join the Heritage | Calalloo</title>
-    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <title>Join the Keepers | Calalloo</title>
+    <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #E87722; --bg: #FFFFFF; --dark: #000000; --border: #F2F2F2; --grey: #666666; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .auth-card { width: 100%; max-width: 400px; text-align: center; }
-        .logo { width: 60px; margin-bottom: 20px; }
-        h1 { font-family: 'Fraunces', serif; font-size: 2rem; margin-bottom: 10px; color: var(--dark); }
-        p { color: var(--grey); margin-bottom: 30px; font-size: 0.95rem; }
-        .input-group { margin-bottom: 15px; text-align: left; position: relative; }
-        input { width: 100%; padding: 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; transition: border-color 0.2s; }
-        input:focus { border-color: var(--primary); }
-        .password-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--grey); cursor: pointer; display: flex; align-items: center; }
-        .btn { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; margin-top: 10px; }
-        .btn:active { opacity: 0.8; }
-        .footer { margin-top: 30px; font-size: 0.9rem; color: var(--grey); }
-        .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
-        #msg { margin-top: 15px; font-weight: 600; padding: 10px; border-radius: 8px; display: none; }
-        .error { background: #FEE2E2; color: #DC2626; }
-        .success { background: #DCFCE7; color: #166534; }
+        :root { --primary: #E87722; --dark: #000; --bg: #FFFFFF; --font-display: 'Fraunces', serif; --font-main: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: var(--font-main); background: var(--bg); color: var(--dark); height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { width: 100%; max-width: 400px; text-align: center; }
+        .logo { width: 60px; margin-bottom: 24px; }
+        h1 { font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 8px; font-weight: 900; }
+        p { color: #666; margin-bottom: 32px; font-size: 0.95rem; }
+        .input-group { position: relative; margin-bottom: 16px; text-align: left; }
+        .input-group label { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; color: #999; }
+        input { width: 100%; padding: 14px 16px; border: 1px solid #EEE; border-radius: 12px; font-size: 1rem; font-family: var(--font-main); outline: none; transition: 0.2s; background: #FAFAFA; }
+        input:focus { border-color: var(--primary); background: #FFF; box-shadow: 0 4px 12px rgba(232, 119, 34, 0.08); }
+        .btn-primary { width: 100%; padding: 16px; background: var(--dark); color: #FFF; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 12px; }
+        .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+        .error-msg { color: #E53E3E; font-size: 0.85rem; margin-top: 16px; min-height: 1.2em; font-weight: 500; }
+        .footer-link { margin-top: 32px; font-size: 0.9rem; color: #666; }
+        .footer-link a { color: var(--primary); text-decoration: none; font-weight: 700; }
     </style>
 </head>
 <body>
-    <div class="auth-card">
-        <img src="/assets/logo.png" class="logo">
-        <h1>Join the Heritage</h1>
-        <p>Start your journey as a Heritage Keeper.</p>
-        <form id="signup-form">
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Email Address" required>
-            </div>
-            <div class="input-group">
-                <input type="password" id="password" placeholder="Create Password" required>
-                <div class="password-toggle" onclick="togglePass()">
-                    <i data-lucide="eye" id="eye-icon"></i>
-                </div>
-            </div>
-            <button type="submit" id="submit-btn" class="btn">Create Account</button>
-            <div id="msg"></div>
-        </form>
-        <div class="footer">
-            Already a member? <a href="/login/">Sign In</a>
+    <div class="login-card">
+        <img src="../assets/logo.png" class="logo" alt="Calalloo">
+        <h1>Start Your Vault</h1>
+        <p>Preserve your recipes for generations.</p>
+        
+        <div class="input-group">
+            <label>Display Name</label>
+            <input type="text" id="display_name" placeholder="Grandma's Kitchen">
+        </div>
+
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="name@email.com">
+        </div>
+        
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Min. 6 characters">
+        </div>
+        
+        <button class="btn-primary" id="signUpBtn" onclick="signUp()">Create Account</button>
+        <div class="error-msg" id="error"></div>
+        
+        <div class="footer-link">
+            Already a Keeper? <a href="/login/">Sign In</a>
         </div>
     </div>
 
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
         
-        lucide.createIcons();
-
-        function togglePass() {
-            const pass = document.getElementById('password');
-            const icon = document.getElementById('eye-icon');
-            if (pass.type === 'password') {
-                pass.type = 'text';
-                icon.setAttribute('data-lucide', 'eye-off');
-            } else {
-                pass.type = 'password';
-                icon.setAttribute('data-lucide', 'eye');
-            }
-            lucide.createIcons();
-        }
-
-        document.getElementById('signup-form').onsubmit = async (e) => {
-            e.preventDefault();
+        async function signUp() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const btn = document.getElementById('submit-btn');
-            const msgBox = document.getElementById('msg');
-
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-            msgBox.style.display = 'none';
-
-            const { data, error } = await sb.auth.signUp({ email, password });
+            const display_name = document.getElementById('display_name').value;
+            const btn = document.getElementById('signUpBtn');
+            const err = document.getElementById('error');
             
-            if (error) {
-                msgBox.innerText = error.message;
-                msgBox.className = 'error';
-                msgBox.style.display = 'block';
-                btn.disabled = false;
-                btn.style.opacity = '1';
+            if(!email || !password || !display_name) { err.innerText = "Please fill all fields."; return; }
+            
+            btn.innerText = "Creating Account...";
+            btn.disabled = true;
+            err.innerText = "";
+            
+            try {
+                const { data, error } = await sb.auth.signUp({ 
+                    email, 
+                    password,
+                    options: { data: { display_name } }
+                });
+                if(error) throw error;
                 
-                if (error.message.includes("already registered")) {
-                    msgBox.innerHTML = 'Account already exists. <a href="/login/">Sign in here.</a>';
-                }
-            } else if (data.user && data.session === null) {
-                msgBox.innerText = 'Success! Check your email to confirm your account.';
-                msgBox.className = 'success';
-                msgBox.style.display = 'block';
-            } else {
-                window.location.href = '/dashboard/';
+                btn.innerText = "Success! Checking...";
+                btn.style.background = "#2D5A27";
+                setTimeout(() => { window.location.href = '/login/'; }, 2000);
+            } catch (e) {
+                err.innerText = e.message;
+                btn.innerText = "Create Account";
+                btn.disabled = false;
             }
-        };
+        }
+        lucide.createIcons();
     </script>
 </body>
 </html>
-
-
-
