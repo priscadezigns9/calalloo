@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.7.2 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.7.3 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -324,14 +324,20 @@ let currentViewedUser = null;
 let userLocation = { lat: 10.1844, lng: -61.5533 }; // Default Trinidad
 async function init() {
 lucide.createIcons();
-// Sync User Location
+// Sync User Location (Universal Geotagging)
 if (navigator.geolocation) {
 navigator.geolocation.getCurrentPosition((pos) => {
 userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
 console.log("Sovereignty Location Locked:", userLocation);
+// Force Map Synchronization if active
+const mapFrame = document.getElementById('map-frame');
+if (mapFrame && document.getElementById('set-location').checked) {
+const q = `${userLocation.lat},${userLocation.lng}`;
+mapFrame.src = `https://www.google.com/maps/embed/v1/view?key={{credential:google-maps-embed-api-key}}&center=${q}&zoom=14&maptype=roadmap`;
+}
 }, (err) => {
 console.warn("Location Access Denied - Using Heritage Default:", err);
-});
+}, { enableHighAccuracy: true });
 }
 const { data: { session }, error: authError } = await sb.auth.getSession();
 let user = session?.user;
@@ -441,7 +447,9 @@ document.getElementById('set-camera').checked = settings.settings.camera || fals
 if (settings.settings.location) {
 document.getElementById('map-placeholder').style.display = 'none';
 document.getElementById('actual-map').style.display = 'block';
-document.getElementById('map-frame').src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31336.848529244033!2d-61.4727195!3d10.2285155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c3b999999999999%3A0x9999999999999999!2sTrinidad%20and%20Tobago!5e0!3m2!1sen!2s!4v1622720000000!5m2!1sen!2s";
+const mapFrame = document.getElementById('map-frame');
+const q = `${userLocation.lat},${userLocation.lng}`;
+mapFrame.src = `https://www.google.com/maps/embed/v1/view?key={{credential:google-maps-embed-api-key}}&center=${q}&zoom=14&maptype=roadmap`;
 }
 }
 }
