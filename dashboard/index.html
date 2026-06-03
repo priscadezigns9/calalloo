@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.1.2 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.1.3 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.1.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.1.2"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.1.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.1.3"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -613,7 +613,15 @@
             const remoteIds = new Set(remoteRecipes.map(r => r.id));
             const activePending = pending.filter(p => !remoteIds.has(p.id));
             
-            recipes = [...activePending, ...remoteRecipes];
+            recipes = [...activePending, ...remoteRecipes].map(r => {
+                const title = r.title.toLowerCase();
+                // Gold Standard Heritage Image Mapping
+                if (title.includes('calalloo')) r.cover_photo_url = "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg";
+                else if (title.includes('bake') && title.includes('saltfish')) r.cover_photo_url = "https://cookingwithria.com/wp-content/uploads/2015/02/FRIED-BAKE.jpg";
+                else if (title.includes('cornmeal porridge')) r.cover_photo_url = "https://www.africanbites.com/wp-content/uploads/2017/01/IMG_6396.jpg";
+                else if (title.includes('sada roti')) r.cover_photo_url = "https://cookingwithria.com/wp-content/uploads/2018/10/SADA-ROTI.jpg";
+                return r;
+            });
             renderPins('discovery-pins', recipes);
         }
 
