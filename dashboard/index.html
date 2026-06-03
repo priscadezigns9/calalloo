@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v27.0</title>
+    <title>Calalloo | Heritage Hub v28.4</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,295 +20,159 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: var(--font-main); background: var(--white); color: var(--dark); overflow-x: hidden; }
-        .display-font { font-family: var(--font-display); font-weight: 900; }
         
-        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 1000; border-bottom: 1px solid var(--border); }
-        .logo { height: 32px; border-radius: 6px; }
-        
-        .nav-pills { display: flex; gap: 8px; padding: 15px 20px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; border-bottom: 1px solid var(--border); background: white; position: sticky; top: 63px; z-index: 999; }
-        .pill { padding: 8px 20px; border-radius: 100px; font-weight: 700; font-size: 0.85rem; background: var(--light-bg); color: var(--grey-text); border: none; cursor: pointer; transition: 0.2s; }
-        .pill.active { background: var(--primary); color: white; }
-
-        .tab-content { display: none; padding-bottom: 80px; min-height: calc(100vh - 120px); }
-        .tab-content.active { display: block; }
-
-        .search-bar { padding: 20px; background: white; position: sticky; top: 120px; z-index: 900; }
-        .search-input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; background: var(--light-bg); }
-        .search-input:focus { border-color: var(--primary); background: white; }
-        
-        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 20px 20px; }
-        .recipe-card { border-radius: 12px; overflow: hidden; cursor: pointer; background: white; border: 1px solid var(--border); transition: transform 0.2s; }
-        .recipe-card:active { transform: scale(0.98); }
-        .recipe-image { height: 160px; background-size: cover; background-position: center; background-color: #eee; }
-        .recipe-info { padding: 12px; }
-        .recipe-info h3 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tag { font-size: 0.7rem; color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .profile-header { text-align: center; padding: 40px 20px; background: var(--light-bg); border-bottom: 1px solid var(--border); }
-        .avatar-main { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 15px; background: #eee; }
-        
-        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-secondary { background: var(--light-bg); color: var(--dark); }
-        
-        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border); transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        #map-container { width: 100%; height: calc(100vh - 180px); position: relative; background: #eee; }
-        #loader-overlay { position: fixed; inset: 0; background: white; z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #loader-overlay { 
+            position: fixed; inset: 0; background: white; z-index: 9999; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            transition: opacity 0.5s ease;
+        }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .messenger-bubble { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(232, 119, 34, 0.4); cursor: pointer; z-index: 2000; border: none; }
-        
-        #menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 25px; padding: 40px; }
-        .menu-item { color: white; font-size: 1.8rem; font-family: var(--font-display); cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        header { position: sticky; top: 0; background: var(--white); border-bottom: 1px solid var(--border); padding: 15px 20px; z-index: 1000; display: flex; align-items: center; justify-content: space-between; }
+        .logo-container { display: flex; align-items: center; gap: 10px; }
+        .logo-container img { width: 32px; height: 32px; border-radius: 50%; }
+        .logo-container span { font-family: var(--font-display); font-weight: 900; font-size: 1.4rem; letter-spacing: -0.02em; }
 
-        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 4000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal { background: white; width: 100%; max-width: 450px; border-radius: 28px; padding: 30px; position: relative; }
+        .search-container { padding: 15px 20px; }
+        .search-bar { background: var(--light-bg); border: 1px solid var(--border); border-radius: 14px; padding: 12px 18px; display: flex; align-items: center; gap: 12px; }
+        .search-bar input { border: none; background: transparent; flex: 1; font-family: var(--font-main); font-size: 0.95rem; outline: none; }
+
+        .section-title { padding: 0 20px 15px; font-family: var(--font-display); font-weight: 900; font-size: 1.2rem; }
+        .discovery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 20px 100px; }
         
-        @media (max-width: 480px) {
-            .recipe-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px 15px; }
-            .nav-pills { padding: 10px 15px; }
-        }
+        .recipe-card { border-radius: 20px; overflow: hidden; border: 1px solid var(--border); background: white; cursor: pointer; transition: transform 0.2s; }
+        .recipe-card:active { transform: scale(0.97); }
+        .recipe-image { width: 100%; aspect-ratio: 1; background-size: cover; background-position: center; background-color: var(--light-bg); }
+        .recipe-info { padding: 12px; }
+        .recipe-info h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
+        .recipe-info .tag { font-size: 0.65rem; color: var(--grey-text); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; height: 75px; padding-bottom: 15px; z-index: 1000; }
+        .nav-item { color: var(--grey-text); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: var(--primary); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: flex-end; }
+        .modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; }
+
+        .pill-container { display: flex; gap: 10px; padding: 0 20px 20px; overflow-x: auto; }
+        .pill { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: white; color: var(--grey-text); font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .pill.active { background: var(--dark); color: white; border-color: var(--dark); }
+
+        #map-container { width: 100%; height: calc(100vh - 180px); position: relative; background: #eee; }
     </style>
 </head>
 <body>
 
     <div id="loader-overlay">
         <div class="spinner"></div>
-        <p style="margin-top: 15px; font-weight: 700; color: var(--primary);">Calalloo Loading...</p>
+        <p style="margin-top: 15px; font-weight: 700; color: var(--primary);">Restoring Hub v28.4...</p>
     </div>
 
     <header>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="../assets/logo.png" class="logo" alt="Calalloo">
-            <span class="display-font" style="font-size: 1.2rem;">Calalloo</span>
+        <div class="logo-container">
+            <img src="../assets/logo.png" alt="Calalloo">
+            <span>Calalloo</span>
         </div>
-        <div onclick="toggleMenu()" style="cursor:pointer; background: var(--light-bg); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-            <i data-lucide="menu"></i>
-        </div>
+        <button onclick="signOut()" style="background:none; border:none;"><i data-lucide="log-out" size="20"></i></button>
     </header>
 
-    <div class="nav-pills">
-        <button class="pill active" onclick="showTab('discovery')">Discovery</button>
-        <button class="pill" onclick="showTab('vision')">Vision AI</button>
-        <button class="pill" onclick="showTab('reels')">Reels</button>
-        <button class="pill" onclick="showTab('map')">Map</button>
-        <button class="pill" onclick="showTab('profile')">Profile</button>
-        <button class="pill" onclick="showTab('settings')">Settings</button>
-    </div>
-
-    <!-- Discovery Tab -->
-    <div id="discovery" class="tab-content active">
-        <div class="search-bar">
-            <div style="position: relative; margin-bottom: 20px;">
-                <input type="text" class="search-input" placeholder="Search dishes or keepers..." oninput="handleSearch(this.value)">
-                <i data-lucide="search" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--grey-text); width: 20px;"></i>
-            </div>
-            <h2 class="display-font" style="font-size: 1.1rem; margin-bottom: 12px; color: var(--grey-text); text-transform: uppercase; letter-spacing: 1px;">Heritage Keepers</h2>
-            <div id="keepers-list" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;"></div>
-        </div>
-        <div class="recipe-grid" id="discovery-grid"></div>
-    </div>
-
-    <!-- Vision AI Tab -->
-    <div id="vision" class="tab-content">
-        <div style="padding: 40px 20px; text-align: center;">
-            <div style="background: var(--light-bg); padding: 40px 20px; border-radius: 30px; border: 2px dashed var(--border);">
-                <i data-lucide="scan-eye" style="width: 60px; height: 60px; color: var(--primary); margin-bottom: 20px;"></i>
-                <h2 class="display-font" style="font-size: 1.5rem; margin-bottom: 10px;">Heritage Vision</h2>
-                <p style="color: var(--grey-text); font-size: 0.9rem; margin-bottom: 25px;">Analyze Caribbean dishes with AI.</p>
-                <button class="btn btn-primary" style="margin: 0 auto;" onclick="alert('Camera initializing...')"><i data-lucide="camera"></i> Open Scanner</button>
-                <p style="margin-top: 15px; font-size: 0.75rem; color: var(--grey-text);">1 Free Scan Daily</p>
+    <div id="discovery" class="tab-content">
+        <div class="search-container">
+            <div class="search-bar">
+                <i data-lucide="search" size="18"></i>
+                <input type="text" placeholder="Search dishes or keepers..." onkeyup="handleSearch(this.value)">
             </div>
         </div>
+        <h2 class="section-title">Heritage Discovery</h2>
+        <div class="discovery-grid" id="discovery-grid"></div>
     </div>
 
-    <!-- Reels Tab -->
-    <div id="reels" class="tab-content">
-        <div style="padding: 20px;">
-            <h2 class="display-font" style="margin-bottom: 20px;">Kitchen Reels</h2>
-            <div id="reels-grid" class="recipe-grid">
-                <div class="recipe-card" style="aspect-ratio: 9/16; background: #000; position: relative; overflow: hidden; border-radius: 20px;">
-                    <video src="https://assets.mixkit.co/videos/preview/mixkit-chef-preparing-a-dish-in-the-kitchen-1869-large.mp4" loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
-                </div>
-                <div class="recipe-card" style="aspect-ratio: 9/16; background: #000; position: relative; overflow: hidden; border-radius: 20px;">
-                    <video src="https://assets.mixkit.co/videos/preview/mixkit-pouring-spices-on-a-clay-plate-41484-large.mp4" loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
-                </div>
-            </div>
-        </div>
+    <div id="map" class="tab-content" style="display:none;">
+        <h2 class="section-title">Keepers Map</h2>
+        <div id="map-container"></div>
     </div>
 
-    <!-- Map Tab -->
-    <div id="map" class="tab-content">
-        <div id="map-container">
-            <div style="padding: 40px; text-align: center;">
-                <i data-lucide="map" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 15px;"></i>
-                <h3 class="display-font">Discovery Map</h3>
-                <p style="color: var(--grey-text); margin-top: 10px;">Enable Google Maps in Settings to explore.</p>
-            </div>
+    <div id="profile" class="tab-content" style="display:none;">
+        <div style="text-align:center; padding: 30px 20px;">
+            <img id="p-avatar-view" src="https://via.placeholder.com/100" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--primary); padding:3px; margin-bottom:15px;">
+            <h2 id="p-display-name-view" class="display-font" style="font-size:1.8rem;">Heritage Keeper</h2>
+            <p id="p-username-view" style="color:var(--grey-text); font-weight:600; margin-bottom:20px;">@username</p>
         </div>
+        <div class="pill-container">
+            <div class="pill active" id="filter-public" onclick="filterKitchen('public')">Public Kitchen</div>
+            <div class="pill" id="filter-private" onclick="filterKitchen('private')">Private Kitchen</div>
+            <div class="pill" id="filter-saved" onclick="filterKitchen('saved')">Saved Recipes</div>
+        </div>
+        <div class="discovery-grid" id="kitchen-grid"></div>
     </div>
 
-    <!-- Profile Tab -->
-    <div id="profile" class="tab-content">
-        <div class="profile-header">
-            <img id="p-avatar-view" class="avatar-main" src="https://via.placeholder.com/100">
-            <h2 id="p-display-name-view" class="display-font" style="font-size: 1.8rem;">Heritage Keeper</h2>
-            <p id="p-username-view" style="color: var(--grey-text); font-size: 0.9rem;">@username</p>
-        </div>
-        <div style="padding: 20px;">
-            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 5px;">
-                <button class="pill active" id="filter-public" onclick="filterKitchen('public')">Public Kitchen</button>
-                <button class="pill" id="filter-private" onclick="filterKitchen('private')">Private Kitchen</button>
-                <button class="pill" id="filter-saved" onclick="filterKitchen('saved')">Saved Recipes</button>
-            </div>
-            <div id="kitchen-grid" class="recipe-grid"></div>
-        </div>
-    </div>
-
-    <!-- Settings Tab -->
-    <div id="settings" class="tab-content">
-        <div style="padding: 30px 20px;">
-            <h2 class="display-font" style="margin-bottom: 25px;">Heritage Settings</h2>
+    <div id="settings" class="tab-content" style="display:none; padding: 20px;">
+        <h2 class="display-font" style="margin-bottom:25px;">Settings</h2>
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <div><label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#999;">Full Name</label><input type="text" id="p-fullname" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; margin-top:5px;"></div>
+            <div><label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#999;">Username</label><input type="text" id="p-username" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; margin-top:5px;"></div>
+            <div><label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#999;">Bio</label><textarea id="p-bio" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; margin-top:5px; height:80px;"></textarea></div>
+            <div><label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#999;">WhatsApp</label><input type="text" id="p-whatsapp" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; margin-top:5px;"></div>
+            <div><label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#999;">Instagram</label><input type="text" id="p-instagram" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; margin-top:5px;"></div>
+            <div><label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#999;">Google Maps API Key</label><input type="password" id="p-maps-key" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; margin-top:5px;"></div>
             
-            <div style="margin-bottom: 25px; background: var(--light-bg); padding: 20px; border-radius: 20px; border: 1px solid var(--border);">
-                <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--grey-text); text-transform: uppercase; margin-bottom: 15px;">Identity</label>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <input type="text" id="p-fullname" class="search-input" placeholder="Full Name" style="background: white;">
-                    <input type="text" id="p-username" class="search-input" placeholder="@username" style="background: white;">
-                    <textarea id="p-bio" class="search-input" style="height: 80px; resize: none; background: white; padding-top: 12px;" placeholder="Tell your heritage story..."></textarea>
+            <button id="save-settings-btn" onclick="saveFullSettings()" style="width:100%; padding:16px; background:var(--dark); color:white; border:none; border-radius:12px; font-weight:700; margin-top:10px;">Save Heritage Preferences</button>
+            <button onclick="openProModal()" style="width:100%; padding:16px; border:2px solid var(--primary); color:var(--primary); background:none; border-radius:12px; font-weight:700;">Upgrade to Carole Pro</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-item active" id="nav-discovery" onclick="showTab('discovery')"><i data-lucide="compass"></i></div>
+        <div class="nav-item" id="nav-map" onclick="showTab('map')"><i data-lucide="map"></i></div>
+        <div class="nav-item" onclick="openMessenger()"><img src="../assets/logo.png" style="width:24px; height:24px; border-radius:50%;"></div>
+        <div class="nav-item" id="nav-profile" onclick="showTab('profile')"><i data-lucide="user"></i></div>
+        <div class="nav-item" id="nav-settings" onclick="showTab('settings')"><i data-lucide="settings"></i></div>
+    </nav>
+
+    <div id="messenger-overlay" class="modal-overlay">
+        <div class="modal-content" style="max-width: 800px; height: 80vh; display: flex; flex-direction: column; padding: 0;">
+            <div style="padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--light-bg);">
+                <h2 class="display-font">Heritage Messenger</h2>
+                <button onclick="closeMessenger()" style="background:none; border:none;"><i data-lucide="x"></i></button>
+            </div>
+            <div style="flex: 1; display: flex; overflow: hidden;">
+                <div style="width: 30%; border-right: 1px solid var(--border); overflow-y: auto; padding: 10px;">
+                    <div class="search-bar" style="margin-bottom: 15px; padding: 8px 12px;"><input type="text" placeholder="Search Keepers..." onkeyup="handleMessengerSearch(this.value)"></div>
+                    <h4 style="font-size: 0.7rem; color: var(--grey-text); text-transform: uppercase; margin: 10px 0;">Keepers</h4>
+                    <div id="messenger-keepers"></div>
+                    <h4 style="font-size: 0.7rem; color: var(--grey-text); text-transform: uppercase; margin: 20px 0 10px;">Groups</h4>
+                    <div id="messenger-groups"><div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; background:#f9f9f9;"><div style="background:var(--primary); color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800;">D</div><p style="font-size:0.85rem; font-weight:600;">Dash Valley</p></div></div>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; background: white;">
+                    <div id="chat-header" style="padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;"><p style="font-weight: 700; color: var(--grey-text);">Select a Keeper</p></div>
+                    <div id="chat-messages" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;"></div>
+                    <div style="padding: 15px; border-top: 1px solid var(--border); display: flex; gap: 10px;"><input type="text" placeholder="Write a message..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border);"><button style="background: var(--dark); color: white; border: none; padding: 10px 15px; border-radius: 10px;"><i data-lucide="send" size="18"></i></button></div>
                 </div>
             </div>
-
-            <div style="margin-bottom: 25px; background: var(--light-bg); padding: 20px; border-radius: 20px; border: 1px solid var(--border);">
-                <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--grey-text); text-transform: uppercase; margin-bottom: 15px;">Social Connections</label>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <input type="text" id="p-whatsapp" class="search-input" placeholder="WhatsApp Number" style="background: white;">
-                    <input type="text" id="p-instagram" class="search-input" placeholder="Instagram Username" style="background: white;">
-                </div>
-            </div>
-
-            <div style="margin-bottom: 25px; background: var(--light-bg); padding: 20px; border-radius: 20px; border: 1px solid var(--border);">
-                <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--grey-text); text-transform: uppercase; margin-bottom: 15px;">Google Maps Platform</label>
-                <input type="password" id="p-maps-key" class="search-input" placeholder="Paste Google Maps API Key" style="background: white;">
-            </div>
-
-            <div style="margin-bottom: 30px; background: var(--light-bg); padding: 20px; border-radius: 20px; border: 1px solid var(--border);">
-                <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--grey-text); text-transform: uppercase; margin-bottom: 15px;">Access & Privacy</label>
-                <div class="list-item"><span>Location Discovery</span> <label class="switch"><input type="checkbox" id="location-toggle"><span class="slider"></span></label></div>
-                <div class="list-item"><span>Camera Access</span> <label class="switch"><input type="checkbox" id="camera-toggle"><span class="slider"></span></label></div>
-                <div class="list-item"><span>Private Profile</span> <label class="switch"><input type="checkbox" id="privacy-toggle"><span class="slider"></span></label></div>
-            </div>
-
-            <button id="save-settings-btn" class="btn btn-primary" style="width: 100%; justify-content: center; height: 55px; border-radius: 100px; box-shadow: 0 10px 20px rgba(232, 119, 34, 0.2);" onclick="saveFullSettings()">
-                <i data-lucide="save"></i> Save Heritage Preferences
-            </button>
-            
-            <div class="list-item" onclick="signOut()" style="color: #ef4444; margin-top: 40px; justify-content: center; font-weight: 700; border: none; cursor: pointer;">
-                <i data-lucide="log-out" style="margin-right: 10px;"></i> Sign Out
-            </div>
         </div>
     </div>
 
-    <!-- Messenger Button -->
-    <button class="messenger-bubble" onclick="openHub()">
-        <i data-lucide="message-circle" style="width: 30px; height: 30px;"></i>
-    </button>
-
-    <!-- Menu Overlay -->
-    <div id="menu-overlay">
-        <div style="position: absolute; top: 20px; right: 20px; color: white; cursor: pointer;" onclick="toggleMenu()">
-            <i data-lucide="x" style="width: 32px; height: 32px;"></i>
-        </div>
-        <div class="menu-item" style="color: var(--primary);" onclick="openProModal()"><i data-lucide="zap"></i>Calalloo Pro</div>
-        <div class="menu-item" onclick="showTab('discovery'); toggleMenu()"><i data-lucide="search"></i>Discovery</div>
-        <div class="menu-item" onclick="showTab('map'); toggleMenu()"><i data-lucide="map"></i>Map</div>
-        <div class="menu-item" onclick="showTab('profile'); toggleMenu()"><i data-lucide="user"></i>Profile</div>
-        <div class="menu-item" onclick="showTab('settings'); toggleMenu()"><i data-lucide="settings"></i>Settings</div>
-        <div class="menu-item" onclick="signOut()"><i data-lucide="log-out"></i>Sign Out</div>
-    </div>
-
-    <!-- Messenger Modal -->
-    <div id="hub-modal" class="modal-bg" onclick="closeHub()">
-        <div class="modal" onclick="event.stopPropagation()" style="height: 80vh; max-height: 700px; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
-            <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-                <h2 class="display-font">Messenger</h2>
-                <i data-lucide="x" style="cursor: pointer;" onclick="closeHub()"></i>
-            </div>
-            <div style="padding: 15px;">
-                <div style="position: relative;">
-                    <input type="text" id="messenger-search" class="search-input" placeholder="Search friends you follow..." oninput="handleMessengerSearch(this.value)" style="padding: 10px 15px 10px 40px; font-size: 0.9rem;">
-                    <i data-lucide="search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 16px; color: var(--grey-text);"></i>
-                </div>
-            </div>
-            <div id="hub-messages" style="flex: 1; overflow-y: auto; padding: 20px;">
-                <p style="text-align: center; color: var(--grey-text); font-size: 0.8rem; padding-top: 100px;">No messages yet.</p>
-            </div>
-            <div style="padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px;">
-                <input type="text" id="hub-input" class="search-input" placeholder="Say something..." style="padding: 12px 15px;">
-                <button class="btn btn-primary" style="padding: 12px;" onclick="sendMessage()"><i data-lucide="send"></i></button>
-            </div>
+    <div id="dish-modal" class="modal-overlay">
+        <div class="modal-content" style="padding: 0; overflow: hidden; border-radius: 30px 30px 0 0;">
+            <div id="dish-image" style="width: 100%; height: 250px; background-size: cover; background-position: center; position: relative;"><button onclick="closeDish()" style="position: absolute; top: 15px; right: 15px; background: white; border-radius: 50%; width: 35px; height: 35px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"><i data-lucide="x"></i></button></div>
+            <div style="padding: 25px;"><h2 id="dish-title" class="display-font" style="font-size: 1.8rem; margin-bottom: 10px;">Dish Name</h2><p id="dish-desc" style="color: var(--grey-text); line-height: 1.6; margin-bottom: 20px;">Description...</p><div style="display: flex; gap: 15px;"><button class="btn-primary" style="flex: 1; padding: 14px; background:var(--dark); color:white; border:none; border-radius:12px; font-weight:700;">Cook Now</button><button style="background: var(--light-bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px;"><i data-lucide="bookmark"></i></button></div></div>
         </div>
     </div>
 
-    <!-- Pro Modal -->
-    <div id="pro-modal" class="modal-bg" onclick="closeProModal()">
-        <div class="modal" onclick="event.stopPropagation()" style="text-align: center;">
-            <div style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                <i data-lucide="zap" style="width: 32px; height: 32px;"></i>
-            </div>
-            <h2 class="display-font" style="font-size: 1.8rem; margin-bottom: 10px;">Calalloo Pro</h2>
-            <p style="color: var(--grey-text); margin-bottom: 25px;">Join the inner circle of Caribbean Heritage Keepers.</p>
-            <ul style="list-style: none; text-align: left; margin-bottom: 30px; font-size: 0.9rem;">
-                <li style="margin-bottom: 12px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 18px;"></i> Unlimited Vision AI Scans</li>
-                <li style="margin-bottom: 12px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 18px;"></i> High-Fidelity 3D Discovery Map</li>
-                <li style="margin-bottom: 12px; display: flex; gap: 10px;"><i data-lucide="check-circle" style="color: var(--primary); width: 18px;"></i> Exclusive Messenger Groups</li>
-            </ul>
-            <button class="btn btn-primary" style="width: 100%; justify-content: center; height: 50px; border-radius: 100px;" onclick="alert('Stripe loading...')">Unlock Pro — $9.99/mo</button>
-        </div>
-    </div>
-
-    
     <script>
-        console.log('Hub Bootstrap Started...');
-        
-        // IMMEDIATE LOADER CLEAR (Safety)
-        function forceClearLoader() {
-            const loader = document.getElementById('loader-overlay');
-            if (loader) {
-                console.log('Force clearing loader overlay.');
-                loader.style.display = 'none';
-            }
-        }
-        
-        // Clear after 3 seconds no matter what
-        setTimeout(forceClearLoader, 3000);
-
+        console.log('Sovereign Hub Bootstrap...');
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
-    
         let currentUserId = null, allRecipes = [], allKeepers = [], activeKitchenFilter = 'public';
 
-        
+        // EMERGENCY CLEAR - Run immediately
+        function clearLoader() {
+            const l = document.getElementById('loader-overlay');
+            if(l) { l.style.opacity = '0'; setTimeout(() => l.style.display = 'none', 500); }
+        }
+        setTimeout(clearLoader, 3000);
+
         async function loadData() {
-            console.log('Executing loadData...');
-            try {
-                const { data: { session }, error: sessionError } = await sb.auth.getSession();
-                if(sessionError) throw sessionError;
-                
-                if(!session) { 
-                    console.warn('No session found. Redirecting to login...');
-                    window.location.href = '/login/'; 
-                    return; 
-                }
-                currentUserId = session.user.id;
-    
             try {
                 const { data: { session } } = await sb.auth.getSession();
                 if(!session) { window.location.href = '/login/'; return; }
@@ -321,12 +185,10 @@
                 ]);
 
                 allRecipes = rRes.data || [];
-                allKeepers = (cRes.data || []).map(c => ({
-                    id: c.user_id, username: c.display_name, display_name: c.display_name, avatar_url: c.avatar_url, bio: c.bio
-                }));
+                allKeepers = (cRes.data || []).map(c => ({ id: c.user_id, display_name: c.display_name, avatar_url: c.avatar_url }));
 
-                renderRecipes(allRecipes);
-                renderKeepers(allKeepers);
+                renderRecipes(allRecipes, 'discovery-grid');
+                renderMessengerKeepers(allKeepers);
 
                 if(pRes.data) {
                     const p = pRes.data;
@@ -336,29 +198,51 @@
                     document.getElementById('p-whatsapp').value = p.whatsapp || '';
                     document.getElementById('p-instagram').value = p.instagram || '';
                     document.getElementById('p-maps-key').value = p.maps_key || '';
-                    document.getElementById('camera-toggle').checked = p.camera_enabled || false;
-                    document.getElementById('location-toggle').checked = p.location_enabled || false;
-                    document.getElementById('privacy-toggle').checked = p.privacy_enabled || false;
-
                     document.getElementById('p-avatar-view').src = p.avatar_url || 'https://via.placeholder.com/100';
                     document.getElementById('p-display-name-view').innerText = p.full_name || 'Heritage Keeper';
                     document.getElementById('p-username-view').innerText = '@' + (p.username || 'username');
                 }
 
-                const lastTab = localStorage.getItem('activeTab') || 'discovery';
-                showTab(lastTab);
-                document.getElementById('loader-overlay').style.display = 'none';
-                lucide.createIcons();
-            } catch (e) { console.error('System Load Error:', e); }
+                showTab(localStorage.getItem('activeTab') || 'discovery');
+                clearLoader();
+            } catch (e) { console.error('Load Error:', e); clearLoader(); }
         }
+
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).style.display = 'block';
+            if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
+            localStorage.setItem('activeTab', id);
+            if(id === 'map') initMap();
+            lucide.createIcons();
+        }
+
+        function renderRecipes(list, gridId) {
+            const grid = document.getElementById(gridId);
+            if(!grid) return;
+            grid.innerHTML = list.map(r => `
+                <div class="recipe-card" onclick="viewDish('${r.id}')">
+                    <div class="recipe-image" style="background-image: url(${r.cover_photo_url || ''})"></div>
+                    <div class="recipe-info"><h3>${r.title}</h3><span class="tag">Heritage</span></div>
+                </div>
+            `).join('');
+        }
+
+        function viewDish(id) {
+            const r = allRecipes.find(x => x.id === id);
+            if(!r) return;
+            document.getElementById('dish-title').innerText = r.title;
+            document.getElementById('dish-desc').innerText = r.description || 'No description available.';
+            document.getElementById('dish-image').style.backgroundImage = `url(${r.cover_photo_url || ''})`;
+            document.getElementById('dish-modal').style.display = 'flex';
+            lucide.createIcons();
+        }
+        function closeDish() { document.getElementById('dish-modal').style.display = 'none'; }
 
         async function saveFullSettings() {
             const btn = document.getElementById('save-settings-btn');
-            const originalContent = btn.innerHTML;
-            btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Saving...';
-            lucide.createIcons();
-
-            
+            btn.innerText = 'Saving...';
             const profileData = {
                 id: currentUserId,
                 full_name: document.getElementById('p-fullname').value,
@@ -368,220 +252,35 @@
                 instagram: document.getElementById('p-instagram').value,
                 maps_key: document.getElementById('p-maps-key').value
             };
-            
-            // Optional columns (Schema Protection)
-            try { profileData.camera_enabled = document.getElementById('camera-toggle').checked; } catch(e){}
-            try { profileData.location_enabled = document.getElementById('location-toggle').checked; } catch(e){}
-            try { profileData.privacy_enabled = document.getElementById('privacy-toggle').checked; } catch(e){}
-    
-
             const { error } = await sb.from('profiles').upsert(profileData);
-            if(!error) {
-                btn.innerHTML = '<i data-lucide="check"></i> Saved Successfully!';
-                btn.style.background = '#22c55e';
-                setTimeout(() => { 
-                    btn.innerHTML = originalContent; 
-                    btn.style.background = 'var(--primary)';
-                    lucide.createIcons(); 
-                }, 2000);
-                loadData();
-            } else {
-                alert(error.message);
-                btn.innerHTML = originalContent;
-                lucide.createIcons();
-            }
+            if(error) alert('Error saving: ' + error.message);
+            else { btn.innerText = 'Saved!'; setTimeout(() => { btn.innerText = 'Save Heritage Preferences'; loadData(); }, 2000); }
         }
-
-        function showTab(id) {
-            localStorage.setItem('activeTab', id);
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.pill').forEach(p => {
-                p.classList.remove('active');
-                if(p.getAttribute('onclick').includes(id)) p.classList.add('active');
-            });
-            const target = document.getElementById(id);
-            if(target) target.classList.add('active');
-            if(id === 'map') initGoogleMaps();
-            if(id === 'profile') filterKitchen(activeKitchenFilter);
-            if(id === 'reels') document.querySelectorAll('video').forEach(v => v.play()); else document.querySelectorAll('video').forEach(v => v.pause());
-            lucide.createIcons();
-        }
-
-        
-        async function initGoogleMaps() {
-            const userKey = document.getElementById('p-maps-key').value;
-            const key = userKey || 'AIzaSyA' + 'YOUR_DEFAULT_FALLBACK_KEY'; // Hidden fallback
-    
-            const container = document.getElementById('map-container');
-            const key = document.getElementById('p-maps-key').value;
-            if(!key || key.length < 10) {
-                container.innerHTML = `<div style="text-align:center; padding:40px;"><i data-lucide="map-off" style="width:48px; opacity:0.2;"></i><p>API Key required in Settings.</p></div>`;
-                lucide.createIcons(); return;
-            }
-            if(typeof google === 'undefined') {
-                const script = document.createElement('script');
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=startMap&v=weekly`;
-                document.head.appendChild(script);
-            } else { startMap(); }
-        }
-
-        window.startMap = function() {
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const center = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                const map = new google.maps.Map(document.getElementById('map-container'), { center, zoom: 15, mapId: "f568a9844f23b7e", tilt: 45, disableDefaultUI: true });
-                new google.maps.Marker({ position: center, map, icon: { path: google.maps.SymbolPath.CIRCLE, scale: 8, fillColor: '#E87722', fillOpacity: 1, strokeWeight: 2, strokeColor: 'white' } });
-            });
-        };
 
         async function filterKitchen(type) {
-            activeKitchenFilter = type;
-            document.querySelectorAll('#profile .pill').forEach(b => {
-                b.classList.remove('active');
-                if(b.id === `filter-${type}`) b.classList.add('active');
-            });
-            const grid = document.getElementById('kitchen-grid');
-            grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5;">Loading...</p>';
-            let q = sb.from('recipes').select('*').eq('creator_id', currentUserId);
+            document.querySelectorAll('#profile .pill').forEach(p => p.classList.remove('active'));
+            document.getElementById('filter-'+type).classList.add('active');
+            let q = sb.from('recipes').select('*').eq('cook_id', currentUserId);
             if(type === 'public') q = q.eq('is_published', true);
-            else if(type === 'private' || type === 'saved') q = q.eq('is_published', false);
             const { data } = await q;
-            if(data && data.length) {
-                grid.innerHTML = data.map(r => `<div class="recipe-card" onclick="alert('Viewing: '+ '${r.title}')"><div class="recipe-image" style="background-image: url(${r.cover_photo_url || ''})"></div><div class="recipe-info"><h3>${r.title}</h3></div></div>`).join('');
-            } else { grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--grey-text);">Kitchen empty.</p>`; }
+            renderRecipes(data || [], 'kitchen-grid');
         }
 
-        function handleMessengerSearch(query) {
-            const results = allKeepers.filter(k => (k.display_name||'').toLowerCase().includes(query.toLowerCase()));
-            console.log('Messenger Search:', results);
-            // Future: Render filtered friend list
-        }
-
-        function handleSearch(val) {
-            const q = val.toLowerCase().trim();
-            const fR = allRecipes.filter(r => r.title.toLowerCase().includes(q));
-            const fK = allKeepers.filter(k => (k.display_name||'').toLowerCase().includes(q));
-            renderRecipes(fR);
-            renderKeepers(fK);
-        }
-
-        function renderRecipes(list) {
-            const grid = document.getElementById('discovery-grid');
-            if(!grid) return;
-            grid.innerHTML = list.map(r => `<div class="recipe-card" onclick="viewDish('${r.id}')"><div class="recipe-image" style="background-image: url(${r.cover_photo_url || ''})"></div><div class="recipe-info"><h3>${r.title}</h3><span class="tag">Heritage</span></div></div>`).join('');
-        }
-
-        function renderKeepers(list) {
-            const container = document.getElementById('keepers-list');
-            if(!container) return;
-            container.innerHTML = list.map(k => `
-                <div style="flex:0 0 80px; text-align:center; cursor:pointer;" onclick="alert('Chat with '+ '${k.display_name}')">
-                    <img src="${k.avatar_url || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--primary); padding:2px;">
-                    <p style="font-size:0.7rem; font-weight:700; margin-top:5px; overflow:hidden;">${k.display_name || 'Keeper'}</p>
-                </div>
-            `).join('');
-        }
-
-        function toggleMenu() { const m = document.getElementById('menu-overlay'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; lucide.createIcons(); }
-        function openHub() { document.getElementById('hub-modal').style.display = 'flex'; lucide.createIcons(); }
-        function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
-        function openProModal() { document.getElementById('pro-modal').style.display = 'flex'; }
-        function closeProModal() { document.getElementById('pro-modal').style.display = 'none'; }
-        
-        function openMessenger() { document.getElementById('messenger-overlay').style.display = 'flex'; renderMessengerKeepers(allKeepers); lucide.createIcons(); }
+        function openMessenger() { document.getElementById('messenger-overlay').style.display = 'flex'; lucide.createIcons(); }
         function closeMessenger() { document.getElementById('messenger-overlay').style.display = 'none'; }
-        
         function renderMessengerKeepers(list) {
-            const container = document.getElementById('messenger-keepers');
-            if(!container) return;
-            container.innerHTML = list.map(k => `
+            document.getElementById('messenger-keepers').innerHTML = list.map(k => `
                 <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; cursor:pointer;" onclick="selectChat('${k.display_name}')">
                     <img src="${k.avatar_url || 'https://via.placeholder.com/40'}" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--border);">
-                    <div>
-                        <p style="font-size:0.85rem; font-weight:700;">${k.display_name}</p>
-                        <p style="font-size:0.7rem; color:var(--grey-text);">Active now</p>
-                    </div>
+                    <div><p style="font-size:0.85rem; font-weight:700;">${k.display_name}</p><p style="font-size:0.7rem; color:var(--grey-text);">Active</p></div>
                 </div>
             `).join('');
         }
+        function selectChat(name) { document.getElementById('chat-header').innerText = name; document.getElementById('chat-messages').innerHTML = '<p style="text-align:center; color:#999; font-size:0.8rem;">Start of conversation</p>'; }
 
-        function selectChat(name) {
-            document.getElementById('chat-header').innerHTML = `<img src="https://via.placeholder.com/30" style="width:30px; height:30px; border-radius:50%;"><p style="font-weight: 700;">${name}</p>`;
-            document.getElementById('chat-messages').innerHTML = `<p style="text-align: center; color: var(--grey-text); font-size: 0.8rem; padding: 20px;">This is the beginning of your heritage story with ${name}.</p>`;
-        }
-
-        function viewDish(id) {
-            const recipe = allRecipes.find(r => r.id === id);
-            if(!recipe) return;
-            document.getElementById('dish-title').innerText = recipe.title;
-            document.getElementById('dish-desc').innerText = recipe.description || 'No description available.';
-            document.getElementById('dish-image').style.backgroundImage = `url(${recipe.cover_photo_url || ''})`;
-            document.getElementById('dish-modal').style.display = 'flex';
-            lucide.createIcons();
-        }
-        function closeDish() { document.getElementById('dish-modal').style.display = 'none'; }
-    
         function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
-        
         window.onload = loadData;
         lucide.createIcons();
     </script>
-
-    <!-- MESSENGER OVERLAY (Sovereign 3-Panel) -->
-    <div id="messenger-overlay" class="modal-overlay">
-        <div class="modal-content" style="max-width: 800px; height: 80vh; display: flex; flex-direction: column; padding: 0;">
-            <div style="padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--light-bg);">
-                <h2 class="display-font">Heritage Messenger</h2>
-                <button onclick="closeMessenger()" style="background:none; border:none;"><i data-lucide="x"></i></button>
-            </div>
-            <div style="flex: 1; display: flex; overflow: hidden;">
-                <!-- Panel 1: Keepers & Groups -->
-                <div style="width: 30%; border-right: 1px solid var(--border); overflow-y: auto; padding: 10px;">
-                    <div class="search-bar" style="margin-bottom: 15px;">
-                        <i data-lucide="search" size="16"></i>
-                        <input type="text" placeholder="Search Keepers..." onkeyup="handleMessengerSearch(this.value)">
-                    </div>
-                    <h4 style="font-size: 0.7rem; color: var(--grey-text); text-transform: uppercase; margin: 10px 0;">Keepers</h4>
-                    <div id="messenger-keepers"></div>
-                    <h4 style="font-size: 0.7rem; color: var(--grey-text); text-transform: uppercase; margin: 20px 0 10px;">Groups</h4>
-                    <div id="messenger-groups">
-                        <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; cursor:pointer; background:#f9f9f9;">
-                            <div style="background:var(--primary); color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800;">D</div>
-                            <p style="font-size:0.85rem; font-weight:600;">Dash Valley</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Panel 2: Chat View -->
-                <div style="flex: 1; display: flex; flex-direction: column; background: white;">
-                    <div id="chat-header" style="padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
-                        <p style="font-weight: 700; color: var(--grey-text);">Select a Keeper to start chatting</p>
-                    </div>
-                    <div id="chat-messages" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
-                        <!-- Messages go here -->
-                    </div>
-                    <div style="padding: 15px; border-top: 1px solid var(--border); display: flex; gap: 10px;">
-                        <input type="text" id="chat-input" placeholder="Write a message..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
-                        <button style="background: var(--dark); color: white; border: none; padding: 10px 15px; border-radius: 10px;"><i data-lucide="send" size="18"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- DISH DETAIL MODAL -->
-    <div id="dish-modal" class="modal-overlay">
-        <div class="modal-content" style="padding: 0; overflow: hidden;">
-            <div id="dish-image" style="width: 100%; height: 250px; background-size: cover; background-position: center; position: relative;">
-                <button onclick="closeDish()" style="position: absolute; top: 15px; right: 15px; background: white; border-radius: 50%; width: 35px; height: 35px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"><i data-lucide="x"></i></button>
-            </div>
-            <div style="padding: 25px;">
-                <h2 id="dish-title" class="display-font" style="font-size: 1.8rem; margin-bottom: 10px;">Dish Name</h2>
-                <p id="dish-desc" style="color: var(--grey-text); line-height: 1.6; margin-bottom: 20px;">Description goes here...</p>
-                <div style="display: flex; gap: 15px;">
-                    <button class="btn-primary" style="flex: 1; padding: 14px;">Cook Now</button>
-                    <button style="background: var(--light-bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px;"><i data-lucide="bookmark"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-    </body>
+</body>
 </html>
