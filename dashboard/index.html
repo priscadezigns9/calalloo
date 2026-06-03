@@ -92,9 +92,33 @@
     </div>
 
     <div id="kitchen" class="tab-content">
-        <div style="padding:20px;">
-            <h2 class="display-font">My Kitchen</h2>
-            <div class="pinterest-grid" id="kitchen-pins" style="padding:10px 0;"></div>
+        <div style="padding: 25px;">
+            <div style="display:flex; align-items:flex-start; gap:25px; margin-bottom:30px;">
+                <div style="position:relative; cursor:pointer;" onclick="document.getElementById('avatar-input').click()">
+                    <img id="profile-avatar" src="https://via.placeholder.com/120" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:4px solid var(--primary);">
+                    <div style="position:absolute; bottom:0; right:0; background:var(--primary); color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid var(--bg);">
+                        <i data-lucide="camera" style="width:14px; height:14px;"></i>
+                    </div>
+                    <input type="file" id="avatar-input" style="display:none;" accept="image/*" onchange="updateAvatar(this)">
+                </div>
+                <div style="flex:1;">
+                    <h1 class="display-font" style="font-size:1.8rem; line-height:1;" id="prof-name">Kitchen Keeper</h1>
+                    <p style="color:var(--grey-text); font-size:0.9rem; margin-top:8px;">@keeper_id • Trinidad & Tobago</p>
+                    <div class="social-row" style="display: flex; gap: 15px; margin-top: 15px;">
+                        <div class="social-icon" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--light-bg); border: 1px solid var(--border); color: var(--dark); cursor: pointer;"><i data-lucide="message-circle" style="width:18px;"></i></div>
+                        <div class="social-icon" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--light-bg); border: 1px solid var(--border); color: var(--dark); cursor: pointer;"><i data-lucide="facebook" style="width:18px;"></i></div>
+                        <div class="social-icon" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--light-bg); border: 1px solid var(--border); color: var(--dark); cursor: pointer;"><i data-lucide="instagram" style="width:18px;"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kitchen-tabs" style="display: flex; gap: 15px; margin: 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <div class="k-tab active" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text); transition: 0.2s;" onclick="switchKitchenTab('saved')">Saved</div>
+                <div class="k-tab" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text); transition: 0.2s;" onclick="switchKitchenTab('public')">Public Posts</div>
+                <div class="k-tab" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text); transition: 0.2s;" onclick="switchKitchenTab('private')">Private Vault</div>
+            </div>
+
+            <div class="pinterest-grid" id="kitchen-pins" style="padding:0;"></div>
         </div>
     </div>
 
@@ -250,6 +274,21 @@
             
             const targetDesk = document.getElementById('d-tab-'+id);
             if (targetDesk) targetDesk.classList.add('active');
+        }
+
+        function updateAvatar(input) {
+            if(input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => document.getElementById('profile-avatar').src = e.target.result;
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function switchKitchenTab(tab) {
+            document.querySelectorAll('.k-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            // Mocking tab switch logic
+            renderPins('kitchen-pins', recipes.slice(0, tab === 'saved' ? 4 : 2));
         }
 
         function openRecipe(id) {
