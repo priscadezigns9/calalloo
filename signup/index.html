@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Join the Keepers | Calalloo</title>
+    <title>Join the Heritage | Calalloo</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -13,13 +13,18 @@
         :root { --primary: #E87722; --dark: #000; --bg: #FFFFFF; --font-display: 'Fraunces', serif; --font-main: 'Inter', sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: var(--font-main); background: var(--bg); color: var(--dark); height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        
+        .lang-switcher { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
+        .lang-btn { background: #F5F5F5; border: 1px solid #EEE; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; cursor: pointer; color: #666; transition: 0.2s; }
+        .lang-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
         .login-card { width: 100%; max-width: 400px; text-align: center; }
         .logo { width: 60px; margin-bottom: 24px; }
         h1 { font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 8px; font-weight: 900; }
         p { color: #666; margin-bottom: 32px; font-size: 0.95rem; }
         .input-group { position: relative; margin-bottom: 16px; text-align: left; }
         .input-group label { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; color: #999; }
-        input { width: 100%; padding: 14px 16px; border: 1px solid #EEE; border-radius: 12px; font-size: 1rem; font-family: var(--font-main); outline: none; transition: 0.2s; background: #FAFAFA; }
+        input { width: 100%; padding: 14px 16px; border: 1px solid #EEE; border-radius: 12px; font-size: 1rem; font-family: var(--font-main); outline: none; transition: 0.2s; background: #FAFAFA; color: var(--dark); }
         input:focus { border-color: var(--primary); background: #FFF; box-shadow: 0 4px 12px rgba(232, 119, 34, 0.08); }
         .btn-primary { width: 100%; padding: 16px; background: var(--dark); color: #FFF; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 12px; }
         .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
@@ -29,30 +34,36 @@
     </style>
 </head>
 <body>
+    <div class="lang-switcher">
+        <div class="lang-btn active" onclick="setLanguage('en')">EN</div>
+        <div class="lang-btn" onclick="setLanguage('es')">ES</div>
+        <div class="lang-btn" onclick="setLanguage('pt')">PT</div>
+    </div>
+
     <div class="login-card">
         <img src="../assets/logo.png" class="logo" alt="Calalloo">
-        <h1>Start Your Vault</h1>
-        <p>Preserve your recipes for generations.</p>
+        <h1 id="t-title">Start Your Vault</h1>
+        <p id="t-subtitle">Preserve your recipes for generations.</p>
         
         <div class="input-group">
-            <label>Display Name</label>
+            <label id="l-name">Display Name</label>
             <input type="text" id="display_name" placeholder="Grandma's Kitchen">
         </div>
 
         <div class="input-group">
-            <label>Email Address</label>
+            <label id="l-email">Email Address</label>
             <input type="email" id="email" placeholder="name@email.com">
         </div>
         
         <div class="input-group">
-            <label>Password</label>
+            <label id="l-pass">Password</label>
             <input type="password" id="password" placeholder="Min. 6 characters">
         </div>
         
         <button class="btn-primary" id="signUpBtn" onclick="signUp()">Create Account</button>
         <div class="error-msg" id="error"></div>
         
-        <div class="footer-link">
+        <div class="footer-link" id="t-footer">
             Already a Keeper? <a href="/login/">Sign In</a>
         </div>
     </div>
@@ -60,16 +71,74 @@
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
         
+        const translations = {
+            en: {
+                title: "Start Your Vault",
+                subtitle: "Preserve your recipes for generations.",
+                name: "Display Name",
+                email: "Email Address",
+                pass: "Password",
+                create: "Create Account",
+                already: "Already a Keeper? ",
+                signin: "Sign In"
+            },
+            es: {
+                title: "Inicia tu Bóveda",
+                subtitle: "Preserva tus recetas para generaciones.",
+                name: "Nombre a Mostrar",
+                email: "Correo Electrónico",
+                pass: "Contraseña",
+                create: "Crear Cuenta",
+                already: "¿Ya eres un Guardião? ",
+                signin: "Iniciar Sesión"
+            },
+            pt: {
+                title: "Comece seu Cofre",
+                subtitle: "Preserve suas receitas por gerações.",
+                name: "Nome de Exibição",
+                email: "E-mail",
+                pass: "Senha",
+                create: "Criar Conta",
+                already: "Já é um Guardião? ",
+                signin: "Entrar"
+            }
+        };
+
+        function setLanguage(lang) {
+            localStorage.setItem('calalloo_lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText.toLowerCase() === lang) b.classList.add('active');
+            });
+            
+            const t = translations[lang];
+            document.getElementById('t-title').innerText = t.title;
+            document.getElementById('t-subtitle').innerText = t.subtitle;
+            document.getElementById('l-name').innerText = t.name;
+            document.getElementById('l-email').innerText = t.email;
+            document.getElementById('l-pass').innerText = t.pass;
+            document.getElementById('signUpBtn').innerText = t.create;
+            document.getElementById('t-footer').innerHTML = t.already + `<a href="/login/">${t.signin}</a>`;
+        }
+
+        // Initialize language
+        const savedLang = localStorage.getItem('calalloo_lang') || 'en';
+        setLanguage(savedLang);
+
         async function signUp() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const display_name = document.getElementById('display_name').value;
             const btn = document.getElementById('signUpBtn');
             const err = document.getElementById('error');
+            const lang = localStorage.getItem('calalloo_lang') || 'en';
             
-            if(!email || !password || !display_name) { err.innerText = "Please fill all fields."; return; }
+            if(!email || !password || !display_name) { 
+                err.innerText = lang === 'es' ? "Por favor complete todos los campos." : (lang === 'pt' ? "Por favor, preencha todos os campos." : "Please fill all fields."); 
+                return; 
+            }
             
-            btn.innerText = "Creating Account...";
+            btn.innerText = lang === 'es' ? "Creando Cuenta..." : (lang === 'pt' ? "Criando conta..." : "Creating Account...");
             btn.disabled = true;
             err.innerText = "";
             
@@ -81,12 +150,12 @@
                 });
                 if(error) throw error;
                 
-                btn.innerText = "Success! Checking...";
+                btn.innerText = lang === 'es' ? "¡Éxito! Redirigiendo..." : (lang === 'pt' ? "Sucesso! Redirecionando..." : "Success! Redirecting...");
                 btn.style.background = "#2D5A27";
                 setTimeout(() => { window.location.href = '/login/'; }, 2000);
             } catch (e) {
                 err.innerText = e.message;
-                btn.innerText = "Create Account";
+                btn.innerText = translations[lang].create;
                 btn.disabled = false;
             }
         }
