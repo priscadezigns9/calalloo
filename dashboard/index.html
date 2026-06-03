@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.7.1 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.7.2 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest?v=39.6.9"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.6.9"></script>
+<script src="https://unpkg.com/lucide@latest?v=39.7.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.7.2"></script>
 <style>
 :root {
 --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -358,49 +358,47 @@ avatar: p.avatar_url || "https://via.placeholder.com/100?text=Heritage+Cook"
 } catch (e) {
 console.error("Cooks Discovery Latency:", e);
 }
-// Central Identity Controller (Gold Standard)
+// Central Identity Controller (Universal Recovery & Sovereignty)
 async function syncIdentity() {
-// Pre-load from cache for instant UI response
+// 1. Initial UI Guard: Load from cache or Auth Metadata for perceived speed
 const cache = JSON.parse(localStorage.getItem('calalloo_profile') || '{}');
-if (cache.name || cache.username) {
-populateProfileUI(cache.name, cache.username, cache.avatar, cache.settings);
-} else {
-// Auth Metadata as first-time fallback
-populateProfileUI(user.user_metadata?.full_name || "", user.user_metadata?.username || user.email.split('@')[0], user.user_metadata?.avatar_url || "https://via.placeholder.com/120", null);
-}
+const meta = user.user_metadata || {};
+const initialName = cache.name || meta.full_name || "Heritage Cook";
+const initialUser = cache.username || meta.username || user.email.split('@')[0];
+const initialAvatar = cache.avatar || meta.avatar_url || "https://via.placeholder.com/120";
+populateProfileUI(initialName, initialUser, initialAvatar, cache.settings || null);
 try {
-// Pull fresh profile from Supabase
-const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
+// 2. Deep Recovery: Query the Supabase Sovereign Vault
+const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
 if (profile) {
-const name = profile.full_name || cache.name || "";
-const username = profile.username || cache.username || "";
-const avatar = profile.avatar_url || cache.avatar || "https://via.placeholder.com/120";
+// SUCCESS: User found in cloud. Restore everything.
+const name = profile.full_name || initialName;
+const username = profile.username || initialUser;
+const avatar = profile.avatar_url || initialAvatar;
 const preferences = profile.taste_preferences || cache.settings || {};
 if (profile.whatsapp_pin) {
 if (!preferences.socials) preferences.socials = {};
 preferences.socials.whatsapp = profile.whatsapp_pin;
 }
 populateProfileUI(name, username, avatar, preferences);
-// Update Local Cache ONLY if we got valid data
+// Re-seed the local cache (Healing after a browser clear)
 localStorage.setItem('calalloo_profile', JSON.stringify({
 name, username, avatar, settings: preferences
 }));
-} else if (error && error.code === 'PGRST116') {
-// Profile strictly not found: Initialize in DB using current UI state
-const finalName = document.getElementById('prof-name').innerText;
-const finalUser = document.getElementById('prof-username').innerText.replace(/^@/, '');
-const finalAvatar = document.getElementById('profile-avatar').src;
-await sb.from('profiles').insert([{
+console.log("Sovereignty Restored: Identity recovered from Supabase Vault. 🛡️");
+} else {
+// 3. First-Time Initialization: No record in cloud, create it from current UI state
+console.log("Initializing new Heritage Sovereignty record...");
+await sb.from('profiles').upsert([{
 id: user.id,
-full_name: finalName,
-username: finalUser,
-avatar_url: finalAvatar,
+full_name: initialName,
+username: initialUser,
+avatar_url: initialAvatar,
 origin_platform: 'Calalloo'
 }]);
 }
 } catch (e) {
-console.error("Identity Sync Latency (Network):", e);
-// Stay with current UI state (already loaded from cache/metadata)
+console.error("Identity Recovery Latency:", e);
 }
 }
 await syncIdentity();
