@@ -77,13 +77,50 @@
         <button onclick="signOut()" style="background:none; border:none;"><i data-lucide="log-out" size="20"></i></button>
     </header>
 
+    
     <div id="discovery" class="tab-content">
         <div class="search-container">
             <div class="search-bar">
                 <i data-lucide="search" size="18"></i>
-                <input type="text" placeholder="Search dishes or keepers..." onkeyup="handleSearch(this.value)">
+                <input type="text" id="main-search-input" placeholder="Search dishes or keepers..." onkeyup="handleSearch(this.value)">
             </div>
         </div>
+
+        <!-- Section 1: Heritage Keepers (Horizontal) -->
+        <div style="padding: 0 20px 25px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 class="display-font" style="font-size:1.1rem;">Heritage Keepers</h3>
+                <span style="font-size:0.75rem; color:var(--primary); font-weight:700; cursor:pointer;">See All</span>
+            </div>
+            <div id="keepers-list" style="display:flex; gap:20px; overflow-x:auto; padding-bottom:5px;">
+                <!-- Keepers render here -->
+            </div>
+        </div>
+
+        <!-- Section 2: Recommended Dishes (Grid) -->
+        <h3 class="display-font" style="padding: 0 20px 15px; font-size:1.1rem;">Discover Dishes</h3>
+        <div class="discovery-grid" id="discovery-grid">
+            <!-- Dishes render here -->
+        </div>
+
+        <!-- Section 3: Trending Groups (3D List) -->
+        <div style="padding: 20px; background:var(--light-bg); border-radius:30px; margin: 0 20px 100px; border:1px solid var(--border);">
+            <h3 class="display-font" style="margin-bottom:15px; font-size:1rem;">Heritage Groups</h3>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:15px; border:1px solid var(--border);">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="background:var(--primary); color:white; width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:900;">DV</div>
+                        <div>
+                            <p style="font-weight:700; font-size:0.9rem;">Dash Valley</p>
+                            <p style="font-size:0.7rem; color:var(--grey-text);">1.2k Keepers</p>
+                        </div>
+                    </div>
+                    <button style="background:var(--dark); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:0.7rem; font-weight:700;">Join</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
         <h2 class="section-title">Heritage Discovery</h2>
         <div class="discovery-grid" id="discovery-grid"></div>
     </div>
@@ -218,6 +255,26 @@
             lucide.createIcons();
         }
 
+        
+        function handleSearch(query) {
+            query = query.toLowerCase();
+            const filteredRecipes = allRecipes.filter(r => r.title.toLowerCase().includes(query));
+            const filteredKeepers = allKeepers.filter(k => k.display_name.toLowerCase().includes(query));
+            renderRecipes(filteredRecipes, 'discovery-grid');
+            renderKeepers(filteredKeepers);
+        }
+
+        function renderKeepers(list) {
+            const container = document.getElementById('keepers-list');
+            if(!container) return;
+            container.innerHTML = list.map(k => `
+                <div style="flex:0 0 70px; text-align:center; cursor:pointer;" onclick="selectChat('${k.display_name}')">
+                    <img src="${k.avatar_url || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--primary); padding:2px;">
+                    <p style="font-size:0.65rem; font-weight:800; margin-top:8px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${k.display_name}</p>
+                </div>
+            `).join('');
+        }
+    
         function renderRecipes(list, gridId) {
             const grid = document.getElementById(gridId);
             if(!grid) return;
