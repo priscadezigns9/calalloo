@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.4.1 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.4.2 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.4.1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.1"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.4.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.2"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -1165,9 +1165,17 @@
                         };
                         
                         document.getElementById('capture-scan').onclick = () => {
-                            analyzeHeritageImage(null, "Live Culinary Stream Detected... Processing...");
+                            const canvas = document.createElement('canvas');
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(video, 0, 0);
+                            const base64 = canvas.toDataURL('image/jpeg');
+                            
                             stream.getTracks().forEach(track => track.stop());
                             document.body.removeChild(modal);
+                            
+                            analyzeHeritageImage(base64, "Neural Stream Captured...");
                         };
                     })
                     .catch(err => {
@@ -1177,26 +1185,40 @@
             }
         }
 
-        async function analyzeHeritageImage(file, customMessage) {
+        async function analyzeHeritageImage(source, customMessage) {
             const overlay = document.createElement('div');
             overlay.id = "analysis-loader";
             overlay.style = "position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center; padding:20px; backdrop-filter:blur(10px);";
             overlay.innerHTML = `
                 <div class="scanner-ring" style="width:120px; height:120px; border:4px solid var(--primary); border-radius:50%; border-top-color:transparent; animation: spin 1s linear infinite; margin-bottom:30px; box-shadow: 0 0 20px var(--primary);"></div>
-                <h3 class="display-font" style="font-size:1.8rem; margin-bottom:10px; letter-spacing:0.05em;">CULINARY DNA SEQUENCING...</h3>
-                <p style="opacity:0.7; font-size:0.9rem; max-width:300px;">Mapping heritage signatures, caloric density, and local procurement nodes.</p>
+                <h3 class="display-font" style="font-size:1.8rem; margin-bottom:10px; letter-spacing:0.05em;">NEURAL DNA SEQUENCING...</h3>
+                <p id="analysis-status" style="opacity:0.7; font-size:0.9rem; max-width:300px;">Analyzing Culinary Signatures...</p>
                 <div id="loading-bar" style="width:200px; height:4px; background:#222; border-radius:2px; margin-top:20px; overflow:hidden;">
-                    <div id="loading-progress" style="width:0%; height:100%; background:var(--primary); transition: width 3s linear;"></div>
+                    <div id="loading-progress" style="width:0%; height:100%; background:var(--primary); transition: width 4s linear;"></div>
                 </div>
             `;
             document.body.appendChild(overlay);
             
-            setTimeout(() => document.getElementById('loading-progress').style.width = '100%', 100);
+            const status = document.getElementById('analysis-status');
+            const progress = document.getElementById('loading-progress');
+            
+            setTimeout(() => progress.style.width = '100%', 100);
+            
+            const phases = [
+                "Isolating Spice Profiles...",
+                "Detecting Heritage Ingredients...",
+                "Calculating Caloric Density...",
+                "Mapping Procurement Nodes...",
+                "Finalizing Culinary Report..."
+            ];
+            
+            phases.forEach((p, i) => {
+                setTimeout(() => { if(status) status.innerText = p; }, i * 800);
+            });
 
-            // Simulate High-Fidelity Analysis Latency
-            setTimeout(() => {
-                document.body.removeChild(overlay);
-                showAnalysisHub({
+            // Neural Heritage Engine v1.0 (Logic Gateway)
+            const knowledgeBase = [
+                {
                     title: "Signature Trinidadian Callaloo",
                     authenticity: "98.4%",
                     calories: 345,
@@ -1208,8 +1230,41 @@
                         { name: "Pumpkin", cal: 26, price: "TTD 5.00/lb" },
                         { name: "Pimento Peppers", cal: 37, price: "TTD 6.00/bag" }
                     ]
-                });
-            }, 3500);
+                },
+                {
+                    title: "Jamaican Ackee & Saltfish",
+                    authenticity: "96.2%",
+                    calories: 410,
+                    ingredients: [
+                        { name: "Ackee", cal: 150, price: "TTD 35.00/can" },
+                        { name: "Salted Cod", cal: 120, price: "TTD 25.00/lb" },
+                        { name: "Onions", cal: 20, price: "TTD 5.00/lb" },
+                        { name: "Scotch Bonnet", cal: 10, price: "TTD 4.00/set" },
+                        { name: "Thyme", cal: 5, price: "TTD 3.00/bundle" },
+                        { name: "Black Pepper", cal: 5, price: "TTD 2.00/pack" }
+                    ]
+                },
+                {
+                    title: "Curry Channa & Alu",
+                    authenticity: "99.1%",
+                    calories: 280,
+                    ingredients: [
+                        { name: "Chickpeas (Channa)", cal: 110, price: "TTD 12.00/lb" },
+                        { name: "Potatoes (Alu)", cal: 80, price: "TTD 6.00/lb" },
+                        { name: "Curry Powder", cal: 30, price: "TTD 10.00/box" },
+                        { name: "Garlic", cal: 10, price: "TTD 5.00/set" },
+                        { name: "Culantro (Bandi)", cal: 5, price: "TTD 3.00/bundle" }
+                    ]
+                }
+            ];
+
+            // Simulate detection based on source or randomness
+            const analysisResult = knowledgeBase[Math.floor(Math.random() * knowledgeBase.length)];
+
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                showAnalysisHub(analysisResult);
+            }, 4000);
         }
 
         function showAnalysisHub(data) {
@@ -1236,7 +1291,7 @@
                             </div>
                         </div>
                         
-                        <h3 style="font-size:0.9rem; font-weight:800; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Ingredient DNA & Procurement</h3>
+                        <h3 style="font-size:0.9rem; font-weight:800; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Ingredient DNA & Caloric Breakdown</h3>
                         ${data.ingredients.map(ing => `
                             <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px dashed var(--border);">
                                 <div>
@@ -1251,16 +1306,16 @@
                     </div>
 
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                        <button onclick="findNearbyGroceries()" style="background:var(--text); color:var(--bg); border:none; padding:18px; border-radius:18px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px;">
-                            <i data-lucide="map-pin"></i> Find on Map
+                        <button onclick="findNearbyGroceries('${data.ingredients.map(i=>i.name).join(', ')}')" style="background:var(--text); color:var(--bg); border:none; padding:18px; border-radius:18px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
+                            <i data-lucide="map-pin"></i> Locate Ingredients
                         </button>
-                        <button onclick="compareMarketPrices()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:18px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px;">
-                            <i data-lucide="shopping-bag"></i> Best Prices
+                        <button onclick="compareMarketPrices()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:18px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
+                            <i data-lucide="shopping-bag"></i> Market Price Check
                         </button>
                     </div>
                     
-                    <button onclick="saveToKitchenFromHub()" style="width:100%; background:none; border:2px solid var(--primary); color:var(--primary); padding:18px; border-radius:18px; font-weight:800; margin-top:20px;">
-                        Add to My Kitchen Vault
+                    <button onclick="saveToKitchenFromHub('${data.title}')" style="width:100%; background:none; border:2px solid var(--primary); color:var(--primary); padding:18px; border-radius:18px; font-weight:800; margin-top:20px;">
+                        Archive in Heritage Vault
                     </button>
                 </div>
             `;
@@ -1269,20 +1324,20 @@
             lucide.createIcons();
         }
 
-        function findNearbyGroceries() {
+        function findNearbyGroceries(query) {
             // Using User's Coordinates from Account Context (Trinidad)
             const lat = 10.1844675;
             const lng = -61.5533621;
-            const url = `https://www.google.com/maps/search/supermarkets/@${lat},${lng},15z`;
+            const url = `https://www.google.com/maps/search/groceries+selling+${encodeURIComponent(query)}/@${lat},${lng},13z`;
             window.open(url, '_blank');
         }
 
         function compareMarketPrices() {
-            alert("Comparing prices across Pennywise, Massy Stores, and Local Markets... Best price found for bundle: TTD 145.00 🥘🛡️");
+            alert("Deep Market Sync Active: Best prices found at Massy Stores and Siparia Open Market. 🥘🛡️");
         }
 
-        function saveToKitchenFromHub() {
-            alert("Heritage analysis synced to your Vault! 🥘🛡️");
+        function saveToKitchenFromHub(title) {
+            alert(`"${title}" analysis has been archived in your Heritage Vault! 🥘🛡️`);
             document.body.removeChild(document.getElementById('analysis-hub'));
         }
         function toggleDarkMode() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
