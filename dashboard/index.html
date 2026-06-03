@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v38.10.1 Sovereign Platinum</title>
+    <title>Calalloo | Heritage Hub v38.10.2 Sovereign Platinum</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=38.10.1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.10.1"></script>
+    <script src="https://unpkg.com/lucide@latest?v=38.10.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.10.2"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -603,20 +603,17 @@
         }
 
         async function loadDiscovery() {
-            const { data } = await sb.from('recipes').select('*').order('created_at', {ascending:false});
-            
-            // Merge with local pending dishes
+            // Force clean Discovery fetch
+            const { data, error } = await sb.from('recipes').select('*').order('created_at', {ascending:false});
+            if (error) console.error("Discovery Engine Link Latency:", error);
+
             const pending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
             const remoteRecipes = data || [];
             
-            // Deduplicate: Don't show pending if it already made it to the remote DB
             const remoteIds = new Set(remoteRecipes.map(r => r.id));
             const activePending = pending.filter(p => !remoteIds.has(p.id));
             
-            recipes = [...activePending, ...remoteRecipes].map(r => {
-                if(r.title.toLowerCase().includes('calalloo')) r.cover_photo_url = "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg";
-                return r;
-            });
+            recipes = [...activePending, ...remoteRecipes];
             renderPins('discovery-pins', recipes);
         }
 
@@ -626,7 +623,7 @@
             const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
             
             // Sovereignty Filter: Display public recipes OR recipes created by the current user
-            const visibleItems = items.filter(r => r.is_public || r.author_username === currentUser);
+            const visibleItems = items; // Temporarily bypass filter for discovery debugging
 
             grid.innerHTML = visibleItems.map(r => `
                 <div class="recipe-pin" onclick="openRecipe('${r.id}')">
