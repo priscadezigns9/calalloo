@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.7.7 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.7.8 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -726,12 +726,12 @@ return;
 placeholder.style.display = 'none';
 actualMap.style.display = 'block';
 // High-Fidelity Universal Embed (No-Key Sovereign Format)
-// Using the standard public embed format to bypass API Key restriction issues
 const lat = userLocation.lat;
 const lng = userLocation.lng;
 // Constructing a robust search query for local groceries/markets near user coordinates
+// We must use the &center and &zoom for the view and &q for the pins
 const query = encodeURIComponent("groceries markets");
-mapFrame.src = `https://maps.google.com/maps?q=${query}&ll=${lat},${lng}&z=15&t=&ie=UTF8&iwloc=&output=embed`;
+mapFrame.src = `https://www.google.com/maps?q=${query}&ll=${lat},${lng}&z=15&t=&ie=UTF8&iwloc=&output=embed`;
 console.log(`Sovereign Universal Map: Discovery centered at ${lat}, ${lng}`);
 }
 }
