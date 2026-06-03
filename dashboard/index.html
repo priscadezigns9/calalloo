@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.3.2 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.3.3 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.3.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.3.2"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.3.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.3.3"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -649,9 +649,12 @@
                 else if (title.includes('sorrel')) r.cover_photo_url = "https://thatgirlcookshealthy.com/wp-content/uploads/2020/11/instant-pot-jamaican-sorrel-drink-pin.jpg";
                 else if (title.includes('ginger beer')) r.cover_photo_url = "https://thatgirlcookshealthy.com/wp-content/uploads/2020/07/ginger-beer-pin-1.jpg";
                 else if (title.includes('mauby')) r.cover_photo_url = "https://thatgirlcookshealthy.com/wp-content/uploads/2021/01/Caribbean-Mauby-Drink-pin.png";
-                else if (title.includes('doubles')) r.cover_photo_url = "https://cookingwithria.com/wp-content/uploads/2014/08/TRINIDAD-DOUBLES.jpg";
+                else if (title.includes('doubles')) r.cover_photo_url = "https://cookingwithria.com/wp-content/uploads/2025/05/trinidad-doubles_.jpeg";
+                else if (title.includes('jamaican') || title.includes('jamaixan')) {
+                    if (title.includes('gizzard') || title.includes('gizzada')) r.cover_photo_url = "https://ayouniquejourney.com/wp-content/uploads/2021/05/Jamaican-Gizzada-22-480x480.png.webp";
+                    else r.cover_photo_url = "https://www.myforkinglife.com/wp-content/uploads/2021/07/jamaican-ackee-and-saltfish-photo-1.jpg";
+                }
                 else if (title.includes('bake and shark')) r.cover_photo_url = "https://cookingwithria.com/wp-content/uploads/2024/02/fried-bake-and-shark-with-condiments-3.jpg";
-                else if (title.includes('gizzard') || title.includes('gizzada')) r.cover_photo_url = "https://ayouniquejourney.com/wp-content/uploads/2021/05/Jamaican-Gizzada-22-480x480.png.webp";
                 return r;
             });
             renderPins('discovery-pins', recipes);
