@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.7.6 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.7.7 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -148,7 +148,7 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 </div>
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
 <div><p style="font-weight:700;">Location Permissions</p><p style="font-size:0.8rem; color:var(--grey-text);">Required for Heritage Map</p></div>
-<input type="checkbox" id="set-location" style="width:auto;">
+<input type="checkbox" id="set-location" style="width:auto;" onchange="syncLocationImmediate()">
 </div>
 <div style="display:flex; justify-content:space-between; align-items:center;">
 <div><p style="font-weight:700;">Camera Permissions</p><p style="font-size:0.8rem; color:var(--grey-text);">Required for AI scanner</p></div>
@@ -322,6 +322,33 @@ let userLikes = new Set();
 let currentRecipeId = null;
 let currentViewedUser = null;
 let userLocation = { lat: 10.1844, lng: -61.5533 }; // Default Trinidad
+function syncLocationImmediate() {
+const toggle = document.getElementById('set-location');
+if (toggle.checked) {
+if (navigator.geolocation) {
+navigator.geolocation.getCurrentPosition((pos) => {
+userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+console.log("Sovereignty Location Locked (Immediate):", userLocation);
+// Force refresh of the map if the tab is visible
+if (document.getElementById('map').style.display === 'block') {
+loadSovereignMap();
+}
+}, (err) => {
+console.warn("Location Sync Failed:", err);
+toggle.checked = false;
+alert("Heritage Sync Failed: Please enable location in your browser settings. 🛡️");
+}, { enableHighAccuracy: true });
+} else {
+toggle.checked = false;
+alert("Sovereignty Error: Geolocation not supported. 🛡️");
+}
+} else {
+// If turned off, hide the map immediately
+if (document.getElementById('map').style.display === 'block') {
+loadSovereignMap();
+}
+}
+}
 async function init() {
 lucide.createIcons();
 // Sync User Location (Universal Geotagging)
