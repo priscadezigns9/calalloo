@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.4.5 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.5.0 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.4.5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.5"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.5.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.5.0"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -377,18 +377,25 @@
 
             // Central Identity Controller (Gold Standard)
             async function syncIdentity() {
+                // Pre-load from cache for instant UI response
+                const cache = JSON.parse(localStorage.getItem('calalloo_profile') || '{}');
+                if (cache.name || cache.username) {
+                    populateProfileUI(cache.name, cache.username, cache.avatar, cache.settings);
+                } else {
+                    // Auth Metadata as first-time fallback
+                    populateProfileUI(user.user_metadata?.full_name || "", user.user_metadata?.username || user.email.split('@')[0], user.user_metadata?.avatar_url || "https://via.placeholder.com/120", null);
+                }
+
                 try {
                     // Pull fresh profile from Supabase
                     const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
                     
                     if (profile) {
-                        // Sovereignty Guard: Always prioritize DB as source of truth
-                        const name = profile.full_name || "";
-                        const username = profile.username || "";
-                        const avatar = profile.avatar_url || "https://via.placeholder.com/120";
-                        const preferences = profile.taste_preferences || {};
+                        const name = profile.full_name || cache.name || "";
+                        const username = profile.username || cache.username || "";
+                        const avatar = profile.avatar_url || cache.avatar || "https://via.placeholder.com/120";
+                        const preferences = profile.taste_preferences || cache.settings || {};
                         
-                        // Merge taste_preferences with whatsapp_pin if available
                         if (profile.whatsapp_pin) {
                             if (!preferences.socials) preferences.socials = {};
                             preferences.socials.whatsapp = profile.whatsapp_pin;
@@ -396,35 +403,27 @@
 
                         populateProfileUI(name, username, avatar, preferences);
                         
-                        // Update Local Cache to match DB exactly
+                        // Update Local Cache ONLY if we got valid data
                         localStorage.setItem('calalloo_profile', JSON.stringify({
                             name, username, avatar, settings: preferences
                         }));
                     } else if (error && error.code === 'PGRST116') {
-                        // Profile strictly not found: Create one from Auth Metadata
-                        const newProfile = {
+                        // Profile strictly not found: Initialize in DB using current UI state
+                        const finalName = document.getElementById('prof-name').innerText;
+                        const finalUser = document.getElementById('prof-username').innerText.replace(/^@/, '');
+                        const finalAvatar = document.getElementById('profile-avatar').src;
+
+                        await sb.from('profiles').insert([{
                             id: user.id,
-                            full_name: user.user_metadata?.full_name || "",
-                            username: user.user_metadata?.username || user.email.split('@')[0],
-                            avatar_url: user.user_metadata?.avatar_url || "https://via.placeholder.com/120",
+                            full_name: finalName,
+                            username: finalUser,
+                            avatar_url: finalAvatar,
                             origin_platform: 'Calalloo'
-                        };
-                        await sb.from('profiles').insert([newProfile]);
-                        populateProfileUI(newProfile.full_name, newProfile.username, newProfile.avatar_url, null);
-                    } else if (error) {
-                        // Network or other latency: Fallback to cache ONLY
-                        throw error;
+                        }]);
                     }
                 } catch (e) {
-                    console.error("Identity Sync Latency:", e);
-                    // Critical Fallback: Use last known cache
-                    const cache = JSON.parse(localStorage.getItem('calalloo_profile') || '{}');
-                    if (cache.name || cache.username) {
-                        populateProfileUI(cache.name || "", cache.username || "", cache.avatar || "", cache.settings || null);
-                    } else {
-                        // Absolute fallback to Auth metadata if cache is also empty
-                        populateProfileUI(user.user_metadata?.full_name || "", user.user_metadata?.username || user.email.split('@')[0], user.user_metadata?.avatar_url || "https://via.placeholder.com/120", null);
-                    }
+                    console.error("Identity Sync Latency (Network):", e);
+                    // Stay with current UI state (already loaded from cache/metadata)
                 }
             }
 
@@ -484,17 +483,18 @@
             else document.getElementById('profile-avatar').src = "https://via.placeholder.com/120";
         }
 
-        async function saveSettings() {
-            const newName = document.getElementById('edit-name').value;
-            const newUsername = document.getElementById('edit-username').value;
-            const newWhatsapp = document.getElementById('edit-whatsapp').value;
-            const newFacebook = document.getElementById('edit-facebook').value;
-            const newInstagram = document.getElementById('edit-instagram').value;
+        async function saveSettings(btn) {
+            if (!btn) btn = document.querySelector('button[onclick^="saveSettings"]');
+            const newName = document.getElementById('edit-name').value.trim();
+            const newUsername = document.getElementById('edit-username').value.trim().replace(/^@/, '');
+            const newWhatsapp = document.getElementById('edit-whatsapp').value.trim();
+            const newFacebook = document.getElementById('edit-facebook').value.trim();
+            const newInstagram = document.getElementById('edit-instagram').value.trim();
             const newLang = document.getElementById('edit-lang').value;
             const avatar = document.getElementById('profile-avatar').src;
             const hasLocation = document.getElementById('set-location').checked;
             const hasCamera = document.getElementById('set-camera').checked;
-            const btn = event.target;
+            
             const originalText = "Save Changes";
             
             const profileSettings = { 
@@ -502,36 +502,42 @@
                 settings: { location: hasLocation, camera: hasCamera, lang: newLang } 
             };
 
-            // Fast UI Update (Sovereignty Formatting)
+            // 1. Immediate UI & Cache Update (Sovereignty First)
             populateProfileUI(newName, newUsername, avatar, profileSettings);
-
-            // Immediate Local Cache Update
             localStorage.setItem('calalloo_profile', JSON.stringify({
-                name: newName, 
-                username: newUsername, 
-                avatar, 
-                settings: profileSettings
+                name: newName, username: newUsername, avatar, settings: profileSettings
             }));
 
-            btn.innerText = "Syncing to Cloud...";
+            btn.innerText = "Syncing Hub...";
             btn.disabled = true;
 
             try {
                 const { data: { user } } = await sb.auth.getUser();
                 if (!user) throw new Error("No active session.");
 
-                // Direct Upsert: Force write to Supabase
-                const { error } = await sb.from('profiles').upsert({
+                // 2. Persistent Cloud Sync (Profiles Table)
+                const { error: profileError } = await sb.from('profiles').upsert({
                     id: user.id,
                     full_name: newName,
                     username: newUsername,
                     avatar_url: avatar,
                     whatsapp_pin: newWhatsapp,
-                    taste_preferences: profileSettings
+                    taste_preferences: profileSettings,
+                    updated_at: new Date().toISOString()
                 }, { onConflict: 'id' });
 
-                if (error) throw error;
-                btn.innerText = "Synced to Vault! 🛡️🥘";
+                if (profileError) throw profileError;
+
+                // 3. Secondary Metadata Sync (Auth Layer)
+                await sb.auth.updateUser({
+                    data: { 
+                        full_name: newName,
+                        username: newUsername,
+                        avatar_url: avatar
+                    }
+                });
+
+                btn.innerText = "Sovereignty Confirmed! 🛡️🥘";
             } catch (err) {
                 console.error("Vault Sync Latency:", err);
                 btn.innerText = "Saved Locally ✓";
