@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.8.2 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.8.3 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1334,20 +1334,28 @@ const hub = document.getElementById('analysis-hub');
 if(hub) document.body.removeChild(hub);
 showTab('map');
 const placeholder = document.getElementById('map-placeholder');
+const actualMap = document.getElementById('actual-map');
+const mapFrame = document.getElementById('map-frame');
 if(placeholder) {
 placeholder.innerHTML = `
 <div class="scanner-ring" style="width:80px; height:80px; border:4px solid var(--primary); border-radius:50%; border-top-color:transparent; animation: spin 1s linear infinite; margin-bottom:20px;"></div>
 <p style="font-weight:700;">Finding ingredients for ${query}...</p>
 <p style="font-size:0.8rem; color:var(--grey-text); margin-top:5px;">Locating nearby heritage markets and grocery stores.</p>
 `;
+placeholder.style.display = 'flex';
 }
+if(actualMap) actualMap.style.display = 'none';
+// Sovereignty Lockdown: Using the precision LL coordinate override to prevent "Ghost Reverting"
 setTimeout(() => {
-const actualMap = document.getElementById('actual-map');
-const mapFrame = document.getElementById('map-frame');
 if(actualMap && mapFrame && placeholder) {
 placeholder.style.display = 'none';
 actualMap.style.display = 'block';
-mapFrame.src = `https://www.google.com/maps?q=grocery+stores+near+me+for+${encodeURIComponent(query)}&ll=${userLocation.lat},${userLocation.lng}&output=embed`;
+const lat = userLocation.lat;
+const lng = userLocation.lng;
+const encodedQuery = encodeURIComponent(`groceries markets ingredients for ${query}`);
+// High-Fidelity coordinate-locked URL to ensure it never drifts back to Port of Spain
+mapFrame.src = `https://www.google.com/maps?q=${encodedQuery}&ll=${lat},${lng}&z=15&t=&ie=UTF8&iwloc=&output=embed`;
+console.log(`Heritage Discovery Locked: ${lat}, ${lng} for ${query}`);
 }
 }, 2500);
 }
