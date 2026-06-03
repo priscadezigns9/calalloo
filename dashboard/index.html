@@ -100,15 +100,75 @@
 
     <div id="settings" class="tab-content">
         <div style="padding:20px; max-width:600px; margin: 0 auto;">
-            <h2 class="display-font" style="margin-bottom:20px;">Settings</h2>
+            <h2 class="display-font" style="margin-bottom:30px; font-size:2rem;">Settings</h2>
+            
             <div class="settings-card">
-                <div class="form-group"><label>Full Name</label><input type="text" id="s-name" value="Prisca Dezigns"></div>
-                <div class="form-group"><label>Language</label>
-                    <select><option>English</option><option>Español</option><option>Português</option></select>
+                <h3 style="margin-bottom:20px; color:var(--primary); font-size:0.9rem; text-transform:uppercase;">Account Details</h3>
+                <div class="form-group">
+                    <label>Profile Name</label>
+                    <input type="text" id="edit-name" value="Prisca Dezigns">
                 </div>
-                <button onclick="alert('Settings Saved!')" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer;">Save Changes</button>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="edit-username" value="@prisca">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp Number</label>
+                    <input type="text" id="edit-whatsapp" placeholder="+1 868 ...">
+                </div>
+                <div class="form-group">
+                    <label>Facebook</label>
+                    <input type="text" id="edit-facebook" placeholder="facebook.com/yourprofile">
+                </div>
+                <div class="form-group">
+                    <label>Instagram</label>
+                    <input type="text" id="edit-instagram" placeholder="@yourinstagram">
+                </div>
+                <div class="form-group">
+                    <label>Language</label>
+                    <select id="edit-lang">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="pt">Português</option>
+                        <option value="fr">Français</option>
+                        <option value="hi">Hindi (हिन्दी)</option>
+                        <option value="zh">Chinese (中文)</option>
+                        <option value="ar">Arabic (العربية)</option>
+                        <option value="de">Deutsch</option>
+                        <option value="it">Italiano</option>
+                        <option value="nl">Nederlands</option>
+                    </select>
+                </div>
+                
+                <div style="margin:25px 0; border-top:1px solid var(--border); padding-top:25px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); text-transform:uppercase; margin-bottom:20px; display:block;">Permissions & UI</label>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <div>
+                            <p style="font-weight:700;">Night Mode</p>
+                            <p style="font-size:0.8rem; color:var(--grey-text);">Sync UI with your light</p>
+                        </div>
+                        <input type="checkbox" id="set-dark" onchange="toggleDarkMode()" style="width:auto;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <div>
+                            <p style="font-weight:700;">Location Permissions</p>
+                            <p style="font-size:0.8rem; color:var(--grey-text);">Required for Heritage Map</p>
+                        </div>
+                        <input type="checkbox" checked style="width:auto;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <p style="font-weight:700;">Camera Permissions</p>
+                            <p style="font-size:0.8rem; color:var(--grey-text);">Required for AI scanner</p>
+                        </div>
+                        <input type="checkbox" checked style="width:auto;">
+                    </div>
+                </div>
+
+                <button onclick="alert('Platinum settings saved! 🛡️🥘')" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Save Changes</button>
             </div>
-            <button onclick="alert('Signed Out')" style="color:red; background:none; border:none; width:100%; font-weight:700;">Sign Out</button>
+            
+            <button onclick="alert('Signed Out')" style="background:none; border:none; color:red; font-weight:700; cursor:pointer; width:100%; margin-top:20px;">Sign Out</button>
         </div>
     </div>
 
