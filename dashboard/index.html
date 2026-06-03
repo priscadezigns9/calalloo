@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.1.1 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.1.2 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.1.1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.1.1"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.1.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.1.2"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -76,7 +76,7 @@
         <div style="display:flex; align-items:center; gap:15px; flex:1; max-width:400px; margin: 0 20px;">
             <div style="display:flex; align-items:center; gap:10px; background:var(--light-bg); padding:8px 15px; border-radius:12px; border:1px solid var(--border); width:100%;">
                 <i data-lucide="search" style="width:18px; color:var(--grey-text); cursor:pointer;" onclick="performSearch()"></i>
-                <input type="text" id="header-search" placeholder="Search heritage & cooks..." style="background:none; border:none; width:100%; font-size:0.9rem;" onkeyup="if(event.key==='Enter') performSearch()">
+                <input type="text" id="header-search" placeholder="Search heritage & cooks..." style="background:none; border:none; width:100%; font-size:0.9rem;" oninput="performSearch()">
             </div>
         </div>
         <div class="desktop-tabs">
@@ -729,10 +729,17 @@
 
         function performSearch() {
             const q = document.getElementById('header-search').value.toLowerCase();
+            const grid = document.getElementById('discovery-pins');
+            
+            if (!q) {
+                renderPins('discovery-pins', recipes);
+                return;
+            }
+
             const filteredRecipes = recipes.filter(r => r.title.toLowerCase().includes(q));
             const filteredCooks = cooks.filter(c => c.name.toLowerCase().includes(q) || c.username.toLowerCase().includes(q));
+            const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
             
-            const grid = document.getElementById('discovery-pins');
             let html = '';
             
             if (filteredCooks.length > 0) {
@@ -752,21 +759,34 @@
             }
 
             if (filteredRecipes.length > 0) {
-                if (filteredCooks.length > 0) {
-                    html += `<div style="column-span:all; padding:10px; margin:15px 0; border-bottom:1px solid var(--border);"><h3 class="display-font" style="font-size:1.2rem;">Heritage Dishes</h3></div>`;
+                const visibleRecipes = filteredRecipes.filter(r => {
+                    const isPublished = r.is_published === true || r.is_published === undefined || r.is_published === null;
+                    return isPublished || r.author_username === currentUser;
+                });
+
+                if (visibleRecipes.length > 0) {
+                    if (filteredCooks.length > 0) {
+                        html += `<div style="column-span:all; padding:10px; margin:15px 0; border-bottom:1px solid var(--border);"><h3 class="display-font" style="font-size:1.2rem;">Heritage Dishes</h3></div>`;
+                    }
+                    html += visibleRecipes.map(r => `
+                        <div class="recipe-pin" onclick="openRecipe('${r.id}')">
+                            <img src="${r.cover_photo_url || 'https://via.placeholder.com/400x300?text=Heritage+Recipe'}">
+                            <div class="pin-overlay">
+                                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                                    <h3>${r.title}</h3>
+                                    ${r.is_published === false ? '<i data-lucide="lock" style="width:14px; height:14px; color:white;"></i>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
                 }
-                html += filteredRecipes.filter(r => r.is_public).map(r => `
-                    <div class="recipe-pin" onclick="openRecipe('${r.id}')">
-                        <img src="${r.cover_photo_url || ''}">
-                        <div class="pin-overlay"><h3>${r.title}</h3></div>
-                    </div>
-                `).join('');
             }
 
-            if (filteredRecipes.length === 0 && filteredCooks.length === 0) {
+            if (html === '') {
                 html = `<div style="column-span:all; text-align:center; padding:50px; color:var(--grey-text);">No matches found in the vault.</div>`;
             }
             grid.innerHTML = html;
+            lucide.createIcons();
         }
 
         function saveToKitchen() { alert("Saved to your Kitchen! 🥘🛡️"); closeModal('detail-modal'); }
