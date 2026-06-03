@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v38.9.7 Sovereign Platinum</title>
+    <title>Calalloo | Heritage Hub v38.9.8 Sovereign Platinum</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=38.9.7"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.9.7"></script>
+    <script src="https://unpkg.com/lucide@latest?v=38.9.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=38.9.8"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -170,7 +170,7 @@
                 </div>
                 <button onclick="saveSettings()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Save Changes</button>
             </div>
-            <button onclick="alert('Signed Out')" style="color:red; background:none; border:none; width:100%; font-weight:700; margin-top:20px;">Sign Out</button>
+            <button onclick="signOut()" style="color:red; background:none; border:none; width:100%; font-weight:700; margin-top:20px; cursor:pointer;">Sign Out</button>
         </div>
     </div>
 
@@ -348,6 +348,13 @@
         async function init() {
             lucide.createIcons();
             
+            // 0. Auth Guard: Ensure the session is valid
+            const { data: { user } } = await sb.auth.getUser();
+            if (!user) {
+                window.location.href = '/login/';
+                return;
+            }
+
             // Sovereignty Lockdown: Force-clear legacy developer handles
             const savedProfile = localStorage.getItem('calalloo_profile');
             if (savedProfile) {
@@ -364,7 +371,6 @@
             }
 
             // Restore from Supabase session (Source of Truth)
-            const { data: { user } } = await sb.auth.getUser();
             if (user) {
                 const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
                 if (profile && !error) {
@@ -967,6 +973,21 @@
         function toggleDarkMode() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
 
         init();
+        async function signOut() {
+            const { error } = await sb.auth.signOut();
+            if (error) {
+                console.error("Sign Out Error:", error);
+                alert("Error signing out. Please try again.");
+                return;
+            }
+            // Clear all local sovereignty data
+            localStorage.removeItem('calalloo_profile');
+            localStorage.removeItem('auth_lock');
+            localStorage.removeItem('calalloo_pending_dishes');
+            
+            // Redirect to the login gateway
+            window.location.href = '/login/';
+        }
     </script>
 </body>
 </html>
