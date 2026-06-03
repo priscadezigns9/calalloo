@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v40.0.0 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v40.1.0 Sovereign Gold Standard</title>
 <meta name="description" content="Calalloo | Heritage Hub: The definitive Caribbean culinary social network. Discover, share, and preserve authentic recipes from across the Caribbean islands, including Trinidad and Tobago, Jamaica, Barbados, Guyana, Grenada, Saint Lucia, and more. Use our AI Heritage Scanner to analyze dishes and sweets, and find local ingredients with our real-time Heritage Map.">
 <meta name="keywords" content="Calalloo, Heritage Hub, Caribbean food, Caribbean recipes, Trinidadian cuisine, Jamaican food, Guyanese recipes, Barbadian food, Grenadian cuisine, Saint Lucian food, Callaloo recipe, Doubles, Jerk Chicken, Ackee and Saltfish, Oil Down, Pepperpot, Mofongo, Cou-cou, Pelau, Curried Goat, Roti, Caribbean cooking, food scanner, heritage map, Caribbean social network, Caribbean culture, Caribbean heritage, Antigua and Barbuda, Bahamas, Cuba, Dominica, Dominican Republic, Haiti, Saint Kitts and Nevis, Saint Vincent and the Grenadines, Puerto Rico, Cayman Islands, Virgin Islands">
 <meta name="geo.region" content="TT-SIP, JM, BB, GY, GD, LC, AG, BS, CU, DM, DO, HT, KN, VC, PR, KY, VG" />
@@ -82,6 +82,7 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <div class="desktop-tabs">
 <div class="tab-btn active" id="d-tab-discovery" onclick="showTab('discovery')">Discovery</div>
 <div class="tab-btn" id="d-tab-map" onclick="showTab('map')">Map</div>
+<div class="tab-btn" id="d-tab-magazine" onclick="showTab('magazine')">Magazine</div>
 <div class="tab-btn" id="d-tab-kitchen" onclick="showTab('kitchen')">Kitchen</div>
 <div class="tab-btn" id="d-tab-settings" onclick="showTab('settings')">Settings</div>
 </div>
@@ -128,6 +129,59 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <p style="font-weight:700; margin-top:10px;">Heritage Map</p>
 <p style="font-size:0.8rem; color:var(--grey-text); text-align:center; padding: 0 20px;">Establishing connection to Google Heritage Satellites...<br>Please ensure Location Permissions are enabled in Settings.</p>
 <button onclick="showTab('settings')" style="margin-top:15px; background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:700; cursor:pointer;">Enable Access</button>
+</div>
+</div>
+</div>
+<div id="magazine" class="tab-content" style="padding: 25px; max-width: 1200px; margin: 0 auto;">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+<h2 class="display-font" style="font-size:2rem;">Heritage Magazine</h2>
+<div style="display:flex; gap:10px;">
+<button class="pill active">Latest</button>
+<button class="pill">Features</button>
+<button class="pill">Culture</button>
+</div>
+</div>
+<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:25px;">
+<div class="panel-slam" style="grid-column: 1 / -1; display:flex; gap:30px; padding:30px; background:var(--light-bg); border-radius:32px; border:1px solid var(--border); overflow:hidden; flex-wrap:wrap;">
+<div style="flex:1.5; min-width:300px; border-radius:20px; overflow:hidden; height:400px;">
+<img src="https://via.placeholder.com/800x600?text=Callaloo+Origins" style="width:100%; height:100%; object-fit:cover;">
+</div>
+<div style="flex:1; min-width:300px; display:flex; flex-direction:column; justify-content:center;">
+<span style="color:var(--primary); font-weight:800; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em;">Master Feature</span>
+<h1 class="display-font" style="font-size:2.5rem; margin:15px 0;">The Ancestral Soul of Sunday Callaloo</h1>
+<p style="color:var(--grey-text); line-height:1.7; margin-bottom:25px;">Beyond the ingredients lies a story of survival and fusion. We trace the dasheen bush from West African shores to the heart of the Trinidadian kitchen. A doctor-level diagnostic of our national dish.</p>
+<div style="display:flex; align-items:center; gap:15px;">
+<img src="https://via.placeholder.com/40?text=A" style="width:40px; height:40px; border-radius:50%;">
+<div>
+<p style="font-weight:700; font-size:0.9rem;">Analytical Faith</p>
+<p style="font-size:0.75rem; color:var(--grey-text);">June 2026 • 12 min read</p>
+</div>
+</div>
+</div>
+</div>
+<div class="panel-slam" style="padding:20px; background:var(--bg); border-radius:24px; border:1px solid var(--border);">
+<div style="height:200px; border-radius:16px; overflow:hidden; margin-bottom:20px;">
+<img src="https://via.placeholder.com/400x300?text=Curry+Science" style="width:100%; height:100%; object-fit:cover;">
+</div>
+<span style="color:var(--primary); font-weight:800; font-size:0.65rem; text-transform:uppercase;">Culinary Science</span>
+<h3 class="display-font" style="font-size:1.4rem; margin:10px 0;">The Chemistry of Curry: Why Geera Matters</h3>
+<p style="font-size:0.85rem; color:var(--grey-text); line-height:1.6;">How toasted cumin (geera) transforms the molecular profile of Indo-Caribbean cooking.</p>
+</div>
+<div class="panel-slam" style="padding:20px; background:var(--bg); border-radius:24px; border:1px solid var(--border);">
+<div style="height:200px; border-radius:16px; overflow:hidden; margin-bottom:20px;">
+<img src="https://via.placeholder.com/400x300?text=Pepperpot" style="width:100%; height:100%; object-fit:cover;">
+</div>
+<span style="color:var(--primary); font-weight:800; font-size:0.65rem; text-transform:uppercase;">Indigenous Roots</span>
+<h3 class="display-font" style="font-size:1.4rem; margin:10px 0;">Pepperpot: The 500-Year Ancient Stew</h3>
+<p style="font-size:0.85rem; color:var(--grey-text); line-height:1.6;">The Guyanese masterpiece that uses Cassareep to preserve flavor across generations.</p>
+</div>
+<div class="panel-slam" style="padding:20px; background:var(--bg); border-radius:24px; border:1px solid var(--border);">
+<div style="height:200px; border-radius:16px; overflow:hidden; margin-bottom:20px;">
+<img src="https://via.placeholder.com/400x300?text=Oil+Down" style="width:100%; height:100%; object-fit:cover;">
+</div>
+<span style="color:var(--primary); font-weight:800; font-size:0.65rem; text-transform:uppercase;">Community</span>
+<h3 class="display-font" style="font-size:1.4rem; margin:10px 0;">Oil Down: The Grenadian Pot of Unity</h3>
+<p style="font-size:0.85rem; color:var(--grey-text); line-height:1.6;">Why the 'Oil Down' is the ultimate symbol of island togetherness and shared abundance.</p>
 </div>
 </div>
 </div>
@@ -381,6 +435,7 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <nav>
 <div class="nav-item active" id="nav-discovery" onclick="showTab('discovery')"><i data-lucide="compass"></i>Discovery</div>
 <div class="nav-item" id="nav-map" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
+<div class="nav-item" id="nav-magazine" onclick="showTab('magazine')"><i data-lucide="book-open"></i>Mag</div>
 <div class="nav-item" id="nav-scan" onclick="triggerScanPro()"><i data-lucide="scan"></i>Scan</div>
 <div class="nav-item" id="nav-kitchen" onclick="showTab('kitchen')"><i data-lucide="user"></i>Kitchen</div>
 <div class="nav-item" id="nav-settings" onclick="showTab('settings')"><i data-lucide="settings"></i>Settings</div>
