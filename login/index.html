@@ -4,105 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sign In | Calalloo</title>
-    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #E87722; --bg: #FFFFFF; --dark: #000000; --border: #F2F2F2; --grey: #666666; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .auth-card { width: 100%; max-width: 400px; text-align: center; }
-        .logo { width: 60px; margin-bottom: 20px; }
-        h1 { font-family: 'Fraunces', serif; font-size: 2rem; margin-bottom: 10px; color: var(--dark); }
-        p { color: var(--grey); margin-bottom: 30px; font-size: 0.95rem; }
-        .input-group { margin-bottom: 15px; text-align: left; position: relative; }
-        input { width: 100%; padding: 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; transition: border-color 0.2s; }
-        input:focus { border-color: var(--primary); }
-        .password-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--grey); cursor: pointer; display: flex; align-items: center; }
-        .btn { width: 100%; padding: 16px; background: var(--dark); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; margin-top: 10px; }
-        .btn:active { opacity: 0.8; }
-        .footer { margin-top: 30px; font-size: 0.9rem; color: var(--grey); }
-        .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
-        #loading { display: none; margin-top: 10px; color: var(--primary); font-weight: 600; }
+        :root { --primary: #E87722; --dark: #000; --bg: #FFFFFF; --font-display: 'Fraunces', serif; --font-main: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: var(--font-main); background: var(--bg); color: var(--dark); height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { width: 100%; max-width: 400px; text-align: center; }
+        .logo { width: 80px; margin-bottom: 24px; }
+        h1 { font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 8px; font-weight: 900; }
+        p { color: #666; margin-bottom: 32px; font-size: 0.95rem; }
+        .input-group { position: relative; margin-bottom: 16px; text-align: left; }
+        .input-group label { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; color: #999; }
+        input { width: 100%; padding: 14px 16px; border: 1px solid #EEE; border-radius: 12px; font-size: 1rem; font-family: var(--font-main); outline: none; transition: 0.2s; background: #FAFAFA; }
+        input:focus { border-color: var(--primary); background: #FFF; box-shadow: 0 4px 12px rgba(232, 119, 34, 0.08); }
+        .eye-toggle { position: absolute; right: 14px; bottom: 14px; color: #999; cursor: pointer; display: flex; align-items: center; }
+        .btn-primary { width: 100%; padding: 16px; background: var(--dark); color: #FFF; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 12px; }
+        .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+        .error-msg { color: #E53E3E; font-size: 0.85rem; margin-top: 16px; min-height: 1.2em; font-weight: 500; }
+        .footer-link { margin-top: 32px; font-size: 0.9rem; color: #666; }
+        .footer-link a { color: var(--primary); text-decoration: none; font-weight: 700; }
     </style>
 </head>
 <body>
-    <div class="auth-card">
-        <img src="/assets/logo.png" class="logo">
+    <div class="login-card">
+        <img src="../assets/logo.png" class="logo" alt="Calalloo">
         <h1>Welcome Back</h1>
-        <p>Enter your credentials to continue.</p>
-        <form id="login-form">
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Email Address" required>
+        <p>Your heritage, protected and shared.</p>
+        
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="name@email.com">
+        </div>
+        
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="••••••••">
+            <div class="eye-toggle" onclick="togglePasswordVisibility()">
+                <i id="toggleIcon" data-lucide="eye"></i>
             </div>
-            <div class="input-group">
-                <input type="password" id="password" placeholder="Password" required>
-                <div class="password-toggle" onclick="togglePass()">
-                    <i data-lucide="eye" id="eye-icon"></i>
-                </div>
-            </div>
-            <button type="submit" id="submit-btn" class="btn">Sign In</button>
-            <div id="loading">Signing in...</div>
-        </form>
-        <div class="footer">
-            Don't have an account? <a href="/signup/">Join the Heritage</a>
+        </div>
+        
+        <button class="btn-primary" id="signInBtn" onclick="signIn()">Sign In</button>
+        <div class="error-msg" id="error"></div>
+        
+        <div class="footer-link">
+            Don't have an account? <a href="/signup/">Join the Keepers</a>
         </div>
     </div>
 
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs');
         
-        lucide.createIcons();
+        async function signIn() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('signInBtn');
+            const err = document.getElementById('error');
+            
+            if(!email || !password) { err.innerText = "Please fill all fields."; return; }
+            
+            btn.innerText = "Authenticating...";
+            btn.disabled = true;
+            err.innerText = "";
+            
+            try {
+                const { data, error } = await sb.auth.signInWithPassword({ email, password });
+                if(error) throw error;
+                
+                btn.innerText = "Success!";
+                btn.style.background = "#2D5A27";
+                // Sovereign Auth Rebuild: 1.5s delay to prevent race conditions
+                localStorage.setItem('auth_lock', 'true');
+                setTimeout(() => { window.location.href = '/dashboard/'; }, 1500);
+            } catch (e) {
+                err.innerText = e.message;
+                btn.innerText = "Sign In";
+                btn.disabled = false;
+            }
+        }
 
-        function togglePass() {
-            const pass = document.getElementById('password');
-            const icon = document.getElementById('eye-icon');
-            if (pass.type === 'password') {
-                pass.type = 'text';
+        function togglePasswordVisibility() {
+            const p = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            if(p.type === 'password') {
+                p.type = 'text';
                 icon.setAttribute('data-lucide', 'eye-off');
             } else {
-                pass.type = 'password';
+                p.type = 'password';
                 icon.setAttribute('data-lucide', 'eye');
             }
             lucide.createIcons();
         }
-
-        document.getElementById('login-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const btn = document.getElementById('submit-btn');
-            const loading = document.getElementById('loading');
-
-            btn.style.display = 'none';
-            loading.style.display = 'block';
-
-            const { data, error } = await sb.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                alert(error.message);
-                btn.style.display = 'block';
-                loading.style.display = 'none';
-            } else {
-                // Successful login
-                window.location.href = '/dashboard/';
-            }
-        };
-
-                // Check if already logged in
-                async function checkSession() {
-            const { data: { session } } = await sb.auth.getSession();
-            if (session) {
-                console.log('Login Sentry: Stable session found. Releasing to dashboard.');
-                window.location.replace('/dashboard/');
-            }
-        }
-        setTimeout(checkSession, 2000);
+        lucide.createIcons();
     </script>
 </body>
 </html>
-
-
-
