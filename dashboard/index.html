@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v40.1.0 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v40.1.1 Sovereign Gold Standard</title>
 <meta name="description" content="Calalloo | Heritage Hub: The definitive Caribbean culinary social network. Discover, share, and preserve authentic recipes from across the Caribbean islands, including Trinidad and Tobago, Jamaica, Barbados, Guyana, Grenada, Saint Lucia, and more. Use our AI Heritage Scanner to analyze dishes and sweets, and find local ingredients with our real-time Heritage Map.">
 <meta name="keywords" content="Calalloo, Heritage Hub, Caribbean food, Caribbean recipes, Trinidadian cuisine, Jamaican food, Guyanese recipes, Barbadian food, Grenadian cuisine, Saint Lucian food, Callaloo recipe, Doubles, Jerk Chicken, Ackee and Saltfish, Oil Down, Pepperpot, Mofongo, Cou-cou, Pelau, Curried Goat, Roti, Caribbean cooking, food scanner, heritage map, Caribbean social network, Caribbean culture, Caribbean heritage, Antigua and Barbuda, Bahamas, Cuba, Dominica, Dominican Republic, Haiti, Saint Kitts and Nevis, Saint Vincent and the Grenadines, Puerto Rico, Cayman Islands, Virgin Islands">
 <meta name="geo.region" content="TT-SIP, JM, BB, GY, GD, LC, AG, BS, CU, DM, DO, HT, KN, VC, PR, KY, VG" />
@@ -834,8 +834,10 @@ function showTab(id) {
 document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-document.getElementById(id).style.display = 'block';
-document.getElementById('nav-'+id).classList.add('active');
+const content = document.getElementById(id);
+if (content) content.style.display = 'block';
+const nav = document.getElementById('nav-'+id);
+if (nav) nav.classList.add('active');
 const desk = document.getElementById('d-tab-'+id);
 if(desk) desk.classList.add('active');
 if(id === 'kitchen') switchKitchenTab('saved');
