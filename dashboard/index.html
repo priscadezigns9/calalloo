@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.7.5 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.7.6 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -698,14 +698,14 @@ return;
 }
 placeholder.style.display = 'none';
 actualMap.style.display = 'block';
-// High-Fidelity Heritage Discovery Query
-// Using v1/search to find groceries and markets specifically pinned to the user's coords
+// High-Fidelity Universal Embed (No-Key Sovereign Format)
+// Using the standard public embed format to bypass API Key restriction issues
 const lat = userLocation.lat;
 const lng = userLocation.lng;
-// Constructing the query to prioritize local Caribbean markets and groceries
+// Constructing a robust search query for local groceries/markets near user coordinates
 const query = encodeURIComponent("groceries markets");
-mapFrame.src = `https://www.google.com/maps/embed/v1/search?key={{credential:google-maps-embed-api-key}}&q=${query}&center=${lat},${lng}&zoom=15&maptype=roadmap`;
-console.log(`Sovereign Map: Geofencing results to ${lat}, ${lng}`);
+mapFrame.src = `https://maps.google.com/maps?q=${query}&ll=${lat},${lng}&z=15&t=&ie=UTF8&iwloc=&output=embed`;
+console.log(`Sovereign Universal Map: Discovery centered at ${lat}, ${lng}`);
 }
 }
 async function openRecipe(id) {
