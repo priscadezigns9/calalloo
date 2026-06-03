@@ -168,7 +168,53 @@
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- User Profile Modal -->
+    <div id="user-profile-modal" class="modal">
+        <div class="modal-header">
+            <i data-lucide="arrow-left" onclick="closeModal('user-profile-modal')"></i>
+            <h3 class="display-font" id="u-prof-name"></h3>
+            <i data-lucide="more-vertical" style="width:18px;"></i>
+        </div>
+        <div style="padding:25px;">
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:25px;">
+                <img id="u-prof-avatar" src="" style="width:80px; height:80px; border-radius:50%; border:3px solid var(--primary); object-fit:cover;">
+                <div style="flex:1;">
+                    <h2 class="display-font" id="u-prof-title" style="font-size:1.5rem;"></h2>
+                    <p id="u-prof-handle" style="color:var(--grey-text); font-size:0.85rem;"></p>
+                    <div style="display:flex; gap:15px; margin-top:10px;">
+                        <div style="text-align:center;"><p id="count-followers" style="font-weight:900;">0</p><p style="font-size:0.6rem; text-transform:uppercase; opacity:0.6;">Followers</p></div>
+                        <div style="text-align:center;"><p id="count-following" style="font-weight:900;">0</p><p style="font-size:0.6rem; text-transform:uppercase; opacity:0.6;">Following</p></div>
+                        <div style="text-align:center;"><p id="count-likes" style="font-weight:900;">0</p><p style="font-size:0.6rem; text-transform:uppercase; opacity:0.6;">Likes</p></div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:30px;">
+                <button id="follow-btn" onclick="toggleFollow()" style="flex:1; padding:12px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:800; cursor:pointer;">Follow</button>
+                <button onclick="openChat()" style="flex:1; padding:12px; background:var(--dark); color:white; border:none; border-radius:12px; font-weight:800; cursor:pointer;">Message</button>
+            </div>
+            <h3 class="display-font" style="font-size:1.1rem; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Public Kitchen</h3>
+            <div class="pinterest-grid" id="user-public-pins" style="padding:0;"></div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div id="chat-modal" class="modal">
+        <div class="modal-header">
+            <i data-lucide="arrow-left" onclick="closeModal('chat-modal')"></i>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <img id="chat-avatar" src="" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                <h3 class="display-font" id="chat-user-name" style="font-size:1rem;"></h3>
+            </div>
+            <i data-lucide="phone" style="width:18px; opacity:0.5;"></i>
+        </div>
+        <div id="chat-messages" style="flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:15px; background:var(--light-bg);"></div>
+        <div style="padding:15px; background:var(--bg); border-top:1px solid var(--border); display:flex; gap:10px; align-items:center;">
+            <input type="text" id="chat-input" placeholder="Message..." style="flex:1; padding:12px; border-radius:20px; border:1px solid var(--border); background:var(--light-bg);">
+            <button onclick="sendMessage()" style="background:var(--primary); color:white; border:none; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                <i data-lucide="send" style="width:18px;"></i>
+            </button>
+        </div>
+    </div>
     <div id="detail-modal" class="modal">
         <div class="modal-header"><i data-lucide="arrow-left" onclick="closeModal('detail-modal')"></i><h3 class="display-font">Recipe Details</h3><i data-lucide="share" style="width:18px;"></i></div>
         <img id="m-img" style="width:100%; height:45vh; object-fit:cover;">
@@ -284,9 +330,12 @@
             { name: "Mamma Rose", username: "@rose", location: "Barbados", avatar: "https://via.placeholder.com/102" }
         ];
 
+        let currentViewedUser = null;
+
         async function init() {
             lucide.createIcons();
             loadDiscovery();
+            setupRealtime();
             
             // Set user-specific profile defaults
             if (isAdmin) {
@@ -299,6 +348,81 @@
             }
 
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+        }
+
+        function setupRealtime() {
+            sb.channel('realtime-social')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'follows' }, payload => updateSocialCounts())
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'likes' }, payload => updateSocialCounts())
+                .subscribe();
+        }
+
+        async function viewUserProfile(username) {
+            const cook = cooks.find(c => c.username === username);
+            if (!cook) return;
+            currentViewedUser = cook;
+            
+            document.getElementById('u-prof-name').innerText = cook.name;
+            document.getElementById('u-prof-title').innerText = cook.name;
+            document.getElementById('u-prof-handle').innerText = cook.username + " • " + cook.location;
+            document.getElementById('u-prof-avatar').src = cook.avatar;
+            
+            updateSocialCounts();
+            
+            // Fetch public recipes for this user
+            const { data } = await sb.from('recipes').select('*').eq('author_username', username).eq('is_public', true);
+            renderPins('user-public-pins', data || recipes.slice(0, 3)); 
+            
+            openModal('user-profile-modal');
+        }
+
+        async function updateSocialCounts() {
+            if (!currentViewedUser) return;
+            // Simulated counts from Supabase tables
+            const { count: followers } = await sb.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', currentViewedUser.username);
+            const { count: following } = await sb.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', currentViewedUser.username);
+            const { count: likes } = await sb.from('likes').select('*', { count: 'exact', head: true }).eq('receiver_username', currentViewedUser.username);
+
+            document.getElementById('count-followers').innerText = followers || 0;
+            document.getElementById('count-following').innerText = following || 0;
+            document.getElementById('count-likes').innerText = likes || 0;
+        }
+
+        async function toggleFollow() {
+            const btn = document.getElementById('follow-btn');
+            const isFollowing = btn.innerText === "Following";
+            
+            if (isFollowing) {
+                await sb.from('follows').delete().eq('follower_id', '@prisca').eq('following_id', currentViewedUser.username);
+                btn.innerText = "Follow";
+                btn.style.background = "var(--primary)";
+            } else {
+                await sb.from('follows').insert([{ follower_id: '@prisca', following_id: currentViewedUser.username }]);
+                btn.innerText = "Following";
+                btn.style.background = "#333";
+            }
+        }
+
+        function openChat() {
+            document.getElementById('chat-user-name').innerText = currentViewedUser.name;
+            document.getElementById('chat-avatar').src = currentViewedUser.avatar;
+            document.getElementById('chat-messages').innerHTML = `<div style="text-align:center; font-size:0.7rem; opacity:0.5; margin-top:20px;">Encrypted Heritage Connection Established 🛡️</div>`;
+            openModal('chat-modal');
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const msgHtml = `<div style="align-self:flex-end; background:var(--primary); color:white; padding:10px 15px; border-radius:18px 18px 0 18px; font-size:0.9rem; max-width:80%;">${text}</div>`;
+            document.getElementById('chat-messages').innerHTML += msgHtml;
+            
+            await sb.from('messages').insert([{ sender: '@prisca', receiver: currentViewedUser.username, content: text }]);
+            
+            input.value = '';
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         async function loadDiscovery() {
@@ -371,7 +495,7 @@
                 `;
                 filteredCooks.forEach(c => {
                     html += `
-                        <div class="recipe-pin" style="padding:15px; display:flex; align-items:center; gap:12px;">
+                        <div class="recipe-pin" style="padding:15px; display:flex; align-items:center; gap:12px;" onclick="viewUserProfile('${c.username}')">
                             <img src="${c.avatar}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
                             <div><p style="font-weight:700;">${c.name}</p><p style="font-size:0.75rem; color:var(--grey-text);">${c.username}</p></div>
                         </div>
