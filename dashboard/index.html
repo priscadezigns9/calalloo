@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.1.4 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.2.0 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.1.4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.1.4"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.2.0"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -337,11 +337,7 @@
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
         let recipes = [], scansToday = 0;
         const isAdmin = true; 
-        const cooks = [
-            { name: "Heritage Admin", username: "@admin", location: "Trinidad & Tobago", avatar: "https://via.placeholder.com/100" },
-            { name: "Chef Andre", username: "@andre", location: "Jamaica", avatar: "https://via.placeholder.com/101" },
-            { name: "Mamma Rose", username: "@rose", location: "Barbados", avatar: "https://via.placeholder.com/102" }
-        ];
+        let cooks = [];
 
         let currentViewedUser = null;
 
@@ -356,6 +352,20 @@
                 console.error("Auth Guard: Session invalid", authError);
                 window.location.href = '/login/';
                 return;
+            }
+
+            // Fetch Real Heritage Cooks from Supabase
+            try {
+                const { data: profilesData } = await sb.from('profiles').select('full_name, username, avatar_url').limit(20);
+                if (profilesData) {
+                    cooks = profilesData.map(p => ({
+                        name: p.full_name || "Heritage Cook",
+                        username: p.username ? `@${p.username}` : "@cook",
+                        avatar: p.avatar_url || "https://via.placeholder.com/100?text=Heritage+Cook"
+                    }));
+                }
+            } catch (e) {
+                console.error("Cooks Discovery Latency:", e);
             }
 
             // Central Identity Controller (Gold Standard)
