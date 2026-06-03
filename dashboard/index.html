@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v35.0 Sovereign Pro</title>
+    <title>Calalloo | Heritage Hub v36.0 Sovereign Pro Max</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,47 +25,43 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: var(--font-main); background: var(--bg); color: var(--dark); transition: var(--transition); min-height: 100vh; overflow-x: hidden; }
         
-        /* Mobile Header */
         header { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 20px; z-index: 1000; display: flex; align-items: center; justify-content: space-between; }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-container img { width: 32px; height: 32px; border-radius: 50%; }
         .logo-container span { font-family: var(--font-display); font-weight: 900; font-size: 1.3rem; letter-spacing: -0.02em; }
         .pro-badge { background: linear-gradient(135deg, #FFD700, #E87722); color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 900; margin-left: 6px; cursor: pointer; }
 
-        /* Desktop Tabs - Hidden on Mobile */
         .desktop-tabs { display: flex; gap: 25px; margin-left: 30px; }
         .tab-btn { font-weight: 700; font-size: 0.85rem; color: var(--grey-text); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .tab-btn.active { color: var(--primary); }
 
-        /* Pinterest Grid Responsive */
+        .tab-content { display: none; padding-bottom: 100px; }
         .pinterest-grid { columns: 4; column-gap: 15px; padding: 15px; max-width: 1400px; margin: 0 auto; }
         .recipe-pin { break-inside: avoid; margin-bottom: 15px; border-radius: 16px; overflow: hidden; background: var(--light-bg); border: 1px solid var(--border); cursor: pointer; transition: var(--transition); position: relative; }
         .recipe-pin img { width: 100%; height: 300px; display: block; object-fit: cover; }
         .pin-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8)); opacity: 0; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; color: white; }
         .recipe-pin:hover .pin-overlay { opacity: 1; }
 
-        /* Settings Card */
         .settings-card { background: var(--light-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--grey-text); text-transform: uppercase; margin-bottom: 8px; }
         .form-group input, .form-group select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--dark); font-family: inherit; }
 
-        /* Navigation */
         nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; height: 75px; z-index: 1000; padding-bottom: 10px; }
         .nav-item { color: var(--grey-text); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.6rem; font-weight: 700; transition: 0.2s; }
         .nav-item.active { color: var(--primary); }
 
-        /* Modals */
         .modal { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
         .modal-header { position: sticky; top: 0; background: var(--bg); padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+
+        .pro-modal-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px; text-align: center; }
+        .pro-box { background: linear-gradient(135deg, #1A1A1A, #000); color: white; padding: 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); width: 100%; max-width: 400px; }
 
         @media (max-width: 768px) {
             .desktop-tabs { display: none; }
             .pinterest-grid { columns: 2; column-gap: 10px; padding: 10px; }
             .recipe-pin img { height: 240px; }
         }
-        
-        .tab-content { display: none; padding-bottom: 80px; }
     </style>
 </head>
 <body>
@@ -73,7 +69,7 @@
     <header>
         <div class="logo-container" onclick="showTab('discovery')">
             <img src="../assets/logo.png" alt="Calalloo">
-            <span>Calalloo<span class="pro-badge" onclick="openModal('pro-modal')">PRO</span></span>
+            <span>Calalloo<span class="pro-badge" onclick="openProModal(event)">PRO</span></span>
         </div>
         <div class="desktop-tabs">
             <div class="tab-btn active" id="d-tab-discovery" onclick="showTab('discovery')">Discovery</div>
@@ -123,11 +119,24 @@
         <div style="padding:25px;"><h1 class="display-font" id="m-title"></h1><p id="m-content" style="margin-top:20px; line-height:1.6; white-space:pre-wrap;"></p></div>
     </div>
 
-    <div id="pro-modal" class="modal">
-        <div class="modal-header"><h2>Calalloo PRO</h2><i data-lucide="x" onclick="closeModal('pro-modal')"></i></div>
-        <div style="padding:40px; text-align:center; background:#000; color:white; margin:20px; border-radius:24px;">
-            <h1>Upgrade</h1><p style="margin:20px 0; opacity:0.7;">Get all features</p><h2>$9.99/mo</h2>
-            <button onclick="alert('Pay')" style="margin-top:30px; width:100%; padding:15px; background:white; color:black; border:none; border-radius:12px; font-weight:900;">Pay Now</button>
+    <!-- Prisca Designs Pro Modal -->
+    <div id="pro-modal" class="modal" style="background: rgba(0,0,0,0.8);">
+        <div class="pro-modal-content">
+            <div class="pro-box">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                    <img src="../assets/logo.png" style="width:40px; border-radius:50%;">
+                    <i data-lucide="x" onclick="closeModal('pro-modal')" style="cursor:pointer; color:white;"></i>
+                </div>
+                <h1 class="display-font" style="color:#E87722;">Prisca Designs</h1>
+                <p style="margin:10px 0; opacity:0.8;">Unlocking Calalloo PRO</p>
+                <div style="font-size:3rem; font-weight:900; margin:20px 0;">$9.99<span style="font-size:1rem; opacity:0.6;">/mo</span></div>
+                <ul style="text-align:left; list-style:none; margin-bottom:30px; font-size:0.9rem;">
+                    <li><i data-lucide="check" style="width:14px; color:#E87722; vertical-align:middle; margin-right:8px;"></i>Private Vault Recipes</li>
+                    <li><i data-lucide="check" style="width:14px; color:#E87722; vertical-align:middle; margin-right:8px;"></i>Ad-Free Experience</li>
+                    <li><i data-lucide="check" style="width:14px; color:#E87722; vertical-align:middle; margin-right:8px;"></i>Heritage Map Sync</li>
+                </ul>
+                <button onclick="alert('Redirecting to Prisca Designs Secure Checkout...')" style="width:100%; padding:18px; background:#E87722; color:white; border:none; border-radius:14px; font-weight:900; cursor:pointer;">Activate PRO</button>
+            </div>
         </div>
     </div>
 
@@ -153,6 +162,7 @@
             const { data } = await sb.from('recipes').select('*').order('created_at', {ascending:false});
             recipes = data || [];
             renderPins('discovery-pins', recipes);
+            renderPins('kitchen-pins', recipes.slice(0, 4)); // Mocking some kitchen data
         }
 
         function renderPins(id, items) {
@@ -167,14 +177,19 @@
         }
 
         function showTab(id) {
+            console.log('Switching to tab:', id);
             document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             
-            document.getElementById(id).style.display = 'block';
-            document.getElementById('nav-'+id).classList.add('active');
-            const desk = document.getElementById('d-tab-'+id);
-            if(desk) desk.classList.add('active');
+            const targetContent = document.getElementById(id);
+            if (targetContent) targetContent.style.display = 'block';
+            
+            const targetNav = document.getElementById('nav-'+id);
+            if (targetNav) targetNav.classList.add('active');
+            
+            const targetDesk = document.getElementById('d-tab-'+id);
+            if (targetDesk) targetDesk.classList.add('active');
         }
 
         function openRecipe(id) {
@@ -186,6 +201,7 @@
             openModal('detail-modal');
         }
 
+        function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
