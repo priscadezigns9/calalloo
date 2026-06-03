@@ -47,7 +47,7 @@
         .settings-card { background: var(--light-bg); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 24px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--grey-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-        .form-group input, .form-group select { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg); color: var(--dark); font-family: inherit; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg); color: var(--dark); font-family: inherit; }
 
         nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; height: 75px; z-index: 1000; padding-bottom: 10px; }
         .nav-item { color: var(--grey-text); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.6rem; font-weight: 700; transition: 0.2s; }
@@ -56,6 +56,8 @@
         .modal { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; overflow-y: auto; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-header { position: sticky; top: 0; background: var(--bg); padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+
+        .pay-tab.active { background: var(--primary); color: white; }
 
         @media (max-width: 768px) {
             .desktop-tabs { display: none; }
@@ -83,7 +85,7 @@
             <div class="tab-btn" id="d-tab-kitchen" onclick="showTab('kitchen')">Kitchen</div>
             <div class="tab-btn" id="d-tab-settings" onclick="showTab('settings')">Settings</div>
         </div>
-        <i data-lucide="plus-circle" style="color:var(--primary); cursor:pointer;" onclick="alert('Submission engine coming soon...')"></i>
+        <i data-lucide="plus-circle" style="color:var(--primary); cursor:pointer;" onclick="openAddModal()"></i>
     </header>
 
     <div id="discovery" class="tab-content" style="display:block;">
@@ -184,6 +186,28 @@
         </div>
     </div>
 
+    <!-- Submission Modal -->
+    <div id="add-modal" class="modal">
+        <div class="modal-header">
+            <h2 class="display-font">Add to Heritage Vault</h2>
+            <i data-lucide="x" onclick="closeModal('add-modal')" style="cursor:pointer;"></i>
+        </div>
+        <div style="padding:25px; max-width:600px; margin:0 auto; width:100%;">
+            <div class="form-group">
+                <label>Dish Photo</label>
+                <div style="width:100%; height:180px; border:2px dashed var(--border); border-radius:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative;" onclick="document.getElementById('dish-img').click()">
+                    <i data-lucide="camera" style="color:var(--grey-text);"></i>
+                    <img id="dish-preview" style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:18px;">
+                </div>
+                <input type="file" id="dish-img" style="display:none;" onchange="previewDish(this)">
+            </div>
+            <div class="form-group"><label>Dish Title</label><input type="text" id="dish-title" placeholder="e.g. Grandma's Callaloo"></div>
+            <div class="form-group"><label>Ingredients</label><textarea id="dish-ingredients" rows="4" placeholder="List ingredients..."></textarea></div>
+            <div class="form-group"><label>Instructions</label><textarea id="dish-instructions" rows="6" placeholder="Cooking steps..."></textarea></div>
+            <button onclick="submitDish()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Post to Discovery</button>
+        </div>
+    </div>
+
     <div id="pro-modal" class="modal" style="background: rgba(0,0,0,0.85);">
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px;">
             <div id="pro-intro" style="background:var(--bg); padding:35px; border-radius:28px; text-align:center; width:100%; max-width:420px; box-shadow:0 20px 50px rgba(0,0,0,0.3);">
@@ -193,14 +217,25 @@
                 <button onclick="showPaymentOverlay()" style="width:100%; padding:18px; background:var(--dark); color:white; border:none; border-radius:16px; font-weight:800; font-size:1.1rem; cursor:pointer;">Upgrade to PRO</button>
                 <p onclick="closeModal('pro-modal')" style="margin-top:20px; color:var(--grey-text); cursor:pointer; font-size:0.9rem; font-weight:600;">Not now</p>
             </div>
-            <div id="payment-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.9); flex-direction:column; align-items:center; justify-content:center; padding:20px; z-index:5100;">
-                <div style="background:linear-gradient(135deg, #1A1A1A, #000); color:white; padding:40px; border-radius:24px; text-align:center; width:100%; max-width:380px; position:relative;">
-                    <i data-lucide="x" onclick="hidePaymentOverlay()" style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.5;"></i>
-                    <h3 style="color:var(--primary); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:15px;">Secure Checkout</h3>
-                    <h2 class="display-font" style="margin-bottom:10px;">Prisca Designs</h2>
-                    <p style="opacity:0.7; font-size:0.9rem;">Service: Calalloo PRO Subscription</p>
-                    <div style="font-size:3.5rem; font-weight:900; margin:30px 0;">$9.99<span style="font-size:1.2rem; opacity:0.5;">/mo</span></div>
-                    <button onclick="confirmUpgrade()" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:900; font-size:1.1rem; cursor:pointer;">Pay with Card</button>
+            <!-- Step 2: Empire Standard Payment Modal -->
+            <div id="payment-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.95); flex-direction:column; align-items:center; justify-content:center; padding:20px; z-index:5100; animation: fadeIn 0.3s ease;">
+                <div style="background:#000; color:white; border-radius:24px; width:100%; max-width:420px; overflow:hidden; border:1px solid #333; position:relative;">
+                    <i data-lucide="x" onclick="hidePaymentOverlay()" style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.5; z-index:10;"></i>
+                    <div style="background:#111; padding:30px; text-align:center; border-bottom:1px solid #222;">
+                        <img src="../assets/logo.png" style="width:50px; border-radius:50%; margin-bottom:15px;">
+                        <h2 class="display-font" style="color:var(--primary); margin-bottom:5px;">Prisca Dezigns</h2>
+                        <p style="font-size:0.8rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.1em;">Secure Empire Payment</p>
+                    </div>
+                    <div style="padding:30px;">
+                        <div style="display:flex; gap:10px; margin-bottom:25px; background:#111; padding:5px; border-radius:12px;">
+                            <div id="tab-card" class="pay-tab active" onclick="setPayTab('card')" style="flex:1; padding:10px; text-align:center; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:700;">Card/PayPal</div>
+                            <div id="tab-crypto" class="pay-tab" onclick="setPayTab('crypto')" style="flex:1; padding:10px; text-align:center; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:700;">Crypto</div>
+                            <div id="tab-bank" class="pay-tab" onclick="setPayTab('bank')" style="flex:1; padding:10px; text-align:center; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:700;">Bank</div>
+                        </div>
+                        <div id="pay-card" class="pay-view"><div style="font-size:2.5rem; font-weight:900; text-align:center; margin-bottom:20px;">$9.99<span style="font-size:1rem; opacity:0.5;">/mo</span></div><button onclick="confirmUpgrade()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:900; cursor:pointer;">Pay with PayPal / Card</button></div>
+                        <div id="pay-crypto" class="pay-view" style="display:none;"><p style="font-size:0.8rem; opacity:0.7; margin-bottom:15px; text-align:center;">Send <b>15.0 MATIC</b> to Empire Wallet:</p><div style="background:#111; padding:15px; border-radius:12px; font-family:monospace; font-size:0.7rem; word-break:break-all; border:1px solid #333; margin-bottom:15px;">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</div><button onclick="alert('Verifying...')" style="width:100%; padding:14px; background:#f7931a; color:white; border:none; border-radius:12px; font-weight:800; cursor:pointer;">Verify</button></div>
+                        <div id="pay-bank" class="pay-view" style="display:none;"><div style="text-align:left; font-size:0.85rem; line-height:1.6; opacity:0.9;"><p><b>Bank:</b> Scotiabank</p><p><b>Account:</b> Prisca Dezigns</p><p><b>Number:</b> 12000-XXXX-XXXX</p></div><button onclick="alert('Details sent.')" style="width:100%; padding:14px; background:#fff; color:#000; border:none; border-radius:12px; font-weight:800; cursor:pointer; margin-top:20px;">Get Info</button></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -216,7 +251,8 @@
 
     <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
-        let recipes = [];
+        let recipes = [], scansToday = 0;
+        const isAdmin = true; // Prisca Dezigns context
 
         async function init() {
             lucide.createIcons();
@@ -227,9 +263,7 @@
         async function loadDiscovery() {
             const { data } = await sb.from('recipes').select('*').order('created_at', {ascending:false});
             recipes = (data || []).map(r => {
-                if(r.title.toLowerCase().includes('calalloo')) {
-                    r.cover_photo_url = "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg";
-                }
+                if(r.title.toLowerCase().includes('calalloo')) r.cover_photo_url = "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg";
                 return r;
             });
             renderPins('discovery-pins', recipes);
@@ -286,17 +320,7 @@
             renderPins('discovery-pins', f);
         }
 
-        function previewAvatar(input) {
-            if(input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('profile-avatar').src = e.target.result;
-                    document.getElementById('sync-avatar-btn').style.display = 'block';
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
+        function previewAvatar(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('profile-avatar').src = e.target.result; document.getElementById('sync-avatar-btn').style.display = 'block'; }; reader.readAsDataURL(input.files[0]); } }
         function syncAvatarToVault() { alert("Picture saved to Heritage Vault! 🛡️"); document.getElementById('sync-avatar-btn').style.display = 'none'; }
         function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); document.getElementById('pro-intro').style.display = 'block'; document.getElementById('payment-overlay').style.display = 'none'; }
         function showPaymentOverlay() { document.getElementById('payment-overlay').style.display = 'flex'; }
@@ -304,8 +328,12 @@
         function confirmUpgrade() { alert('PRO Activated! 🛡️'); closeModal('pro-modal'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function setPayTab(tab) { document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+tab).classList.add('active'); document.querySelectorAll('.pay-view').forEach(v => v.style.display = 'none'); document.getElementById('pay-'+tab).style.display = 'block'; }
+        function openAddModal() { openModal('add-modal'); }
+        function previewDish(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('dish-preview').src = e.target.result; document.getElementById('dish-preview').style.display = 'block'; }; reader.readAsDataURL(input.files[0]); } }
+        function submitDish() { alert("Dish submitted to Heritage Vault! 🥘"); closeModal('add-modal'); }
+        function triggerScanPro() { if(isAdmin || scansToday < 1) { scansToday++; alert("AI Scanner active..."); } else { openProModal(event); } }
         function toggleDarkMode() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
-        function triggerScanPro() { openProModal(event); }
 
         init();
     </script>
