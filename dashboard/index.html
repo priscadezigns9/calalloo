@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.4.4 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.4.5 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.4.4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.4"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.4.5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.5"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -497,20 +497,21 @@
             const btn = event.target;
             const originalText = "Save Changes";
             
-            // Fast UI Update
-            document.getElementById('prof-name').innerText = newName;
-            document.getElementById('prof-username').innerText = newUsername;
+            const profileSettings = { 
+                socials: { whatsapp: newWhatsapp, facebook: newFacebook, instagram: newInstagram },
+                settings: { location: hasLocation, camera: hasCamera, lang: newLang } 
+            };
 
-            const profile = { 
+            // Fast UI Update (Sovereignty Formatting)
+            populateProfileUI(newName, newUsername, avatar, profileSettings);
+
+            // Immediate Local Cache Update
+            localStorage.setItem('calalloo_profile', JSON.stringify({
                 name: newName, 
                 username: newUsername, 
                 avatar, 
-                settings: { 
-                    socials: { whatsapp: newWhatsapp, facebook: newFacebook, instagram: newInstagram },
-                    settings: { location: hasLocation, camera: hasCamera, lang: newLang } 
-                } 
-            };
-            localStorage.setItem('calalloo_profile', JSON.stringify(profile));
+                settings: profileSettings
+            }));
 
             btn.innerText = "Syncing to Cloud...";
             btn.disabled = true;
@@ -519,38 +520,21 @@
                 const { data: { user } } = await sb.auth.getUser();
                 if (!user) throw new Error("No active session.");
 
-                // Check schema compatibility before push
-                const { data: profileCheck } = await sb.from('profiles').select('*').eq('id', user.id).single();
-                
-                const payload = { id: user.id };
-                if (profileCheck) {
-                    if ('username' in profileCheck) payload.username = newUsername;
-                    if ('full_name' in profileCheck) payload.full_name = newName;
-                    if ('avatar_url' in profileCheck) payload.avatar_url = avatar;
-                    if ('whatsapp_pin' in profileCheck) payload.whatsapp_pin = newWhatsapp;
-                    if ('taste_preferences' in profileCheck) {
-                        payload.taste_preferences = { 
-                            socials: { facebook: newFacebook, instagram: newInstagram },
-                            settings: { location: hasLocation, camera: hasCamera, lang: newLang } 
-                        };
-                    }
-                } else {
-                    // New profile fallback
-                    payload.username = newUsername;
-                    payload.full_name = newName;
-                    payload.avatar_url = avatar;
-                }
+                // Direct Upsert: Force write to Supabase
+                const { error } = await sb.from('profiles').upsert({
+                    id: user.id,
+                    full_name: newName,
+                    username: newUsername,
+                    avatar_url: avatar,
+                    whatsapp_pin: newWhatsapp,
+                    taste_preferences: profileSettings
+                }, { onConflict: 'id' });
 
-                const { error } = await sb.from('profiles').upsert(payload, { onConflict: 'id' });
                 if (error) throw error;
                 btn.innerText = "Synced to Vault! 🛡️🥘";
             } catch (err) {
                 console.error("Vault Sync Latency:", err);
                 btn.innerText = "Saved Locally ✓";
-                // Show hint if it's a schema mismatch
-                if (err.message && err.message.includes('column')) {
-                    console.warn("Sovereignty Alert: Database schema mismatch detected. Falling back to local cache.");
-                }
             } finally {
                 setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 2000);
             }
