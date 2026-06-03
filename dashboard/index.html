@@ -335,27 +335,41 @@
         async function init() {
             lucide.createIcons();
             
-            // 1. First, check if there's a stored session or local profile
             const savedProfile = localStorage.getItem('calalloo_profile');
             if (savedProfile) {
                 const p = JSON.parse(savedProfile);
                 populateProfileUI(p.name, p.username, p.avatar);
-            } else if (isAdmin) {
-                // Default admin population if no local changes
-                populateProfileUI("Prisca Dezigns", "@prisca • Trinidad & Tobago", "https://via.placeholder.com/120");
-                document.getElementById('edit-name').value = "Prisca Dezigns";
-                document.getElementById('edit-username').value = "@prisca";
+            } else {
+                // Sovereign Platinum: New users start with a clean slate for full autonomy
+                populateProfileUI("", "", "https://via.placeholder.com/120");
             }
 
             loadDiscovery();
             setupRealtime();
+            syncPendingDishes(); // Background sync for offline/latent dishes
             
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
         }
 
+        async function syncPendingDishes() {
+            const pending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
+            if (pending.length === 0) return;
+
+            for (const dish of pending) {
+                try {
+                    const { error } = await sb.from('recipes').insert([dish]);
+                    if (!error) {
+                        // Success: Remove from local pending
+                        let current = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
+                        localStorage.setItem('calalloo_pending_dishes', JSON.stringify(current.filter(d => d.id !== dish.id)));
+                    }
+                } catch (e) { console.error("Auto-sync latency:", e); }
+            }
+        }
+
         function populateProfileUI(name, username, avatar) {
-            document.getElementById('prof-name').innerText = name || "";
-            document.getElementById('prof-username').innerText = username || "";
+            document.getElementById('prof-name').innerText = name || "Heritage Cook";
+            document.getElementById('prof-username').innerText = username || "@guest • Trinidad & Tobago";
             document.getElementById('edit-name').value = name || "";
             document.getElementById('edit-username').value = username || "";
             if (avatar) document.getElementById('profile-avatar').src = avatar;
@@ -482,7 +496,16 @@
 
         async function loadDiscovery() {
             const { data } = await sb.from('recipes').select('*').order('created_at', {ascending:false});
-            recipes = (data || []).map(r => {
+            
+            // Merge with local pending dishes
+            const pending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
+            const remoteRecipes = data || [];
+            
+            // Deduplicate: Don't show pending if it already made it to the remote DB
+            const remoteIds = new Set(remoteRecipes.map(r => r.id));
+            const activePending = pending.filter(p => !remoteIds.has(p.id));
+            
+            recipes = [...activePending, ...remoteRecipes].map(r => {
                 if(r.title.toLowerCase().includes('calalloo')) r.cover_photo_url = "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg";
                 return r;
             });
@@ -645,39 +668,69 @@
             }
 
             const currentBtnText = submitBtn.innerText;
-            submitBtn.innerText = "Syncing to Vault...";
+            submitBtn.innerText = "Processing Dish...";
             submitBtn.disabled = true;
+
+            // 1. High-Fidelity Compression (Reduces payload for faster Vault Sync)
+            const compressImage = (base64) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = base64;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800;
+                        const scale = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scale;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                    };
+                });
+            };
+
+            const rawImg = document.getElementById('dish-preview').src;
+            const compressedImg = await compressImage(rawImg);
 
             const dishData = {
                 id: 'dish-' + Date.now(),
                 title: title,
-                cover_photo_url: document.getElementById('dish-preview').src,
+                cover_photo_url: compressedImg,
                 instructions: instructions,
                 author_username: document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest',
                 is_public: true,
                 created_at: new Date().toISOString()
             };
 
-            // Optimization: First unshift into local array for instant UI feedback
+            // 2. Local-First Persistence (Ensures no data loss if refresh occurs)
+            let pending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
+            pending.unshift(dishData);
+            localStorage.setItem('calalloo_pending_dishes', JSON.stringify(pending));
+
+            // Update UI instantly
             recipes.unshift(dishData);
             renderPins('discovery-pins', recipes);
+            closeModal('add-modal');
+            
+            submitBtn.innerText = "Syncing to Vault...";
 
             try {
+                // 3. Async Vault Sync (Supabase)
                 const { error } = await sb.from('recipes').insert([dishData]);
                 
                 if (error) {
-                    console.error("Supabase Error:", error);
-                    alert("Vault sync busy. Saved locally for now! 🥘🛡️");
+                    console.error("Vault Sync Latency:", error);
+                    // Leave in pending for later retry, UI already reflects it
                 } else {
-                    alert("Dish successfully pushed to the Heritage Discovery Vault! 🥘🛡️");
+                    // Success! Remove from pending
+                    let currentPending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
+                    localStorage.setItem('calalloo_pending_dishes', JSON.stringify(currentPending.filter(d => d.id !== dishData.id)));
                 }
             } catch (err) {
-                console.error("Submission error:", err);
-                alert("Network latency detected. Dish saved locally! 🥘🛡️");
+                console.error("Network Latency:", err);
             } finally {
                 submitBtn.innerText = currentBtnText;
                 submitBtn.disabled = false;
-                closeModal('add-modal');
             }
         }
         function triggerScanPro() { 
