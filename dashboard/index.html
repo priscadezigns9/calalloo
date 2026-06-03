@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.8.1 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.8.2 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1221,23 +1221,26 @@ status: 'processing'
 }]).select().single();
 if (vaultError) throw vaultError;
 // 2. Real-Time Subscription: Listening for the Sovereign Backend to fulfill the scan
-// This is exactly how FB/IG handle server-side processing for millions of users
 const scanSubscription = sb.channel(`scan-${scanRecord.id}`)
 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'recipes', filter: `id=eq.${scanRecord.id}` }, payload => {
 if (payload.new.status === 'completed' && payload.new.ai_analysis) {
 scanSubscription.unsubscribe();
 document.body.removeChild(overlay);
 showAnalysisHub(payload.new.ai_analysis);
+} else if (payload.new.status === 'rejected') {
+scanSubscription.unsubscribe();
+document.body.removeChild(overlay);
+alert("Sovereign Guard: Non-culinary item detected. Please upload a dish or sweet to continue. 🥘🛡️");
 }
 })
 .subscribe();
-// 3. UI Phase Feedback (Purely visual while server-side processing occurs)
+// 3. UI Phase Feedback
 const phases = [
 "Bypassing local cache... Syncing with Sovereign Vault.",
-"Neural Uplink Established. Extracting culinary DNA...",
-"Detecting Indigenous Heritage Ingredients...",
+"Neural Uplink Established. Detecting Culinary DNA...",
+"Analyzing Culinary Signature (Dish or Sweet)...",
 "Calculating Deep Caloric Density per Ingredient...",
-"Finalizing Heritage Analysis...",
+"Zapia Backend: Finalizing Global Food Analysis...",
 "Analysis Complete. Syncing results to Kitchen."
 ];
 phases.forEach((p, i) => {
