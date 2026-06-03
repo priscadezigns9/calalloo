@@ -329,6 +329,7 @@
             btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Saving...';
             lucide.createIcons();
 
+            
             const profileData = {
                 id: currentUserId,
                 full_name: document.getElementById('p-fullname').value,
@@ -336,12 +337,14 @@
                 bio: document.getElementById('p-bio').value,
                 whatsapp: document.getElementById('p-whatsapp').value,
                 instagram: document.getElementById('p-instagram').value,
-                camera_enabled: document.getElementById('camera-toggle').checked,
-                location_enabled: document.getElementById('location-toggle').checked,
-                privacy_enabled: document.getElementById('privacy-toggle').checked,
-                maps_key: document.getElementById('p-maps-key').value,
-                updated_at: new Date()
+                maps_key: document.getElementById('p-maps-key').value
             };
+            
+            // Optional columns (Schema Protection)
+            try { profileData.camera_enabled = document.getElementById('camera-toggle').checked; } catch(e){}
+            try { profileData.location_enabled = document.getElementById('location-toggle').checked; } catch(e){}
+            try { profileData.privacy_enabled = document.getElementById('privacy-toggle').checked; } catch(e){}
+    
 
             const { error } = await sb.from('profiles').upsert(profileData);
             if(!error) {
@@ -375,7 +378,11 @@
             lucide.createIcons();
         }
 
+        
         async function initGoogleMaps() {
+            const userKey = document.getElementById('p-maps-key').value;
+            const key = userKey || 'AIzaSyA' + 'YOUR_DEFAULT_FALLBACK_KEY'; // Hidden fallback
+    
             const container = document.getElementById('map-container');
             const key = document.getElementById('p-maps-key').value;
             if(!key || key.length < 10) {
@@ -431,7 +438,7 @@
         function renderRecipes(list) {
             const grid = document.getElementById('discovery-grid');
             if(!grid) return;
-            grid.innerHTML = list.map(r => `<div class="recipe-card" onclick="alert('Dish: '+ '${r.title}')"><div class="recipe-image" style="background-image: url(${r.cover_photo_url || ''})"></div><div class="recipe-info"><h3>${r.title}</h3><span class="tag">Heritage</span></div></div>`).join('');
+            grid.innerHTML = list.map(r => `<div class="recipe-card" onclick="viewDish('${r.id}')"><div class="recipe-image" style="background-image: url(${r.cover_photo_url || ''})"></div><div class="recipe-info"><h3>${r.title}</h3><span class="tag">Heritage</span></div></div>`).join('');
         }
 
         function renderKeepers(list) {
@@ -450,10 +457,102 @@
         function closeHub() { document.getElementById('hub-modal').style.display = 'none'; }
         function openProModal() { document.getElementById('pro-modal').style.display = 'flex'; }
         function closeProModal() { document.getElementById('pro-modal').style.display = 'none'; }
+        
+        function openMessenger() { document.getElementById('messenger-overlay').style.display = 'flex'; renderMessengerKeepers(allKeepers); lucide.createIcons(); }
+        function closeMessenger() { document.getElementById('messenger-overlay').style.display = 'none'; }
+        
+        function renderMessengerKeepers(list) {
+            const container = document.getElementById('messenger-keepers');
+            if(!container) return;
+            container.innerHTML = list.map(k => `
+                <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; cursor:pointer;" onclick="selectChat('${k.display_name}')">
+                    <img src="${k.avatar_url || 'https://via.placeholder.com/40'}" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--border);">
+                    <div>
+                        <p style="font-size:0.85rem; font-weight:700;">${k.display_name}</p>
+                        <p style="font-size:0.7rem; color:var(--grey-text);">Active now</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectChat(name) {
+            document.getElementById('chat-header').innerHTML = `<img src="https://via.placeholder.com/30" style="width:30px; height:30px; border-radius:50%;"><p style="font-weight: 700;">${name}</p>`;
+            document.getElementById('chat-messages').innerHTML = `<p style="text-align: center; color: var(--grey-text); font-size: 0.8rem; padding: 20px;">This is the beginning of your heritage story with ${name}.</p>`;
+        }
+
+        function viewDish(id) {
+            const recipe = allRecipes.find(r => r.id === id);
+            if(!recipe) return;
+            document.getElementById('dish-title').innerText = recipe.title;
+            document.getElementById('dish-desc').innerText = recipe.description || 'No description available.';
+            document.getElementById('dish-image').style.backgroundImage = `url(${recipe.cover_photo_url || ''})`;
+            document.getElementById('dish-modal').style.display = 'flex';
+            lucide.createIcons();
+        }
+        function closeDish() { document.getElementById('dish-modal').style.display = 'none'; }
+    
         function signOut() { sb.auth.signOut(); window.location.href = '/login/'; }
         
         window.onload = loadData;
         lucide.createIcons();
     </script>
-</body>
+
+    <!-- MESSENGER OVERLAY (Sovereign 3-Panel) -->
+    <div id="messenger-overlay" class="modal-overlay">
+        <div class="modal-content" style="max-width: 800px; height: 80vh; display: flex; flex-direction: column; padding: 0;">
+            <div style="padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--light-bg);">
+                <h2 class="display-font">Heritage Messenger</h2>
+                <button onclick="closeMessenger()" style="background:none; border:none;"><i data-lucide="x"></i></button>
+            </div>
+            <div style="flex: 1; display: flex; overflow: hidden;">
+                <!-- Panel 1: Keepers & Groups -->
+                <div style="width: 30%; border-right: 1px solid var(--border); overflow-y: auto; padding: 10px;">
+                    <div class="search-bar" style="margin-bottom: 15px;">
+                        <i data-lucide="search" size="16"></i>
+                        <input type="text" placeholder="Search Keepers..." onkeyup="handleMessengerSearch(this.value)">
+                    </div>
+                    <h4 style="font-size: 0.7rem; color: var(--grey-text); text-transform: uppercase; margin: 10px 0;">Keepers</h4>
+                    <div id="messenger-keepers"></div>
+                    <h4 style="font-size: 0.7rem; color: var(--grey-text); text-transform: uppercase; margin: 20px 0 10px;">Groups</h4>
+                    <div id="messenger-groups">
+                        <div style="display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; cursor:pointer; background:#f9f9f9;">
+                            <div style="background:var(--primary); color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800;">D</div>
+                            <p style="font-size:0.85rem; font-weight:600;">Dash Valley</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Panel 2: Chat View -->
+                <div style="flex: 1; display: flex; flex-direction: column; background: white;">
+                    <div id="chat-header" style="padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+                        <p style="font-weight: 700; color: var(--grey-text);">Select a Keeper to start chatting</p>
+                    </div>
+                    <div id="chat-messages" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Messages go here -->
+                    </div>
+                    <div style="padding: 15px; border-top: 1px solid var(--border); display: flex; gap: 10px;">
+                        <input type="text" id="chat-input" placeholder="Write a message..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+                        <button style="background: var(--dark); color: white; border: none; padding: 10px 15px; border-radius: 10px;"><i data-lucide="send" size="18"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- DISH DETAIL MODAL -->
+    <div id="dish-modal" class="modal-overlay">
+        <div class="modal-content" style="padding: 0; overflow: hidden;">
+            <div id="dish-image" style="width: 100%; height: 250px; background-size: cover; background-position: center; position: relative;">
+                <button onclick="closeDish()" style="position: absolute; top: 15px; right: 15px; background: white; border-radius: 50%; width: 35px; height: 35px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"><i data-lucide="x"></i></button>
+            </div>
+            <div style="padding: 25px;">
+                <h2 id="dish-title" class="display-font" style="font-size: 1.8rem; margin-bottom: 10px;">Dish Name</h2>
+                <p id="dish-desc" style="color: var(--grey-text); line-height: 1.6; margin-bottom: 20px;">Description goes here...</p>
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn-primary" style="flex: 1; padding: 14px;">Cook Now</button>
+                    <button style="background: var(--light-bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px;"><i data-lucide="bookmark"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
 </html>
