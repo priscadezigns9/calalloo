@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.4.3 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.4.4 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.4.3"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.3"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.4.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.4"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -813,7 +813,17 @@
             
             if (tab === 'saved') {
                 // Show recipes authored by the user OR liked/saved by the user
-                filtered = recipes.filter(r => r.author_username === currentUser || userLikes.has(r.id));
+                // Using a Map for title-based deduplication in the kitchen as well
+                const seenTitles = new Set();
+                filtered = recipes.filter(r => {
+                    const isYours = r.author_username === currentUser || userLikes.has(r.id);
+                    if (!isYours) return false;
+                    
+                    const title = r.title.toLowerCase();
+                    if (seenTitles.has(title)) return false;
+                    seenTitles.add(title);
+                    return true;
+                });
             } else if (tab === 'public') {
                 filtered = recipes.filter(r => r.author_username === currentUser && (r.is_published === true || r.is_published === undefined || r.is_published === null));
             } else if (tab === 'private') {
