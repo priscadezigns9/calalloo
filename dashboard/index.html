@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.3.0 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.3.1 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.3.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.3.0"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.3.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.3.1"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -386,16 +386,23 @@
                         await sb.from('profiles').insert([newProfile]);
                         populateProfileUI(newProfile.full_name, newProfile.username, newProfile.avatar_url, null);
                     } else {
-                        // Filter out legacy "Prisca" handles at the source
-                        const isLegacy = /prisca|dezigns/i.test(profile.full_name || "") || /prisca|guest/i.test(profile.username || "");
-                        const name = isLegacy ? "" : profile.full_name;
-                        const username = isLegacy ? "" : profile.username;
+                        // Sovereignty Guard: Always prioritize DB as source of truth
+                        const name = profile.full_name || "";
+                        const username = profile.username || "";
+                        const avatar = profile.avatar_url || "https://via.placeholder.com/120";
+                        const preferences = profile.taste_preferences || {};
                         
-                        populateProfileUI(name, username, profile.avatar_url, profile.taste_preferences);
+                        // Merge taste_preferences with whatsapp_pin if available
+                        if (profile.whatsapp_pin) {
+                            if (!preferences.socials) preferences.socials = {};
+                            preferences.socials.whatsapp = profile.whatsapp_pin;
+                        }
+
+                        populateProfileUI(name, username, avatar, preferences);
                         
-                        // Sync Local Cache
+                        // Update Local Cache to match DB exactly
                         localStorage.setItem('calalloo_profile', JSON.stringify({
-                            name, username, avatar: profile.avatar_url, settings: profile.taste_preferences
+                            name, username, avatar, settings: preferences
                         }));
                     }
                 } catch (e) {
