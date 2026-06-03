@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.4.2 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.4.3 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.4.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.2"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.4.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.4.3"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -347,9 +347,15 @@
             
             // 0. Auth Guard: Ensure the session is valid
             const { data: { session }, error: authError } = await sb.auth.getSession();
-            const user = session?.user;
+            let user = session?.user;
 
-            if (!user || authError) {
+            if (!user && !authError) {
+                // Try one more time to get user from server directly
+                const { data: { user: retryUser } } = await sb.auth.getUser();
+                user = retryUser;
+            }
+
+            if (!user) {
                 console.error("Auth Guard: Session invalid", authError);
                 window.location.href = '/login/';
                 return;
@@ -375,18 +381,7 @@
                     // Pull fresh profile from Supabase
                     const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
                     
-                    // If no profile exists yet, create one from Auth Metadata
-                    if (!profile || error) {
-                        const newProfile = {
-                            id: user.id,
-                            full_name: user.user_metadata?.full_name || "",
-                            username: user.user_metadata?.username || user.email.split('@')[0],
-                            avatar_url: user.user_metadata?.avatar_url || "https://via.placeholder.com/120",
-                            origin_platform: 'Calalloo'
-                        };
-                        await sb.from('profiles').insert([newProfile]);
-                        populateProfileUI(newProfile.full_name, newProfile.username, newProfile.avatar_url, null);
-                    } else {
+                    if (profile) {
                         // Sovereignty Guard: Always prioritize DB as source of truth
                         const name = profile.full_name || "";
                         const username = profile.username || "";
@@ -405,12 +400,31 @@
                         localStorage.setItem('calalloo_profile', JSON.stringify({
                             name, username, avatar, settings: preferences
                         }));
+                    } else if (error && error.code === 'PGRST116') {
+                        // Profile strictly not found: Create one from Auth Metadata
+                        const newProfile = {
+                            id: user.id,
+                            full_name: user.user_metadata?.full_name || "",
+                            username: user.user_metadata?.username || user.email.split('@')[0],
+                            avatar_url: user.user_metadata?.avatar_url || "https://via.placeholder.com/120",
+                            origin_platform: 'Calalloo'
+                        };
+                        await sb.from('profiles').insert([newProfile]);
+                        populateProfileUI(newProfile.full_name, newProfile.username, newProfile.avatar_url, null);
+                    } else if (error) {
+                        // Network or other latency: Fallback to cache ONLY
+                        throw error;
                     }
                 } catch (e) {
                     console.error("Identity Sync Latency:", e);
                     // Critical Fallback: Use last known cache
                     const cache = JSON.parse(localStorage.getItem('calalloo_profile') || '{}');
-                    populateProfileUI(cache.name || "", cache.username || "", cache.avatar || "", cache.settings || null);
+                    if (cache.name || cache.username) {
+                        populateProfileUI(cache.name || "", cache.username || "", cache.avatar || "", cache.settings || null);
+                    } else {
+                        // Absolute fallback to Auth metadata if cache is also empty
+                        populateProfileUI(user.user_metadata?.full_name || "", user.user_metadata?.username || user.email.split('@')[0], user.user_metadata?.avatar_url || "https://via.placeholder.com/120", null);
+                    }
                 }
             }
 
