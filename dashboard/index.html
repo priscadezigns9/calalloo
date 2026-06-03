@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.6.7 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.6.8 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.6.7"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.6.7"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.6.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.6.8"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -887,6 +887,16 @@
             const q = document.getElementById('header-search').value.toLowerCase();
             const grid = document.getElementById('discovery-pins');
             
+            // Sovereignty Switch: If searching, force Discovery tab to show results
+            if (q.length > 0) {
+                document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+                document.getElementById('discovery').style.display = 'block';
+                // Update nav items to match
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                const discoveryNav = document.getElementById('nav-discovery');
+                if (discoveryNav) discoveryNav.classList.add('active');
+            }
+
             if (!q) {
                 renderPins('discovery-pins', recipes);
                 return;
@@ -896,45 +906,49 @@
             let filteredCooks = cooks.filter(c => c.name.toLowerCase().includes(q) || c.username.toLowerCase().includes(q));
             const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
             
-            // Sovereignty Search: Deep query Supabase for users not in local memory
-            if (q.length > 2) {
-                try {
-                    const { data: remoteCooks } = await sb.from('profiles')
-                        .select('full_name, username, avatar_url')
-                        .or(`full_name.ilike.%${q}%,username.ilike.%${q}%`)
-                        .limit(5);
-                    
-                    if (remoteCooks) {
-                        const newCooks = remoteCooks.map(p => ({
+            // Deep Universal Query: Find any user in the empire even if not in local memory
+            try {
+                const { data: remoteCooks } = await sb.from('profiles')
+                    .select('full_name, username, avatar_url')
+                    .or(`full_name.ilike.%${q}%,username.ilike.%${q}%`)
+                    .limit(10);
+                
+                if (remoteCooks) {
+                    remoteCooks.forEach(p => {
+                        const nc = {
                             name: p.full_name || "Heritage Cook",
                             username: `@${p.username}`,
                             avatar: p.avatar_url || "https://via.placeholder.com/100?text=Heritage+Cook"
-                        }));
-                        // Merge and deduplicate
-                        const existingUsernames = new Set(filteredCooks.map(c => c.username));
-                        newCooks.forEach(nc => {
-                            if (!existingUsernames.has(nc.username)) filteredCooks.push(nc);
-                        });
-                    }
-                } catch (e) { console.error("Deep Search Latency:", e); }
-            }
+                        };
+                        if (!filteredCooks.some(existing => existing.username === nc.username)) {
+                            filteredCooks.push(nc);
+                        }
+                    });
+                }
+            } catch (e) { console.error("Universal Search Latency:", e); }
 
             let html = '';
             
             if (filteredCooks.length > 0) {
                 html += `
-                    <div style="column-span:all; padding:10px; margin-bottom:15px; border-bottom:1px solid var(--border);">
-                        <h3 class="display-font" style="font-size:1.2rem;">Cooks</h3>
+                    <div style="column-span:all; padding:15px; margin-bottom:20px; background:var(--light-bg); border-radius:18px; border:1px solid var(--border);">
+                        <h3 class="display-font" style="font-size:1.1rem; margin-bottom:15px; display:flex; align-items:center; gap:8px;">
+                            <i data-lucide="users" style="width:18px; color:var(--primary);"></i> Heritage Cooks
+                        </h3>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            ${filteredCooks.map(c => `
+                                <div class="recipe-pin" style="padding:12px; display:flex; align-items:center; gap:15px; background:var(--bg); border:1px solid var(--border); border-radius:14px; margin-bottom:0;" onclick="viewUserProfile('${c.username.replace('@','')}')">
+                                    <img src="${c.avatar}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                                    <div style="flex:1;">
+                                        <p style="font-weight:800; font-size:0.9rem;">${c.name}</p>
+                                        <p style="font-size:0.75rem; color:var(--grey-text);">${c.username}</p>
+                                    </div>
+                                    <i data-lucide="chevron-right" style="width:16px; opacity:0.3;"></i>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 `;
-                filteredCooks.forEach(c => {
-                    html += `
-                        <div class="recipe-pin" style="padding:15px; display:flex; align-items:center; gap:12px;" onclick="viewUserProfile('${c.username.replace('@','')}')">
-                            <img src="${c.avatar}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
-                            <div><p style="font-weight:700;">${c.name}</p><p style="font-size:0.75rem; color:var(--grey-text);">${c.username}</p></div>
-                        </div>
-                    `;
-                });
             }
 
             if (filteredRecipes.length > 0) {
