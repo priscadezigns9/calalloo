@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v39.3.3 Sovereign Gold Standard</title>
+    <title>Calalloo | Heritage Hub v39.3.4 Sovereign Gold Standard</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest?v=39.3.3"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.3.3"></script>
+    <script src="https://unpkg.com/lucide@latest?v=39.3.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=39.3.4"></script>
     <style>
         :root {
             --bg: #FFFFFF; --primary: #E87722; --dark: #000000; --white: #FFFFFF;
@@ -627,10 +627,20 @@
             const pending = JSON.parse(localStorage.getItem('calalloo_pending_dishes') || '[]');
             const remoteRecipes = data || [];
             
-            const remoteIds = new Set(remoteRecipes.map(r => r.id));
-            const activePending = pending.filter(p => !remoteIds.has(p.id));
+            // Deduplication Engine: Combine pending and remote, then unique by ID
+            const allItems = [...pending, ...remoteRecipes];
+            const seenIds = new Set();
+            const uniqueById = [];
             
-            recipes = [...activePending, ...remoteRecipes].map(r => {
+            for (const item of allItems) {
+                if (!seenIds.has(item.id)) {
+                    seenIds.add(item.id);
+                    uniqueById.push(item);
+                }
+            }
+            
+            // Global Sovereignty Mapping: Apply images and normalize titles
+            recipes = uniqueById.map(r => {
                 const title = r.title.toLowerCase();
                 // Gold Standard Heritage Image Mapping
                 if (title.includes('calalloo')) r.cover_photo_url = "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg";
@@ -657,7 +667,16 @@
                 else if (title.includes('bake and shark')) r.cover_photo_url = "https://cookingwithria.com/wp-content/uploads/2024/02/fried-bake-and-shark-with-condiments-3.jpg";
                 return r;
             });
-            renderPins('discovery-pins', recipes);
+
+            // Final Discovery Deduplication (by Title): Keep only the most recent version of a dish for the feed
+            const seenTitles = new Set();
+            const discoveryFeed = recipes.filter(r => {
+                if (seenTitles.has(r.title.toLowerCase())) return false;
+                seenTitles.add(r.title.toLowerCase());
+                return true;
+            });
+
+            renderPins('discovery-pins', discoveryFeed);
         }
 
         function renderPins(gridId, items) {
@@ -762,11 +781,21 @@
 
         function switchKitchenTab(tab) {
             document.querySelectorAll('.k-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('k-tab-'+tab).classList.add('active');
+            const activeTab = document.getElementById('k-tab-'+tab);
+            if(activeTab) activeTab.classList.add('active');
+            
+            const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
             let filtered = [];
-            if(tab === 'saved') filtered = recipes.slice(0, 5);
-            else if(tab === 'public') filtered = recipes.slice(5, 8);
-            else filtered = recipes.slice(8, 10);
+            
+            if (tab === 'saved') {
+                // Show all recipes authored by the user
+                filtered = recipes.filter(r => r.author_username === currentUser);
+            } else if (tab === 'public') {
+                filtered = recipes.filter(r => r.author_username === currentUser && (r.is_published === true || r.is_published === undefined || r.is_published === null));
+            } else if (tab === 'private') {
+                filtered = recipes.filter(r => r.author_username === currentUser && r.is_published === false);
+            }
+            
             renderPins('kitchen-pins', filtered);
         }
 
