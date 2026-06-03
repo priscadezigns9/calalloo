@@ -309,7 +309,7 @@
                                 <p><b>Bank:</b> First Century Bank (Payoneer)</p>
                                 <p><b>Account Type:</b> Checking / Business</p>
                                 <p><b>Country:</b> United States (USD)</p>
-                                <p style="margin-top:10px; font-size:0.75rem; opacity:0.6;">Contact @prisca via WhatsApp for Routing/Account numbers.</p>
+                                <p style="margin-top:10px; font-size:0.75rem; opacity:0.6;">Contact support via WhatsApp for Routing/Account numbers.</p>
                             </div>
                             <button onclick="alert('US Bank details sent to your registered email.')" style="width:100%; padding:14px; background:#fff; color:#000; border:none; border-radius:12px; font-weight:800; cursor:pointer; margin-top:20px;">Get Full Details</button>
                         </div>
@@ -332,7 +332,7 @@
         let recipes = [], scansToday = 0;
         const isAdmin = true; 
         const cooks = [
-            { name: "Prisca Dezigns", username: "@prisca", location: "Trinidad & Tobago", avatar: "https://via.placeholder.com/100" },
+            { name: "Heritage Admin", username: "@admin", location: "Trinidad & Tobago", avatar: "https://via.placeholder.com/100" },
             { name: "Chef Andre", username: "@andre", location: "Jamaica", avatar: "https://via.placeholder.com/101" },
             { name: "Mamma Rose", username: "@rose", location: "Barbados", avatar: "https://via.placeholder.com/102" }
         ];
@@ -395,7 +395,7 @@
         }
 
         function populateProfileUI(name, username, avatar) {
-            document.getElementById('prof-name').innerText = name || "Heritage Cook";
+            document.getElementById('prof-name').innerText = name || "Heritage Hub User";
             document.getElementById('prof-username').innerText = username || "@guest • Trinidad & Tobago";
             document.getElementById('edit-name').value = name || "";
             document.getElementById('edit-username').value = username || "";
