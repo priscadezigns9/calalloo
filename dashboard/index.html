@@ -102,8 +102,8 @@
     <div id="discovery" class="tab-content" style="display:block;">
         <div style="padding: 20px;">
             <div style="display:flex; gap:12px; background:var(--light-bg); padding:14px 20px; border-radius:18px; border:1px solid var(--border);">
-                <i data-lucide="search" style="color:var(--grey-text)"></i>
-                <input type="text" placeholder="Search cooks, recipes or heritage dishes..." style="background:none; border:none; outline:none; color:var(--dark); width:100%; font-weight:600;" id="search-input">
+                <i data-lucide="search" style="color:var(--grey-text); cursor:pointer;" onclick="performSearch()"></i>
+                <input type="text" placeholder="Search cooks, recipes or heritage dishes..." style="background:none; border:none; outline:none; color:var(--dark); width:100%; font-weight:600;" id="search-input" onkeyup="if(event.key==='Enter') performSearch()">
             </div>
         </div>
         <div class="pinterest-grid" id="discovery-pins"></div>
@@ -320,6 +320,12 @@
                 reader.onload = (e) => document.getElementById('profile-avatar').src = e.target.result;
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+
+        function performSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = recipes.filter(r => r.title.toLowerCase().includes(query));
+            renderPins('discovery-pins', filtered);
         }
 
         function saveSettings() { alert("Platinum settings saved! 🛡️🥘"); }
