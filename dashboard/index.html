@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v31.0 Platinum Plus</title>
+    <title>Calalloo | Heritage Hub v33.0 Ultra</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,69 +18,46 @@
             --font-display: 'Fraunces', serif; --font-main: 'Inter', sans-serif;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         [data-theme="dark"] {
             --bg: #0A0A0A; --white: #0A0A0A; --dark: #FFFFFF;
             --border: #1F1F1F; --grey-text: #A0A0A0; --light-bg: #141414;
         }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: var(--font-main); background: var(--bg); color: var(--dark); transition: var(--transition); min-height: 100vh; }
+        body { font-family: var(--font-main); background: var(--bg); color: var(--dark); transition: var(--transition); }
         
         header { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 20px; z-index: 1000; display: flex; align-items: center; justify-content: space-between; }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-container img { width: 32px; height: 32px; border-radius: 50%; }
         .logo-container span { font-family: var(--font-display); font-weight: 900; font-size: 1.4rem; letter-spacing: -0.02em; }
-
-        .desktop-tabs { display: flex; gap: 30px; margin-left: 40px; flex: 1; }
-        .tab-btn { font-weight: 700; font-size: 0.9rem; color: var(--grey-text); cursor: pointer; position: relative; transition: var(--transition); }
-        .tab-btn.active { color: var(--primary); }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -21px; left: 0; right: 0; height: 3px; background: var(--primary); border-radius: 3px; }
-
-        .tab-content { display: none; padding-bottom: 100px; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .pro-badge { background: linear-gradient(135deg, #FFD700, #E87722); color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 900; margin-left: 6px; }
 
         /* Pinterest Grid */
         .pinterest-grid { columns: 4; column-gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
         .recipe-pin { break-inside: avoid; margin-bottom: 24px; border-radius: 20px; overflow: hidden; background: var(--light-bg); border: 1px solid var(--border); cursor: pointer; transition: var(--transition); position: relative; }
-        .recipe-pin:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
         .recipe-pin img { width: 100%; height: 280px; display: block; object-fit: cover; }
-        .pin-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8)); opacity: 0; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 15px; color: white; }
+        .pin-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8)); opacity: 0; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 15px; color: white; }
         .recipe-pin:hover .pin-overlay { opacity: 1; }
         .save-btn { position: absolute; top: 12px; right: 12px; background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; cursor: pointer; z-index: 10; }
 
-        /* Vision Overlay */
-        #vision-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        .scanner-line { width: 80%; height: 2px; background: var(--primary); position: absolute; top: 20%; left: 10%; box-shadow: 0 0 15px var(--primary); animation: scan 2s linear infinite; }
-        @keyframes scan { 0% { top: 20%; } 50% { top: 80%; } 100% { top: 20%; } }
+        /* Detail Modal */
+        #detail-modal, #add-recipe-modal { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
+        .modal-header { position: sticky; top: 0; background: var(--bg); padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .detail-hero { width: 100%; height: 40vh; object-fit: cover; }
+        .detail-content { padding: 30px; max-width: 800px; margin: 0 auto; width: 100%; }
 
-        /* Kitchen Profile */
-        .kitchen-tabs { display: flex; gap: 15px; margin: 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .k-tab { padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text); transition: 0.2s; }
-        .k-tab.active { background: var(--primary); color: white; }
-        .social-row { display: flex; gap: 15px; margin-top: 15px; }
-        .social-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--light-bg); border: 1px solid var(--border); color: var(--dark); cursor: pointer; }
+        /* Form Styling */
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--grey-text); text-transform: uppercase; margin-bottom: 10px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--light-bg); color: var(--dark); font-family: inherit; font-size: 1rem; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; width: 100%; cursor: pointer; }
 
-        /* Settings Forms */
-        .settings-card { background: var(--light-bg); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 24px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; margin-bottom: 8px; color: var(--grey-text); text-transform: uppercase; letter-spacing: 0.05em; }
-        .form-group input, .form-group select { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg); color: var(--dark); font-family: inherit; outline: none; }
-        .btn-save { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; width: 100%; cursor: pointer; transition: 0.2s; }
-
-        /* Floating Action Camera */
-        .ai-camera-fab { position: fixed; bottom: 100px; right: 25px; width: 65px; height: 65px; border-radius: 50%; background: var(--primary); color: white; border: none; box-shadow: 0 8px 32px rgba(232, 119, 34, 0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4000; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .ai-camera-fab:hover { transform: scale(1.1) rotate(5deg); }
-
+        .ai-camera-fab { position: fixed; bottom: 100px; right: 25px; width: 65px; height: 65px; border-radius: 50%; background: var(--primary); color: white; border: none; box-shadow: 0 8px 32px rgba(232, 119, 34, 0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4000; }
+        
         nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; height: 80px; z-index: 1000; padding-bottom: 10px; }
-        .nav-item { color: var(--grey-text); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 700; transition: 0.2s; }
-        .nav-item i { width: 24px; height: 24px; }
+        .nav-item { color: var(--grey-text); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 700; }
         .nav-item.active { color: var(--primary); }
 
-        .pro-badge { background: linear-gradient(135deg, #FFD700, #E87722); color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 900; margin-left: 6px; }
-
-        @media (max-width: 1024px) { .pinterest-grid { columns: 3; } }
-        @media (max-width: 768px) { .pinterest-grid { columns: 2; column-gap: 12px; padding: 12px; } .desktop-tabs { display: none; } }
+        @media (max-width: 768px) { .pinterest-grid { columns: 2; column-gap: 12px; padding: 12px; } }
     </style>
 </head>
 <body>
@@ -90,164 +67,75 @@
             <img src="../assets/logo.png" alt="Calalloo">
             <span>Calalloo<span class="pro-badge">PRO</span></span>
         </div>
-        <div class="desktop-tabs">
-            <div class="tab-btn active" id="tab-discovery" onclick="showTab('discovery')">Discovery</div>
-            <div class="tab-btn" id="tab-map" onclick="showTab('map')">Heritage Map</div>
-            <div class="tab-btn" id="tab-profile" onclick="showTab('profile')">My Kitchen</div>
-            <div class="tab-btn" id="tab-settings" onclick="showTab('settings')">Settings</div>
-        </div>
+        <button onclick="openAddRecipe()" style="background:var(--light-bg); border:1px solid var(--border); padding:8px 16px; border-radius:12px; font-weight:700; cursor:pointer;">+ Add Dish</button>
     </header>
 
     <!-- DISCOVERY HUB -->
     <div id="discovery" class="tab-content" style="display:block;">
-        <div style="padding: 20px;">
-            <div style="display:flex; gap:12px; background:var(--light-bg); padding:14px 20px; border-radius:18px; border:1px solid var(--border);">
-                <i data-lucide="search" style="color:var(--grey-text); cursor:pointer;" onclick="performSearch()"></i>
-                <input type="text" placeholder="Search cooks, recipes or heritage dishes..." style="background:none; border:none; outline:none; color:var(--dark); width:100%; font-weight:600;" id="search-input" onkeyup="if(event.key==='Enter') performSearch()">
-            </div>
-        </div>
         <div class="pinterest-grid" id="discovery-pins"></div>
     </div>
 
-    <!-- HERITAGE MAP -->
-    <div id="map" class="tab-content">
-        <div id="map-container" style="width:100%; height:calc(100vh - 155px); background:#eee; position:relative;">
-            <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.05);">
-                <i data-lucide="map-pin" style="width:48px; height:48px; color:var(--primary); margin-bottom:15px;"></i>
-                <p style="font-weight:700;">Loading Heritage Map...</p>
-                <p style="font-size:0.8rem; color:var(--grey-text);">Syncing with Google Places API</p>
-            </div>
+    <!-- DETAIL MODAL -->
+    <div id="detail-modal">
+        <div class="modal-header">
+            <i data-lucide="arrow-left" onclick="closeModal('detail-modal')" style="cursor:pointer;"></i>
+            <button class="save-btn" id="modal-save-btn" style="position:static;">Save to Kitchen</button>
         </div>
-    </div>
-
-    <!-- MY KITCHEN (PROFILE) -->
-    <div id="profile" class="tab-content">
-        <div style="padding: 25px;">
-            <div style="display:flex; align-items:flex-start; gap:25px; margin-bottom:30px;">
-                <div style="position:relative; cursor:pointer;" onclick="document.getElementById('avatar-input').click()">
-                    <img id="profile-avatar" src="https://via.placeholder.com/120" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:4px solid var(--primary);">
-                    <div style="position:absolute; bottom:0; right:0; background:var(--primary); color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid var(--bg);">
-                        <i data-lucide="camera" style="width:14px; height:14px;"></i>
-                    </div>
-                    <input type="file" id="avatar-input" style="display:none;" accept="image/*" onchange="updateAvatar(this)">
-                </div>
-                <div style="flex:1;">
-                    <h1 class="display-font" style="font-size:1.8rem; line-height:1;" id="prof-name">Kitchen Keeper</h1>
-                    <p style="color:var(--grey-text); font-size:0.9rem; margin-top:8px;">@keeper_id • Trinidad & Tobago</p>
-                    <div class="social-row">
-                        <div class="social-icon"><i data-lucide="message-circle" style="width:18px;"></i></div>
-                        <div class="social-icon"><i data-lucide="facebook" style="width:18px;"></i></div>
-                        <div class="social-icon"><i data-lucide="instagram" style="width:18px;"></i></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="kitchen-tabs">
-                <div class="k-tab active" onclick="switchKitchenTab('saved')">Saved</div>
-                <div class="k-tab" onclick="switchKitchenTab('public')">Public Posts</div>
-                <div class="k-tab" onclick="switchKitchenTab('private')">Private Vault</div>
-            </div>
-
-            <div class="pinterest-grid" id="kitchen-pins" style="padding:0;"></div>
-        </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div id="settings" class="tab-content">
-        <div style="padding: 25px; max-width:650px; margin: 0 auto;">
-            <h2 class="display-font" style="margin-bottom:30px; font-size:2rem;">Settings</h2>
+        <img id="detail-img" class="detail-hero">
+        <div class="detail-content">
+            <h1 class="display-font" id="detail-title" style="font-size:2.5rem; margin-bottom:10px;"></h1>
+            <p id="detail-author" style="color:var(--primary); font-weight:700; margin-bottom:30px;"></p>
             
-            <div class="settings-card">
-                <div class="form-group">
-                    <label>Profile Name</label>
-                    <input type="text" id="edit-name" placeholder="Full Name">
-                </div>
-                <div class="form-group">
-                    <label>WhatsApp Number</label>
-                    <input type="text" id="edit-whatsapp" placeholder="+1 868 ...">
-                </div>
-                <div class="form-group">
-                    <label>Facebook</label>
-                    <input type="text" id="edit-facebook" placeholder="facebook.com/yourprofile">
-                </div>
-                <div class="form-group">
-                    <label>Instagram</label>
-                    <input type="text" id="edit-instagram" placeholder="@yourinstagram">
-                </div>
-                <div class="form-group">
-                    <label>Language</label>
-                    <select id="edit-lang">
-                        <option value="en">English</option>
-                        <option value="es">Español</option>
-                        <option value="pt">Português</option>
-                        <option value="fr">Français</option>
-                        <option value="hi">Hindi (हिन्दी)</option>
-                        <option value="zh">Chinese (中文)</option>
-                        <option value="ar">Arabic (العربية)</option>
-                        <option value="de">Deutsch</option>
-                        <option value="it">Italiano</option>
-                        <option value="nl">Nederlands</option>
-                    </select>
-                </div>
-                
-                <div style="margin:25px 0; border-top:1px solid var(--border); padding-top:25px;">
-                    <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); text-transform:uppercase; margin-bottom:20px; display:block;">Permissions & UI</label>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div>
-                            <p style="font-weight:700;">Night Mode</p>
-                            <p style="font-size:0.8rem; color:var(--grey-text);">Sync UI with your light</p>
-                        </div>
-                        <input type="checkbox" id="set-dark" onchange="toggleDarkMode()" style="width:auto;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div>
-                            <p style="font-weight:700;">Location Permissions</p>
-                            <p style="font-size:0.8rem; color:var(--grey-text);">Required for Heritage Map</p>
-                        </div>
-                        <input type="checkbox" checked style="width:auto;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <p style="font-weight:700;">Camera Permissions</p>
-                            <p style="font-size:0.8rem; color:var(--grey-text);">Required for AI scanner</p>
-                        </div>
-                        <input type="checkbox" checked style="width:auto;">
-                    </div>
-                </div>
-
-                <button class="btn-save" onclick="saveSettings()">Save Changes</button>
+            <div style="margin-bottom:40px;">
+                <h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--grey-text); margin-bottom:15px;">Ingredients</h3>
+                <div id="detail-ingredients" style="line-height:1.8;"></div>
             </div>
             
-            <button onclick="signOut()" style="background:none; border:none; color:red; font-weight:700; cursor:pointer; width:100%; margin-top:20px;">Sign Out</button>
+            <div>
+                <h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--grey-text); margin-bottom:15px;">Instructions</h3>
+                <div id="detail-instructions" style="line-height:1.8;"></div>
+            </div>
         </div>
     </div>
 
-    <!-- VISION OVERLAY -->
-    <div id="vision-overlay">
-        <div style="position:relative; width:320px; height:320px; border:2px solid rgba(255,255,255,0.2); border-radius:32px; overflow:hidden; background: #000;">
-            <video id="vision-feed" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
-            <div class="scanner-line"></div>
-            <canvas id="vision-canvas" style="display:none;"></canvas>
-            <img id="scan-preview" style="width:100%; height:100%; object-fit:cover; display:none; position:absolute; inset:0;">
+    <!-- ADD RECIPE MODAL -->
+    <div id="add-recipe-modal">
+        <div class="modal-header">
+            <h2 class="display-font">Share Your Dish</h2>
+            <i data-lucide="x" onclick="closeModal('add-recipe-modal')" style="cursor:pointer;"></i>
         </div>
-        <h2 class="display-font" style="margin-top:40px;" id="scan-status">AI Vision Active</h2>
-        <p style="opacity:0.6; font-size:0.9rem;" id="scan-sub">Analyzing heritage in real-time...</p>
-        <div style="display:flex; gap:15px; margin-top:40px;">
-            <button onclick="captureVision()" style="background:var(--primary); color:white; border:none; padding:12px 30px; border-radius:14px; font-weight:700; cursor:pointer;">Capture</button>
-            <button onclick="closeScanner()" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2); padding:12px 30px; border-radius:14px; font-weight:700; cursor:pointer;">Cancel</button>
+        <div class="detail-content">
+            <div class="form-group">
+                <label>Dish Photo</label>
+                <div style="width:100%; height:200px; border:2px dashed var(--border); border-radius:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;" onclick="document.getElementById('dish-img-input').click()">
+                    <i data-lucide="camera" style="width:32px; height:32px; color:var(--grey-text); margin-bottom:10px;"></i>
+                    <p style="font-size:0.8rem; color:var(--grey-text);">Click to upload</p>
+                    <img id="dish-preview" style="display:none; position:absolute; width:100%; height:100%; object-fit:cover; border-radius:20px;">
+                </div>
+                <input type="file" id="dish-img-input" style="display:none;" onchange="previewDish(this)">
+            </div>
+            <div class="form-group">
+                <label>Dish Name</label>
+                <input type="text" id="add-title" placeholder="e.g. Grandma's Stew Chicken">
+            </div>
+            <div class="form-group">
+                <label>Ingredients</label>
+                <textarea id="add-ingredients" rows="5" placeholder="List ingredients here..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Instructions / Story</label>
+                <textarea id="add-instructions" rows="8" placeholder="Share your cooking process or the heritage story..."></textarea>
+            </div>
+            <button class="btn-submit" onclick="submitDish()">Post to Heritage Feed</button>
         </div>
     </div>
-
-    <button class="ai-camera-fab" onclick="triggerScan()">
-        <i data-lucide="scan" style="width:32px; height:32px;"></i>
-    </button>
 
     <nav>
-        <div class="nav-item active" id="nav-discovery" onclick="showTab('discovery')"><i data-lucide="compass"></i>Discovery</div>
-        <div class="nav-item" id="nav-map" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
-        <div class="nav-item" id="nav-scan" onclick="triggerScan()"><i data-lucide="scan"></i>Scan</div>
-        <div class="nav-item" id="nav-profile" onclick="showTab('profile')"><i data-lucide="user"></i>Kitchen</div>
-        <div class="nav-item" id="nav-settings" onclick="showTab('settings')"><i data-lucide="settings"></i>Settings</div>
+        <div class="nav-item active" onclick="showTab('discovery')"><i data-lucide="compass"></i>Discovery</div>
+        <div class="nav-item" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
+        <div class="nav-item" onclick="triggerScan()"><i data-lucide="scan"></i>Scan</div>
+        <div class="nav-item" onclick="showTab('profile')"><i data-lucide="user"></i>Kitchen</div>
+        <div class="nav-item" onclick="showTab('settings')"><i data-lucide="settings"></i>Settings</div>
     </nav>
 
     <script>
@@ -260,7 +148,7 @@
         }
 
         async function loadDiscovery() {
-            const { data } = await sb.from('recipes').select('*').limit(20);
+            const { data } = await sb.from('recipes').select('*').order('created_at', {ascending: false});
             recipes = data || [];
             renderPins('discovery-pins', recipes);
         }
@@ -269,7 +157,7 @@
             const grid = document.getElementById(targetId);
             if(!grid) return;
             grid.innerHTML = items.map(r => `
-                <div class="recipe-pin" onclick="viewDish('${r.id}')">
+                <div class="recipe-pin" onclick="openDish('${r.id}')">
                     <button class="save-btn" onclick="saveToKitchen(event, '${r.id}')">Save</button>
                     <img src="${r.cover_photo_url || 'https://via.placeholder.com/400x500'}" alt="${r.title}">
                     <div class="pin-overlay">
@@ -280,113 +168,44 @@
             `).join('');
         }
 
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            const target = document.getElementById(id);
-            if(target) target.style.display = 'block';
-            
-            const deskTab = document.getElementById('tab-'+id);
-            if(deskTab) deskTab.classList.add('active');
-            
-            const navItem = document.getElementById('nav-'+id);
-            if(navItem) navItem.classList.add('active');
-
-            if(id === 'profile') switchKitchenTab('saved');
+        function openDish(id) {
+            const r = recipes.find(item => item.id === id);
+            if(!r) return;
+            document.getElementById('detail-img').src = r.cover_photo_url;
+            document.getElementById('detail-title').innerText = r.title;
+            document.getElementById('detail-author').innerText = "By Heritage Keeper";
+            document.getElementById('detail-ingredients').innerText = r.ingredients || "Ingredients shared in Private Vault.";
+            document.getElementById('detail-instructions').innerText = r.instructions || "Instructions shared in Private Vault.";
+            document.getElementById('detail-modal').style.display = 'flex';
         }
 
-        function switchKitchenTab(tab) {
-            document.querySelectorAll('.k-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            // Filter logic here
-            renderPins('kitchen-pins', recipes.slice(0, 3)); 
-        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openAddRecipe() { document.getElementById('add-recipe-modal').style.display = 'flex'; }
 
-        async function triggerScan() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                const video = document.getElementById('vision-feed');
-                video.srcObject = stream;
-                document.getElementById('vision-overlay').style.display = 'flex';
-                document.getElementById('scan-preview').style.display = 'none';
-                document.getElementById('scan-status').innerText = "AI Vision Active";
-                document.getElementById('scan-sub').innerText = "Analyzing heritage in real-time...";
-            } catch (err) {
-                console.error("Camera access denied", err);
-                // Fallback to file upload if camera fails
-                const input = document.createElement('input');
-                input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment';
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if(file) {
-                        document.getElementById('vision-overlay').style.display = 'flex';
-                        const reader = new FileReader();
-                        reader.onload = (re) => {
-                            document.getElementById('scan-preview').src = re.target.result;
-                            document.getElementById('scan-preview').style.display = 'block';
-                            processScan();
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                };
-                input.click();
-            }
-        }
-
-        function captureVision() {
-            const video = document.getElementById('vision-feed');
-            const canvas = document.getElementById('vision-canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            const dataUrl = canvas.toDataURL('image/jpeg');
-            document.getElementById('scan-preview').src = dataUrl;
-            document.getElementById('scan-preview').style.display = 'block';
-            
-            // Stop stream
-            const stream = video.srcObject;
-            if(stream) stream.getTracks().forEach(track => track.stop());
-            
-            processScan();
-        }
-
-        function processScan() {
-            document.getElementById('scan-status').innerText = "Signal Synced!";
-            document.getElementById('scan-sub').innerText = "Updating Map with local heritage signals...";
-            setTimeout(() => closeScanner(), 2000);
-        }
-
-        function closeScanner() { 
-            const video = document.getElementById('vision-feed');
-            if(video.srcObject) video.srcObject.getTracks().forEach(track => track.stop());
-            document.getElementById('vision-overlay').style.display = 'none'; 
-        }
-
-        function toggleDarkMode() {
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
-            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-        }
-
-        function updateAvatar(input) {
+        function previewDish(input) {
             if(input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = (e) => document.getElementById('profile-avatar').src = e.target.result;
+                reader.onload = (e) => {
+                    const prev = document.getElementById('dish-preview');
+                    prev.src = e.target.result;
+                    prev.style.display = 'block';
+                };
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        function performSearch() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const filtered = recipes.filter(r => r.title.toLowerCase().includes(query));
-            renderPins('discovery-pins', filtered);
+        async function submitDish() {
+            const title = document.getElementById('add-title').value;
+            const ingredients = document.getElementById('add-ingredients').value;
+            const instructions = document.getElementById('add-instructions').value;
+            
+            if(!title) { alert("Please name your dish!"); return; }
+            
+            alert("Dish Submitted! 🥘 After a quick heritage check, it will be live in the Discovery feed.");
+            closeModal('add-recipe-modal');
         }
 
-        function saveSettings() { alert("Platinum settings saved! 🛡️🥘"); }
         function saveToKitchen(e, id) { e.stopPropagation(); alert("Saved to Private Vault!"); }
-        function viewDish(id) { alert("Opening High-Fidelity Detail for: " + id); }
 
         init();
     </script>
