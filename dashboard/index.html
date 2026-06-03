@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calalloo | Heritage Hub v36.0 Sovereign Pro Max</title>
+    <title>Calalloo | Heritage Hub v37.0 Sovereign Gold</title>
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,10 +35,12 @@
         .tab-btn { font-weight: 700; font-size: 0.85rem; color: var(--grey-text); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .tab-btn.active { color: var(--primary); }
 
-        .tab-content { display: none; padding-bottom: 100px; }
+        .tab-content { display: none; padding-bottom: 100px; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .pinterest-grid { columns: 4; column-gap: 15px; padding: 15px; max-width: 1400px; margin: 0 auto; }
         .recipe-pin { break-inside: avoid; margin-bottom: 15px; border-radius: 16px; overflow: hidden; background: var(--light-bg); border: 1px solid var(--border); cursor: pointer; transition: var(--transition); position: relative; }
-        .recipe-pin img { width: 100%; height: 300px; display: block; object-fit: cover; }
+        .recipe-pin img { width: 100%; height: 280px; display: block; object-fit: cover; }
         .pin-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8)); opacity: 0; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; color: white; }
         .recipe-pin:hover .pin-overlay { opacity: 1; }
 
@@ -51,11 +53,9 @@
         .nav-item { color: var(--grey-text); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.6rem; font-weight: 700; transition: 0.2s; }
         .nav-item.active { color: var(--primary); }
 
-        .modal { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
+        .modal { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; overflow-y: auto; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-header { position: sticky; top: 0; background: var(--bg); padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-
-        .pro-modal-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px; text-align: center; }
-        .pro-box { background: linear-gradient(135deg, #1A1A1A, #000); color: white; padding: 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); width: 100%; max-width: 400px; }
 
         @media (max-width: 768px) {
             .desktop-tabs { display: none; }
@@ -88,6 +88,7 @@
         <div style="height:calc(100vh - 150px); display:flex; flex-direction:column; align-items:center; justify-content:center;">
             <i data-lucide="map" style="width:40px; color:var(--primary);"></i>
             <p style="font-weight:700; margin-top:10px;">Heritage Map</p>
+            <p style="font-size:0.8rem; color:var(--grey-text);">Syncing Caribbean Heritage Signals...</p>
         </div>
     </div>
 
@@ -104,122 +105,63 @@
                 <div style="flex:1;">
                     <h1 class="display-font" style="font-size:1.8rem; line-height:1;" id="prof-name">Kitchen Keeper</h1>
                     <p style="color:var(--grey-text); font-size:0.9rem; margin-top:8px;">@keeper_id • Trinidad & Tobago</p>
-                    <div class="social-row" style="display: flex; gap: 15px; margin-top: 15px;">
-                        <div class="social-icon" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--light-bg); border: 1px solid var(--border); color: var(--dark); cursor: pointer;"><i data-lucide="message-circle" style="width:18px;"></i></div>
-                        <div class="social-icon" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--light-bg); border: 1px solid var(--border); color: var(--dark); cursor: pointer;"><i data-lucide="facebook" style="width:18px;"></i></div>
-                        <div class="social-icon" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--light-bg); border: 1px solid var(--border); color: var(--dark); cursor: pointer;"><i data-lucide="instagram" style="width:18px;"></i></div>
+                    <div style="display: flex; gap: 15px; margin-top: 15px;">
+                        <i data-lucide="message-circle" style="width:18px; cursor:pointer;"></i>
+                        <i data-lucide="facebook" style="width:18px; cursor:pointer;"></i>
+                        <i data-lucide="instagram" style="width:18px; cursor:pointer;"></i>
                     </div>
                 </div>
             </div>
-
-            <div class="kitchen-tabs" style="display: flex; gap: 15px; margin: 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-                <div class="k-tab active" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text); transition: 0.2s;" onclick="switchKitchenTab('saved')">Saved</div>
-                <div class="k-tab" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text); transition: 0.2s;" onclick="switchKitchenTab('public')">Public Posts</div>
-                <div class="k-tab" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text); transition: 0.2s;" onclick="switchKitchenTab('private')">Private Vault</div>
+            <div style="display: flex; gap: 15px; margin: 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <div class="k-tab active" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text);" onclick="switchKitchenTab('saved')">Saved</div>
+                <div class="k-tab" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text);" onclick="switchKitchenTab('public')">Public</div>
+                <div class="k-tab" style="padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--grey-text);" onclick="switchKitchenTab('private')">Private</div>
             </div>
-
             <div class="pinterest-grid" id="kitchen-pins" style="padding:0;"></div>
         </div>
     </div>
 
     <div id="settings" class="tab-content">
         <div style="padding:20px; max-width:600px; margin: 0 auto;">
-            <h2 class="display-font" style="margin-bottom:30px; font-size:2rem;">Settings</h2>
-            
+            <h2 class="display-font" style="margin-bottom:30px;">Settings</h2>
             <div class="settings-card">
-                <h3 style="margin-bottom:20px; color:var(--primary); font-size:0.9rem; text-transform:uppercase;">Account Details</h3>
-                <div class="form-group">
-                    <label>Profile Name</label>
-                    <input type="text" id="edit-name" value="Prisca Dezigns">
+                <div class="form-group"><label>Profile Name</label><input type="text" id="s-name" value="Prisca Dezigns"></div>
+                <div class="form-group"><label>WhatsApp</label><input type="text" placeholder="+1 868 ..."></div>
+                <div class="form-group"><label>Language</label>
+                    <select><option>English</option><option>Español</option><option>Português</option></select>
                 </div>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="edit-username" value="@prisca">
-                </div>
-                <div class="form-group">
-                    <label>WhatsApp Number</label>
-                    <input type="text" id="edit-whatsapp" placeholder="+1 868 ...">
-                </div>
-                <div class="form-group">
-                    <label>Facebook</label>
-                    <input type="text" id="edit-facebook" placeholder="facebook.com/yourprofile">
-                </div>
-                <div class="form-group">
-                    <label>Instagram</label>
-                    <input type="text" id="edit-instagram" placeholder="@yourinstagram">
-                </div>
-                <div class="form-group">
-                    <label>Language</label>
-                    <select id="edit-lang">
-                        <option value="en">English</option>
-                        <option value="es">Español</option>
-                        <option value="pt">Português</option>
-                        <option value="fr">Français</option>
-                        <option value="hi">Hindi (हिन्दी)</option>
-                        <option value="zh">Chinese (中文)</option>
-                        <option value="ar">Arabic (العربية)</option>
-                        <option value="de">Deutsch</option>
-                        <option value="it">Italiano</option>
-                        <option value="nl">Nederlands</option>
-                    </select>
-                </div>
-                
-                <div style="margin:25px 0; border-top:1px solid var(--border); padding-top:25px;">
-                    <label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); text-transform:uppercase; margin-bottom:20px; display:block;">Permissions & UI</label>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div>
-                            <p style="font-weight:700;">Night Mode</p>
-                            <p style="font-size:0.8rem; color:var(--grey-text);">Sync UI with your light</p>
-                        </div>
-                        <input type="checkbox" id="set-dark" onchange="toggleDarkMode()" style="width:auto;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div>
-                            <p style="font-weight:700;">Location Permissions</p>
-                            <p style="font-size:0.8rem; color:var(--grey-text);">Required for Heritage Map</p>
-                        </div>
-                        <input type="checkbox" checked style="width:auto;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <p style="font-weight:700;">Camera Permissions</p>
-                            <p style="font-size:0.8rem; color:var(--grey-text);">Required for AI scanner</p>
-                        </div>
-                        <input type="checkbox" checked style="width:auto;">
-                    </div>
-                </div>
-
-                <button onclick="alert('Platinum settings saved! 🛡️🥘')" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Save Changes</button>
+                <button onclick="alert('Settings Saved!')" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer;">Save Changes</button>
             </div>
-            
-            <button onclick="alert('Signed Out')" style="background:none; border:none; color:red; font-weight:700; cursor:pointer; width:100%; margin-top:20px;">Sign Out</button>
+            <button onclick="alert('Signed Out')" style="color:red; background:none; border:none; width:100%; font-weight:700;">Sign Out</button>
         </div>
     </div>
 
     <!-- Modals -->
     <div id="detail-modal" class="modal">
-        <div class="modal-header"><i data-lucide="arrow-left" onclick="closeModal('detail-modal')"></i><h3 class="display-font">Recipe</h3><div></div></div>
-        <img id="m-img" style="width:100%; height:40vh; object-fit:cover;">
-        <div style="padding:25px;"><h1 class="display-font" id="m-title"></h1><p id="m-content" style="margin-top:20px; line-height:1.6; white-space:pre-wrap;"></p></div>
+        <div class="modal-header"><i data-lucide="arrow-left" onclick="closeModal('detail-modal')"></i><h3 class="display-font" id="m-header">Recipe Details</h3><i data-lucide="share" style="width:18px;"></i></div>
+        <img id="m-img" style="width:100%; height:45vh; object-fit:cover;">
+        <div style="padding:25px;">
+            <h1 class="display-font" id="m-title" style="font-size:2.2rem; margin-bottom:10px;"></h1>
+            <p style="color:var(--primary); font-weight:800; margin-bottom:30px;">Prisca Dezigns • Heritage Gold</p>
+            <div id="m-ingredients" style="margin-bottom:30px;">
+                <h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--grey-text); margin-bottom:15px;">Ingredients</h3>
+                <div id="ing-list" style="line-height:1.8; color:var(--dark);"></div>
+            </div>
+            <div id="m-instructions">
+                <h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--grey-text); margin-bottom:15px;">Instructions</h3>
+                <div id="inst-list" style="line-height:1.8; color:var(--dark);"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- Prisca Designs Pro Modal -->
     <div id="pro-modal" class="modal" style="background: rgba(0,0,0,0.8);">
-        <div class="pro-modal-content">
-            <div class="pro-box">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                    <img src="../assets/logo.png" style="width:40px; border-radius:50%;">
-                    <i data-lucide="x" onclick="closeModal('pro-modal')" style="cursor:pointer; color:white;"></i>
-                </div>
-                <h1 class="display-font" style="color:#E87722;">Prisca Designs</h1>
-                <p style="margin:10px 0; opacity:0.8;">Unlocking Calalloo PRO</p>
-                <div style="font-size:3rem; font-weight:900; margin:20px 0;">$9.99<span style="font-size:1rem; opacity:0.6;">/mo</span></div>
-                <ul style="text-align:left; list-style:none; margin-bottom:30px; font-size:0.9rem;">
-                    <li><i data-lucide="check" style="width:14px; color:#E87722; vertical-align:middle; margin-right:8px;"></i>Private Vault Recipes</li>
-                    <li><i data-lucide="check" style="width:14px; color:#E87722; vertical-align:middle; margin-right:8px;"></i>Ad-Free Experience</li>
-                    <li><i data-lucide="check" style="width:14px; color:#E87722; vertical-align:middle; margin-right:8px;"></i>Heritage Map Sync</li>
-                </ul>
-                <button onclick="alert('Redirecting to Prisca Designs Secure Checkout...')" style="width:100%; padding:18px; background:#E87722; color:white; border:none; border-radius:14px; font-weight:900; cursor:pointer;">Activate PRO</button>
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:30px;">
+            <div style="background:linear-gradient(135deg, #1A1A1A, #000); color:white; padding:40px; border-radius:24px; text-align:center; width:100%; max-width:400px;">
+                <h1 class="display-font" style="color:var(--primary); margin-bottom:10px;">Prisca Designs</h1>
+                <p style="opacity:0.8;">Upgrade to Calalloo PRO</p>
+                <div style="font-size:3rem; font-weight:900; margin:25px 0;">$9.99<span style="font-size:1rem; opacity:0.6;">/mo</span></div>
+                <button onclick="alert('Payment Gateway...')" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:900;">Activate PRO</button>
+                <p onclick="closeModal('pro-modal')" style="margin-top:20px; opacity:0.6; cursor:pointer;">Close</p>
             </div>
         </div>
     </div>
@@ -227,7 +169,7 @@
     <nav>
         <div class="nav-item active" id="nav-discovery" onclick="showTab('discovery')"><i data-lucide="compass"></i>Discovery</div>
         <div class="nav-item" id="nav-map" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
-        <div class="nav-item" id="nav-scan" onclick="alert('Camera Scan active...')"><i data-lucide="scan"></i>Scan</div>
+        <div class="nav-item" id="nav-scan" onclick="alert('AI Scanner active...')"><i data-lucide="scan"></i>Scan</div>
         <div class="nav-item" id="nav-kitchen" onclick="showTab('kitchen')"><i data-lucide="user"></i>Kitchen</div>
         <div class="nav-item" id="nav-settings" onclick="showTab('settings')"><i data-lucide="settings"></i>Settings</div>
     </nav>
@@ -246,11 +188,11 @@
             const { data } = await sb.from('recipes').select('*').order('created_at', {ascending:false});
             recipes = data || [];
             renderPins('discovery-pins', recipes);
-            renderPins('kitchen-pins', recipes.slice(0, 4)); // Mocking some kitchen data
+            renderPins('kitchen-pins', recipes.slice(0, 4));
         }
 
-        function renderPins(id, items) {
-            const grid = document.getElementById(id);
+        function renderPins(gridId, items) {
+            const grid = document.getElementById(gridId);
             if(!grid) return;
             grid.innerHTML = items.map(r => `
                 <div class="recipe-pin" onclick="openRecipe('${r.id}')">
@@ -261,48 +203,39 @@
         }
 
         function showTab(id) {
-            console.log('Switching to tab:', id);
             document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             
-            const targetContent = document.getElementById(id);
-            if (targetContent) targetContent.style.display = 'block';
-            
-            const targetNav = document.getElementById('nav-'+id);
-            if (targetNav) targetNav.classList.add('active');
-            
-            const targetDesk = document.getElementById('d-tab-'+id);
-            if (targetDesk) targetDesk.classList.add('active');
+            document.getElementById(id).style.display = 'block';
+            document.getElementById('nav-'+id).classList.add('active');
+            const desk = document.getElementById('d-tab-'+id);
+            if(desk) desk.classList.add('active');
         }
 
-        function updateAvatar(input) {
-            if(input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => document.getElementById('profile-avatar').src = e.target.result;
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function switchKitchenTab(tab) {
-            document.querySelectorAll('.k-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            // Mocking tab switch logic
-            renderPins('kitchen-pins', recipes.slice(0, tab === 'saved' ? 4 : 2));
-        }
-
-        function openRecipe(id) {
+        async function openRecipe(id) {
             const r = recipes.find(item => item.id === id);
             if(!r) return;
             document.getElementById('m-img').src = r.cover_photo_url;
             document.getElementById('m-title').innerText = r.title;
-            document.getElementById('m-content').innerText = (r.ingredients || "") + "\n\n" + (r.instructions || "");
+            
+            // Instructions
+            const instList = document.getElementById('inst-list');
+            instList.innerHTML = Array.isArray(r.instructions) ? r.instructions.map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${step}</p>`).join('') : r.instructions;
+
+            // Fetch Ingredients
+            const { data: ingData } = await sb.from('recipe_ingredients').select('ingredient_name, quantity').eq('recipe_id', id);
+            const ingList = document.getElementById('ing-list');
+            ingList.innerHTML = ingData && ingData.length > 0 ? ingData.map(i => `<div style="padding:8px 0; border-bottom:1px solid var(--border);">• ${i.quantity || ''} ${i.ingredient_name}</div>`).join('') : "Recipe version pending ingredients.";
+
             openModal('detail-modal');
         }
 
         function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function updateAvatar(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => document.getElementById('profile-avatar').src = e.target.result; reader.readAsDataURL(input.files[0]); } }
+        function switchKitchenTab(tab) { document.querySelectorAll('.k-tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); }
 
         init();
     </script>
