@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v39.8.0 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v39.8.1 Sovereign Gold Standard</title>
 <link rel="icon" type="image/png" href="../assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1196,10 +1196,10 @@ overlay.id = "analysis-loader";
 overlay.style = "position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center; padding:20px; backdrop-filter:blur(10px);";
 overlay.innerHTML = `
 <div class="scanner-ring" style="width:120px; height:120px; border:4px solid var(--primary); border-radius:50%; border-top-color:transparent; animation: spin 1s linear infinite; margin-bottom:30px; box-shadow: 0 0 20px var(--primary);"></div>
-<h3 class="display-font" style="font-size:1.8rem; margin-bottom:10px; letter-spacing:0.05em;">AI HERITAGE UPLINK...</h3>
+<h3 class="display-font" style="font-size:1.8rem; margin-bottom:10px; letter-spacing:0.05em;">ANALYZING...</h3>
 <p id="analysis-status" style="opacity:0.7; font-size:0.9rem; max-width:300px;">Initializing Heritage Analysis...</p>
 <div id="loading-bar" style="width:200px; height:4px; background:#222; border-radius:2px; margin-top:20px; overflow:hidden;">
-<div id="loading-progress" style="width:0%; height:100%; background:var(--primary); transition: width 6s linear;"></div>
+<div id="loading-progress" style="width:0%; height:100%; background:var(--primary); transition: width 15s linear;"></div>
 </div>
 `;
 document.body.appendChild(overlay);
@@ -1207,87 +1207,73 @@ const status = document.getElementById('analysis-status');
 const progress = document.getElementById('loading-progress');
 setTimeout(() => { if(progress) progress.style.width = '100%'; }, 100);
 try {
-// 1. Universal Sync: Uploading to Supabase Vault for Real-Time AI Analysis
 const { data: { session } } = await sb.auth.getSession();
 const userId = session?.user?.id || 'anonymous';
-// Saving scan signal to the Heritage Vault
-const { error: vaultError } = await sb.from('recipes').insert([{
+// 1. Scalable Signal: Creating a pending scan in the Sovereign Vault
+// At 10,000 users, we use a 'status' column to drive the UI reactively
+const { data: scanRecord, error: vaultError } = await sb.from('recipes').insert([{
 title: "Pending Heritage Discovery...",
 author_id: userId,
 cover_photo_url: typeof source === 'string' && source.startsWith('data') ? source : null,
 is_published: false,
-is_heritage_scan: true, // Signal for Sovereign Backend
+is_heritage_scan: true,
 status: 'processing'
-}]);
-if (vaultError) console.warn("Vault Uplink Latency:", vaultError);
-// 2. Neural Processing Phases
+}]).select().single();
+if (vaultError) throw vaultError;
+// 2. Real-Time Subscription: Listening for the Sovereign Backend to fulfill the scan
+// This is exactly how FB/IG handle server-side processing for millions of users
+const scanSubscription = sb.channel(`scan-${scanRecord.id}`)
+.on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'recipes', filter: `id=eq.${scanRecord.id}` }, payload => {
+if (payload.new.status === 'completed' && payload.new.ai_analysis) {
+scanSubscription.unsubscribe();
+document.body.removeChild(overlay);
+showAnalysisHub(payload.new.ai_analysis);
+}
+})
+.subscribe();
+// 3. UI Phase Feedback (Purely visual while server-side processing occurs)
 const phases = [
 "Bypassing local cache... Syncing with Sovereign Vault.",
-"Extracting culinary DNA from global archives...",
+"Neural Uplink Established. Extracting culinary DNA...",
 "Detecting Indigenous Heritage Ingredients...",
 "Calculating Deep Caloric Density per Ingredient...",
 "Finalizing Heritage Analysis...",
 "Analysis Complete. Syncing results to Kitchen."
 ];
 phases.forEach((p, i) => {
-setTimeout(() => { if(status) status.innerText = p; }, i * 1000);
+setTimeout(() => { if(status) status.innerText = p; }, i * 2000);
 });
-// 3. Sentient Discovery: Rotating Knowledge Base (v39.7.9)
-const webKnowledgeBase = [
-{
-title: "Signature Trinidadian Callaloo",
-authenticity: "98.4%", source: "Sovereign Heritage Engine", calories: 345,
-ingredients: [
-{ name: "Dasheen Bush", cal: 42, fact: "Native Iron Source", price: "TTD 15.00" },
-{ name: "Coconut Milk", cal: 120, fact: "Indigenous Healthy Fats", price: "TTD 12.50" },
-{ name: "Okra", cal: 33, fact: "Soluble Fiber / Texture", price: "TTD 8.00" },
-{ name: "Blue Crab", cal: 87, fact: "Sustainably Sourced Protein", price: "TTD 45.00" },
-{ name: "Pumpkin", cal: 26, fact: "Vitamin A Signature", price: "TTD 5.00" },
-{ name: "Pimento Peppers", cal: 37, fact: "Local Flavor Identity", price: "TTD 6.00" }
-]
-},
-{
-title: "Jamaican Ackee & Saltfish",
-authenticity: "96.2%", source: "Caribbean Culinary Web", calories: 410,
-ingredients: [
-{ name: "Ackee", cal: 150, fact: "Heritage Fruit", price: "TTD 35.00" },
-{ name: "Salted Cod", cal: 120, fact: "Omega-3", price: "TTD 25.00" },
-{ name: "Onions", cal: 20, fact: "Antioxidant", price: "TTD 5.00" },
-{ name: "Scotch Bonnet", cal: 10, fact: "High Heat", price: "TTD 4.00" },
-{ name: "Thyme", cal: 5, fact: "Aromatic", price: "TTD 3.00" }
-]
-},
-{
-title: "Guyanese Pepperpot",
-authenticity: "99.1%", source: "Indigenous Food Network", calories: 550,
-ingredients: [
-{ name: "Beef/Pork", cal: 350, fact: "Prime Protein", price: "TTD 40.00" },
-{ name: "Cassareep", cal: 120, fact: "Ancient Preservative", price: "TTD 30.00" },
-{ name: "Cinnamon & Cloves", cal: 30, fact: "Antibacterial", price: "TTD 15.00" },
-{ name: "Wiri Wiri Peppers", cal: 50, fact: "Pure Heat", price: "TTD 10.00" }
-]
-},
-{
-title: "Trinidadian Doubles",
-authenticity: "97.5%", source: "Street Food Global Map", calories: 350,
-ingredients: [
-{ name: "Channa (Chickpeas)", cal: 180, fact: "Legume Power", price: "TTD 10.00" },
-{ name: "Barra (Fried Dough)", cal: 150, fact: "Energy Source", price: "TTD 5.00" },
-{ name: "Cumin (Geera)", cal: 10, fact: "Digestion Aid", price: "TTD 2.00" },
-{ name: "Mango Chutney", cal: 10, fact: "Vitamin C", price: "TTD 3.00" }
-]
-}
-];
+// 4. Safety Timeout: If the server-side analysis (me or a function) takes too long
 setTimeout(() => {
-document.body.removeChild(overlay);
-// Cycle based on current time to prevent the same result every time
-const index = new Date().getSeconds() % webKnowledgeBase.length;
-showAnalysisHub(webKnowledgeBase[index]);
-}, 6000);
+if (document.getElementById('analysis-loader')) {
+console.warn("Deep Analysis Latency: Fetching latest cached result.");
+// Fallback logic for high-concurrency environments
+fetchLatestScanResult(scanRecord.id);
+}
+}, 15000);
 } catch (err) {
-console.error("Neural Uplink Failure:", err);
+console.error("Scale-Level Uplink Failure:", err);
 document.body.removeChild(overlay);
-alert("Neural Uplink Interrupted. Please check your connection. 🛡️");
+alert("Heritage Analysis Interrupted. Please check your connection. 🛡️");
+}
+}
+async function fetchLatestScanResult(id) {
+const { data } = await sb.from('recipes').select('ai_analysis').eq('id', id).single();
+if (data && data.ai_analysis) {
+const overlay = document.getElementById('analysis-loader');
+if(overlay) document.body.removeChild(overlay);
+showAnalysisHub(data.ai_analysis);
+} else {
+// If still processing at 10k scale, provide a high-fidelity estimation
+const overlay = document.getElementById('analysis-loader');
+if(overlay) document.body.removeChild(overlay);
+showAnalysisHub({
+title: "Heritage Analysis (Estimating...)",
+authenticity: "Pending Deep Sync",
+calories: 0,
+ingredients: [],
+heritage_note: "Your dish is being processed in the Sovereign Vault. Refresh your Kitchen in a moment for the full breakdown."
+});
 }
 }
 function showAnalysisHub(data) {
