@@ -161,14 +161,29 @@
         </div>
     </div>
 
-    <div id="pro-modal" class="modal" style="background: rgba(0,0,0,0.8);">
-        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:30px;">
-            <div style="background:linear-gradient(135deg, #1A1A1A, #000); color:white; padding:40px; border-radius:24px; text-align:center; width:100%; max-width:400px;">
-                <h1 class="display-font" style="color:var(--primary); margin-bottom:10px;">Prisca Designs</h1>
-                <p style="opacity:0.8;">Upgrade to Calalloo PRO</p>
-                <div style="font-size:3rem; font-weight:900; margin:25px 0;">$9.99<span style="font-size:1rem; opacity:0.6;">/mo</span></div>
-                <button onclick="alert('Payment Gateway...')" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:900;">Activate PRO</button>
-                <p onclick="closeModal('pro-modal')" style="margin-top:20px; opacity:0.6; cursor:pointer;">Close</p>
+    <div id="pro-modal" class="modal" style="background: rgba(0,0,0,0.85);">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px;">
+            <!-- Step 1: Calalloo PRO Upgrade Intro -->
+            <div id="pro-intro" style="background:var(--bg); padding:35px; border-radius:28px; text-align:center; width:100%; max-width:420px; box-shadow:0 20px 50px rgba(0,0,0,0.3);">
+                <div style="background:var(--primary); color:white; width:60px; height:60px; border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+                    <i data-lucide="zap" style="width:32px; height:32px;"></i>
+                </div>
+                <h1 class="display-font" style="font-size:2rem; margin-bottom:10px;">Calalloo <span style="color:var(--primary);">PRO</span></h1>
+                <p style="color:var(--grey-text); margin-bottom:25px; line-height:1.5;">Unlock the AI Heritage Camera, real-time Map Sync, and the Private Vault.</p>
+                <button onclick="showPaymentOverlay()" style="width:100%; padding:18px; background:var(--dark); color:white; border:none; border-radius:16px; font-weight:800; font-size:1.1rem; cursor:pointer;">Upgrade to PRO</button>
+                <p onclick="closeModal('pro-modal')" style="margin-top:20px; color:var(--grey-text); cursor:pointer; font-size:0.9rem; font-weight:600;">Not now</p>
+            </div>
+
+            <!-- Step 2: Prisca Designs Payment Modal (Over Intro) -->
+            <div id="payment-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.9); flex-direction:column; align-items:center; justify-content:center; padding:20px; z-index:5100;">
+                <div style="background:linear-gradient(135deg, #1A1A1A, #000); color:white; padding:40px; border-radius:24px; text-align:center; width:100%; max-width:380px; position:relative;">
+                    <i data-lucide="x" onclick="hidePaymentOverlay()" style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.5;"></i>
+                    <h3 style="color:var(--primary); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:15px;">Secure Checkout</h3>
+                    <h2 class="display-font" style="margin-bottom:10px;">Prisca Designs</h2>
+                    <p style="opacity:0.7; font-size:0.9rem;">Service: Calalloo PRO Subscription</p>
+                    <div style="font-size:3.5rem; font-weight:900; margin:30px 0;">$9.99<span style="font-size:1.2rem; opacity:0.5;">/mo</span></div>
+                    <button onclick="confirmUpgrade()" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:900; font-size:1.1rem; cursor:pointer;">Pay with Card</button>
+                </div>
             </div>
         </div>
     </div>
@@ -176,7 +191,7 @@
     <nav>
         <div class="nav-item active" id="nav-discovery" onclick="showTab('discovery')"><i data-lucide="compass"></i>Discovery</div>
         <div class="nav-item" id="nav-map" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
-        <div class="nav-item" id="nav-scan" onclick="alert('AI Scanner active...')"><i data-lucide="scan"></i>Scan</div>
+        <div class="nav-item" id="nav-scan" onclick="triggerScanPro()"><i data-lucide="scan"></i>Scan</div>
         <div class="nav-item" id="nav-kitchen" onclick="showTab('kitchen')"><i data-lucide="user"></i>Kitchen</div>
         <div class="nav-item" id="nav-settings" onclick="showTab('settings')"><i data-lucide="settings"></i>Settings</div>
     </nav>
@@ -238,7 +253,10 @@
             openModal('detail-modal');
         }
 
-        function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); }
+        function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); document.getElementById('pro-intro').style.display = 'block'; document.getElementById('payment-overlay').style.display = 'none'; }
+        function showPaymentOverlay() { document.getElementById('payment-overlay').style.display = 'flex'; }
+        function hidePaymentOverlay() { document.getElementById('payment-overlay').style.display = 'none'; }
+        function confirmUpgrade() { alert('PRO Activated! 🛡️ Access to AI Heritage Camera granted.'); closeModal('pro-modal'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function performSearch() {
             const query = document.getElementById('header-search').value.toLowerCase();
@@ -265,6 +283,16 @@
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function updateAvatar(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => document.getElementById('profile-avatar').src = e.target.result; reader.readAsDataURL(input.files[0]); } }
         function switchKitchenTab(tab) { document.querySelectorAll('.k-tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); }
+
+        function triggerScanPro() {
+            // Mocking PRO check
+            const isPro = false; 
+            if(!isPro) {
+                openProModal(event);
+            } else {
+                alert('AI Scanner active...');
+            }
+        }
 
         init();
     </script>
