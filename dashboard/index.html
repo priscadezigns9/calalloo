@@ -93,10 +93,10 @@
     </div>
 
     <div id="map" class="tab-content">
-        <div style="height:calc(100vh - 150px); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div id="map-container" style="height:calc(100vh - 150px); width:100%; min-height: 400px; background: var(--light-bg); position: relative; display:flex; flex-direction:column; align-items:center; justify-content:center;">
             <i data-lucide="map" style="width:40px; color:var(--primary);"></i>
             <p style="font-weight:700; margin-top:10px;">Heritage Map</p>
-            <p style="font-size:0.8rem; color:var(--grey-text);">Syncing Caribbean Heritage Signals...</p>
+            <p style="font-size:0.8rem; color:var(--grey-text); text-align:center; padding: 0 20px;">Establishing connection to Google Heritage Satellites...<br>Please ensure Location Permissions are enabled.</p>
         </div>
     </div>
 
@@ -433,7 +433,10 @@
             
             closeModal('add-modal');
         }
-        function triggerScanPro() { if(isAdmin || scansToday < 1) { scansToday++; alert("AI Scanner active..."); } else { openProModal(event); } }
+        function triggerScanPro() { 
+            // AIScanner is now free as per user request
+            alert("AI Heritage Scanner active... Scanning for Caribbean signals... 🥘🛡️"); 
+        }
         function toggleDarkMode() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
 
         init();
