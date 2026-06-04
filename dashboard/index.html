@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v40.2.1 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v40.2.0 Sovereign Gold Standard</title>
 <meta name="description" content="Calalloo | Heritage Hub: The definitive Caribbean culinary social network. Discover, share, and preserve authentic recipes from across the Caribbean islands, including Trinidad and Tobago, Jamaica, Barbados, Guyana, Grenada, Saint Lucia, and more. Use our AI Heritage Scanner to analyze dishes and sweets, and find local ingredients with our real-time Heritage Map.">
 <meta name="keywords" content="Calalloo, Heritage Hub, Caribbean food, Caribbean recipes, Trinidadian cuisine, Jamaican food, Guyanese recipes, Barbadian food, Grenadian cuisine, Saint Lucian food, Callaloo recipe, Doubles, Jerk Chicken, Ackee and Saltfish, Oil Down, Pepperpot, Mofongo, Cou-cou, Pelau, Curried Goat, Roti, Caribbean cooking, food scanner, heritage map, Caribbean social network, Caribbean culture, Caribbean heritage, Antigua and Barbuda, Bahamas, Cuba, Dominica, Dominican Republic, Haiti, Saint Kitts and Nevis, Saint Vincent and the Grenadines, Puerto Rico, Cayman Islands, Virgin Islands">
 <meta name="geo.region" content="TT-SIP, JM, BB, GY, GD, LC, AG, BS, CU, DM, DO, HT, KN, VC, PR, KY, VG" />
@@ -65,7 +65,7 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 .desktop-tabs { display: none; }
 .pinterest-grid { columns: 2; column-gap: 10px; padding: 10px; }
 .recipe-pin img { height: 240px; }
-#heritage-blog { padding-bottom: 120px !important; }
+#mag-hub { padding: 15px !important; }
 .panel-slam { padding: 15px !important; gap: 15px !important; }
 }
 </style>
@@ -95,16 +95,10 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <div id="heritage-reels" style="padding: 15px 0 25px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px;">
 <div style="display: flex; gap: 15px; overflow-x: auto; padding: 0 15px; scrollbar-width: none; -ms-overflow-style: none;">
 <div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openAddReel()">
-<div style="width: 70px; height: 70px; border-radius: 50%; border: 2px dashed var(--primary); padding: 3px;">
-<img id="my-reel-avatar" src="https://via.placeholder.com/150?text=You" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+<div style="width: 70px; height: 70px; border-radius: 50%; border: 2px dashed var(--grey-text); display: flex; align-items: center; justify-content:center;">
+<i data-lucide="plus" style="color: var(--grey-text);"></i>
 </div>
-<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--dark);">My Reel</p>
-</div>
-<div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openAddReel()">
-<div style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content:center; background: var(--light-bg);">
-<i data-lucide="plus" style="color: var(--primary);"></i>
-</div>
-<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--grey-text);">Add</p>
+<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--grey-text);">Add Reel</p>
 </div>
 </div>
 </div>
@@ -199,6 +193,7 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <div id="heritage-blog" class="tab-content" style="padding:20px;">
 <div style="max-width:650px; margin: 0 auto;">
 <header style="display:flex; align-items:center; gap:15px; margin-bottom:30px;">
+<i data-lucide="arrow-left" onclick="showTab('settings')" style="cursor:pointer; width:24px;"></i>
 <h2 class="display-font" style="font-size:2rem;">Heritage Blog</h2>
 </header>
 <div id="blog-posts-container">
