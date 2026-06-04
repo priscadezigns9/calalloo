@@ -1,3 +1,8 @@
+        <div class="nav-item" id="nav-scan" onclick="triggerScanPro()"><i data-lucide="scan"></i>Scan</div>
+        <div class="nav-item" id="nav-kitchen" onclick="showTab('kitchen')"><i data-lucide="user"></i>Kitchen</div>
+    </nav>
+
+    <script>
         const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
         let recipes = [], scansToday = 0;
         const isAdmin = true; 
@@ -5,6 +10,7 @@
         let userLikes = new Set();
         let currentRecipeId = null;
         let currentViewedUser = null;
+        let isProUser = false; // Heritage Sovereign Status
 
         let userLocation = { lat: 10.1844, lng: -61.5533 }; // Default Trinidad
 
@@ -353,12 +359,12 @@
             if (remoteRecipes.length < 5) {
                 console.log("Sovereignty Alert: Low density detected. Injecting Heritage Seed Data.");
                 const seeds = [
-                    { id: 'seed-1', title: "Signature Trinidadian Callaloo", author_username: "HeritageAdmin", cover_photo_url: "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg" },
-                    { id: 'seed-2', title: "Bake & Saltfish", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2015/02/FRIED-BAKE.jpg" },
-                    { id: 'seed-3', title: "Cornmeal Porridge", author_username: "HeritageAdmin", cover_photo_url: "https://www.africanbites.com/wp-content/uploads/2017/01/IMG_6396.jpg" },
-                    { id: 'seed-4', title: "Trinidad Doubles", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2025/05/trinidad-doubles_.jpeg" },
-                    { id: 'seed-5', title: "Ackee & Saltfish", author_username: "HeritageAdmin", cover_photo_url: "https://www.myforkinglife.com/wp-content/uploads/2021/07/jamaican-ackee-and-saltfish-photo-1.jpg" },
-                    { id: 'seed-6', title: "Bake and Shark", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2024/02/fried-bake-and-shark-with-condiments-3.jpg" }
+                    { id: 'seed-1', title: "Signature Trinidadian Callaloo", author_username: "HeritageAdmin", cover_photo_url: "https://www.oliveandmango.com/img/MAR2017/callaloo_soup_2.jpg", calories: 420, instructions: "1. Chop dasheen bush leaves and ochroes.\n2. Simmer in coconut milk with aromatics.\n3. Swizzle until velvety." },
+                    { id: 'seed-2', title: "Bake & Saltfish", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2015/02/FRIED-BAKE.jpg", calories: 380, instructions: "1. Knead dough and fry until golden.\n2. Sauté saltfish with tomatoes and onions." },
+                    { id: 'seed-3', title: "Cornmeal Porridge", author_username: "HeritageAdmin", cover_photo_url: "https://www.africanbites.com/wp-content/uploads/2017/01/IMG_6396.jpg", calories: 310, instructions: "1. Mix cornmeal with water.\n2. Simmer with spices and condense milk." },
+                    { id: 'seed-4', title: "Trinidad Doubles", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2025/05/trinidad-doubles_.jpeg", calories: 450, instructions: "1. Prepare channa (chickpeas) with curry.\n2. Serve between two fried bara breads." },
+                    { id: 'seed-5', title: "Ackee & Saltfish", author_username: "HeritageAdmin", cover_photo_url: "https://www.myforkinglife.com/wp-content/uploads/2021/07/jamaican-ackee-and-saltfish-photo-1.jpg", calories: 340, instructions: "1. Boil saltfish and flake.\n2. Sauté with onions, peppers, and ackee." },
+                    { id: 'seed-6', title: "Bake and Shark", author_username: "HeritageAdmin", cover_photo_url: "https://cookingwithria.com/wp-content/uploads/2024/02/fried-bake-and-shark-with-condiments-3.jpg", calories: 520, instructions: "1. Season and fry shark fillets.\n2. Assemble in a fried bake with garlic sauce." }
                 ];
                 remoteRecipes = [...remoteRecipes, ...seeds];
             }
@@ -462,21 +468,21 @@
                         <button onclick="closeGateway(); triggerScanPro();" style="width:100%; padding:15px; border-radius:18px; border:1px solid var(--border); background:var(--light-bg); display:flex; align-items:center; gap:15px; cursor:pointer;">
                             <div style="background:rgba(232,119,34,0.1); padding:10px; border-radius:12px;"><i data-lucide="image" style="color:var(--primary); width:20px;"></i></div>
                             <div style="text-align:left;">
-                                <p style="font-weight:700; font-size:0.85rem;">Upload Post</p>
+                                <p style="font-weight:700; font-size:0.85rem;">Upload Image</p>
                                 <p style="font-size:0.65rem; color:var(--grey-text);">Share a photo of your dish</p>
                             </div>
                         </button>
                         <button onclick="closeGateway(); alert('Reel Engine Syncing...');" style="width:100%; padding:15px; border-radius:18px; border:1px solid var(--border); background:var(--light-bg); display:flex; align-items:center; gap:15px; cursor:pointer;">
                             <div style="background:rgba(232,119,34,0.1); padding:10px; border-radius:12px;"><i data-lucide="video" style="color:var(--primary); width:20px;"></i></div>
                             <div style="text-align:left;">
-                                <p style="font-weight:700; font-size:0.85rem;">Create Reel</p>
+                                <p style="font-weight:700; font-size:0.85rem;">Upload Reel</p>
                                 <p style="font-size:0.65rem; color:var(--grey-text);">Post a cooking video</p>
                             </div>
                         </button>
                         <button onclick="closeGateway(); openMarketListingModal();" style="width:100%; padding:15px; border-radius:18px; border:2px solid var(--primary); background:var(--light-bg); display:flex; align-items:center; gap:15px; cursor:pointer;">
                             <div style="background:var(--primary); padding:10px; border-radius:12px;"><i data-lucide="shopping-bag" style="color:white; width:20px;"></i></div>
                             <div style="text-align:left;">
-                                <p style="font-weight:800; font-size:0.85rem; color:var(--primary);">Announce Sale / Event</p>
+                                <p style="font-weight:800; font-size:0.85rem; color:var(--primary);">Upload Ad</p>
                                 <p style="font-size:0.65rem; color:var(--grey-text);">BBQs, Curry Qs, Sweets or Goods</p>
                             </div>
                         </button>
@@ -929,7 +935,11 @@
         function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); document.getElementById('pro-intro').style.display = 'block'; document.getElementById('payment-overlay').style.display = 'none'; }
         function showPaymentOverlay() { document.getElementById('payment-overlay').style.display = 'flex'; }
         function hidePaymentOverlay() { document.getElementById('payment-overlay').style.display = 'none'; }
-        function confirmUpgrade() { alert('PRO Activated! 🛡️'); closeModal('pro-modal'); }
+        function confirmUpgrade() { 
+            isProUser = true;
+            alert('PRO Activated! Your Sovereign reach is now boosted. 🛡️'); 
+            closeModal('pro-modal'); 
+        }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         async function deleteRecipe(id) {
@@ -1497,3 +1507,44 @@
             // Redirect to the login gateway
             window.location.href = '/login/';
         }
+    </script>
+    <!-- Marketplace Listing Modal -->
+    <div id="market-listing-modal" class="modal">
+        <div class="modal-header">
+            <i data-lucide="arrow-left" onclick="closeModal('market-listing-modal')" style="cursor:pointer; padding:5px;"></i>
+            <h3 class="display-font">Announce Heritage Sale</h3>
+            <div class="pro-badge" style="font-size:0.6rem;">PRO BOOST</div>
+        </div>
+        <div style="padding:25px;">
+            <div style="background:rgba(232,119,34,0.1); padding:15px; border-radius:16px; margin-bottom:20px; border:1px solid var(--primary);">
+                <p style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase;">Sovereign Growth Protocol</p>
+                <p style="font-size:0.8rem; color:var(--dark);">Pro members get their sales pushed directly to the discovery feeds of all users in the region.</p>
+            </div>
+            <p style="font-size:0.85rem; color:var(--grey-text); margin-bottom:25px;">Advertise your food, sweets, or event to the community.</p>
+            
+            <div class="form-group">
+                <label>What are you selling?</label>
+                <select id="market-item-type" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--light-bg);">
+                    <option value="ready-food">Ready-to-eat Food (BBQ, Curry Q, Lunch)</option>
+                    <option value="sweets">Sweets & Treats (Fudge, Toolum, Kurma)</option>
+                    <option value="goods">Heritage Goods (Green Seasoning, Pepper Sauce)</option>
+                    <option value="event">Culinary Event / Pop-up</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Listing Title</label>
+                <input type="text" id="market-item-title" placeholder="e.g. Sunday BBQ Sale at Siparia">
+            </div>
+
+            <div class="form-group">
+                <label>Price / Ticket Cost</label>
+                <input type="text" id="market-item-price" placeholder="e.g. $50 TTD / Contribution">
+            </div>
+
+            <div class="form-group">
+                <label>Description & Pickup Details</label>
+                <textarea id="market-item-desc" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--light-bg); height:100px;" placeholder="Tell them about the food and where to collect it..."></textarea>
+            </div>
+
+            <div style="background:var(--light-bg); border:2px dashed var(--border); border-radius:18px; padding:30px; text-align:center; margin-bottom:30px; cursor:pointer;" onclick="alert('Image Selector Opening...')">
