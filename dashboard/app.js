@@ -34,6 +34,7 @@ loadSovereignMap();
 }
 }
 async function init() {
+    history.pushState(null, '', window.location.pathname);
 lucide.createIcons();
 // Sync User Location (Universal Geotagging)
 if (navigator.geolocation) {
@@ -388,6 +389,7 @@ ${r.is_published === false ? '<i data-lucide="lock" style="width:14px; height:14
 lucide.createIcons();
 }
         function openAddModal() {
+            history.pushState({ modalId: 'upload-gateway' }, '', '');
             const gateway = document.createElement('div');
             gateway.id = "upload-gateway";
             gateway.style = "position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9000; display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(10px);";
@@ -772,7 +774,7 @@ function openProModal(e) { e.stopPropagation(); openModal('pro-modal'); document
 function showPaymentOverlay() { document.getElementById('payment-overlay').style.display = 'flex'; }
 function hidePaymentOverlay() { document.getElementById('payment-overlay').style.display = 'none'; }
 function confirmUpgrade() { alert('PRO Activated! 🛡️'); closeModal('pro-modal'); }
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function openModal(id) { const el = document.getElementById(id); if (el) { el.style.display = 'flex'; history.pushState({ modalId: id }, '', ''); } } function closeModal(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; } window.addEventListener('popstate', (event) => { const modals = document.querySelectorAll('.modal, #upload-gateway'); let closedAny = false; modals.forEach(m => { if (m.style.display === 'flex' || (m.id === 'upload-gateway' && document.body.contains(m))) { if (m.id === 'upload-gateway') { closeGateway(); } else { m.style.display = 'none'; } closedAny = true; } }); if (!closedAny) { history.pushState(null, '', window.location.pathname); } });
 async function deleteRecipe(id) {
 if (!confirm("Are you sure you want to delete this heritage dish permanently? 🛡️")) return;
 try {
