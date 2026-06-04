@@ -31,6 +31,15 @@
         .error-msg { color: #E53E3E; font-size: 0.85rem; margin-top: 16px; min-height: 1.2em; font-weight: 500; }
         .footer-link { margin-top: 32px; font-size: 0.9rem; color: #666; }
         .footer-link a { color: var(--primary); text-decoration: none; font-weight: 700; }
+
+        .divider { display: flex; align-items: center; text-align: center; margin: 24px 0; color: #999; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #EEE; }
+        .divider:not(:empty)::before { margin-right: 16px; }
+        .divider:not(:empty)::after { margin-left: 16px; }
+
+        .btn-google { width: 100%; padding: 14px; background: #FFF; color: #444; border: 1px solid #DDD; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .btn-google:active { transform: scale(0.98); background: #F9F9F9; }
+        .btn-google img { width: 18px; }
     </style>
 </head>
 <body>
@@ -63,6 +72,12 @@
         <button class="btn-primary" id="signUpBtn" onclick="signUp()">Create Account</button>
         <div class="error-msg" id="error"></div>
         
+        <div class="divider" id="t-or">Or</div>
+        <button class="btn-google" onclick="signInWithGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+            <span id="t-google">Continue with Google</span>
+        </button>
+
         <div class="footer-link" id="t-footer">
             Already a Keeper? <a href="/login/">Sign In</a>
         </div>
@@ -79,6 +94,8 @@
                 email: "Email Address",
                 pass: "Password",
                 create: "Create Account",
+                or: "Or",
+                google: "Continue with Google",
                 already: "Already a Keeper? ",
                 signin: "Sign In"
             },
@@ -89,7 +106,9 @@
                 email: "Correo Electrónico",
                 pass: "Contraseña",
                 create: "Crear Cuenta",
-                already: "¿Ya eres un Guardião? ",
+                or: "O",
+                google: "Continuar con Google",
+                already: "¿Ya eres un Guardián? ",
                 signin: "Iniciar Sesión"
             },
             pt: {
@@ -99,6 +118,8 @@
                 email: "E-mail",
                 pass: "Senha",
                 create: "Criar Conta",
+                or: "Ou",
+                google: "Continuar com Google",
                 already: "Já é um Guardião? ",
                 signin: "Entrar"
             }
@@ -118,7 +139,23 @@
             document.getElementById('l-email').innerText = t.email;
             document.getElementById('l-pass').innerText = t.pass;
             document.getElementById('signUpBtn').innerText = t.create;
+            document.getElementById('t-or').innerText = t.or;
+            document.getElementById('t-google').innerText = t.google;
             document.getElementById('t-footer').innerHTML = t.already + `<a href="/login/">${t.signin}</a>`;
+        }
+
+        async function signInWithGoogle() {
+            try {
+                const { error } = await sb.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/dashboard/'
+                    }
+                });
+                if (error) throw error;
+            } catch (e) {
+                document.getElementById('error').innerText = e.message;
+            }
         }
 
         // Initialize language
