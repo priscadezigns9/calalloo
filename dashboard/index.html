@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calalloo | Heritage Hub v40.2.4 Sovereign Gold Standard</title>
+<title>Calalloo | Heritage Hub v40.3.0 Sovereign Marketplace Edition</title>
 <meta name="description" content="Calalloo | Heritage Hub: The definitive Caribbean culinary social network. Discover, share, and preserve authentic recipes from across the Caribbean islands, including Trinidad and Tobago, Jamaica, Barbados, Guyana, Grenada, Saint Lucia, and more. Use our AI Heritage Scanner to analyze dishes and sweets, and find local ingredients with our real-time Heritage Map.">
 <meta name="keywords" content="Calalloo, Heritage Hub, Caribbean food, Caribbean recipes, Trinidadian cuisine, Jamaican food, Guyanese recipes, Barbadian food, Grenadian cuisine, Saint Lucian food, Callaloo recipe, Doubles, Jerk Chicken, Ackee and Saltfish, Oil Down, Pepperpot, Mofongo, Cou-cou, Pelau, Curried Goat, Roti, Caribbean cooking, food scanner, heritage map, Caribbean social network, Caribbean culture, Caribbean heritage, Antigua and Barbuda, Bahamas, Cuba, Dominica, Dominican Republic, Haiti, Saint Kitts and Nevis, Saint Vincent and the Grenadines, Puerto Rico, Cayman Islands, Virgin Islands">
 <meta name="geo.region" content="TT-SIP, JM, BB, GY, GD, LC, AG, BS, CU, DM, DO, HT, KN, VC, PR, KY, VG" />
@@ -797,26 +797,33 @@ const gateway = document.createElement('div');
 gateway.id = "upload-gateway";
 gateway.style = "position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9000; display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(10px);";
 gateway.innerHTML = `
-<div style="background:var(--bg); width:100%; max-width:350px; border-radius:32px; padding:30px; text-align:center; animation: slideUp 0.3s ease;">
-<h3 class="display-font" style="font-size:1.5rem; margin-bottom:10px;">Share Heritage</h3>
-<p style="font-size:0.85rem; color:var(--grey-text); margin-bottom:25px;">Choose how you want to contribute to the hub.</p>
-<div style="display:grid; gap:15px;">
-<button onclick="closeGateway(); triggerScanPro();" style="width:100%; padding:18px; border-radius:18px; border:1px solid var(--border); background:var(--light-bg); display:flex; align-items:center; gap:15px; cursor:pointer;">
-<i data-lucide="image" style="color:var(--primary);"></i>
+<div style="background:var(--bg); width:100%; max-width:380px; border-radius:32px; padding:30px; text-align:center; animation: slideUp 0.3s ease;">
+<h3 class="display-font" style="font-size:1.5rem; margin-bottom:10px;">The Heritage Hub</h3>
+<p style="font-size:0.85rem; color:var(--grey-text); margin-bottom:25px;">How are you contributing today?</p>
+<div style="display:grid; gap:12px;">
+<button onclick="closeGateway(); triggerScanPro();" style="width:100%; padding:15px; border-radius:18px; border:1px solid var(--border); background:var(--light-bg); display:flex; align-items:center; gap:15px; cursor:pointer;">
+<div style="background:rgba(232,119,34,0.1); padding:10px; border-radius:12px;"><i data-lucide="image" style="color:var(--primary); width:20px;"></i></div>
 <div style="text-align:left;">
-<p style="font-weight:700; font-size:0.9rem;">Upload Post</p>
-<p style="font-size:0.7rem; color:var(--grey-text);">Share a photo dish</p>
+<p style="font-weight:700; font-size:0.85rem;">Upload Post</p>
+<p style="font-size:0.65rem; color:var(--grey-text);">Share a photo of your dish</p>
 </div>
 </button>
-<button onclick="closeGateway(); alert('Reel Upload System Initializing...');" style="width:100%; padding:18px; border-radius:18px; border:1px solid var(--border); background:var(--light-bg); display:flex; align-items:center; gap:15px; cursor:pointer;">
-<i data-lucide="video" style="color:var(--primary);"></i>
+<button onclick="closeGateway(); alert('Reel Engine Syncing...');" style="width:100%; padding:15px; border-radius:18px; border:1px solid var(--border); background:var(--light-bg); display:flex; align-items:center; gap:15px; cursor:pointer;">
+<div style="background:rgba(232,119,34,0.1); padding:10px; border-radius:12px;"><i data-lucide="video" style="color:var(--primary); width:20px;"></i></div>
 <div style="text-align:left;">
-<p style="font-weight:700; font-size:0.9rem;">Create Reel</p>
-<p style="font-size:0.7rem; color:var(--grey-text);">Share a cooking video</p>
+<p style="font-weight:700; font-size:0.85rem;">Create Reel</p>
+<p style="font-size:0.65rem; color:var(--grey-text);">Post a cooking video</p>
+</div>
+</button>
+<button onclick="closeGateway(); openMarketListingModal();" style="width:100%; padding:15px; border-radius:18px; border:2px solid var(--primary); background:var(--light-bg); display:flex; align-items:center; gap:15px; cursor:pointer;">
+<div style="background:var(--primary); padding:10px; border-radius:12px;"><i data-lucide="shopping-bag" style="color:white; width:20px;"></i></div>
+<div style="text-align:left;">
+<p style="font-weight:800; font-size:0.85rem; color:var(--primary);">Announce Sale / Event</p>
+<p style="font-size:0.65rem; color:var(--grey-text);">BBQs, Curry Qs, Sweets or Goods</p>
 </div>
 </button>
 </div>
-<button onclick="closeGateway()" style="margin-top:25px; background:none; border:none; color:var(--grey-text); font-weight:700; cursor:pointer;">Cancel</button>
+<button onclick="closeGateway()" style="margin-top:25px; background:none; border:none; color:var(--grey-text); font-weight:700; cursor:pointer;">Maybe Later</button>
 </div>
 `;
 document.body.appendChild(gateway);
@@ -1654,6 +1661,51 @@ localStorage.removeItem('auth_lock');
 localStorage.removeItem('calalloo_pending_dishes');
 // Redirect to the login gateway
 window.location.href = '/login/';
+}
+</script>
+<div id="market-listing-modal" class="modal">
+<div class="modal-header">
+<i data-lucide="arrow-left" onclick="closeModal('market-listing-modal')"></i>
+<h3 class="display-font">Announce Heritage Sale</h3>
+<div></div>
+</div>
+<div style="padding:25px;">
+<p style="font-size:0.85rem; color:var(--grey-text); margin-bottom:25px;">Advertise your food, sweets, or event to the community.</p>
+<div class="form-group">
+<label>What are you selling?</label>
+<select id="market-item-type" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--light-bg);">
+<option value="ready-food">Ready-to-eat Food (BBQ, Curry Q, Lunch)</option>
+<option value="sweets">Sweets & Treats (Fudge, Toolum, Kurma)</option>
+<option value="goods">Heritage Goods (Green Seasoning, Pepper Sauce)</option>
+<option value="event">Culinary Event / Pop-up</option>
+</select>
+</div>
+<div class="form-group">
+<label>Listing Title</label>
+<input type="text" id="market-item-title" placeholder="e.g. Sunday BBQ Sale at Siparia">
+</div>
+<div class="form-group">
+<label>Price / Ticket Cost</label>
+<input type="text" id="market-item-price" placeholder="e.g. $50 TTD / Contribution">
+</div>
+<div class="form-group">
+<label>Description & Pickup Details</label>
+<textarea id="market-item-desc" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--light-bg); height:100px;" placeholder="Tell them about the food and where to collect it..."></textarea>
+</div>
+<div style="background:var(--light-bg); border:2px dashed var(--border); border-radius:18px; padding:30px; text-align:center; margin-bottom:30px; cursor:pointer;" onclick="alert('Image Selector Opening...')">
+<i data-lucide="camera" style="color:var(--grey-text); margin-bottom:10px;"></i>
+<p style="font-size:0.8rem; font-weight:700; color:var(--grey-text);">Upload Dish/Poster Image</p>
+</div>
+<button onclick="publishMarketListing()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Publish Advertisement</button>
+</div>
+</div>
+<script>
+function openMarketListingModal() {
+openModal('market-listing-modal');
+}
+function publishMarketListing() {
+alert('Your Heritage Sale is now live in the Marketplace and Discovery feed! 🥘🚀');
+closeModal('market-listing-modal');
 }
 </script>
 </body>
