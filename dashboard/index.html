@@ -65,7 +65,7 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 .desktop-tabs { display: none; }
 .pinterest-grid { columns: 2; column-gap: 10px; padding: 10px; }
 .recipe-pin img { height: 240px; }
-#mag-hub { padding: 15px !important; }
+#heritage-blog { padding-bottom: 120px !important; }
 .panel-slam { padding: 15px !important; gap: 15px !important; }
 }
 </style>
@@ -95,10 +95,16 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <div id="heritage-reels" style="padding: 15px 0 25px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px;">
 <div style="display: flex; gap: 15px; overflow-x: auto; padding: 0 15px; scrollbar-width: none; -ms-overflow-style: none;">
 <div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openAddReel()">
-<div style="width: 70px; height: 70px; border-radius: 50%; border: 2px dashed var(--grey-text); display: flex; align-items: center; justify-content:center;">
-<i data-lucide="plus" style="color: var(--grey-text);"></i>
+<div style="width: 70px; height: 70px; border-radius: 50%; border: 2px dashed var(--primary); padding: 3px;">
+<img id="my-reel-avatar" src="https://via.placeholder.com/150?text=You" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 </div>
-<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--grey-text);">Add Reel</p>
+<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--dark);">My Reel</p>
+</div>
+<div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openAddReel()">
+<div style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content:center; background: var(--light-bg);">
+<i data-lucide="plus" style="color: var(--primary);"></i>
+</div>
+<p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--grey-text);">Add</p>
 </div>
 </div>
 </div>
