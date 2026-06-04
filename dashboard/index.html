@@ -108,15 +108,19 @@
         <!-- Heritage Reels (v40.x) -->
         <div id="heritage-reels" style="padding: 15px 0 25px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px;">
             <div style="display: flex; gap: 15px; overflow-x: auto; padding: 0 15px; scrollbar-width: none; -ms-overflow-style: none;">
-                <!-- Heritage Ad Reel (Dashed Primary Border) -->
-                <div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openAddReel()">
-                    <div style="width: 70px; height: 70px; border-radius: 50%; border: 2px dashed var(--primary); padding: 3px; position: relative;">
+                <!-- Your Reel (Dashed Primary Border) -->
+                <div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; border: 2px dashed var(--primary); padding: 3px;">
                         <img id="my-reel-avatar" src="https://via.placeholder.com/150?text=You" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-                        <div style="position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg); font-size: 14px;">
-                            <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
-                        </div>
                     </div>
-                    <p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--dark);">Post Ad</p>
+                    <p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--dark);">My Reel</p>
+                </div>
+                <!-- Add Button -->
+                <div class="reel-circle" style="flex: 0 0 75px; text-align: center; cursor: pointer;" onclick="openAddReel()">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content:center; background: var(--light-bg);">
+                        <i data-lucide="plus" style="color: var(--primary);"></i>
+                    </div>
+                    <p style="font-size: 0.65rem; font-weight: 700; margin-top: 5px; color: var(--grey-text);">Add</p>
                 </div>
             </div>
         </div>
@@ -295,7 +299,7 @@
                         <p style="font-size:0.95rem; color:var(--grey-text); line-height:1.7; margin-bottom:20px;">Beyond the ingredients lies a story of survival and fusion. We trace the dasheen bush (Colocasia esculenta) from West African shores to the heart of the Trinidadian kitchen. A diagnostic of the chemical bond between coconut milk, okra, and blue crab.</p>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span style="font-size:0.8rem; font-weight:600; opacity:0.6;">6 min read • By Heritage Archive</span>
-                            <button style="background:var(--primary); color:white; border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
+                            <button onclick="window.location.href='../blog/the-ancestral-soul-of-sunday-callaloo.html'" style="background:var(--primary); color:white; border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
                         </div>
                     </div>
                 </div>
@@ -311,7 +315,7 @@
                         <p style="font-size:0.95rem; color:var(--grey-text); line-height:1.7; margin-bottom:20px;">An analytical look at how toasted cumin (geera) transforms the flavor profile through the Maillard reaction, aiding in the "Cohesion of Taste" in Indo-Caribbean cooking.</p>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span style="font-size:0.8rem; font-weight:600; opacity:0.6;">4 min read • By Analytical Faith</span>
-                            <button style="background:var(--text); color:var(--bg); border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
+                            <button onclick="window.location.href='../blog/the-chemistry-of-curry-geera.html'" style="background:var(--text); color:var(--bg); border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
                         </div>
                     </div>
                 </div>
@@ -327,7 +331,7 @@
                         <p style="font-size:0.95rem; color:var(--grey-text); line-height:1.7; margin-bottom:20px;">From Cassava to Yam, we analyze the starchy backbone of the Caribbean diet and its role in sustainable heritage agriculture.</p>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span style="font-size:0.8rem; font-weight:600; opacity:0.6;">5 min read • By Sovereign Hub</span>
-                            <button style="background:var(--text); color:var(--bg); border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
+                            <button onclick="window.location.href='../blog/the-strength-of-ground-provisions.html'" style="background:var(--text); color:var(--bg); border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
                         </div>
                     </div>
                 </div>
@@ -338,7 +342,7 @@
     <!-- User Profile Modal -->
     <div id="user-profile-modal" class="modal">
         <div class="modal-header">
-            <i data-lucide="arrow-left" onclick="closeModal('user-profile-modal')"></i>
+            <i data-lucide="arrow-left" onclick="closeModal('user-profile-modal')" style="cursor:pointer; padding:5px;"></i>
             <h3 class="display-font" id="u-prof-name"></h3>
             <i data-lucide="more-vertical" style="width:18px;"></i>
         </div>
@@ -367,7 +371,7 @@
     <!-- Chat Modal -->
     <div id="chat-modal" class="modal">
         <div class="modal-header">
-            <i data-lucide="arrow-left" onclick="closeModal('chat-modal')"></i>
+            <i data-lucide="arrow-left" onclick="closeModal('chat-modal')" style="cursor:pointer; padding:5px;"></i>
             <div style="display:flex; align-items:center; gap:10px;">
                 <img id="chat-avatar" src="" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
                 <h3 class="display-font" id="chat-user-name" style="font-size:1rem;"></h3>
@@ -383,7 +387,7 @@
         </div>
     </div>
     <div id="detail-modal" class="modal">
-        <div class="modal-header"><i data-lucide="arrow-left" onclick="closeModal('detail-modal')"></i><h3 class="display-font">Recipe Details</h3><i data-lucide="share" style="width:18px;"></i></div>
+        <div class="modal-header"><i data-lucide="arrow-left" onclick="closeModal('detail-modal')" style="cursor:pointer; padding:5px;"></i><h3 class="display-font">Recipe Details</h3><i data-lucide="share" style="width:18px;"></i></div>
         <img id="m-img" style="width:100%; height:45vh; object-fit:cover;">
         <div style="padding:25px;">
             <h1 class="display-font" id="m-title" style="font-size:2.2rem; margin-bottom:10px;"></h1>
@@ -443,7 +447,7 @@
                 <h1 class="display-font" style="font-size:2rem; margin-bottom:10px;">Calalloo <span style="color:var(--primary);">PRO</span></h1>
                 <p style="color:var(--grey-text); margin-bottom:25px; line-height:1.5;">Unlock the AI Heritage Camera, real-time Map Sync, and the Private Vault.</p>
                 <button onclick="showPaymentOverlay()" style="width:100%; padding:18px; background:var(--dark); color:white; border:none; border-radius:16px; font-weight:800; font-size:1.1rem; cursor:pointer;">Upgrade to PRO</button>
-                <p onclick="closeModal('pro-modal')" style="margin-top:20px; color:var(--grey-text); cursor:pointer; font-size:0.9rem; font-weight:600;">Not now</p>
+                <p id="pro-not-now" onclick="closeModal('pro-modal')" style="margin-top:20px; color:var(--grey-text); cursor:pointer; font-size:0.9rem; font-weight:600; padding:10px;">Not now</p>
             </div>
             <!-- Step 2: Empire Standard Payment Modal -->
             <div id="payment-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.95); flex-direction:column; align-items:center; justify-content:center; padding:20px; z-index:5100; animation: fadeIn 0.3s ease;">
@@ -494,51 +498,7 @@
         <div class="nav-item" id="nav-map" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
         <div class="nav-item" id="nav-market" onclick="showTab('market')"><i data-lucide="shopping-cart"></i>Market</div>
         <div class="nav-item" id="nav-heritage-blog" onclick="showTab('heritage-blog')"><i data-lucide="book-open"></i>Blog</div>
-        <div class="nav-item" id="nav-scan" onclick="triggerScanPro()"><i data-lucide="scan"></i>Scan</div>
-        <div class="nav-item" id="nav-kitchen" onclick="showTab('kitchen')"><i data-lucide="user"></i>Kitchen</div>
-    </nav>
-
     <script src="app.js"></script>
-    <!-- Marketplace Listing Modal -->
-    <div id="market-listing-modal" class="modal">
-        <div class="modal-header">
-            <i data-lucide="arrow-left" onclick="closeModal('market-listing-modal')"></i>
-            <h3 class="display-font">Announce Heritage Sale</h3>
-            <div class="pro-badge" style="font-size:0.6rem;">PRO BOOST</div>
-        </div>
-        <div style="padding:25px;">
-            <div style="background:rgba(232,119,34,0.1); padding:15px; border-radius:16px; margin-bottom:20px; border:1px solid var(--primary);">
-                <p style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase;">Sovereign Growth Protocol</p>
-                <p style="font-size:0.8rem; color:var(--dark);">Pro members get their sales pushed directly to the discovery feeds of all users in the region.</p>
-            </div>
-            <p style="font-size:0.85rem; color:var(--grey-text); margin-bottom:25px;">Advertise your food, sweets, or event to the community.</p>
-            
-            <div class="form-group">
-                <label>What are you selling?</label>
-                <select id="market-item-type" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--light-bg);">
-                    <option value="ready-food">Ready-to-eat Food (BBQ, Curry Q, Lunch)</option>
-                    <option value="sweets">Sweets & Treats (Fudge, Toolum, Kurma)</option>
-                    <option value="goods">Heritage Goods (Green Seasoning, Pepper Sauce)</option>
-                    <option value="event">Culinary Event / Pop-up</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Listing Title</label>
-                <input type="text" id="market-item-title" placeholder="e.g. Sunday BBQ Sale at Siparia">
-            </div>
-
-            <div class="form-group">
-                <label>Price / Ticket Cost</label>
-                <input type="text" id="market-item-price" placeholder="e.g. $50 TTD / Contribution">
-            </div>
-
-            <div class="form-group">
-                <label>Description & Pickup Details</label>
-                <textarea id="market-item-desc" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--light-bg); height:100px;" placeholder="Tell them about the food and where to collect it..."></textarea>
-            </div>
-
-            <div style="background:var(--light-bg); border:2px dashed var(--border); border-radius:18px; padding:30px; text-align:center; margin-bottom:30px; cursor:pointer;" onclick="alert('Image Selector Opening...')">
                 <i data-lucide="camera" style="color:var(--grey-text); margin-bottom:10px;"></i>
                 <p style="font-size:0.8rem; font-weight:700; color:var(--grey-text);">Upload Dish/Poster Image</p>
             </div>
@@ -553,8 +513,7 @@
         }
 
         function publishMarketListing() {
-            const isPro = document.querySelector('.pro-badge') ? true : false; 
-            if(isPro) {
+            if(isProUser) {
                 alert('Sovereign Boost Active! Your Heritage Sale is being pushed to 10,000+ users across the empire. 🥘🚀🦾');
             } else {
                 alert('Your Heritage Sale is now live in the Marketplace! Upgrade to PRO to boost your reach. 🥘🚀');
