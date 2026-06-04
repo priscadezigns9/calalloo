@@ -226,7 +226,8 @@ sb.channel('realtime-social')
 .subscribe();
 }
 async function viewUserProfile(username) {
-const cook = cooks.find(c => c.username === username);
+const handle = username.startsWith('@') ? username : `@${username}`;
+const cook = cooks.find(c => c.username === handle);
 if (!cook) return;
 currentViewedUser = cook;
 document.getElementById('u-prof-name').innerText = cook.name;
@@ -641,7 +642,7 @@ html += `
 </h3>
 <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:12px;">
 ${filteredCooks.map(c => `
-<div class="recipe-pin" style="padding:15px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; background:var(--bg); border:1px solid var(--border); border-radius:20px; margin-bottom:0;" onclick="viewUserProfile('${c.username.replace('@','')}')">
+<div class="recipe-pin" style="padding:15px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; background:var(--bg); border:1px solid var(--border); border-radius:20px; margin-bottom:0;" onclick="viewUserProfile('${c.username}')">
 <img src="${c.avatar}" style="width:55px; height:55px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
 <div style="width:100%; overflow:hidden;">
 <p style="font-weight:800; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${c.name}</p>
