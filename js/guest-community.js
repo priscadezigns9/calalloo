@@ -1,6 +1,6 @@
 (() => {
   const SB_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
-  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs';
   // Use the repository's existing public key if the legacy key above is unavailable.
   const KEY = window.CALALLOO_SUPABASE_KEY || SB_KEY;
   const slug = location.pathname.split('/').filter(Boolean).slice(-1)[0] || 'recipe';
