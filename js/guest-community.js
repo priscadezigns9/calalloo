@@ -3,7 +3,7 @@
   const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrdHBqYWNvd3FhZWRkZHRyaHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NDk5MzEsImV4cCI6MjA5NDIyNTkzMX0.FK4N_ATFTaUuGXrYu_7OBn3qCdlo0rOzxk-E6TxJxqs';
   // Use the repository's existing public key if the legacy key above is unavailable.
   const KEY = window.CALALLOO_SUPABASE_KEY || SB_KEY;
-  const slug = location.pathname.split('/').filter(Boolean).slice(-1)[0] || 'recipe';
+  const slug = new URLSearchParams(location.search).get('id') || location.pathname.split('/').filter(Boolean).slice(-1)[0] || 'recipe';
   const visitor = localStorage.getItem('calalloo_visitor_id') || crypto.randomUUID();
   localStorage.setItem('calalloo_visitor_id', visitor);
   const headers = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' };
