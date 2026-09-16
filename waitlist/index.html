@@ -59,12 +59,47 @@
         <h1>Secure Early Access.</h1>
         <p>Phase 1 deployment is scaling. Register your identity to join the initial performance provision network.</p>
         
-        <form action="success.html">
-            <input type="email" placeholder="EMAIL_ADDRESS" required>
-            <input type="text" placeholder="DISCOVERY_NODE (LOCATION)" required>
+        <form id="waitlist-form">
+            <input type="email" name="email" id="waitlist-email" placeholder="EMAIL_ADDRESS" required>
+            <input type="text" name="location" id="waitlist-location" placeholder="DISCOVERY_NODE (LOCATION)" required>
             <button type="submit" class="btn-join">Initialize Access</button>
         </form>
+        <p id="waitlist-status" style="margin-top: 1rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--mid);"></p>
     </div>
 
+    <script>
+        document.getElementById('waitlist-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('waitlist-email');
+            const locationInput = document.getElementById('waitlist-location');
+            const status = document.getElementById('waitlist-status');
+            const email = emailInput.value.trim();
+            const location = locationInput.value.trim();
+            if (!email || !location) return;
+
+            const pending = JSON.parse(localStorage.getItem('calalloo_waitlist_signups') || '[]');
+            pending.push({ email, location });
+            localStorage.setItem('calalloo_waitlist_signups', JSON.stringify(pending));
+
+            try {
+                await fetch('https://sktpjacowqaedddtrhuz.supabase.co/rest/v1/waitlist_signups', {
+                    method: 'POST',
+                    headers: {
+                        apikey: 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR',
+                        Authorization: 'Bearer sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR',
+                        'Content-Type': 'application/json',
+                        Prefer: 'return=minimal'
+                    },
+                    body: JSON.stringify({ email, location })
+                });
+            } catch (err) {
+                console.warn('Waitlist sync latency:', err);
+            }
+
+            status.textContent = 'ACCESS REQUEST RECEIVED. STAND BY.';
+            emailInput.value = '';
+            locationInput.value = '';
+        });
+    </script>
 </body>
 </html>
