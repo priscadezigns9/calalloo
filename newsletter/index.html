@@ -66,10 +66,11 @@
             <p>Join the "Alpha Provision" network. Weekly high-performance recipes and local sourcing intel delivered every Sunday morning.</p>
 
             <div class="form-container">
-                <form action="/newsletter/success.html">
-                    <input type="email" placeholder="Enter your email address" required>
+                <form id="newsletter-form">
+                    <input type="email" name="email" id="newsletter-email" placeholder="Enter your email address" required>
                     <button type="submit" class="btn-submit">Subscribe</button>
                 </form>
+                <p id="newsletter-status" style="margin-top: 1rem; font-size: 0.9rem; color: var(--mid);"></p>
 
                 <div class="benefit-grid">
                     <div class="benefit">
@@ -89,5 +90,38 @@
         </div>
     </main>
 
+    <script>
+        document.getElementById('newsletter-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletter-email');
+            const status = document.getElementById('newsletter-status');
+            const email = emailInput.value.trim();
+            if (!email) return;
+
+            const pending = JSON.parse(localStorage.getItem('calalloo_newsletter_signups') || '[]');
+            if (!pending.includes(email)) {
+                pending.push(email);
+                localStorage.setItem('calalloo_newsletter_signups', JSON.stringify(pending));
+            }
+
+            try {
+                await fetch('https://sktpjacowqaedddtrhuz.supabase.co/rest/v1/newsletter_signups', {
+                    method: 'POST',
+                    headers: {
+                        apikey: 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR',
+                        Authorization: 'Bearer sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR',
+                        'Content-Type': 'application/json',
+                        Prefer: 'return=minimal'
+                    },
+                    body: JSON.stringify({ email })
+                });
+            } catch (err) {
+                console.warn('Newsletter sync latency:', err);
+            }
+
+            status.textContent = "You're on the list! Look out for your first issue on Sunday.";
+            emailInput.value = '';
+        });
+    </script>
 </body>
 </html>
