@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /profile/
+Disallow: /scan/
+Disallow: /scanner/
+Sitemap: https://calalloo.com/sitemap.xml
