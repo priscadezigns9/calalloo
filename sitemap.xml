@@ -60,4 +60,13 @@
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
+  <url><loc>https://calalloo.com/recipes/</loc><lastmod>2026-09-17</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://calalloo.com/recipes/trinidadian-callaloo/</loc><lastmod>2026-09-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://calalloo.com/recipes/grenadian-oil-down/</loc><lastmod>2026-09-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://calalloo.com/recipes/chicken-pelau/</loc><lastmod>2026-09-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://calalloo.com/recipes/pholourie/</loc><lastmod>2026-09-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://calalloo.com/recipes/sahina/</loc><lastmod>2026-09-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://calalloo.com/recipes/ginger-lime-seabass/</loc><lastmod>2026-09-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://calalloo.com/recipes/heritage-grain-bowl/</loc><lastmod>2026-09-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://calalloo.com/recipes/the-morning-green/</loc><lastmod>2026-09-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>
