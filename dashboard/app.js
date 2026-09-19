@@ -1,4 +1,5 @@
 const sb = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 let recipes = [], scansToday = 0;
 const isAdmin = true;
 let cooks = [];
@@ -275,7 +276,7 @@ async function sendMessage() {
 const input = document.getElementById('chat-input');
 const text = input.value.trim();
 if (!text) return;
-const msgHtml = `<div style="align-self:flex-end; background:var(--primary); color:white; padding:10px 15px; border-radius:18px 18px 0 18px; font-size:0.9rem; max-width:80%;">${text}</div>`;
+const msgHtml = `<div style="align-self:flex-end; background:var(--primary); color:white; padding:10px 15px; border-radius:18px 18px 0 18px; font-size:0.9rem; max-width:80%;">${esc(text)}</div>`;
 document.getElementById('chat-messages').innerHTML += msgHtml;
 const currentUser = document.getElementById('prof-username').innerText.split(' • ')[0] || '@guest';
 await sb.from('messages').insert([{ sender: currentUser, receiver: currentViewedUser.username, content: text }]);
@@ -377,10 +378,10 @@ grid.innerHTML = `<div style="column-span:all; text-align:center; padding:40px; 
 } else {
 grid.innerHTML = visibleItems.map(r => `
 <div class="recipe-pin" onclick="openRecipe('${r.id}')" style="cursor:pointer;">
-<img src="${r.cover_photo_url || 'https://via.placeholder.com/400x300?text=Heritage+Recipe'}">
+<img src="${esc(r.cover_photo_url || 'https://via.placeholder.com/400x300?text=Heritage+Recipe')}">
 <div class="pin-overlay">
 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-<h3>${r.title}</h3>
+<h3>${esc(r.title)}</h3>
 ${r.is_published === false ? '<i data-lucide="lock" style="width:14px; height:14px; color:white;"></i>' : ''}
 </div>
 </div>
@@ -533,17 +534,17 @@ ${r.is_published === false ? '<i data-lucide="unlock"></i> Make Public' : '<i da
 controls.style.display = 'block';
 } else {
 controls.innerHTML = `
-<button onclick="followUser('${r.author_username}')" style="background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer; width:100%;">
-Follow ${r.author_username}
+<button onclick="followUser('${esc(r.author_username).replace(/'/g, "\\'")}')" style="background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer; width:100%;">
+Follow ${esc(r.author_username)}
 </button>
 `;
 controls.style.display = 'block';
 }
 const instList = document.getElementById('inst-list');
 if (Array.isArray(r.instructions)) {
-instList.innerHTML = r.instructions.map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${step}</p>`).join('');
+instList.innerHTML = r.instructions.map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${esc(step)}</p>`).join('');
 } else if (typeof r.instructions === 'string') {
-instList.innerHTML = r.instructions.split('\n').map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${step}</p>`).join('');
+instList.innerHTML = r.instructions.split('\n').map((step, i) => `<p style="margin-bottom:15px;"><b>${i+1}.</b> ${esc(step)}</p>`).join('');
 } else {
 instList.innerHTML = "No instructions provided.";
 }
@@ -551,7 +552,7 @@ const ingList = document.getElementById('ing-list');
 try {
 const { data: ingData, error } = await sb.from('recipe_ingredients').select('ingredient_name, quantity').eq('recipe_id', id);
 if (error) throw error;
-ingList.innerHTML = ingData && ingData.length > 0 ? ingData.map(i => `<div style="padding:8px 0; border-bottom:1px solid var(--border);">• ${i.quantity || ''} ${i.ingredient_name}</div>`).join('') : "Ingredients loading...";
+ingList.innerHTML = ingData && ingData.length > 0 ? ingData.map(i => `<div style="padding:8px 0; border-bottom:1px solid var(--border);">• ${esc(i.quantity || '')} ${esc(i.ingredient_name)}</div>`).join('') : "Ingredients loading...";
 } catch (e) {
 console.warn("Ingredients fetch latency:", e);
 ingList.innerHTML = "Ingredients securely stored in the cloud.";
@@ -642,11 +643,11 @@ html += `
 </h3>
 <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:12px;">
 ${filteredCooks.map(c => `
-<div class="recipe-pin" style="padding:15px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; background:var(--bg); border:1px solid var(--border); border-radius:20px; margin-bottom:0;" onclick="viewUserProfile('${c.username}')">
-<img src="${c.avatar}" style="width:55px; height:55px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
+<div class="recipe-pin" style="padding:15px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; background:var(--bg); border:1px solid var(--border); border-radius:20px; margin-bottom:0;" onclick="viewUserProfile('${esc(c.username).replace(/'/g, "\\'")}')">
+<img src="${esc(c.avatar)}" style="width:55px; height:55px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
 <div style="width:100%; overflow:hidden;">
-<p style="font-weight:800; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${c.name}</p>
-<p style="font-size:0.7rem; color:var(--grey-text);">${c.username}</p>
+<p style="font-weight:800; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(c.name)}</p>
+<p style="font-size:0.7rem; color:var(--grey-text);">${esc(c.username)}</p>
 </div>
 </div>
 `).join('')}
@@ -666,10 +667,10 @@ html += `<div style="column-span:all; padding:10px; margin:10px 0; border-bottom
 }
 html += visibleRecipes.map(r => `
 <div class="recipe-pin" onclick="openRecipe('${r.id}')">
-<img src="${r.cover_photo_url || 'https://via.placeholder.com/400x300?text=Heritage+Recipe'}">
+<img src="${esc(r.cover_photo_url || 'https://via.placeholder.com/400x300?text=Heritage+Recipe')}">
 <div class="pin-overlay">
 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-<h3>${r.title}</h3>
+<h3>${esc(r.title)}</h3>
 ${r.is_published === false ? '<i data-lucide="lock" style="width:14px; height:14px; color:white;"></i>' : ''}
 </div>
 </div>
@@ -680,7 +681,7 @@ ${r.is_published === false ? '<i data-lucide="lock" style="width:14px; height:14
 if (html === '') {
 html = `<div style="column-span:all; text-align:center; padding:60px; color:var(--grey-text);">
 <i data-lucide="search-x" style="width:40px; height:40px; margin-bottom:10px; opacity:0.3;"></i>
-<p>No heritage matches found for "${q}"</p>
+<p>No heritage matches found for "${esc(q)}"</p>
 </div>`;
 }
 grid.innerHTML = html;
@@ -740,7 +741,7 @@ const profile = { name, username, avatar: avatarData, whatsapp: wa, facebook: fb
 localStorage.setItem('calalloo_profile', JSON.stringify(profile));
 // Update UI Profile Section immediately
 document.getElementById('prof-name').innerText = name;
-document.getElementById('prof-username').innerHTML = `@${username} • <span style="color:var(--primary); font-weight:800;">PRO</span>`;
+document.getElementById('prof-username').innerHTML = `@${esc(username)} • <span style="color:var(--primary); font-weight:800;">PRO</span>`;
 const syncBtn = document.getElementById('sync-avatar-btn');
 syncBtn.innerText = 'Syncing to Supabase...';
 syncBtn.disabled = true;
@@ -1149,40 +1150,40 @@ hub.innerHTML = `
 <i data-lucide="x" onclick="document.body.removeChild(document.getElementById('analysis-hub'))" style="position:absolute; top:20px; left:20px; cursor:pointer; width:24px; height:24px;"></i>
 <h1 class="display-font" style="font-size:2rem; margin-bottom:10px;">Analysis Hub</h1>
 <div style="display:inline-block; background:rgba(255,255,255,0.2); padding:8px 20px; border-radius:20px; font-weight:800; font-size:0.8rem;">
-WEB SOURCE: ${data.source} (${data.authenticity})
+WEB SOURCE: ${esc(data.source)} (${esc(data.authenticity)})
 </div>
 </div>
 <div style="padding:20px; margin-top:-30px;">
 <div style="background:var(--light-bg); border-radius:24px; padding:25px; box-shadow:0 10px 30px rgba(0,0,0,0.05); margin-bottom:20px; border:1px solid var(--border);">
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-<h2 class="display-font" style="font-size:1.4rem;">${data.title}</h2>
+<h2 class="display-font" style="font-size:1.4rem;">${esc(data.title)}</h2>
 <div style="text-align:right;">
 <p style="font-size:0.7rem; color:var(--grey-text); text-transform:uppercase;">Estimated Calories</p>
-<p style="font-size:1.2rem; font-weight:900; color:var(--primary);">${data.calories} kcal</p>
+<p style="font-size:1.2rem; font-weight:900; color:var(--primary);">${esc(data.calories)} kcal</p>
 </div>
 </div>
 <h3 style="font-size:0.9rem; font-weight:800; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Heritage Ingredient Breakdown</h3>
 ${data.ingredients.map(ing => `
 <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px dashed var(--border);">
 <div>
-<p style="font-weight:700;">${ing.name}</p>
-<p style="font-size:0.75rem; color:var(--primary);">${ing.cal} kcal • <span style="color:var(--grey-text); font-style:italic;">${ing.fact}</span></p>
+<p style="font-weight:700;">${esc(ing.name)}</p>
+<p style="font-size:0.75rem; color:var(--primary);">${esc(ing.cal)} kcal • <span style="color:var(--grey-text); font-style:italic;">${esc(ing.fact)}</span></p>
 </div>
 <div style="text-align:right;">
-<p style="font-size:0.85rem; font-weight:600;">Est. ${ing.price}</p>
+<p style="font-size:0.85rem; font-weight:600;">Est. ${esc(ing.price)}</p>
 </div>
 </div>
 `).join('')}
 </div>
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-<button onclick="findIngredientsOnMap('${data.title}')" style="background:var(--text); color:var(--bg); border:none; padding:18px; border-radius:18px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
+<button onclick="findIngredientsOnMap('${esc(data.title).replace(/'/g, "\\'")}')" style="background:var(--text); color:var(--bg); border:none; padding:18px; border-radius:18px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
 <i data-lucide="map-pin"></i> Locate Ingredients
 </button>
 <button onclick="compareMarketPrices()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:18px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
 <i data-lucide="shopping-bag"></i> Market Price Check
 </button>
 </div>
-<button onclick="saveToKitchenFromHub('${data.title}')" style="width:100%; background:none; border:2px solid var(--primary); color:var(--primary); padding:18px; border-radius:18px; font-weight:800; margin-top:20px;">
+<button onclick="saveToKitchenFromHub('${esc(data.title).replace(/'/g, "\\'")}')" style="width:100%; background:none; border:2px solid var(--primary); color:var(--primary); padding:18px; border-radius:18px; font-weight:800; margin-top:20px;">
 Archive in Heritage Vault
 </button>
 </div>
@@ -1200,7 +1201,7 @@ const mapFrame = document.getElementById('map-frame');
 if(placeholder) {
 placeholder.innerHTML = `
 <div class="scanner-ring" style="width:80px; height:80px; border:4px solid var(--primary); border-radius:50%; border-top-color:transparent; animation: spin 1s linear infinite; margin-bottom:20px;"></div>
-<p style="font-weight:700;">Finding ingredients for ${query}...</p>
+<p style="font-weight:700;">Finding ingredients for ${esc(query)}...</p>
 <p style="font-size:0.8rem; color:var(--grey-text); margin-top:5px;">Locating nearby heritage markets and grocery stores.</p>
 `;
 placeholder.style.display = 'flex';
