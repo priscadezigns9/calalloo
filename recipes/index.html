@@ -42,6 +42,15 @@
 
         footer { padding: 4rem; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--mid); text-transform: uppercase; letter-spacing: 0.2em; }
     </style>
+    <script>
+        // Clear the legacy service-worker cache before showing the recipe archive.
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(r => r.unregister()));
+                if (window.caches) caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+            });
+        }
+    </script>
 </head>
 <body>
 
@@ -117,5 +126,6 @@
 <script src="../js/recipe-archive.js"></script>
 </body>
 </html>
+
 
 
