@@ -217,6 +217,15 @@
     </footer>
 
     <script>
+        // Remove the legacy offline cache so the homepage cannot flash an old dashboard.
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(r => r.unregister()));
+                if (window.caches) caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+            });
+        }
+    </script>
+    <script>
         const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -228,6 +237,7 @@
     </script>
 </body>
 </html>
+
 
 
 
