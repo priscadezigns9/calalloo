@@ -270,7 +270,7 @@
             <button onclick="openEditModal()" class="action-item"><span>Edit Profile</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
             <button onclick="openSettings()" class="action-item"><span>Settings</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
             <button onclick="openSaved()" class="action-item"><span>Saved Heritage</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
-            <button onclick="supabase.auth.signOut()" class="action-item"><span>Sign Out</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button onclick="signOut()" class="action-item"><span>Sign Out</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
         </div>
     </main>
 
@@ -303,79 +303,30 @@
         </a>
     </nav>
 
-    <script src="../js/backend.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        const calallooAuth = window.calallooAuth = supabase.createClient('https://sktpjacowqaedddtrhuz.supabase.co', 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR');
         ThemeManager.init();
-        
-        function loadProfile() {
-            const user = supabase.auth.getUser();
-            if(user) {
-                document.getElementById('userName').innerText = user.full_name || "Specimen Alpha";
-                document.getElementById('userBio').innerText = user.bio || "Caribbean Heritage Enthusiast";
-                if(user.avatar_url) {
-                    document.getElementById('userAvatar').src = user.avatar_url;
-                    document.getElementById('headerAvatar').src = user.avatar_url;
-                }
-                document.getElementById('statScans').innerText = user.scans || 0;
-                document.getElementById('statFollowers').innerText = user.followers || 0;
-                document.getElementById('statFollowing').innerText = user.following || 0;
-            }
+        async function currentUser(){ const {data:{user}} = await calallooAuth.auth.getUser(); return user; }
+        async function loadProfile(){
+            const user = await currentUser();
+            if(!user){ window.location.href='../login/'; return; }
+            const meta=user.user_metadata||{};
+            document.getElementById('userName').innerText=meta.full_name||user.email?.split('@')[0]||'Calalloo member';
+            document.getElementById('userBio').innerText=meta.bio||'Caribbean Heritage Enthusiast';
+            if(meta.avatar_url){ document.getElementById('userAvatar').src=meta.avatar_url; document.getElementById('headerAvatar').src=meta.avatar_url; }
         }
-
-        document.getElementById('avatarInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const url = event.target.result;
-                    supabase.auth.updateUser({ avatar_url: url });
-                    loadProfile();
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function openEditModal() {
-            document.getElementById('editName').value = document.getElementById('userName').innerText;
-            document.getElementById('editBio').value = document.getElementById('userBio').innerText;
-            document.getElementById('editModal').style.display = 'block';
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
-
-        function saveProfile() {
-            const name = document.getElementById('editName').value;
-            const bio = document.getElementById('editBio').value;
-            supabase.auth.updateUser({ full_name: name, bio: bio });
-            loadProfile();
-            closeEditModal();
-        }
-
-        function openSettings() {
-            const subject = encodeURIComponent("Support Request: Calalloo Node");
-            window.location.href = `mailto:agency@priscadesigns.org?subject=${subject}`;
-        }
-
-        function openSaved() {
-            alert("Saved Heritage: No specimens logged yet.");
-        }
-
+        function compressImage(file){ return new Promise((resolve,reject)=>{ const img=new Image(), reader=new FileReader(); reader.onload=()=>{img.onload=()=>{const c=document.createElement('canvas'),max=256,scale=Math.min(1,max/Math.max(img.width,img.height));c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.82))};img.onerror=reject;img.src=reader.result};reader.onerror=reject;reader.readAsDataURL(file); }); }
+        document.getElementById('avatarInput').addEventListener('change',async e=>{ const file=e.target.files[0]; if(!file)return; try{const url=await compressImage(file); const {error}=await calallooAuth.auth.updateUser({data:{avatar_url:url}}); if(error)throw error; await loadProfile()}catch(err){alert('Could not save your profile photo. Please try again.')} });
+        function openEditModal(){document.getElementById('editName').value=document.getElementById('userName').innerText;document.getElementById('editBio').value=document.getElementById('userBio').innerText;document.getElementById('editModal').style.display='block';}
+        function closeEditModal(){document.getElementById('editModal').style.display='none';}
+        async function saveProfile(){const name=document.getElementById('editName').value.trim(),bio=document.getElementById('editBio').value.trim();const {error}=await calallooAuth.auth.updateUser({data:{full_name:name,bio}});if(error){alert('Could not save your profile. Please try again.');return}await loadProfile();closeEditModal();}
+        async function signOut(){await calallooAuth.auth.signOut();window.location.href='../login/';}
+        function openSettings(){const subject=encodeURIComponent('Support Request: Calalloo Node');window.location.href=`mailto:agency@priscadesigns.org?subject=${subject}`;}
+        function openSaved(){window.location.href='../recipes/';}
         loadProfile();
-        // Live Stat Polling (Simulated for Demo)
-        setInterval(() => {
-            const user = supabase.auth.getUser();
-            if(user) {
-                const statScans = document.getElementById('statScans');
-                const statFollowers = document.getElementById('statFollowers');
-                const statFollowing = document.getElementById('statFollowing');
-                if(statScans) statScans.innerText = user.scans || 0;
-                if(statFollowers) statFollowers.innerText = user.followers || 0;
-                if(statFollowing) statFollowing.innerText = user.following || 0;
-            }
-        }, 5000);
     </script>
 </body>
 </html>
+
 
