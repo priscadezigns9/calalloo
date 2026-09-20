@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | Calalloo</title>
+    <title>Profile | Calalloo</title><script>if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));if(window.caches)caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -255,8 +255,8 @@
                 <div class="upload-hint">Change Photo</div>
                 <input type="file" id="avatarInput" style="display: none" accept="image/*">
             </div>
-            <h2 id="userName">Specimen Alpha</h2>
-            <p class="user-bio" id="userBio">Caribbean Heritage Enthusiast</p>
+            <h2 id="userName">Loading profile…</h2>
+            <p class="user-bio" id="userBio">Loading profile…</p>
         </div>
 
         <div class="stats-grid">
@@ -326,6 +326,7 @@
     </script>
 </body>
 </html>
+
 
 
 
