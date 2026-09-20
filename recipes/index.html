@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discovery Archive | Calalloo Lab</title>
+    <title>Recipes | Calalloo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;600;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -42,15 +42,6 @@
 
         footer { padding: 4rem; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--mid); text-transform: uppercase; letter-spacing: 0.2em; }
     </style>
-    <script>
-        // Clear the legacy service-worker cache before showing the recipe archive.
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(r => r.unregister()));
-                if (window.caches) caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
-            });
-        }
-    </script>
 </head>
 <body>
 
