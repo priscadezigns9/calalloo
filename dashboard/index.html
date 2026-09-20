@@ -65,7 +65,7 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 .desktop-tabs { display: none; }
 .pinterest-grid { columns: 2; column-gap: 10px; padding: 10px; }
 .recipe-pin img { height: 240px; }
-#heritage-blog { padding-bottom: 120px !important; }
+
 .panel-slam { padding: 15px !important; gap: 15px !important; }
 }
 </style>
@@ -85,7 +85,6 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <div class="desktop-tabs">
 <div class="tab-btn active" id="d-tab-discovery" onclick="showTab('discovery')">Discovery</div>
 <div class="tab-btn" id="d-tab-map" onclick="showTab('map')">Map</div>
-<div class="tab-btn" id="d-tab-heritage-blog" onclick="showTab('heritage-blog')">Blog</div>
 <div class="tab-btn" id="d-tab-kitchen" onclick="showTab('kitchen')">Kitchen</div>
 <div class="tab-btn" id="d-tab-settings" onclick="showTab('settings')">Settings</div>
 </div>
@@ -164,235 +163,14 @@ nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); bord
 <option value="ar">Arabic</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="nl">Nederlands</option>
 </select>
 </div>
-<div style="margin:25px 0; border-top:1px solid var(--border); padding-top:25px;">
-<label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); text-transform:uppercase; margin-bottom:20px; display:block;">Permissions & UI</label>
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-<div><p style="font-weight:700;">Night Mode</p><p style="font-size:0.8rem; color:var(--grey-text);">Sync UI with your light</p></div>
-<input type="checkbox" id="set-dark" onchange="toggleDarkMode()" style="width:auto;">
-</div>
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-<div><p style="font-weight:700;">Location Permissions</p><p style="font-size:0.8rem; color:var(--grey-text);">Required for Heritage Map</p></div>
-<input type="checkbox" id="set-location" style="width:auto;" onchange="syncLocationImmediate()">
-</div>
-<div style="display:flex; justify-content:space-between; align-items:center;">
-<div><p style="font-weight:700;">Camera Permissions</p><p style="font-size:0.8rem; color:var(--grey-text);">Required for AI scanner</p></div>
-<input type="checkbox" id="set-camera" style="width:auto;">
-</div>
-</div>
-<div style="margin:25px 0; border-top:1px solid var(--border); padding-top:25px;">
-<label style="font-size:0.75rem; font-weight:800; color:var(--grey-text); text-transform:uppercase; margin-bottom:20px; display:block;">Heritage Resources</label>
-<div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:15px;" onclick="showTab('heritage-blog')">
-<div><p style="font-weight:700;">Heritage Blog & Stories</p><p style="font-size:0.8rem; color:var(--grey-text);">Discover the roots of your favorite dishes</p></div>
-<i data-lucide="chevron-right" style="width:18px;"></i>
-</div>
-</div>
 <button onclick="saveSettings()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Save Changes</button>
 </div>
 <button onclick="signOut()" style="color:red; background:none; border:none; width:100%; font-weight:700; margin-top:20px; cursor:pointer;">Sign Out</button>
 </div>
 </div>
-<div id="heritage-blog" class="tab-content" style="padding:20px;">
-<div style="max-width:650px; margin: 0 auto;">
-<header style="display:flex; align-items:center; gap:15px; margin-bottom:30px;">
-<i data-lucide="arrow-left" onclick="showTab('settings')" style="cursor:pointer; width:24px;"></i>
-<h2 class="display-font" style="font-size:2rem;">Heritage Blog</h2>
-</header>
-<div id="blog-posts-container">
-<div class="blog-card" style="margin-bottom:30px; padding:0; border-radius:24px; background:var(--light-bg); border:1px solid var(--border); overflow:hidden;">
-<div style="height:300px; width:100%; overflow:hidden;">
-<img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=1200" style="width:100%; height:100%; object-fit:cover;" alt="Heritage Callaloo">
-</div>
-<div style="padding:25px;">
-<span style="font-size:0.7rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.1em;">Featured Discovery</span>
-<h3 class="display-font" style="font-size:1.8rem; margin:15px 0;">The Ancestral Soul of Sunday Callaloo</h3>
-<p style="font-size:0.95rem; color:var(--grey-text); line-height:1.7; margin-bottom:20px;">Beyond the ingredients lies a story of survival and fusion. We trace the dasheen bush (Colocasia esculenta) from West African shores to the heart of the Trinidadian kitchen. A diagnostic of the chemical bond between coconut milk, okra, and blue crab.</p>
-<div style="display:flex; justify-content:space-between; align-items:center;">
-<span style="font-size:0.8rem; font-weight:600; opacity:0.6;">6 min read • By Heritage Archive</span>
-<button style="background:var(--primary); color:white; border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
-</div>
-</div>
-</div>
-<div class="blog-card" style="margin-bottom:30px; padding:0; border-radius:24px; background:var(--light-bg); border:1px solid var(--border); overflow:hidden;">
-<div style="height:250px; width:100%; overflow:hidden;">
-<img src="https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=1200" style="width:100%; height:100%; object-fit:cover;" alt="Curry Geera">
-</div>
-<div style="padding:25px;">
-<span style="font-size:0.7rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.1em;">Culinary Science</span>
-<h3 class="display-font" style="font-size:1.8rem; margin:15px 0;">The Chemistry of Curry: Why Geera Matters</h3>
-<p style="font-size:0.95rem; color:var(--grey-text); line-height:1.7; margin-bottom:20px;">An analytical look at how toasted cumin (geera) transforms the flavor profile through the Maillard reaction, aiding in the "Cohesion of Taste" in Indo-Caribbean cooking.</p>
-<div style="display:flex; justify-content:space-between; align-items:center;">
-<span style="font-size:0.8rem; font-weight:600; opacity:0.6;">4 min read • By Analytical Faith</span>
-<button style="background:var(--text); color:var(--bg); border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
-</div>
-</div>
-</div>
-<div class="blog-card" style="margin-bottom:30px; padding:0; border-radius:24px; background:var(--light-bg); border:1px solid var(--border); overflow:hidden;">
-<div style="height:250px; width:100%; overflow:hidden;">
-<img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=1200" style="width:100%; height:100%; object-fit:cover;" alt="Heritage Provisions">
-</div>
-<div style="padding:25px;">
-<span style="font-size:0.7rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.1em;">Heritage Diagnostics</span>
-<h3 class="display-font" style="font-size:1.8rem; margin:15px 0;">The Silent Strength of Ground Provisions</h3>
-<p style="font-size:0.95rem; color:var(--grey-text); line-height:1.7; margin-bottom:20px;">From Cassava to Yam, we analyze the starchy backbone of the Caribbean diet and its role in sustainable heritage agriculture.</p>
-<div style="display:flex; justify-content:space-between; align-items:center;">
-<span style="font-size:0.8rem; font-weight:600; opacity:0.6;">5 min read • By Sovereign Hub</span>
-<button style="background:var(--text); color:var(--bg); border:none; padding:12px 25px; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">Read Story</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="user-profile-modal" class="modal">
-<div class="modal-header">
-<i data-lucide="arrow-left" onclick="closeModal('user-profile-modal')"></i>
-<h3 class="display-font" id="u-prof-name"></h3>
-<i data-lucide="more-vertical" style="width:18px;"></i>
-</div>
-<div style="padding:25px;">
-<div style="display:flex; align-items:center; gap:20px; margin-bottom:25px;">
-<img id="u-prof-avatar" src="" style="width:80px; height:80px; border-radius:50%; border:3px solid var(--primary); object-fit:cover;">
-<div style="flex:1;">
-<h2 class="display-font" id="u-prof-title" style="font-size:1.5rem;"></h2>
-<p id="u-prof-handle" style="color:var(--grey-text); font-size:0.85rem;"></p>
-<div style="display:flex; gap:15px; margin-top:10px;">
-<div style="text-align:center;"><p id="count-followers" style="font-weight:900;">0</p><p style="font-size:0.6rem; text-transform:uppercase; opacity:0.6;">Followers</p></div>
-<div style="text-align:center;"><p id="count-following" style="font-weight:900;">0</p><p style="font-size:0.6rem; text-transform:uppercase; opacity:0.6;">Following</p></div>
-<div style="text-align:center;"><p id="count-likes" style="font-weight:900;">0</p><p style="font-size:0.6rem; text-transform:uppercase; opacity:0.6;">Likes</p></div>
-</div>
-</div>
-</div>
-<div style="display:flex; gap:10px; margin-bottom:30px;">
-<button id="follow-btn" onclick="toggleFollow()" style="flex:1; padding:12px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:800; cursor:pointer;">Follow</button>
-<button onclick="openChat()" style="flex:1; padding:12px; background:var(--dark); color:white; border:none; border-radius:12px; font-weight:800; cursor:pointer;">Message</button>
-</div>
-<h3 class="display-font" style="font-size:1.1rem; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Public Kitchen</h3>
-<div class="pinterest-grid" id="user-public-pins" style="padding:0;"></div>
-</div>
-</div>
-<div id="chat-modal" class="modal">
-<div class="modal-header">
-<i data-lucide="arrow-left" onclick="closeModal('chat-modal')"></i>
-<div style="display:flex; align-items:center; gap:10px;">
-<img id="chat-avatar" src="" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
-<h3 class="display-font" id="chat-user-name" style="font-size:1rem;"></h3>
-</div>
-<i data-lucide="phone" style="width:18px; opacity:0.5;"></i>
-</div>
-<div id="chat-messages" style="flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:15px; background:var(--light-bg);"></div>
-<div style="padding:15px; background:var(--bg); border-top:1px solid var(--border); display:flex; gap:10px; align-items:center;">
-<input type="text" id="chat-input" placeholder="Message..." style="flex:1; padding:12px; border-radius:20px; border:1px solid var(--border); background:var(--light-bg);">
-<button onclick="sendMessage()" style="background:var(--primary); color:white; border:none; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;">
-<i data-lucide="send" style="width:18px;"></i>
-</button>
-</div>
-</div>
-<div id="detail-modal" class="modal">
-<div class="modal-header"><i data-lucide="arrow-left" onclick="closeModal('detail-modal')"></i><h3 class="display-font">Recipe Details</h3><i data-lucide="share" style="width:18px;"></i></div>
-<img id="m-img" style="width:100%; height:45vh; object-fit:cover;">
-<div style="padding:25px;">
-<h1 class="display-font" id="m-title" style="font-size:2.2rem; margin-bottom:10px;"></h1>
-<p style="color:var(--primary); font-weight:800; margin-bottom:30px;">Heritage Gold</p>
-<div style="display:flex; gap:10px; margin-bottom:20px;">
-<button onclick="saveToKitchen()" style="flex:1; padding:12px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-<i data-lucide="heart" style="width:18px;"></i> Save to Kitchen
-</button>
-<button id="map-redirect-btn" style="flex:1; padding:12px; background:var(--dark); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-<i data-lucide="map-pin" style="width:18px;"></i> View on Map
-</button>
-</div>
-<div id="m-ingredients" style="margin-bottom:30px;">
-<h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--grey-text); margin-bottom:15px;">Ingredients</h3>
-<div id="ing-list" style="line-height:1.8; color:var(--dark);"></div>
-</div>
-<div id="m-instructions">
-<h3 style="text-transform:uppercase; font-size:0.8rem; color:var(--grey-text); margin-bottom:15px;">Instructions</h3>
-<div id="inst-list" style="line-height:1.8; color:var(--dark);"></div>
-</div>
-</div>
-</div>
-<div id="add-modal" class="modal">
-<div class="modal-header">
-<h2 class="display-font">Add to Heritage Vault</h2>
-<i data-lucide="x" onclick="closeModal('add-modal')" style="cursor:pointer;"></i>
-</div>
-<div style="padding:25px; max-width:600px; margin:0 auto; width:100%;">
-<div class="form-group">
-<label>Dish Photo</label>
-<div style="width:100%; height:180px; border:2px dashed var(--border); border-radius:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative;" onclick="document.getElementById('dish-img').click()">
-<i data-lucide="camera" style="color:var(--grey-text);"></i>
-<img id="dish-preview" style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:18px;">
-</div>
-<input type="file" id="dish-img" style="display:none;" onchange="previewDish(this)">
-</div>
-<div class="form-group"><label>Dish Title</label><input type="text" id="dish-title" placeholder="e.g. Grandma's Callaloo"></div>
-<div class="form-group"><label>Ingredients</label><textarea id="dish-ingredients" rows="4" placeholder="List ingredients..."></textarea></div>
-<div class="form-group"><label>Instructions</label><textarea id="dish-instructions" rows="6" placeholder="Cooking steps..."></textarea></div>
-<div class="form-group" style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
-<label style="margin-bottom:0;">Privacy Status:</label>
-<select id="dish-privacy" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--light-bg); font-weight:600;">
-<option value="public">Public (Everyone can see)</option>
-<option value="private">Private (Only me)</option>
-</select>
-</div>
-<button onclick="submitDish()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:16px; font-weight:800; cursor:pointer;">Post to Discovery</button>
-</div>
-</div>
-<div id="pro-modal" class="modal" style="background: rgba(0,0,0,0.85);">
-<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px;">
-<div id="pro-intro" style="background:var(--bg); padding:35px; border-radius:28px; text-align:center; width:100%; max-width:420px; box-shadow:0 20px 50px rgba(0,0,0,0.3);">
-<div style="background:var(--primary); color:white; width:60px; height:60px; border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;"><i data-lucide="zap" style="width:32px; height:32px;"></i></div>
-<h1 class="display-font" style="font-size:2rem; margin-bottom:10px;">Calalloo <span style="color:var(--primary);">PRO</span></h1>
-<p style="color:var(--grey-text); margin-bottom:25px; line-height:1.5;">Save recipes and build your personal Caribbean food collection.</p>
-<button onclick="showPaymentOverlay()" style="width:100%; padding:18px; background:var(--dark); color:white; border:none; border-radius:16px; font-weight:800; font-size:1.1rem; cursor:pointer;">Upgrade to PRO</button>
-<p onclick="closeModal('pro-modal')" style="margin-top:20px; color:var(--grey-text); cursor:pointer; font-size:0.9rem; font-weight:600;">Not now</p>
-</div>
-<div id="payment-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.95); flex-direction:column; align-items:center; justify-content:center; padding:20px; z-index:5100; animation: fadeIn 0.3s ease;">
-<div style="background:#000; color:white; border-radius:24px; width:100%; max-width:420px; overflow:hidden; border:1px solid #333; position:relative;">
-<i data-lucide="x" onclick="hidePaymentOverlay()" style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.5; z-index:10;"></i>
-<div style="background:#111; padding:30px; text-align:center; border-bottom:1px solid #222;">
-<img src="/assets/logo.png" style="width:50px; border-radius:50%; margin-bottom:15px;">
-<h2 class="display-font" style="color:var(--primary); margin-bottom:5px;">Calalloo</h2>
-<p style="font-size:0.8rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.1em;">Secure Heritage Payment</p>
-</div>
-<div style="padding:30px;">
-<div style="display:flex; gap:10px; margin-bottom:25px; background:#111; padding:5px; border-radius:12px;">
-<div id="tab-card" class="pay-tab active" onclick="setPayTab('card')" style="flex:1; padding:10px; text-align:center; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:700;">Card/PayPal</div>
-<div id="tab-crypto" class="pay-tab" onclick="setPayTab('crypto')" style="flex:1; padding:10px; text-align:center; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:700;">Crypto</div>
-<div id="tab-bank" class="pay-tab" onclick="setPayTab('bank')" style="flex:1; padding:10px; text-align:center; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:700;">Bank</div>
-</div>
-<div id="pay-card" class="pay-view">
-<div style="font-size:2.5rem; font-weight:900; text-align:center; margin-bottom:20px;">$9.99<span style="font-size:1rem; opacity:0.5;">/mo</span></div>
-<button onclick="confirmUpgrade()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:900; cursor:pointer;">Pay with PayPal / Card</button>
-</div>
-<div id="pay-crypto" class="pay-view" style="display:none;">
-<div style="font-size:0.8rem; text-align:center; margin-bottom:15px;">
-<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222;"><span>Bitcoin (BTC)</span><b>0.00017 BTC</b></div>
-<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222;"><span>Ethereum (ETH)</span><b>0.0033 ETH</b></div>
-<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222;"><span>Polygon (MATIC)</span><b>20.0 MATIC</b></div>
-</div>
-<p style="font-size:0.7rem; opacity:0.6; margin-bottom:10px; text-align:center;">Send to Empire Multi-Chain Wallet:</p>
-<div style="background:#111; padding:12px; border-radius:12px; font-family:monospace; font-size:0.65rem; word-break:break-all; border:1px solid #333; margin-bottom:15px;">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</div>
-<button onclick="alert('Verifying on-chain...')" style="width:100%; padding:14px; background:#f7931a; color:white; border:none; border-radius:12px; font-weight:800; cursor:pointer;">Verify Transaction</button>
-</div>
-<div id="pay-bank" class="pay-view" style="display:none;">
-<div style="text-align:left; font-size:0.85rem; line-height:1.6; opacity:0.9;">
-<p><b>Bank:</b> First Century Bank (Payoneer)</p>
-<p><b>Account Type:</b> Checking / Business</p>
-<p><b>Country:</b> United States (USD)</p>
-<p style="margin-top:10px; font-size:0.75rem; opacity:0.6;">Contact support via WhatsApp for Routing/Account numbers.</p>
-</div>
-<button onclick="alert('US Bank details sent to your registered email.')" style="width:100%; padding:14px; background:#fff; color:#000; border:none; border-radius:12px; font-weight:800; cursor:pointer; margin-top:20px;">Get Full Details</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 <nav>
 <div class="nav-item active" id="nav-discovery" onclick="showTab('discovery')"><i data-lucide="compass"></i>Discovery</div>
 <div class="nav-item" id="nav-map" onclick="showTab('map')"><i data-lucide="map"></i>Map</div>
-<div class="nav-item" id="nav-heritage-blog" onclick="showTab('heritage-blog')"><i data-lucide="book-open"></i>Blog</div>
 <div class="nav-item" id="nav-kitchen" onclick="showTab('kitchen')"><i data-lucide="user"></i>Kitchen</div>
 <div class="nav-item" id="nav-settings" onclick="showTab('settings')"><i data-lucide="settings"></i>Settings</div>
 </nav>
@@ -446,5 +224,6 @@ closeModal('market-listing-modal');
 </script>
 </body>
 </html>
+
 
 
