@@ -168,7 +168,7 @@
 </head>
 <body>
     <header>
-        <a href="/" class="nav-brand">
+        <a href="/" class="nav-brand" id="site-logo">
             <img src="/assets/logo.png" alt="Calalloo Logo">
         </a>
         <nav class="nav-links">
@@ -232,7 +232,7 @@
     <script>
         const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);document.getElementById('site-logo').addEventListener('click',async e=>{e.preventDefault();const {data:{session}}=await sb.auth.getSession();if(session)await sb.auth.signOut();location.href='/'});
 
         async function checkSession() {
             // Dashboard replacement disabled per user request
