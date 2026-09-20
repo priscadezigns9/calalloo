@@ -145,7 +145,7 @@
                 const { error } = await sb.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin + '/profile/'
+                        redirectTo: window.location.origin + '/profile/?v=account'
                     }
                 });
                 if (error) throw error;
@@ -181,7 +181,7 @@
                 btn.innerText = lang === 'es' ? "¡Éxito!" : (lang === 'pt' ? "Sucesso!" : "Success!");
                 btn.style.background = "#2D5A27";
                 localStorage.setItem('auth_lock', 'true');
-                setTimeout(() => { window.location.href = '/profile/'; }, 1500);
+                setTimeout(() => { window.location.href = '/profile/?v=account'; }, 1500);
             } catch (e) {
                 err.innerText = e.message;
                 btn.innerText = translations[lang].signin;
@@ -205,5 +205,6 @@
     </script>
 </body>
 </html>
+
 
 
