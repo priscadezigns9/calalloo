@@ -7,8 +7,51 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--ink:#191613;--paper:#f7f3ed;--orange:#e87722;--line:#ded6cc;--muted:#756d64}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif}header{padding:1.1rem 5%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}header a{color:inherit;text-decoration:none;font-weight:800}.brand-logo{height:36px;width:auto;display:block}.back{color:var(--orange)}main{max-width:1100px;margin:0 auto;padding:4rem 5% 7rem}.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center}.hero img{width:100%;aspect-ratio:1.15;object-fit:cover;border-radius:24px;box-shadow:0 18px 40px #2d211515}.eyebrow{color:var(--orange);font-size:.75rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.title{font:900 clamp(2.7rem,7vw,6.5rem)/.92 Fraunces,serif;margin:.8rem 0 1.2rem}.desc{font-size:1.1rem;line-height:1.75;color:var(--muted)}.save{border:0;border-radius:999px;padding:1rem 1.4rem;background:var(--orange);color:white;font-weight:800;cursor:pointer}.save.saved{background:#26221e}.save-note{font-size:.82rem;color:var(--muted);margin-top:.7rem}.body{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:5rem;padding-top:3rem;border-top:1px solid var(--line)}h2{font:700 2.3rem Fraunces,serif;margin-top:0}ol{padding-left:1.3rem;line-height:1.9;color:var(--muted)}.status{padding:4rem;text-align:center;color:var(--muted)}ul{padding-left:1.3rem;line-height:1.9;color:var(--muted)}.credit{font-size:.78rem;color:var(--muted);margin:.7rem 0}.credit a{color:var(--orange)}@media(max-width:760px){.hero,.body{grid-template-columns:1fr}.hero{display:flex;flex-direction:column-reverse;gap:1.5rem}.title{font-size:3.7rem}}
-</style><script>if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));if(window.caches)caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));}</script></head>
-<body><header><a href="../" aria-label="Calalloo home"><img class="brand-logo" src="../assets/logo.png" alt="Calalloo"></a><a class="back" href="../recipes/">← All recipes</a></header><main id="app"><div class="status">Loading recipe…</div></main><footer></footer>
+</style><script>if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));if(window.caches)caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));}</script><style>
+        :root {
+            --bg: #F7F3ED;
+            --primary: #E87722;
+            --dark: #191613;
+            --mid: #756D64;
+            --white: #FFFFFF;
+            --font-display: 'Fraunces', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'DM Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--dark); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        
+        header { position: fixed; top: 0; width: 100%; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(247, 243, 237, 0.94); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(25, 22, 19, 0.08); }
+        .nav-brand img { height:45px; width:auto; display:block; }
+        .nav-brand { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
+        
+        .hero { padding: 12rem 2rem 4rem; max-width: 1200px; margin: 0 auto; }
+        .lab-tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 1.5rem; display: block; }
+        .hero h1 { font-family: var(--font-display); font-size: 5rem; line-height: 0.85; letter-spacing: -0.04em; margin-bottom: 2rem; }
+
+        .recipe-grid { max-width: 1400px; margin: 0 auto 8rem; padding: 0 2rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+        
+        .recipe-card { height: 520px; aspect-ratio: auto; background: var(--white); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.03); transition: all 0.4s ease; text-decoration: none; color: inherit; position: relative; }
+        .recipe-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        
+        .recipe-image { width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; filter: none; transition: filter 0.4s ease; }
+        .recipe-card:hover .recipe-image { filter: none; }
+        
+        .recipe-content { padding: 2rem; position: absolute; bottom: 0; width: 100%; background: linear-gradient(to bottom, transparent, var(--white)); }
+        .recipe-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 0.5rem; }
+        .recipe-meta { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.7rem; color: var(--primary); text-transform: uppercase; }
+
+        footer { padding: 4rem; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--mid); text-transform: uppercase; letter-spacing: 0.2em; }
+    @media (max-width: 1000px) { .recipe-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 650px) { .recipe-grid { grid-template-columns: 1fr; } .recipe-card { height: 440px; } }
+    
+        @media(min-width:1001px){#recipe-country-filters{float:left;width:230px;margin:0 2rem 3rem 2rem!important;padding:0!important;display:block!important}#recipe-country-filters>label{display:block!important;max-width:none!important}#recipe-country-filters>div{display:grid!important;gap:.55rem!important;margin-top:1rem}.recipe-grid{overflow:hidden;margin-left:0;margin-right:2rem}.country-filter{text-align:left;width:100%}}
+</style>
+<style>
+body.has-cal-app-nav{padding-bottom:90px!important}.cal-app-nav{display:none;position:fixed;z-index:1100;bottom:0;left:0;right:0;height:76px;background:#fff;border-top:1px solid rgba(232,119,34,.2);box-shadow:0 -6px 20px rgba(25,22,19,.08);align-items:center;justify-content:center;gap:clamp(10px,5vw,70px);padding:0 12px}.cal-app-nav.visible{display:flex}.cal-app-nav a{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;color:#756d64;text-decoration:none;position:relative}.cal-app-nav a:hover,.cal-app-nav a:focus-visible{background:#fff5ee;color:#e87722;outline:0}.cal-app-nav a[aria-current="page"]{color:#e87722;background:#fff5ee}.cal-app-nav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.cal-app-nav a:hover::after,.cal-app-nav a:focus-visible::after{content:attr(title);position:absolute;bottom:58px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#191613;color:white;border-radius:6px;padding:6px 9px;font:600 12px Inter,sans-serif}.cal-profile-menu{display:none;position:relative;margin-left:14px}.cal-profile-menu.visible{display:block}.cal-profile-button{border:0;background:transparent;padding:0;cursor:pointer}.cal-profile-button img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #e87722}.cal-profile-dropdown{display:none;position:absolute;right:0;top:50px;min-width:175px;background:white;border:1px solid #ded6cc;border-radius:12px;padding:7px;box-shadow:0 14px 32px #19161324;z-index:1200}.cal-profile-dropdown.open{display:grid}.cal-profile-dropdown a,.cal-profile-dropdown button{font:600 13px Inter,sans-serif;color:#191613;text-decoration:none;text-align:left;border:0;background:transparent;padding:11px;border-radius:7px;cursor:pointer}.cal-profile-dropdown a:hover,.cal-profile-dropdown button:hover{background:#fff5ee;color:#e87722}
+</style></head>
+<body><header><a href="../" aria-label="Calalloo home"><img class="brand-logo" src="../assets/logo.png" alt="Calalloo"></a><a class="back" href="../recipes/">← All recipes</a><div class="cal-profile-menu" id="cal-profile-menu"><button class="cal-profile-button" id="cal-profile-button" aria-label="Profile menu" aria-expanded="false"><img id="cal-profile-avatar" src="/assets/logo.png" alt="Profile"></button><div class="cal-profile-dropdown" id="cal-profile-dropdown"><a href="../profile/">Profile</a><a href="../profile/?action=upload">Upload</a><a href="../profile/?panel=settingsPanel">Settings</a><button id="cal-profile-logout">Log out</button></div></div></header><main id="app"><div class="status">Loading recipe…</div></main><footer></footer>
 <script>
 const SB_URL='https://sktpjacowqaedddtrhuz.supabase.co';
 const SB_KEY='sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
@@ -19,7 +62,16 @@ async function load(){if(!id){app.innerHTML='<div class="status">Recipe not foun
 async function loadSave(){const {data:{user}}=await sb.auth.getUser();if(!user)return;const {data}=await sb.from('saved_recipes').select('id').eq('user_id',user.id).eq('recipe_id',id).maybeSingle();if(data){save.classList.add('saved');save.textContent='✓ Saved recipe';}}
 async function toggleSave(){const {data:{user}}=await sb.auth.getUser();if(!user){location.href='../login/?next='+encodeURIComponent(location.href);return}const {data:existing}=await sb.from('saved_recipes').select('id').eq('user_id',user.id).eq('recipe_id',id).maybeSingle();if(existing){await sb.from('saved_recipes').delete().eq('id',existing.id);save.classList.remove('saved');save.textContent='♡ Save recipe';}else{const {error}=await sb.from('saved_recipes').insert({user_id:user.id,recipe_id:id,collection_name:'Saved Recipes'});if(!error){save.classList.add('saved');save.textContent='✓ Saved recipe';}}}
 load();
-</script><script src="../js/guest-community.js"></script></body></html>
+</script><script src="../js/guest-community.js"></script><nav class="cal-app-nav" id="cal-app-nav" aria-label="Calalloo app navigation">
+<a href="/recipes/" title="Discover · Recipes" aria-label="Discover · Recipes"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m16.5 16.5 4 4M11 7v8M7 11h8"/></svg></a>
+<a href="/events/" title="Events" aria-label="Events"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg></a>
+<a href="/profile/?panel=mapPanel" title="Map" aria-label="Map"><svg viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/></svg></a>
+<a href="/profile/?panel=kitchenPanel" title="Kitchen" aria-label="Kitchen"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></a>
+<a href="/profile/?action=upload" title="Post or upload" aria-label="Post or upload"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></a>
+<a href="/profile/?panel=settingsPanel" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.6 2.7-.2-.1a1.7 1.7 0 0 0-1.8-.1 1.7 1.7 0 0 0-1 1.5v.2h-3.2V21a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.1l-.2.1-1.6-2.7.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6v-3.2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.6-2.7.2.1a1.7 1.7 0 0 0 1.8.1 1.7 1.7 0 0 0 1-1.5V4h3.2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.1l.2-.1 1.6 2.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v3.2H21a1.7 1.7 0 0 0-1.6.7Z"/></svg></a>
+</nav><script>
+(()=>{const U='https://sktpjacowqaedddtrhuz.supabase.co',K='sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';const c=window.supabase?.createClient(U,K,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});if(!c)return;const n=document.getElementById('cal-app-nav'),m=document.getElementById('cal-profile-menu');if(!n||!m)return;const boot=async()=>{const {data:{session}}=await c.auth.getSession();if(!session)return;document.body.classList.add('has-cal-app-nav');n.classList.add('visible');m.classList.add('visible');const u=session.user,d=u.user_metadata||{},identity=u.identities?.[0]?.identity_data||{};const avatar=d.avatar_url||d.picture||identity.avatar_url||identity.picture;if(avatar)document.getElementById('cal-profile-avatar').src=avatar;const a=document.querySelector('.cal-app-nav a[href="'+location.pathname+'"]');if(a)a.setAttribute('aria-current','page');document.getElementById('cal-profile-button').onclick=()=>{const dd=document.getElementById('cal-profile-dropdown'),open=dd.classList.toggle('open');document.getElementById('cal-profile-button').setAttribute('aria-expanded',open)};document.addEventListener('click',e=>{if(!e.target.closest('#cal-profile-menu'))document.getElementById('cal-profile-dropdown').classList.remove('open')});document.getElementById('cal-profile-logout').onclick=async()=>{await c.auth.signOut();location.href='/'};};boot()})();
+</script></body></html>
 
 
 
