@@ -235,7 +235,7 @@ body.has-cal-app-nav{padding-bottom:90px!important}header.cal-auth-appbar{positi
     <script>
         const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);document.getElementById('site-logo').addEventListener('click',async e=>{e.preventDefault();const {data:{session}}=await sb.auth.getSession();if(session)await sb.auth.signOut();location.href='/'});
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);document.getElementById('site-logo').addEventListener('click',e=>{e.preventDefault();location.href='/'});
 
         async function checkSession() {
             // Dashboard replacement disabled per user request
