@@ -237,10 +237,38 @@ body.has-cal-app-nav{padding-bottom:90px!important}header.cal-auth-appbar{positi
         const SUPABASE_KEY = 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);document.getElementById('site-logo').addEventListener('click',e=>{e.preventDefault();location.href='/'});
 
-        async function checkSession() {
-            // Dashboard replacement disabled per user request
+        function updateHomeAuthState(session) {
+            const signedIn = !!session?.user;
+            const login = document.getElementById('login-link');
+            const signup = document.getElementById('signup-link');
+            const guest = document.getElementById('hero-guest');
+            const create = document.getElementById('hero-cta');
+            const secondary = document.getElementById('hero-secondary');
+            const footerLinks = document.querySelectorAll('.footer-links a');
+            if (signedIn) {
+                if (login) { login.textContent = 'My Kitchen'; login.href = '/profile/'; }
+                if (signup) signup.style.display = 'none';
+                if (guest) { guest.textContent = 'Open My Kitchen'; guest.href = '/profile/'; }
+                if (create) create.style.display = 'none';
+                if (secondary) { secondary.textContent = 'Explore Recipes'; secondary.href = '/recipes/'; secondary.style.display = ''; }
+                if (footerLinks[0]) { footerLinks[0].textContent = 'My Kitchen'; footerLinks[0].href = '/profile/'; }
+                if (footerLinks[1]) footerLinks[1].style.display = 'none';
+            } else {
+                if (login) { login.textContent = 'Sign In'; login.href = '/login/'; }
+                if (signup) signup.style.display = '';
+                if (guest) { guest.textContent = 'Explore Recipes as Guest'; guest.href = '/recipes/'; }
+                if (create) create.style.display = '';
+                if (secondary) { secondary.textContent = 'Sign In'; secondary.href = '/login/'; secondary.style.display = ''; }
+                if (footerLinks[0]) { footerLinks[0].textContent = 'Sign In'; footerLinks[0].href = '/login/'; }
+                if (footerLinks[1]) footerLinks[1].style.display = '';
+            }
         }
-        // checkSession();
+        async function checkSession() {
+            const { data: { session } } = await sb.auth.getSession();
+            updateHomeAuthState(session);
+            sb.auth.onAuthStateChange((_event, nextSession) => updateHomeAuthState(nextSession));
+        }
+        checkSession();
     </script>
 <nav class="cal-app-nav" id="cal-app-nav" aria-label="Calalloo app navigation">
 <a href="/recipes/" title="Discover · Recipes" aria-label="Discover · Recipes"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m16.5 16.5 4 4M11 7v8M7 11h8"/></svg></a>
