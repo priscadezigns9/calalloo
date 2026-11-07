@@ -1,290 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calalloo | Caribbean Heritage & Flavor</title>
-    <meta name="description" content="Discover Caribbean recipes, food heritage, cooking traditions and community stories from Trinidad and Tobago, Barbados, Jamaica, Cuba and across the Caribbean.">
-    <link rel="canonical" href="https://calalloo.com/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Calalloo | Caribbean Heritage & Flavor">
-    <meta property="og:description" content="Discover Caribbean recipes, food heritage, cooking traditions and community stories from across the Caribbean.">
-    <meta property="og:url" content="https://calalloo.com/">
-    <meta property="og:image" content="https://calalloo.com/assets/logo.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Calalloo","url":"https://calalloo.com/","description":"Caribbean recipes, food heritage and cooking traditions.","inLanguage":"en"}</script>
-    <!-- v40.8.8 -->
-    <link rel="icon" type="image/png" href="/assets/logo.png">
-    
-    <!-- High-Fidelity Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,900;9..144,1,900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    
-    <!-- Infrastructure -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        :root {
-            --bg: #FFFFFF;
-            --primary: #E87722; 
-            --secondary: #FFF5EE;
-            --text: #4A4A4A;
-            --dark-text: #1A0D00;
-            --white: #FFFFFF;
-            --border: rgba(232, 119, 34, 0.1);
-            --font-display: 'Fraunces', serif;
-            --font-sans: 'Inter', sans-serif;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            font-family: var(--font-sans);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 5%;
-            z-index: 1000;
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .nav-brand img { height: 45px; display: block; width: auto; object-fit: contain; }
-
-        .nav-links { display: flex; gap: 32px; align-items: center; }
-        .nav-links a { 
-            text-decoration: none; 
-            font-weight: 700; 
-            color: var(--dark-text); 
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .nav-links a:hover { color: var(--primary); }
-
-        .btn-cta {
-            background: var(--primary);
-            color: white !important;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-family: var(--font-sans);
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 180px 5% 100px;
-            text-align: center;
-            background: var(--secondary);
-            position: relative;
-        }
-
-        .hero-content { max-width: 850px; margin: 0 auto; }
-        .hero h1 {
-            font-family: var(--font-display);
-            font-size: clamp(2.5rem, 7vw, 5rem);
-            line-height: 1.1;
-            margin-bottom: 24px;
-            font-weight: 900;
-            color: var(--dark-text);
-        }
-
-        .hero p {
-            font-size: clamp(1.1rem, 2vw, 1.3rem);
-            color: var(--text);
-            margin-bottom: 40px;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-actions { display: flex; gap: 16px; justify-content: center; }
-
-        .btn-outline {
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-family: var(--font-sans);
-            text-decoration: none;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            background: transparent;
-        }
-
-        /* Sections */
-        .section { padding: 100px 5%; }
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-header h2 { font-family: var(--font-display); font-size: 40px; font-weight: 900; color: var(--dark-text); }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .card {
-            padding: 40px;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            transition: 0.3s;
-        }
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .card h3 { font-family: var(--font-display); font-size: 22px; margin-bottom: 16px; color: var(--primary); }
-        .card p { font-size: 15px; opacity: 0.8; }
-
-        footer { padding: 60px 5%; background: var(--secondary); border-top: 1px solid var(--border); text-align: center; }
-        .footer-logo { height: 30px; margin-bottom: 24px; opacity: 0.8; }
-        .footer-links { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; }
-        .footer-links a { text-decoration: none; color: var(--text); font-weight: 600; font-size: 14px; }
-        .footer-links a:hover { color: var(--primary); }
-        
-        .copyright { font-size: 12px; opacity: 0.5; font-weight: 600; }
-
-        @media (max-width: 768px) {
-            header { padding: 0 20px; flex-wrap: wrap; gap: 12px; }
-            .nav-links { display: flex; width: 100%; justify-content: center; gap: 12px; flex-wrap: wrap; padding-bottom: 12px; }
-            .nav-links a { font-size: 12px; }
-            .hero-actions { flex-direction: column; align-items: stretch; width: min(100%, 320px); margin: 0 auto; }
-            .hero-actions a { text-align: center; }
-        }
-    @media(max-width:600px){.cal-app-nav{justify-content:space-around;gap:0;padding:0 4px}.cal-app-nav a{width:50px;height:50px}.cal-app-nav svg{width:26px;height:26px}}
-</style>
-<style>
-body.has-cal-app-nav{padding-bottom:90px!important}header.cal-auth-appbar{position:sticky!important;top:0!important;height:72px!important;min-height:72px!important;padding:0 clamp(18px,5vw,70px)!important;display:flex!important;justify-content:space-between!important;align-items:center!important;background:#fff!important;border-bottom:1px solid rgba(232,119,34,.18)!important;z-index:1101!important;box-shadow:0 2px 14px rgba(25,22,19,.05)!important}header.cal-auth-appbar nav,header.cal-auth-appbar .back{display:none!important}header.cal-auth-appbar #site-logo img,header.cal-auth-appbar>a[aria-label*="Calalloo"] img,header.cal-auth-appbar .brand-logo,header.cal-auth-appbar .brand img,header.cal-auth-appbar .nav-brand img{height:42px!important;width:auto!important;display:block!important}.cal-profile-menu.visible{display:block;margin-left:auto}.cal-app-nav{display:none;position:fixed;z-index:1100;bottom:0;left:0;right:0;height:88px;background:#fff;border-top:1px solid rgba(232,119,34,.2);box-shadow:0 -6px 20px rgba(25,22,19,.08);align-items:center;justify-content:center;gap:clamp(10px,5vw,70px);padding:0 12px}.cal-app-nav.visible{display:flex}.cal-app-nav a{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;color:#756d64;text-decoration:none;position:relative}.cal-app-nav a:hover,.cal-app-nav a:focus-visible{background:#fff5ee;color:#e87722;outline:0}.cal-app-nav a[aria-current="page"]{color:#e87722;background:#fff5ee}.cal-app-nav svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.cal-app-nav a:hover::after,.cal-app-nav a:focus-visible::after{content:attr(title);position:absolute;bottom:58px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#191613;color:white;border-radius:6px;padding:6px 9px;font:600 12px Inter,sans-serif}.cal-profile-menu{display:none;position:relative;margin-left:14px}.cal-profile-menu.visible{display:block}.cal-profile-button{border:0;background:transparent;padding:0;cursor:pointer}.cal-profile-button img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #e87722}.cal-profile-dropdown{display:none;position:absolute;right:0;top:50px;min-width:175px;background:white;border:1px solid #ded6cc;border-radius:12px;padding:7px;box-shadow:0 14px 32px #19161324;z-index:1200}.cal-profile-dropdown.open{display:grid}.cal-profile-dropdown a,.cal-profile-dropdown button{font:600 13px Inter,sans-serif;color:#191613;text-decoration:none;text-align:left;border:0;background:transparent;padding:11px;border-radius:7px;cursor:pointer}.cal-profile-dropdown a:hover,.cal-profile-dropdown button:hover{background:#fff5ee;color:#e87722}
-</style></head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calalloo — Caribbean food, carried forward</title>
+  <meta name="description" content="Explore Caribbean recipes, food traditions and community kitchens on Calalloo. Discover the dishes and stories that bring the islands to the table.">
+  <link rel="canonical" href="https://calalloo.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Calalloo — Caribbean food, carried forward">
+  <meta property="og:description" content="Explore Caribbean recipes, food traditions and community kitchens on Calalloo.">
+  <meta property="og:url" content="https://calalloo.com/">
+  <meta property="og:image" content="https://calalloo.com/assets/logo.png">
+  <meta name="theme-color" content="#fff8f2">
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--cream:#fff8f2;--paper:#fffdfb;--ink:#21150e;--muted:#68594f;--orange:#e87722;--orange-deep:#b95116;--line:#eaded3;--leaf:#354b34;--display:'Fraunces',Georgia,serif;--body:'Inter',Arial,sans-serif;--page:1280px;--shadow:0 18px 46px rgba(50,31,18,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;overflow-x:clip}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;overflow-x:clip}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button,a{-webkit-tap-highlight-color:transparent}a:focus-visible,button:focus-visible{outline:3px solid #a24a17;outline-offset:4px;border-radius:4px}.shell{width:min(var(--page),calc(100% - 80px));margin-inline:auto}
+    .site-header{height:78px;position:sticky;top:0;z-index:1000;background:rgba(255,253,251,.96);border-bottom:1px solid rgba(76,47,26,.10);display:flex;align-items:center;justify-content:space-between;padding:0 max(32px,calc((100vw - var(--page))/2));backdrop-filter:blur(10px)}.brand{display:inline-flex;align-items:center;gap:12px;min-width:160px}.brand img{width:42px;height:42px;object-fit:contain}.brand-word{font:800 21px/1 var(--display);letter-spacing:-.04em}.brand-word span{color:var(--orange)}.nav-links{display:flex;align-items:center;gap:clamp(18px,2.6vw,38px);font-size:13px;font-weight:700}.nav-links a:not(.nav-join){transition:color .2s}.nav-links a:not(.nav-join):hover{color:var(--orange-deep)}.nav-join,.button-primary{background:var(--orange);color:#fff!important;border:1px solid var(--orange);padding:12px 20px;border-radius:999px;font-size:13px;font-weight:800;transition:background .18s,transform .18s,border-color .18s}.nav-join:hover,.button-primary:hover{background:var(--orange-deep);border-color:var(--orange-deep);transform:translateY(-2px)}.button-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 20px;border:1px solid var(--ink);border-radius:999px;font-size:13px;font-weight:800;transition:background .18s,color .18s,transform .18s}.button-secondary:hover{background:var(--ink);color:white;transform:translateY(-2px)}
+    .hero{background:var(--cream);padding:clamp(48px,7vw,94px) 0 86px;position:relative;isolation:isolate}.hero:after{content:"";position:absolute;z-index:-1;width:380px;height:380px;right:-170px;top:30px;border:1px solid rgba(232,119,34,.18);border-radius:50%;box-shadow:0 0 0 35px rgba(232,119,34,.045),0 0 0 72px rgba(232,119,34,.025)}.hero-inner{display:grid;grid-template-columns:minmax(0,.93fr) minmax(440px,1.07fr);align-items:center;gap:clamp(40px,7vw,105px)}.eyebrow{display:flex;gap:10px;align-items:center;color:var(--orange-deep);font-size:11px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}.eyebrow:before{content:"";width:24px;height:1px;background:currentColor}.hero h1{font:900 clamp(58px,7vw,100px)/.91 var(--display);letter-spacing:-.065em;margin:24px 0 20px;max-width:660px;text-wrap:balance}.hero h1 .accent{color:var(--orange);display:block}.hero-copy{max-width:475px;font-size:16px;line-height:1.75;color:var(--muted);margin:0}.hero-actions{display:flex;align-items:center;gap:12px;margin-top:30px;flex-wrap:wrap}.hero-actions .button-primary,.hero-actions .button-secondary{min-height:50px;padding:14px 23px}.micro-note{display:flex;align-items:center;gap:9px;color:#76685e;font-size:11px;margin-top:21px}.micro-note svg{width:16px;height:16px;flex:none;color:var(--orange-deep)}
+    .food-stage{position:relative;min-height:490px;display:grid;grid-template-columns:1.05fr .85fr;grid-template-rows:1fr .82fr;gap:14px;align-items:stretch}.food-shot{position:relative;overflow:hidden;border-radius:5px;background:#e4d3bf;box-shadow:var(--shadow)}.food-shot img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}.food-shot:hover img{transform:scale(1.035)}.food-shot.main{grid-column:1;grid-row:1/3;min-height:430px}.food-shot.side-top{grid-column:2;grid-row:1;min-height:225px;margin-top:25px}.food-shot.side-bottom{grid-column:2;grid-row:2;min-height:205px;margin-bottom:15px}.photo-label{position:absolute;left:14px;bottom:14px;background:rgba(255,253,251,.94);padding:9px 12px;color:var(--ink);font-size:11px;font-weight:800;box-shadow:0 5px 20px #21150e1c}.photo-label small{display:block;color:var(--muted);font:600 9px var(--body);letter-spacing:.09em;text-transform:uppercase;margin-bottom:2px}.stage-stamp{position:absolute;z-index:3;right:-20px;top:42%;width:104px;height:104px;border-radius:50%;display:grid;place-items:center;background:var(--orange);color:#fff;border:7px solid var(--cream);text-align:center;font:700 11px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;transform:rotate(9deg)}.stage-stamp span{display:block;font:900 25px/1 var(--display);letter-spacing:-.06em}
+    .intro-band{background:var(--leaf);color:#fff;padding:30px 0}.intro-band-inner{display:flex;align-items:center;justify-content:space-between;gap:25px}.band-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#f6c18d;font-weight:800;white-space:nowrap}.band-text{font:700 clamp(19px,2.3vw,30px)/1.2 var(--display);letter-spacing:-.025em}.band-link{font-size:12px;font-weight:800;white-space:nowrap;border-bottom:1px solid #f6c18d;padding:7px 0}
+    .section{padding:clamp(70px,9vw,118px) 0}.section-top{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:33px}.section-kicker{color:var(--orange-deep);font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin:0 0 11px}.section h2{font:800 clamp(38px,5vw,64px)/.98 var(--display);letter-spacing:-.055em;margin:0;text-wrap:balance}.section-lead{max-width:410px;color:var(--muted);font-size:14px;line-height:1.7;margin:0}.recipe-grid{display:grid;grid-template-columns:1.12fr .88fr .88fr;gap:17px}.recipe-card{min-width:0;background:#fff;border:1px solid var(--line);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column}.recipe-card:hover{transform:translateY(-5px);box-shadow:0 16px 35px rgba(50,31,18,.11)}.recipe-image{height:300px;overflow:hidden;background:#e8d7c7;position:relative}.recipe-card:first-child .recipe-image{height:365px}.recipe-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s}.recipe-card:hover .recipe-image img{transform:scale(1.04)}.recipe-copy{padding:19px 20px 21px;display:flex;flex-direction:column;flex:1}.recipe-country{font-size:9px;color:var(--orange-deep);font-weight:800;letter-spacing:.15em;text-transform:uppercase}.recipe-copy h3{font:700 25px/1.1 var(--display);letter-spacing:-.035em;margin:8px 0}.recipe-copy p{color:var(--muted);font-size:12px;line-height:1.6;margin:0}.recipe-more{margin-top:16px;color:var(--ink);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:space-between}.recipe-more span:last-child{color:var(--orange);font-size:18px;transition:transform .2s}.recipe-card:hover .recipe-more span:last-child{transform:translateX(4px)}
+    .story-section{background:#f5ece1;padding:clamp(66px,8vw,105px) 0}.story-layout{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(40px,8vw,110px);align-items:center}.story-heading{position:relative}.story-heading h2{font:800 clamp(42px,5.3vw,70px)/.96 var(--display);letter-spacing:-.06em;margin:12px 0 18px}.story-heading p{color:var(--muted);font-size:14px;max-width:380px;line-height:1.8}.story-quote{border-left:2px solid var(--orange);padding:5px 0 5px 26px;font:600 clamp(22px,3vw,36px)/1.25 var(--display);letter-spacing:-.03em;max-width:600px}.story-quote small{display:block;font:700 10px var(--body);color:var(--orange-deep);letter-spacing:.16em;text-transform:uppercase;margin-top:22px}.journey{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:38px}.journey-item{background:var(--paper);padding:25px 24px;min-height:170px}.journey-number{font:800 12px var(--body);color:var(--orange)}.journey-item h3{font:700 22px/1.1 var(--display);margin:14px 0 8px}.journey-item p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+    .closing{background:var(--orange);color:#fff;padding:clamp(55px,8vw,95px) 0}.closing-inner{display:flex;justify-content:space-between;align-items:center;gap:35px}.closing h2{font:800 clamp(39px,5vw,64px)/.95 var(--display);letter-spacing:-.055em;margin:0 0 12px;max-width:700px}.closing p{margin:0;color:#fff5ec;font-size:14px}.closing .button-secondary{border-color:#fff;color:#fff;min-width:165px}.closing .button-secondary:hover{background:#fff;color:var(--orange-deep)}
+    .footer{background:var(--ink);color:#fff;padding:43px 0 25px}.footer-main{display:flex;align-items:center;justify-content:space-between;gap:25px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.16)}.footer .brand-word{color:#fff}.footer .brand img{width:34px;height:34px}.footer-nav{display:flex;gap:23px;flex-wrap:wrap;color:#eaded3;font-size:11px;font-weight:600}.footer-nav a:hover{color:#ffb36d}.footer-bottom{display:flex;justify-content:space-between;gap:15px;padding-top:18px;color:#c4b8ae;font-size:10px}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.7,.2,1)}.reveal.is-visible{opacity:1;transform:none}.recipe-card:nth-child(2){transition-delay:.08s}.recipe-card:nth-child(3){transition-delay:.16s}
+    body.has-cal-app-nav{padding-bottom:90px!important}.cal-app-nav{display:none;position:fixed;z-index:1100;bottom:0;left:0;right:0;height:88px;background:#fff;border-top:1px solid rgba(232,119,34,.2);box-shadow:0 -6px 20px rgba(25,22,19,.08);align-items:center;justify-content:center;gap:clamp(10px,5vw,70px);padding:0 12px}.cal-app-nav.visible{display:flex}.cal-app-nav a{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;color:#756d64;position:relative}.cal-app-nav a:hover,.cal-app-nav a:focus-visible,.cal-app-nav a[aria-current=page]{background:#fff5ee;color:var(--orange)}.cal-app-nav svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.cal-app-nav a:hover:after,.cal-app-nav a:focus-visible:after{content:attr(title);position:absolute;bottom:58px;white-space:nowrap;background:var(--ink);color:#fff;border-radius:6px;padding:6px 9px;font:600 12px var(--body)}.cal-profile-menu{display:none;position:relative;margin-left:auto}.cal-profile-menu.visible{display:block}.cal-profile-button{border:0;background:transparent;padding:0;cursor:pointer}.cal-profile-button img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--orange)}.cal-profile-dropdown{display:none;position:absolute;right:0;top:50px;min-width:175px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:7px;box-shadow:0 14px 32px #19161324;z-index:1200}.cal-profile-dropdown.open{display:grid}.cal-profile-dropdown a,.cal-profile-dropdown button{font:600 13px var(--body);color:var(--ink);text-align:left;border:0;background:transparent;padding:11px;border-radius:7px;cursor:pointer}.cal-profile-dropdown a:hover,.cal-profile-dropdown button:hover{background:var(--cream);color:var(--orange-deep)}header.cal-auth-appbar{height:72px;min-height:72px;box-shadow:0 2px 14px rgba(25,22,19,.05)}header.cal-auth-appbar nav,header.cal-auth-appbar .nav-links{display:none!important}header.cal-auth-appbar .brand img{height:40px}
+    @media(max-width:900px){.shell{width:min(var(--page),calc(100% - 44px))}.site-header{padding:0 24px}.hero-inner{grid-template-columns:minmax(0,.88fr) minmax(330px,1.12fr);gap:30px}.food-stage{min-height:410px}.food-shot.main{min-height:380px}.stage-stamp{right:-12px;width:88px;height:88px;font-size:9px}.stage-stamp span{font-size:22px}.recipe-image{height:250px}.recipe-card:first-child .recipe-image{height:300px}}
+    @media(max-width:680px){.shell{width:calc(100% - 36px)}.site-header{height:68px;padding:0 18px}.brand{min-width:unset;gap:8px}.brand img{width:35px;height:35px}.brand-word{font-size:19px}.nav-links{gap:11px;font-size:11px}.nav-links a:nth-child(2),.nav-links a:nth-child(3){display:none}.nav-join{padding:10px 13px;font-size:11px}.hero{padding:47px 0 42px}.hero-inner{display:flex;flex-direction:column;align-items:stretch;gap:30px}.hero h1{font-size:clamp(53px,14vw,78px);margin:18px 0 14px;max-width:520px}.hero-copy{font-size:14px;max-width:480px}.hero-actions{margin-top:22px;gap:10px}.hero-actions .button-primary,.hero-actions .button-secondary{min-height:46px;padding:12px 16px;font-size:12px}.micro-note{font-size:10px;margin-top:14px}.food-stage{min-height:325px;grid-template-columns:1.08fr .92fr;grid-template-rows:1fr .75fr;gap:9px}.food-shot.main{min-height:305px}.food-shot.side-top{min-height:160px;margin-top:15px}.food-shot.side-bottom{min-height:135px;margin-bottom:8px}.photo-label{left:8px;bottom:8px;padding:7px 8px;font-size:9px}.photo-label small{font-size:8px}.stage-stamp{right:-6px;top:43%;width:70px;height:70px;border-width:5px;font-size:7px}.stage-stamp span{font-size:18px}.intro-band{padding:19px 0}.intro-band-inner{align-items:flex-start;flex-wrap:wrap;gap:10px}.band-label{width:100%}.band-text{font-size:21px;flex:1}.band-link{align-self:end;font-size:10px}.section{padding:65px 0}.section-top{display:block;margin-bottom:23px}.section h2{font-size:43px}.section-lead{margin-top:13px;font-size:13px}.recipe-grid{grid-template-columns:1fr;gap:13px}.recipe-card{display:grid;grid-template-columns:.88fr 1.12fr;min-height:170px}.recipe-image,.recipe-card:first-child .recipe-image{height:auto;min-height:170px}.recipe-copy{padding:15px 14px}.recipe-copy h3{font-size:22px}.recipe-copy p{font-size:11px}.recipe-more{margin-top:11px}.story-section{padding:60px 0}.story-layout{grid-template-columns:1fr;gap:25px}.story-heading h2{font-size:48px}.story-quote{font-size:25px;padding-left:19px}.journey{grid-template-columns:1fr;margin-top:25px}.journey-item{min-height:0;padding:19px}.journey-item h3{margin:8px 0 5px;font-size:20px}.closing{padding:53px 0}.closing-inner{display:block}.closing h2{font-size:47px}.closing p{font-size:13px;margin-bottom:21px}.closing .button-secondary{min-height:47px}.footer-main{align-items:flex-start;flex-direction:column}.footer-nav{gap:13px 19px}.footer-bottom{flex-direction:column;gap:7px}.cal-app-nav{justify-content:space-around;gap:0;padding:0 4px}.cal-app-nav a{width:50px;height:50px}.cal-app-nav svg{width:26px;height:26px}}
+    @media(max-width:390px){.nav-links{gap:8px}.nav-links>a:first-child{font-size:10px}.hero-actions{align-items:stretch;flex-direction:column}.hero-actions a{width:100%}.stage-stamp{right:-3px}.recipe-copy p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Calalloo","url":"https://calalloo.com/","description":"Caribbean recipes, food heritage and cooking traditions from across the Caribbean.","inLanguage":"en"}</script>
+</head>
 <body>
-    <header>
-        <a href="/" class="nav-brand" id="site-logo">
-            <img src="/assets/logo.png" alt="Calalloo Logo">
-        </a>
-        <nav class="nav-links">
-            <a href="/recipes/">Recipes</a>
-            <a href="/events/">Food Events</a>
-            <a href="/shop/">Store</a>
-            <div id="auth-links">
-                <a href="/login/" id="login-link">Sign In</a>
-            </div>
-            <a href="/signup/" id="signup-link" class="btn-cta">Get Started</a>
-        </nav>
-    <div class="cal-profile-menu" id="cal-profile-menu"><button class="cal-profile-button" id="cal-profile-button" aria-label="Profile menu" aria-expanded="false"><img id="cal-profile-avatar" src="/assets/logo.png" alt="Profile"></button><div class="cal-profile-dropdown" id="cal-profile-dropdown"><a href="/profile/">Profile</a><a href="/profile/?action=upload">Upload</a><a href="/profile/?panel=settingsPanel">Settings</a><button id="cal-profile-logout">Log out</button></div></div></header>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Caribbean <br>Food & Heritage.</h1>
-            <p>Celebrating ancestral flavors and preserving the authentic culinary history of the islands.</p>
-            <div class="hero-actions">
-                <a href="/recipes/" id="hero-guest" class="btn-cta">Explore Recipes as Guest</a>
-                <a href="/signup/" id="hero-cta" class="btn-outline">Create Profile</a>
-                <a href="/login/" id="hero-secondary" class="btn-outline">Sign In</a>
-            </div>
+  <header class="site-header" id="site-header">
+    <a class="brand" id="site-logo" href="/" aria-label="Calalloo home"><img src="/assets/logo.png" alt=""><span class="brand-word">calalloo<span>.</span></span></a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="/recipes/">Recipes</a><a href="/events/">Food Events</a><a href="/shop/">Store</a>
+      <a id="login-link" href="/login/">Sign In</a><a class="nav-join" id="signup-link" href="/signup/">Join Calalloo</a>
+    </nav>
+    <div class="cal-profile-menu" id="cal-profile-menu"><button class="cal-profile-button" id="cal-profile-button" aria-label="Profile menu" aria-expanded="false"><img id="cal-profile-avatar" src="/assets/logo.png" alt="Profile"></button><div class="cal-profile-dropdown" id="cal-profile-dropdown"><a href="/profile/">Profile</a><a href="/profile/?action=upload">Upload</a><a href="/profile/?panel=settingsPanel">Settings</a><button id="cal-profile-logout" type="button">Log out</button></div></div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="shell hero-inner">
+        <div class="hero-copy-block">
+          <p class="eyebrow">A living Caribbean food archive</p>
+          <h1 id="hero-title">The islands,<span class="accent">served with story.</span></h1>
+          <p class="hero-copy">Find the recipes we grew up with, meet the kitchens keeping them alive, and pass a little more of the Caribbean table forward.</p>
+          <div class="hero-actions"><a class="button-primary" id="hero-primary" href="/recipes/">Explore the recipes <span aria-hidden="true">→</span></a><a class="button-secondary" id="hero-secondary" href="/events/">See food events</a></div>
+          <p class="micro-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s-7-4.3-7-11a7 7 0 0 1 14 0c0 6.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>From home kitchens and foodways across the Caribbean</p>
         </div>
+        <div class="food-stage" aria-label="Community dishes from Trinidad and Tobago">
+          <a class="food-shot main" href="/recipe/?id=7af3cab5-9806-4da6-8d6a-0506d031be16" aria-label="View Gulab Jamoon recipe"><img src="https://sktpjacowqaedddtrhuz.supabase.co/storage/v1/object/public/recipe-photos/general/gulab-jamoon-priscilla.jpg" alt="Gulab Jamoon, a Trinidadian Diwali sweet" fetchpriority="high"><span class="photo-label"><small>From Trinidad &amp; Tobago</small>Gulab Jamoon</span></a>
+          <a class="food-shot side-top" href="/recipe/?id=b4293fb5-d0d4-4863-bbb5-9a3d4f0c0801" aria-label="View Barfi recipe"><img src="https://sktpjacowqaedddtrhuz.supabase.co/storage/v1/object/public/recipe-photos/general/barfi-priscilla.jpg" alt="Barfi, a Trinidadian Diwali sweet" fetchpriority="high"><span class="photo-label">Barfi</span></a>
+          <a class="food-shot side-bottom" href="/recipe/?id=7dce7fd6-3a19-4678-944f-e5fe790e61d6" aria-label="View Pommecythere Anchar recipe"><img src="https://sktpjacowqaedddtrhuz.supabase.co/storage/v1/object/public/recipe-photos/general/pommecythere-anchar-priscilla.jpg" alt="Pommecythere anchar" fetchpriority="high"><span class="photo-label">Pommecythere Anchar</span></a>
+          <div class="stage-stamp" aria-hidden="true"><div><span>Eat</span>with memory</div></div>
+        </div>
+      </div>
     </section>
-
-    <section class="section">
-        <div class="section-header">
-            <h2>Our Purpose</h2>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <h3>Heritage</h3>
-                <p>Preserving the rich culinary history and ancestral techniques of the Caribbean.</p>
-            </div>
-            <div class="card">
-                <h3>Authenticity</h3>
-                <p>Connecting you with genuine island flavors and traditional market knowledge.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <img src="/assets/logo.png" alt="Calalloo Logo" class="footer-logo">
-        <div class="footer-links">
-            <a href="/login/">Sign In</a>
-            <a href="/signup/">Sign Up</a>
-            <a href="/markets/">Markets</a>
-        </div>
-        <p class="copyright">© 2026 PRISCION.</p>
-    </footer>
-
-    <script>
-        // Remove the legacy offline cache so the homepage cannot flash an old dashboard.
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(r => r.unregister()));
-                if (window.caches) caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
-            });
-        }
-    </script>
-    <script>
-        const SUPABASE_URL = 'https://sktpjacowqaedddtrhuz.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);document.getElementById('site-logo').addEventListener('click',e=>{e.preventDefault();location.href='/'});
-
-        function updateHomeAuthState(session) {
-            const signedIn = !!session?.user;
-            const login = document.getElementById('login-link');
-            const signup = document.getElementById('signup-link');
-            const guest = document.getElementById('hero-guest');
-            const create = document.getElementById('hero-cta');
-            const secondary = document.getElementById('hero-secondary');
-            const footerLinks = document.querySelectorAll('.footer-links a');
-            if (signedIn) {
-                if (login) { login.textContent = 'My Kitchen'; login.href = '/profile/'; }
-                if (signup) signup.style.display = 'none';
-                if (guest) { guest.textContent = 'Open My Kitchen'; guest.href = '/profile/'; }
-                if (create) create.style.display = 'none';
-                if (secondary) { secondary.textContent = 'Explore Recipes'; secondary.href = '/recipes/'; secondary.style.display = ''; }
-                if (footerLinks[0]) { footerLinks[0].textContent = 'My Kitchen'; footerLinks[0].href = '/profile/'; }
-                if (footerLinks[1]) footerLinks[1].style.display = 'none';
-            } else {
-                if (login) { login.textContent = 'Sign In'; login.href = '/login/'; }
-                if (signup) signup.style.display = '';
-                if (guest) { guest.textContent = 'Explore Recipes as Guest'; guest.href = '/recipes/'; }
-                if (create) create.style.display = '';
-                if (secondary) { secondary.textContent = 'Sign In'; secondary.href = '/login/'; secondary.style.display = ''; }
-                if (footerLinks[0]) { footerLinks[0].textContent = 'Sign In'; footerLinks[0].href = '/login/'; }
-                if (footerLinks[1]) footerLinks[1].style.display = '';
-            }
-        }
-        async function checkSession() {
-            const { data: { session } } = await sb.auth.getSession();
-            updateHomeAuthState(session);
-            sb.auth.onAuthStateChange((_event, nextSession) => updateHomeAuthState(nextSession));
-        }
-        checkSession();
-    </script>
-<nav class="cal-app-nav" id="cal-app-nav" aria-label="Calalloo app navigation">
-<a href="/recipes/" title="Discover · Recipes" aria-label="Discover · Recipes"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m16.5 16.5 4 4M11 7v8M7 11h8"/></svg></a>
-<a href="/events/" title="Events" aria-label="Events"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg></a>
-<a href="/profile/?panel=mapPanel" title="Map" aria-label="Map"><svg viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/></svg></a>
-<a href="/profile/?panel=kitchenPanel" title="Kitchen" aria-label="Kitchen"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></a>
-<a href="/profile/?action=upload" title="Post or upload" aria-label="Post or upload"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></a>
-<a href="/profile/?panel=settingsPanel" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M3 6h5m4 0h9M3 12h2m4 0h12M3 18h9m4 0h5"/><circle cx="10" cy="6" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="14" cy="18" r="2"/></svg></a>
-</nav><script>
-(()=>{const U='https://sktpjacowqaedddtrhuz.supabase.co',K='sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';const c=window.supabase?.createClient(U,K,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});if(!c)return;const n=document.getElementById('cal-app-nav'),m=document.getElementById('cal-profile-menu');if(!n||!m)return;const boot=async()=>{const {data:{session}}=await c.auth.getSession();if(!session)return;document.body.classList.add('has-cal-app-nav');const appbar=document.querySelector('body>header');if(appbar){appbar.classList.add('cal-auth-appbar');appbar.querySelectorAll('nav,.back').forEach(x=>x.setAttribute('aria-hidden','true'));}n.classList.add('visible');m.classList.add('visible');const u=session.user,d=u.user_metadata||{},identity=u.identities?.[0]?.identity_data||{};const avatar=d.avatar_url||d.picture||identity.avatar_url||identity.picture;if(avatar)document.getElementById('cal-profile-avatar').src=avatar;const a=document.querySelector('.cal-app-nav a[href="'+location.pathname+'"]');if(a)a.setAttribute('aria-current','page');document.getElementById('cal-profile-button').onclick=()=>{const dd=document.getElementById('cal-profile-dropdown'),open=dd.classList.toggle('open');document.getElementById('cal-profile-button').setAttribute('aria-expanded',open)};document.addEventListener('click',e=>{if(!e.target.closest('#cal-profile-menu'))document.getElementById('cal-profile-dropdown').classList.remove('open')});document.getElementById('cal-profile-logout').onclick=async()=>{await c.auth.signOut();location.href='/'};};boot()})();
-</script></body>
+    <section class="intro-band" aria-label="Calalloo food archive"><div class="shell intro-band-inner"><span class="band-label">More than a recipe</span><p class="band-text">A dish can hold a whole island.</p><a class="band-link" href="/recipes/">Browse the archive&nbsp; →</a></div></section>
+    <section class="section" aria-labelledby="recipes-heading"><div class="shell"><div class="section-top reveal"><div><p class="section-kicker">From the kitchen</p><h2 id="recipes-heading">Made here.<br>Remembered everywhere.</h2></div><p class="section-lead">Start with a favourite, or meet a dish you’ve never tried. Each recipe carries the name of its home and the flavours that make it itself.</p></div>
+      <div class="recipe-grid">
+        <a class="recipe-card reveal" href="/recipe/?id=7dce7fd6-3a19-4678-944f-e5fe790e61d6"><div class="recipe-image"><img loading="lazy" src="https://sktpjacowqaedddtrhuz.supabase.co/storage/v1/object/public/recipe-photos/general/pommecythere-anchar-priscilla.jpg" alt="Pommecythere anchar in a serving dish"></div><div class="recipe-copy"><span class="recipe-country">Trinidad &amp; Tobago · Condiment</span><h3>Pommecythere Anchar</h3><p>Sweet, sour and peppery, with amchar masala and ripe island memory.</p><span class="recipe-more"><span>Open the recipe</span><span aria-hidden="true">↗</span></span></div></a>
+        <a class="recipe-card reveal" href="/recipe/?id=7af3cab5-9806-4da6-8d6a-0506d031be16"><div class="recipe-image"><img loading="lazy" src="https://sktpjacowqaedddtrhuz.supabase.co/storage/v1/object/public/recipe-photos/general/gulab-jamoon-priscilla.jpg" alt="Gulab Jamoon sweets"></div><div class="recipe-copy"><span class="recipe-country">Trinidad &amp; Tobago · Sweet</span><h3>Gulab Jamoon</h3><p>Soft fried milk dough, soaked in fragrant syrup and made for sharing.</p><span class="recipe-more"><span>Open the recipe</span><span aria-hidden="true">↗</span></span></div></a>
+        <a class="recipe-card reveal" href="/recipe/?id=b4293fb5-d0d4-4863-bbb5-9a3d4f0c0801"><div class="recipe-image"><img loading="lazy" src="https://sktpjacowqaedddtrhuz.supabase.co/storage/v1/object/public/recipe-photos/general/barfi-priscilla.jpg" alt="Barfi pieces"></div><div class="recipe-copy"><span class="recipe-country">Trinidad &amp; Tobago · Sweet</span><h3>Barfi</h3><p>A creamy, cardamom-scented Diwali favourite from the local kitchen.</p><span class="recipe-more"><span>Open the recipe</span><span aria-hidden="true">↗</span></span></div></a>
+      </div>
+    </div></section>
+    <section class="story-section"><div class="shell"><div class="story-layout"><div class="story-heading reveal"><p class="section-kicker">Keep the table going</p><h2>Food is how we remember.</h2><p>Calalloo brings recipes, the people who make them, and the events that gather us around food into one Caribbean-rooted place.</p><a class="button-secondary" href="/recipes/">Find your next dish&nbsp; →</a></div><blockquote class="story-quote reveal">“The best recipes don’t just tell us what to cook. They tell us who taught us, where we come from, and who we’re feeding next.”<small>Calalloo · Food, held in common</small></blockquote></div>
+      <div class="journey" aria-label="Ways to explore Calalloo"><article class="journey-item reveal"><span class="journey-number">01 / DISCOVER</span><h3>Find a dish</h3><p>Explore recipes by food, island and tradition.</p></article><article class="journey-item reveal"><span class="journey-number">02 / GATHER</span><h3>Meet the kitchens</h3><p>See the food people are making and sharing.</p></article><article class="journey-item reveal"><span class="journey-number">03 / COME TOGETHER</span><h3>Find an event</h3><p>Look for food festivals, markets and gatherings.</p></article></div>
+    </div></section>
+    <section class="closing"><div class="shell closing-inner"><div><h2>Bring your dish to the table.</h2><p>Start a Kitchen, share a food memory, and let your recipe travel.</p></div><a class="button-secondary" id="closing-cta" href="/signup/">Join the community&nbsp; →</a></div></section>
+  </main>
+  <footer class="footer"><div class="shell"><div class="footer-main"><a class="brand" href="/" aria-label="Calalloo home"><img src="/assets/logo.png" alt=""><span class="brand-word">calalloo<span>.</span></span></a><nav class="footer-nav" aria-label="Footer navigation"><a href="/recipes/">Recipes</a><a href="/events/">Food Events</a><a href="/markets/">Markets</a><a href="/about/">Our story</a><a id="footer-account" href="/login/">Sign in</a></nav></div><div class="footer-bottom"><span>© 2026 Calalloo · A Prisca Dezigns project.</span><span>Caribbean food, carried forward.</span></div></div></footer>
+  <nav class="cal-app-nav" id="cal-app-nav" aria-label="Calalloo app navigation">
+    <a href="/recipes/" title="Discover · Recipes" aria-label="Discover · Recipes"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m16.5 16.5 4 4M11 7v8M7 11h8"/></svg></a>
+    <a href="/events/" title="Events" aria-label="Events"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg></a>
+    <a href="/profile/?panel=mapPanel" title="Map" aria-label="Map"><svg viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/></svg></a>
+    <a href="/profile/?panel=kitchenPanel" title="Kitchen" aria-label="Kitchen"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></a>
+    <a href="/profile/?action=upload" title="Post or upload" aria-label="Post or upload"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></a>
+    <a href="/profile/?panel=settingsPanel" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M3 6h5m4 0h9M3 12h2m4 0h12M3 18h9m4 0h5"/><circle cx="10" cy="6" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="14" cy="18" r="2"/></svg></a>
+  </nav>
+  <script>
+    (()=>{const nodes=document.querySelectorAll('.reveal');if(!('IntersectionObserver'in window)){nodes.forEach(n=>n.classList.add('is-visible'));return}const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -35px 0px'});nodes.forEach(n=>io.observe(n))})();
+    const SUPABASE_URL='https://sktpjacowqaedddtrhuz.supabase.co',SUPABASE_KEY='sb_publishable_ChdrHQEJV7pVpJMKt-ZaUw_6V0WRKAR';
+    const sb=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    function applySession(session){const user=session?.user,login=document.getElementById('login-link'),signup=document.getElementById('signup-link'),hero=document.getElementById('hero-primary'),sec=document.getElementById('hero-secondary'),close=document.getElementById('closing-cta'),footer=document.getElementById('footer-account');if(user){login.textContent='My Kitchen';login.href='/profile/';signup.hidden=true;hero.textContent='Open My Kitchen →';hero.href='/profile/';close.textContent='Open your Kitchen →';close.href='/profile/?action=upload';footer.textContent='My Kitchen';footer.href='/profile/';const d=user.user_metadata||{},identity=user.identities?.[0]?.identity_data||{},avatar=d.avatar_url||d.picture||identity.avatar_url||identity.picture;if(avatar)document.getElementById('cal-profile-avatar').src=avatar;document.getElementById('site-header').classList.add('cal-auth-appbar');document.body.classList.add('has-cal-app-nav');document.getElementById('cal-app-nav').classList.add('visible');document.getElementById('cal-profile-menu').classList.add('visible');const active=document.querySelector('.cal-app-nav a[href="'+location.pathname+'"]');if(active)active.setAttribute('aria-current','page');}else{login.textContent='Sign In';login.href='/login/';signup.hidden=false;hero.textContent='Explore the recipes →';hero.href='/recipes/';close.textContent='Join the community →';close.href='/signup/';footer.textContent='Sign in';footer.href='/login/';document.getElementById('site-header').classList.remove('cal-auth-appbar');document.body.classList.remove('has-cal-app-nav');document.getElementById('cal-app-nav').classList.remove('visible');document.getElementById('cal-profile-menu').classList.remove('visible')}}
+    if(sb){sb.auth.getSession().then(({data:{session}})=>applySession(session)).catch(()=>applySession(null));sb.auth.onAuthStateChange((_event,session)=>applySession(session));document.getElementById('cal-profile-button').addEventListener('click',()=>{const dd=document.getElementById('cal-profile-dropdown'),open=dd.classList.toggle('open');document.getElementById('cal-profile-button').setAttribute('aria-expanded',String(open))});document.addEventListener('click',e=>{if(!e.target.closest('#cal-profile-menu'))document.getElementById('cal-profile-dropdown').classList.remove('open')});document.getElementById('cal-profile-logout').addEventListener('click',async()=>{await sb.auth.signOut();location.href='/'})}
+  </script>
+</body>
 </html>
-
-
-
-
-
-
-
